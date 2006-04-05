@@ -1,3 +1,18 @@
 This cvs repository contains a QT4 djvu viewer under development.
 It is intended to replace the djview program in djvulibre-3.5.
 It depends only on the public djvulibre api ddjvuapi.h and miniexp.h.
+
+Go into directory src.
+Check the qt4 program names in Makefile.
+Compile and run.
+
+At this point:
+
+- Key F1 toggles side-by-side display
+- Key F2 toggles continuous display
+- Keys + and - change the zoom factor
+- Keys [ and ] rotate the pages
+- Keys < and > go one page backward or forward
+
+and a few others for you to discover.
+

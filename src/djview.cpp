@@ -36,7 +36,7 @@ main(int argc, char *argv[])
   QDjVuContext djvuCtx(argv[0]);
   QDjVuWidget hello;
   QDjVuHttpDocument djvuDoc;
-  QString arg = (argc>1) ? argv[1] : "files/test.djvu";
+  QString arg = (argc>1) ? argv[1] : "FILES/test.djvu";
   if (arg.startsWith("file:/") || 
       arg.startsWith("http:/") )
     djvuDoc.setUrl(&djvuCtx, QUrl(arg));
