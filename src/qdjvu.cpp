@@ -1,0 +1,699 @@
+//C-  -*- C++ -*-
+//C- -------------------------------------------------------------------
+//C- DjView4
+//C- Copyright (c) 2006  Leon Bottou
+//C-
+//C- This software is subject to, and may be distributed under, the
+//C- GNU General Public License. The license should have
+//C- accompanied the software or you may obtain a copy of the license
+//C- from the Free Software Foundation at http://www.fsf.org .
+//C-
+//C- This program is distributed in the hope that it will be useful,
+//C- but WITHOUT ANY WARRANTY; without even the implied warranty of
+//C- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//C- GNU General Public License for more details.
+//C-  ------------------------------------------------------------------
+
+// $Id$
+
+#include <stdlib.h>
+#include <errno.h>
+#include <libdjvu/ddjvuapi.h>
+#include <libdjvu/miniexp.h>
+
+#include <qdjvu.h>
+
+#include <Qt/QDebug>
+#include <Qt/QCoreApplication>
+#include <Qt/QFileInfo>
+#include <Qt/QFile>
+#include <Qt/QString>
+#include <Qt/QByteArray>
+#include <Qt/QUrl>
+#include <Qt/QSet>
+
+
+
+// ----------------------------------------
+// QDJVUCONTEXT
+
+
+/*! \class QDjVuContext
+    \brief Represents a \a ddjvu_context_t object.
+    
+    This QObject subclass holds a \a ddjvu_context_t object and 
+    transparently hooks the DDJVUAPI message queue into 
+    the Qt messaging system. DDJVUAPI messages are then
+    forwarded to the virtual function \a QDjVuContext::handle
+    which transforms then into signals emitted by 
+    the proper object from the message loop thread. 
+*/
+
+/*! Construct a \a QDJVuContext object.
+    Argument \a programname is the name of the program.
+    This name is used to report error messages and locate
+    localized messages. Argument \a parent defines its
+    parent in the \a QObject hierarchy. */
+
+QDjVuContext::QDjVuContext(const char *programname, QObject *parent)
+  : QObject(parent), context(0), flag(false)
+{
+  context = ddjvu_context_create(programname);
+  ddjvu_message_set_callback(context, callback, (void*)this);
+  ddjvu_cache_set_size(context, 30*1024*1024);
+}
+
+QDjVuContext::~QDjVuContext()
+{
+  ddjvu_context_release(context);
+  context = 0;
+}
+
+/*! \property QDjVuContext::cacheSize
+    \brief The size of the decoded page cache in bytes. 
+    The default cache size is 30 megabytes. */
+
+long 
+QDjVuContext::cacheSize() const
+{
+  return ddjvu_cache_get_size(context);
+}
+
+void 
+QDjVuContext::setCacheSize(long size)
+{
+  ddjvu_cache_set_size(context, size);
+}
+
+void 
+QDjVuContext::callback(ddjvu_context_t *context, void *closure)
+{
+  QDjVuContext *qcontext = (QDjVuContext*)closure;
+  if (! qcontext->flag)
+    {
+      QCoreApplication *qApp = QCoreApplication::instance();
+      QEvent *qevent = new QEvent(QEvent::User);
+      qApp->postEvent(qcontext, qevent);
+      qcontext->flag = true;
+    }
+}
+
+bool
+QDjVuContext::event(QEvent *event)
+{
+  if (event->type() == QEvent::User)
+    {
+      ddjvu_message_t *message;
+      while ((message = ddjvu_message_peek(context)))
+        {
+          while ((message = ddjvu_message_peek(context)))
+            {
+              handle(message);
+              ddjvu_message_pop(context);
+            }
+          flag = false;
+        }
+      return true;
+    }
+  return QObject::event(event);
+}
+
+/*! Processes DDJVUAPI messages.
+    The Qt message loop automatically passes all DDJVUAPI messages 
+    to this virtual function . This function then forwards them
+    to the \a handle function of the suitable \a QDjVuDocument,
+    \a QDjVuPage or \a QDjVuJob object. Most messages eventually
+    result into the emission of a suitable signal. */
+
+bool
+QDjVuContext::handle(ddjvu_message_t *msg)
+{
+  if (msg->m_any.page)
+    {
+      QObject *p = (QObject*)ddjvu_page_get_user_data(msg->m_any.page);
+      QDjVuPage *q = (p) ? qobject_cast<QDjVuPage*>(p) : 0;
+      if (q && q->handle(msg))
+        return true;
+    }
+  if (msg->m_any.document)
+    {
+      QObject *p = (QObject*)ddjvu_document_get_user_data(msg->m_any.document);
+      QDjVuDocument *q = (p) ? qobject_cast<QDjVuDocument*>(p) : 0;
+      if (q && q->handle(msg))
+        return true;
+    }
+  if (msg->m_any.job &&
+      msg->m_any.job != (ddjvu_job_t*)msg->m_any.page &&
+      msg->m_any.job != (ddjvu_job_t*)msg->m_any.document )
+    {
+      QObject *p = (QObject*)ddjvu_job_get_user_data(msg->m_any.job);
+      QDjVuJob *q = (p) ? qobject_cast<QDjVuJob*>(p) : 0;
+      if (q && q->handle(msg))
+        return true;
+    }
+  switch(msg->m_any.tag)
+    {
+    case DDJVU_ERROR:
+      emit error(QString::fromLocal8Bit(msg->m_error.message),
+                 QString::fromLocal8Bit(msg->m_error.filename), 
+                 msg->m_error.lineno);
+      return true;
+    case DDJVU_INFO:
+      emit info(QString::fromLocal8Bit(msg->m_info.message));
+      return true;
+    default:
+      break;
+    }
+  return false;
+}
+
+/*! \fn QDjVuContext::isValid()
+    Indicate if this object is associated with a 
+    \a ddjvu_context_t object. Use this function
+    to determine if the construction was successful. */
+
+/*! \fn QDjVuContext::operator ddjvu_context_t*()
+    Return a pointer to the corresponding 
+    \a ddjvu_context_t object. */
+
+/*! \fn QDjVuContext::error(QString msg, QString filename, int lineno)
+  
+    This signal is emitted when processing a DDJVUAPI error message
+    that is not attached to any document, page, or job.
+    This only hapens when a DDJVUAPI function is used incorrectly
+    or when calling \a QDjVuDocument::setFileName or 
+    \a QDjVuDocument::setUrl. 
+*/
+
+/*! \fn QDjVuContext::info(QString msg)
+
+    This signal is emitted when processing a DDJVUAPI info message
+    that is not attached to any document, page, or job.
+    This is quite rare and not very useful.
+*/
+
+
+// ----------------------------------------
+// QDJVUDOCUMENTPRIVATE
+
+
+class QDjVuDocumentPrivate : public QObject
+{
+  Q_OBJECT
+public:
+  QSet<QObject*> running;
+  QDjVuDocumentPrivate(QObject *parent=0);
+  void add(QObject *p);
+  void add(QDjVuPage *p);
+protected slots:
+  void remove(QObject *p);
+  void pageinfo();
+signals:
+  void idle();
+};
+
+QDjVuDocumentPrivate::QDjVuDocumentPrivate(QObject *parent)
+  : QObject(parent)
+{
+}
+
+void
+QDjVuDocumentPrivate::add(QObject *p)
+{
+  connect(p, SIGNAL(destroyed(QObject*)), this, SLOT(remove(QObject*)));
+  running.insert(p);
+}
+
+void
+QDjVuDocumentPrivate::remove(QObject *p)
+{
+  running.remove(p);
+  disconnect(p, 0, this, 0);
+  if (! running.size())
+    emit idle();
+}
+
+void
+QDjVuDocumentPrivate::add(QDjVuPage *p)
+{
+  if (ddjvu_page_decoding_done(*p)) return;
+  connect(p, SIGNAL(pageinfo()), this, SLOT(pageinfo()));
+  add((QObject*)(p));
+}
+
+void
+QDjVuDocumentPrivate::pageinfo()
+{
+  QDjVuPage *p = qobject_cast<QDjVuPage*>(sender());
+  if (p && ddjvu_page_decoding_done(*p))
+    remove(p);
+}
+
+
+
+// ----------------------------------------
+// QDJVUDOCUMENT
+
+
+/*! \class QDjVuDocument
+    \brief Represents a \a ddjvu_document_t object. */
+
+QDjVuDocument::~QDjVuDocument()
+{
+  if (isValid())
+    {
+      ddjvu_document_set_user_data(document, 0);
+      ddjvu_document_release(document);
+      document = 0;
+    }
+}
+
+/*! Construct an empty \a QDjVuDocument object.
+    Argument \a parent indicates its parent in 
+    the \a QObject hierarchy. */
+
+QDjVuDocument::QDjVuDocument(QObject *parent)
+  : QObject(parent), document(0), priv(new QDjVuDocumentPrivate(this))
+{
+  connect(priv, SIGNAL(idle()), this, SIGNAL(idle()));
+}
+
+/*! \overload */
+
+
+QDjVuDocument::QDjVuDocument(QDjVuContext *ctx, QString f, QObject *parent)
+  : QObject(parent), document(0), priv(new QDjVuDocumentPrivate(this))
+{
+  connect(priv, SIGNAL(idle()), this, SIGNAL(idle()));
+  setFileName(ctx, f);
+}
+
+/*! Associates the \a QDjVuDocument object with the 
+    \a QDjVuContext object \ctx in order to decode
+    the DjVu file \a f. */
+
+bool 
+QDjVuDocument::setFileName(QDjVuContext *ctx, QString f, bool cache)
+{
+  if (isValid())
+    {
+      ddjvu_document_set_user_data(document, 0);
+      ddjvu_document_release(document);
+      document = 0;
+    }
+  QFileInfo info(f);
+  QByteArray b = QFile::encodeName(f);
+  if (! info.isReadable())
+    {
+      qWarning("QDjVuDocument::setFileName: cannot read file");
+      return false;
+    }
+  if (! (document = ddjvu_document_create_by_filename(*ctx, b, cache)))
+    {
+      qWarning("QDjVuDocument::setFileName: cannot create decoder");    
+      return false;
+    }
+  ddjvu_document_set_user_data(document, (void*)this);
+  return true;
+}
+
+/*! Associates the \a QDjVuDocument object with
+    with the \a QDjVuContext object \ctx in order
+    to decode the DjVu data located at URL \a url.
+    This is only useful inside a subclass of this class
+    because you must redefine virtual function \a newstream
+    in order to provide access to the data. */
+
+bool
+QDjVuDocument::setUrl(QDjVuContext *ctx, QUrl url, bool cache)
+{
+
+  if (isValid())
+    {
+      ddjvu_document_set_user_data(document, 0);
+      ddjvu_document_release(document);
+      document = 0;
+    }
+  QByteArray b = url.toEncoded();
+  if (! b.size())
+    {
+      qWarning("QDjVuDocument::setUrl: invalid url");
+      return false;
+    }
+  document = ddjvu_document_create(*ctx, b, cache);
+  if (! document)
+    {
+      qWarning("QDjVuDocument::setUrl: cannot create");
+      return false;
+    }
+  ddjvu_document_set_user_data(document, (void*)this);
+  return true;
+}
+
+/*! This virtual function is called when receiving
+    a DDJVUAPI \a m_newstream message. This happens
+    when the decoder has been setup with functon \a setUrl.
+    You must then override this virtual function in order
+    to setup the data transfer.  Data is passed to the decoder
+    using the \a streamWrite and \a streamClose member functions
+    with the specified \a streamid. See also the DDJVUAPI 
+    documentation for the \a m_newstream message. */
+
+void
+QDjVuDocument::newstream(int streamid, QString name, QUrl url)
+{
+  qWarning("QDjVuDocument::newstream called but not implemented");
+}
+
+/*! Write data into the decoder stream \a streamid. */
+
+void 
+QDjVuDocument::streamWrite(int streamid, 
+                           const char *data, unsigned long len )
+{
+  if (! isValid())
+    qWarning("QDjVuDocument::streamWrite: invalid document");
+  else
+    ddjvu_stream_write(document, streamid, data, len);
+}
+
+/*! Close the decoder stream \a streamid.
+    Setting argument \a stop to \a true indicates
+    that the stream was closed because the data
+    transfer was interrupted by the user. */
+
+void 
+QDjVuDocument::streamClose(int streamid, bool stop)
+{
+  if (! isValid())
+    qWarning("QDjVuDocument::streamClose: invalid document");
+  else
+    ddjvu_stream_close(document, streamid, stop);
+}
+
+/*! Processes DDJVUAPI messages for this document. 
+    The default implementation emits signals for
+    the \a m_error, \a m_info, \a m_docinfo, \a m_pageingo
+    and \a m_thumbnail messsages. It also calls
+    the virtual function \a newstream when processing
+    a \m newstream message. The return value is a boolean indicating
+    if the message has been processed or rejected. */
+
+bool
+QDjVuDocument::handle(ddjvu_message_t *msg)
+{
+  switch(msg->m_any.tag)
+    {
+    case DDJVU_DOCINFO:
+      ddjvu_document_check_pagedata(document, 0);
+      emit docinfo();
+      return true;
+    case DDJVU_PAGEINFO:
+      emit pageinfo();
+      return true;
+    case DDJVU_THUMBNAIL:
+      emit thumbnail(msg->m_thumbnail.pagenum);
+      return true;
+    case DDJVU_NEWSTREAM:
+      {
+        QUrl url;
+        QString name;
+        if (msg->m_newstream.url)
+          url = QUrl(QString::fromUtf8(msg->m_newstream.url));
+        if (msg->m_newstream.name)
+          name = QString::fromLatin1(msg->m_newstream.name);
+        newstream(msg->m_newstream.streamid, name, url);
+      }
+      return true;
+    case DDJVU_ERROR:
+      emit error(QString::fromLocal8Bit(msg->m_error.message),
+                 QString::fromLocal8Bit(msg->m_error.filename), 
+                 msg->m_error.lineno);
+      return true;
+    case DDJVU_INFO:
+      emit info(QString::fromLocal8Bit(msg->m_info.message));
+      return true;
+    default:
+      break;
+    }
+  return false;
+}
+
+/*! Return number of decoding threads running for this document. */
+
+int 
+QDjVuDocument::load(void)
+{
+  return priv->running.size();
+}
+
+/*! \fn QDjVuDocument::isValid()
+    Indicate if this object is associated with a valid
+    \a ddjvu_document_t object. Use this function to
+    determine whether \a setFileName or \a setUrl
+    was successful. */
+
+/*! \fn QDjVuDocument::operator ddjvu_document_t*()
+    Return a pointer to the corresponding 
+    \a ddjvu_document_t object. */
+
+/*! \fn QDjVuDocument::error(QString msg, QString filename, int lineno)
+    This signal is emitted when processing a DDJVUAPI \a m_error 
+    message that is related to this document. */
+
+/*! \fn QDjVuDocument::info(QString msg)
+    This signal is emitted when processing a DDJVUAPI \a m_info 
+    message that is related to this document. */
+
+/*! \fn QDjVuDocument::docinfo()
+    This signal is emitted when the document initialization 
+    is complete. Use \a ddjvu_document_decoding_status to
+    determine whether the operation was successful. */
+
+/*! \fn QDjVuDocument::pageinfo()
+    This signal is emitted when the data for a new page
+    has been received in full. This is useful when used
+    in relation with the DDJVUAPI function
+    \a ddjvu_document_get_pageinfo. */
+
+/*! \fn QDjVuDocument::thumbnail(int pagenum)
+    This signal is emitted when the thumbnail for page 
+    \a pagenum is ready. This is useful when used
+    in relation with the DDJVUAPI functions
+    \a ddjvu_thumnail_status and \a ddjvu_thumbnail_render. */
+
+/*! \fn QDjVuDocument::idle()
+    This signal is emitted when all decoding threads
+    for this document are terminated. */
+
+
+
+// ----------------------------------------
+// QDJVUPAGE
+
+/*! \class QDjVuPage
+    \brief Represent a \a ddjvu_page_t object. */
+
+/*! Construct a \a QDjVuPage object for page \a pageno
+    of document \a doc. Argument \a parent indicates its 
+    parent in the \a QObject hierarchy. */
+
+QDjVuPage::QDjVuPage(QDjVuDocument *doc, int pageno, QObject *parent)
+  : QObject(parent), page(0), pageno(pageno)
+{
+  page = ddjvu_page_create_by_pageno(*doc, pageno);
+  if (! page)
+    {
+      qWarning("QDjVuPage: invalid page number");
+      return;
+    }
+  ddjvu_page_set_user_data(page, (void*)this);
+  doc->priv->add(this);
+}
+
+QDjVuPage::~QDjVuPage()
+{
+  pageno = -1;
+  if (page)
+    {
+      ddjvu_page_set_user_data(page, 0);
+      ddjvu_page_release(page);
+      page = 0;
+    }
+}
+
+/*! Processes DDJVUAPI messages for this page. 
+    The default implementation emits signals for
+    the \a m_error, \a m_info, \a m_pageinfo, \a m_chunk
+    and \a m_relayout and \a m_redisplay messsages. 
+    The return value is a boolean indicating
+    if the message has been processed or rejected. */
+
+bool
+QDjVuPage::handle(ddjvu_message_t *msg)
+{
+  switch(msg->m_any.tag)
+    {
+    case DDJVU_PAGEINFO:
+      emit pageinfo();
+      return true;
+    case DDJVU_CHUNK:
+      emit chunk(QString::fromAscii(msg->m_chunk.chunkid));
+      return true;
+    case DDJVU_RELAYOUT:
+      emit relayout();
+      return true;
+    case DDJVU_REDISPLAY:
+      emit redisplay();
+      return true;
+    case DDJVU_ERROR:
+      emit error(QString::fromLocal8Bit(msg->m_error.message),
+                 QString::fromLocal8Bit(msg->m_error.filename), 
+                 msg->m_error.lineno);
+      return true;
+    case DDJVU_INFO:
+      emit info(QString::fromLocal8Bit(msg->m_info.message));
+      return true;
+    default:
+      break;
+    }
+  return false;
+}
+
+/*! Returns the page number associated with this page. */
+
+int 
+QDjVuPage::pageNo()
+{
+  return pageno;
+}
+
+/*! \fn QDjVuPage::isValid()
+    Indicate if this object is associated with a valid
+    \a ddjvu_page_t object. Use this function to
+    determine whether the construction was successful. */
+
+/*! \fn QDjVuPage::operator ddjvu_page_t * ()
+    Return a pointer to the corresponding 
+    \a ddjvu_page_t object. */
+
+/*! \fn QDjVuPage::error(QString msg, QString filename, int lineno)
+    This signal is emitted when processing a DDJVUAPI \a m_error 
+    message that is related to this page. */
+
+/*! \fn QDjVuPage::info(QString msg)
+    This signal is emitted when processing a DDJVUAPI \a m_info 
+    message that is related to this page. */
+
+/*! \fn QDjVuPage::pageinfo()
+    This signal is emitted when processing a DDJVUAPI \a m_pageinfo
+    message that is related to this page. This happens twice 
+    during the page decoding process. The first time when the 
+    basic page information is present, and the second time 
+    when the decoding process terminates. 
+    Use \a ddjvu_page_decoding_status function
+    to determine what is going on. */
+
+/*! \fn QDjVuPage::relayout()
+    This signal is emitted when processing a DDJVUAPI \a m_relayout 
+    message that is related to this page. */
+
+/*! \fn QDjVuPage::redisplay()
+    This signal is emitted when processing a DDJVUAPI \a m_redisplay 
+    message that is related to this page. */
+
+/*! \fn QDjVuPage::chunk(QString chunkid)
+    This signal is emitted when processing a DDJVUAPI \a m_chunk 
+    message that is related to this page. */
+
+
+
+// ----------------------------------------
+// QDJVUJOB
+
+/*! \class QDjVuJob
+    \brief Represents a \a ddjvu_job_t object. */
+
+/*! Construct a \a QDjVuJob object.
+    Argument \a job is the \a ddjvu_job_t object.
+    Argument \a parent defines its parent in the \a QObject hierarchy. */
+
+QDjVuJob::QDjVuJob(ddjvu_job_t *job, QObject *parent)
+  : QObject(parent), job(job)
+{
+  if (! job)
+    qWarning("QDjVuJob: invalid job");
+  else
+    ddjvu_job_set_user_data(job, (void*)this);
+}
+
+QDjVuJob::~QDjVuJob()
+{
+  ddjvu_job_set_user_data(job, 0);
+  ddjvu_job_release(job);
+  job = 0;
+}
+
+/*! Processes DDJVUAPI messages for this job. 
+    The default implementation emits signals for
+    the \a m_error, \a m_info, and \a m_progress
+    messages.  The return value is a boolean indicating
+    if the message has been processed or rejected. */
+
+bool
+QDjVuJob::handle(ddjvu_message_t *msg)
+{
+  switch(msg->m_any.tag)
+    {
+    case DDJVU_ERROR:
+      emit error(QString::fromLocal8Bit(msg->m_error.message),
+                 QString::fromLocal8Bit(msg->m_error.filename), 
+                 msg->m_error.lineno);
+      return true;
+    case DDJVU_INFO:
+      emit info(QString::fromLocal8Bit(msg->m_info.message));
+      return true;
+    case DDJVU_PROGRESS:
+      emit progress(msg->m_progress.percent);
+      return true;
+    default:
+      break;
+    }
+  return false;
+}
+
+/*! \fn QDjVuJob::isValid()
+    Indicate if this object is associated with a 
+    \a ddjvu_job_t object. */
+
+/*! \fn QDjVuJob::operator ddjvu_job_t * ()
+    Return a pointer to the corresponding 
+    \a ddjvu_job_t object. */
+
+/*! \fn QDjVuJob::error(QString msg, QString filename, int lineno)
+    This signal is emitted when processing a DDJVUAPI \a m_error 
+    message that is related to this job. */
+
+/*! \fn QDjVuJob::info(QString msg)
+    This signal is emitted when processing a DDJVUAPI \a m_info 
+    message that is related to this job. */
+
+/*! \fn QDjVuJob::progress(int percent)
+    This signal is emitted when processing a DDJVUAPI \a m_progress 
+    message that is related to this job. 
+    Argument <percent> indicates the progress level from 1 to 100. */
+
+
+
+
+// ----------------------------------------
+// MOC
+
+#include "moc_qdjvu.inc"
+
+
+/* -------------------------------------------------------------
+   Local Variables:
+   c++-font-lock-extra-types: ( "\\sw+_t" "Q[A-Z]\\sw*[a-z]\\sw*" )
+   End:
+   ------------------------------------------------------------- */

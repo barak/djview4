@@ -1,0 +1,3 @@
+This cvs repository contains a QT4 djvu viewer under development.
+It is intended to replace the djview program in djvulibre-3.5.
+It depends only on the public djvulibre api ddjvuapi.h and miniexp.h.
