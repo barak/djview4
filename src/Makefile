@@ -46,7 +46,7 @@ all: ${PROGRAM}
 
 include Makefile.aux
 
-Makefile.aux: Makefile $(SOURCES)
+Makefile.aux: Makefile
 	${top_srcdir}/etc/miniqmake ${SOURCES} > Makefile.aux
 
 ${PROGRAM}: ${OBJS}
