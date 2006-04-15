@@ -21,9 +21,9 @@
 
 #include <qdjvu.h>
 
-#include <Qt/QList>
-#include <Qt/QVector>
-#include <QtNetwork/QHttp>
+#include <QList>
+#include <QVector>
+#include <QHttp>
 
 
 class QDjVuHttpDocument : public QDjVuDocument

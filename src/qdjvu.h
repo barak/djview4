@@ -36,9 +36,9 @@ typedef struct miniexp_s* miniexp_t;
 
 // Qt includes
 
-#include <Qt/QObject>
-#include <Qt/QString>
-#include <Qt/QUrl>
+#include <QObject>
+#include <QString>
+#include <QUrl>
 
 
 // The following classes integrate the ddjvuapi with 

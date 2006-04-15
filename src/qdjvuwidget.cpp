@@ -26,29 +26,28 @@
 #include "qdjvu.h"
 #include "qdjvuwidget.h"
 
-#include <Qt/QDebug>
-#include <Qt/QWidget>
-#include <Qt/QEventLoop>
-#include <Qt/QMenu>
-#include <Qt/QCursor>
-#include <Qt/QApplication>
-#include <Qt/QScrollBar>
-#include <Qt/QPixmapCache>
-#include <Qt/QPaintEvent>
-#include <Qt/QPainter>
-#include <Qt/QPainterPath>
-#include <Qt/QImage>
-#include <Qt/QPixmap>
-#include <Qt/QBitmap>
-#include <Qt/QRubberBand>
-#include <Qt/QToolTip>
-#include <Qt/QTimer>
-#include <Qt/QRect>
-#include <Qt/QRectF>
-#include <Qt/QPolygon>
-#include <Qt/QList>
-#include <Qt/QVector>
-#include <Qt/QMap>
+#include <QDebug>
+#include <QWidget>
+#include <QEventLoop>
+#include <QMenu>
+#include <QCursor>
+#include <QApplication>
+#include <QScrollBar>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QPainterPath>
+#include <QImage>
+#include <QPixmap>
+#include <QBitmap>
+#include <QRubberBand>
+#include <QToolTip>
+#include <QTimer>
+#include <QRect>
+#include <QRectF>
+#include <QPolygon>
+#include <QList>
+#include <QVector>
+#include <QMap>
 
 
 
@@ -3818,10 +3817,8 @@ QDjVuWidget::paintEmpty(QPainter &p, const QRect &rect,
     name = ":/images/djvu_stop.png";
   else if (error)
     name = ":/images/djvu_fail.png";
-  if (!name.isEmpty() 
-      && !QPixmapCache::find(name, pixmap) 
-      && pixmap.load(name))
-    QPixmapCache::insert(name, pixmap);
+  if (!name.isEmpty())
+    pixmap.load(name);
   // start painting
   QBrush brush(Qt::white);
   p.fillRect(rect, brush);

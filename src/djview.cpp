@@ -24,9 +24,9 @@
 #include <qdjvuhttp.h>
 #include <qdjvuwidget.h>
 
-#include <Qt/QApplication>
-#include <Qt/QPushButton>
-#include <Qt/QFileInfo>
+#include <QApplication>
+#include <QPushButton>
+#include <QFileInfo>
 
 int 
 main(int argc, char *argv[])

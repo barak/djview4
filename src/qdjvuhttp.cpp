@@ -19,7 +19,7 @@
 #include "qdjvuhttp.h"
 #include <libdjvu/ddjvuapi.h>
 
-#include <Qt/QDebug>
+#include <QDebug>
 
 
 
@@ -175,9 +175,9 @@ QDjVuHttpDocument::response(const QHttpResponseHeader &resp)
         Conn& conn = connections[c];
         // HTTP redirect
         if (status == 301 || status == 302 || status == 303 || status == 307 )
-          if (resp.hasKey("Location"))
+          if (resp.hasKey("location"))
             {
-              QUrl nurl = url.resolved(QUrl(resp.value("Location")));
+              QUrl nurl = url.resolved(QUrl(resp.value("location")));
               // TODO: detect loops
               if (conn.streamid > 0 || status == 307)
                 { 

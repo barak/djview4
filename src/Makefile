@@ -28,7 +28,7 @@ top_srcdir=..
 
 QTDEBUG=
 LIBDEBUG=
-PKGS= QtGui${QTDEBUG} QtNetwork${QTDEBUG} ddjvuapi
+PKGS= QtCore${QTDEBUG} QtGui${QTDEBUG} QtNetwork${QTDEBUG} ddjvuapi
 LIBS=${LIBDEBUG} `pkg-config --libs ${PKGS}`
 CXXFLAGS=`pkg-config --cflags ${PKGS}` -Wall ${OPTS}
 
@@ -40,6 +40,7 @@ SOURCES=qdjvu.h qdjvu.cpp\
 PROGRAM=djview
 
 debug: FORCE
+	#${MAKE} all QTDEBUG= LIBDEBUG=-Llib OPTS=-g
 	${MAKE} all QTDEBUG=_debug LIBDEBUG=-Llib OPTS=-g
 
 all: ${PROGRAM}
@@ -59,10 +60,6 @@ clean: FORCE
 doc: FORCE
 	-${RM} -rf 2>/dev/null doc
 	doxygen
-
-release: FORCE
-	make clean
-	make OPTS=-O3 D1= D2=
 
 
 FORCE:

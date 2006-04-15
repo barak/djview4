@@ -23,14 +23,14 @@
 
 #include <qdjvu.h>
 
-#include <Qt/QDebug>
-#include <Qt/QCoreApplication>
-#include <Qt/QFileInfo>
-#include <Qt/QFile>
-#include <Qt/QString>
-#include <Qt/QByteArray>
-#include <Qt/QUrl>
-#include <Qt/QSet>
+#include <QDebug>
+#include <QCoreApplication>
+#include <QFileInfo>
+#include <QFile>
+#include <QString>
+#include <QByteArray>
+#include <QUrl>
+#include <QSet>
 
 
 

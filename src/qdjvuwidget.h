@@ -21,10 +21,10 @@
 
 #include "qdjvu.h"
 
-#include <Qt/QPoint>
-#include <Qt/QWidget>
-#include <Qt/QMenu>
-#include <Qt/QAbstractScrollArea>
+#include <QPoint>
+#include <QWidget>
+#include <QMenu>
+#include <QAbstractScrollArea>
 
 
 class QDjVuPrivate;
