@@ -547,8 +547,10 @@ public:
   bool docStopped;              // page decoding has stopped
   bool docReady;                // page decoding is done
   int  numPages;                // total number of pages
-  int      currentPage;         // current page (for navigation)
-  Position currentPos;          // current position under pointer
+  Position currentPos;          // last clicked position
+  QPoint   currentPoint;        // last clicked point
+  Position cursorPos;           // cursor position
+  QPoint   cursorPoint;         // cursor point
   // display 
   int         zoom;
   int         rotation;
@@ -561,7 +563,7 @@ public:
   QBrush      borderBrush;
   // layout
   int          layoutChange;    // scheduled changes
-  QPoint       moveRef;         // desired viewport point (CHANGE_VIEW)
+  QPoint       movePoint;       // desired viewport point (CHANGE_VIEW)
   Position     movePos;         // desired page point (CHANGE_VIEW)
   QVector<Page>   pageData;     // all pages
   QList<Page*>    pageLayout;   // pages in current layout
@@ -592,13 +594,12 @@ public:
   DragMode    dragMode;         // dragging mode
   QPoint      dragStart;        // starting point for dragging
   QMenu*      contextMenu;      // popup menu
-  QPoint      pointerPoint;     // pointer position (viewport coordinates)
   QDjVuLens  *lens;             // lens (only while lensing)
-  Qt::MouseButtons      buttons;   // current mouse buttons
-  Qt::KeyboardModifiers modifiers; // current modifiers
-  int         lensMag;             // lens maginification
-  int         lensSize;            // lens size
-  int         lineStep;            // pixels moved by arrow keys
+  int         lensMag;          // lens maginification
+  int         lensSize;         // lens size
+  int         lineStep;         // pixels moved by arrow keys
+  Qt::MouseButtons      buttons;            // current mouse buttons
+  Qt::KeyboardModifiers modifiers;          // current modifiers
   Qt::KeyboardModifiers modifiersForLinks;  // keys to show hyperlink
   Qt::KeyboardModifiers modifiersForLens;   // keys to show lens
   Qt::KeyboardModifiers modifiersForSelect; // keys to select
@@ -631,8 +632,8 @@ public:
   bool requestPage(Page *p);
   Position findPosition(const QPoint &point);
   void updateModifiers(Qt::KeyboardModifiers, Qt::MouseButtons);
-  void updatePointerPosition(const QPoint &point, bool dolinks=true);
-  void updateReadingPosition();
+  void updatePosition(const QPoint &point, bool click=false, bool links=true);
+  void updateCurrentPoint(const Position &pos);
   void adjustPageSettings();
   void prepareMapAreas(Page*);
   bool mustDisplayMapArea(MapArea*);
@@ -676,10 +677,14 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *parent)
   docStopped = false;
   docFailed = false;
   numPages = 1;
-  currentPage = 0;
   currentPos.pageNo = 0;
   currentPos.inPage = false;
   currentPos.posPage = currentPos.posView = QPoint(0,0);
+  currentPoint = QPoint(0,0);
+  cursorPos.pageNo = 0;
+  cursorPos.inPage = false;
+  cursorPos.posPage = cursorPos.posView = QPoint(0,0);
+  cursorPoint = QPoint(0,0);
   // aspect
   zoom = 100;
   rotation = 0;
@@ -700,7 +705,6 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *parent)
   keyboardEnabled = true;
   hyperlinkEnabled = true;
   mouseEnabled = true;
-  pointerPoint = QPoint(0,0);
   lineStep = 12;
   buttons = Qt::NoButton;
   modifiers = Qt::NoModifier;
@@ -769,7 +773,7 @@ QDjVuPrivate::makeLayout()
   // save position
   if (docReady && !(layoutChange & CHANGE_VIEW))
     {
-      moveRef = pointerPoint;
+      movePoint = currentPoint;
       movePos = currentPos;
     }
   // adjust layout information
@@ -786,7 +790,7 @@ QDjVuPrivate::makeLayout()
           if (movePos.pageNo<0 || movePos.pageNo>=numPages)
             {
               qWarning("makeLayout: invalid page number");
-              movePos.pageNo = qBound(0, currentPos.pageNo, numPages-1);
+              movePos.pageNo = widget->page();
             }
           int loPage = movePos.pageNo;
           int hiPage = qMin(loPage+1, numPages);
@@ -1064,7 +1068,7 @@ QDjVuPrivate::makeLayout()
                     qWarning("makeLayout: invalid pagePos"
                              "(unknown page geometry)");
                 }
-              visibleRect.moveTo(dp - moveRef);
+              visibleRect.moveTo(dp - movePoint);
             }
           layoutChange |= CHANGE_VISIBLE;
           layoutChange &= ~CHANGE_VIEW;
@@ -1117,8 +1121,8 @@ QDjVuPrivate::makeLayout()
                                  SLOT(makePageRequests()));
             }
           // setup mapper and finish
-          updatePointerPosition(pointerPoint, false);
-          updateReadingPosition();
+          updatePosition(cursorPoint, false, false);
+          updateCurrentPoint(currentPos);
           layoutChange |= UPDATE_PAGES;
           layoutChange &= ~CHANGE_VISIBLE;
         }
@@ -1342,19 +1346,25 @@ QDjVuPrivate::findPosition(const QPoint &point)
 
 // when the pointer moves
 void 
-QDjVuPrivate::updatePointerPosition(const QPoint &point, bool dolinks)
+QDjVuPrivate::updatePosition(const QPoint &point, bool click, bool links)
 {
+  // locate
+  bool changed = false;
+  cursorPoint = point;
   Position pos = findPosition(point);
-  if (! pageMap.contains(pos.pageNo) )
+  if (! pageMap.contains(pos.pageNo))
     return;
-  pointerPoint = point;
-  if (pos.pageNo == currentPos.pageNo &&
-      pos.inPage == currentPos.inPage &&
-      pos.posView == currentPos.posView &&
-      pos.posPage == currentPos.posPage )
+  if (pos.pageNo  != currentPos.pageNo  ||
+      pos.inPage  != currentPos.inPage  ||
+      pos.posView != currentPos.posView ||
+      pos.posPage != currentPos.posPage )
+    changed = true;
+  // update
+  cursorPos = pos;
+  if (click)
+    updateCurrentPoint(pos);
+  if (! changed)
     return;
-  // update position
-  currentPos = pos;
   // emit pointerPosition
   PageInfo info;
   Page *p = pageMap[pos.pageNo];
@@ -1363,11 +1373,55 @@ QDjVuPrivate::updatePointerPosition(const QPoint &point, bool dolinks)
   info.dpi = p->dpi;
   emit widget->pointerPosition(pos, info);
   // check mapareas
-  if (dolinks)
+  if (links)
     checkCurrentMapArea();
 }
 
 
+// when the view moves
+void 
+QDjVuPrivate::updateCurrentPoint(const Position &pos)
+{
+  bool changePos = false;
+  QPoint point(0,0);
+  if (pageMap.contains(pos.pageNo))
+    {
+      Page *p = pageMap[pos.pageNo];
+      if (pos.inPage)
+        point = p->mapper.mapped(pos.posPage);
+      else
+        point = p->rect.topLeft() + pos.posView;
+    }
+  else 
+    {
+      int n = pageLayout.size();
+      if (n > 0 && pos.pageNo < pageLayout[0]->pageno)
+        point = pageLayout[0]->rect.topLeft();
+      else if (n > 0 && pos.pageNo > pageLayout[n-1]->pageno)
+        point = pageLayout[n-1]->rect.bottomRight();
+    }
+  // check visibility
+  if (! visibleRect.contains(point))
+    {
+      changePos = true;
+      point.ry() = qBound(visibleRect.top() + borderSize,
+                          point.y(),
+                          visibleRect.bottom() - borderSize);
+      point.rx() = qBound(visibleRect.left() + borderSize,
+                          point.x(),
+                          visibleRect.right() - borderSize);
+    }
+  // update currentPoint
+  currentPoint = point - visibleRect.topLeft();
+  // update currentPos
+  int oldPage = currentPos.pageNo;
+  if (changePos)
+    currentPos = findPosition(currentPoint);
+  else
+    currentPos = pos;
+  if (oldPage != currentPos.pageNo)
+    emit widget->pageChanged(currentPos.pageNo);
+}
 
 
 // ----------------------------------------
@@ -1497,25 +1551,6 @@ QDjVuPrivate::info(QString message)
   while (infoMessages.size() > maxMessages)
     infoMessages.removeLast();
 }
-
-
-
-// ----------------------------------------
-// READING POSITION
-
-
-
-void
-QDjVuPrivate::updateReadingPosition()
-{
-  Page *p;
-  foreach(p, pageVisible)
-    if (p->pageno == currentPage)
-      return;
-  Position pos = widget->position();
-  currentPage = pos.pageNo;
-}
-
 
 
 
@@ -1656,11 +1691,16 @@ QDjVuWidget::setDocument(QDjVuDocument *d, bool own)
       // update
       priv->docinfo();
       priv->visibleRect.setRect(0,0,0,0);
-      priv->currentPage = -1;
+      priv->currentPos.pageNo = -1;
       priv->currentPos.pageNo = 0;
       priv->currentPos.inPage = 0;
       priv->currentPos.posView = QPoint(0,0);
       priv->currentPos.posPage = QPoint(0,0);
+      priv->currentPoint = QPoint(0,0);
+      priv->cursorPos.pageNo = 0;
+      priv->cursorPos.inPage = 0;
+      priv->cursorPos.posView = QPoint(0,0);
+      priv->cursorPos.posPage = QPoint(0,0);
       priv->layoutChange = 0;
       priv->changeLayout(CHANGE_PAGES|UPDATE_ALL);
       setPage(0);
@@ -1679,15 +1719,14 @@ QDjVuWidget::setDocument(QDjVuDocument *d, bool own)
 int 
 QDjVuWidget::page(void) const
 {
-  return qBound(0, priv->currentPage, priv->numPages);
+  return qBound(0, priv->currentPos.pageNo, priv->numPages);
 }
 
 void 
 QDjVuWidget::setPage(int n)
 {
-  if (n != priv->currentPage && n>=0 && n<priv->numPages)
+  if (n != page() && n>=0 && n<priv->numPages)
     {
-      priv->currentPage = n;
       Position pos;
       pos.pageNo = n;
       pos.inPage = false;
@@ -1731,8 +1770,8 @@ QDjVuWidget::setPosition(const Position &pos)
 void 
 QDjVuWidget::setPosition(const Position &pos, const QPoint &point)
 {
-  priv->moveRef = point;
-  priv->movePos = pos;
+  priv->movePoint = priv->currentPoint = point;
+  priv->movePos = priv->currentPos = pos;
   if (priv->pageMap.contains(pos.pageNo))
     priv->changeLayout(CHANGE_VIEW|CHANGE_SCROLLBARS);
   else
@@ -2713,7 +2752,7 @@ QDjVuPrivate::mustDisplayMapArea(MapArea *area)
 void
 QDjVuPrivate::checkCurrentMapArea(bool forceno)
 {
-  const Position &pos = currentPos;
+  const Position &pos = cursorPos;
   Page *savedMapAreaPage = currentMapAreaPage;
   MapArea *savedMapArea = currentMapArea;
   Page *newMapAreaPage = 0;
@@ -2767,7 +2806,7 @@ QDjVuPrivate::checkCurrentMapArea(bool forceno)
                                visibleRect.topLeft());
           emit widget->pointerEnter(pos, currentMapArea->expr);
         }
-      widget->modifierEvent(modifiers, buttons, pointerPoint);
+      widget->modifierEvent(modifiers, buttons, cursorPoint);
       widget->chooseTooltip();
     }
 }
@@ -3291,11 +3330,6 @@ QDjVuWidget::viewportEvent(QEvent *event)
       break;
     case QEvent::Leave:
       QApplication::instance()->removeEventFilter(priv);
-      if (priv->dragMode == DRAG_NONE) 
-        {
-          priv->updatePointerPosition(viewport()->rect().center(), false);
-          priv->checkCurrentMapArea(true);
-        }
       break;
     default:
       break;
@@ -3377,7 +3411,7 @@ QDjVuPrivate::updateModifiers(Qt::KeyboardModifiers newModifiers,
     showTransientMapAreas(modifiers == modifiersForLinks);
   if (modifiers != oldModifiers ||
       buttons != oldButtons )
-    widget->modifierEvent(modifiers, buttons, pointerPoint);
+    widget->modifierEvent(modifiers, buttons, cursorPoint);
 }
 
 void 
@@ -3415,6 +3449,7 @@ QDjVuPrivate::changeSelectedRectangle(const QRect& rect)
 bool 
 QDjVuWidget::startSelecting(const QPoint &point)
 {
+  priv->updatePosition(point, true);
   if (priv->dragMode == DRAG_NONE)
     {
       priv->dragStart = point;
@@ -3431,6 +3466,7 @@ QDjVuWidget::startSelecting(const QPoint &point)
 bool
 QDjVuWidget::startPanning(const QPoint &point)
 {
+  priv->updatePosition(point, true);
   if (priv->dragMode == DRAG_NONE)
     {
       priv->dragStart = point;
@@ -3448,6 +3484,7 @@ QDjVuWidget::startPanning(const QPoint &point)
 bool
 QDjVuWidget::startLinking(const QPoint &point)
 {
+  priv->updatePosition(point, true);
   if (priv->dragMode == DRAG_NONE)
     {
       priv->dragStart = point;
@@ -3492,15 +3529,16 @@ QDjVuWidget::stopInteraction(void)
   switch (priv->dragMode)
     {
     case DRAG_LINKING:
-      priv->updatePointerPosition(priv->pointerPoint);
+      priv->updatePosition(priv->cursorPoint, true);
       if (priv->hyperlinkEnabled)
         if (priv->currentMapArea && priv->currentMapArea->url)
           emit pointerClick(priv->currentPos, priv->currentMapArea->expr);
       break;
     case DRAG_SELECTING:
+      priv->updatePosition(priv->cursorPoint, true);
       temp = priv->selectedRect;
       priv->changeSelectedRectangle(QRect());
-      emit pointerSelect(viewport()->mapToGlobal(priv->pointerPoint), temp);
+      emit pointerSelect(viewport()->mapToGlobal(priv->cursorPoint), temp);
       break;
     case DRAG_LENSING:
       priv->lens->hide();
@@ -3508,6 +3546,7 @@ QDjVuWidget::stopInteraction(void)
       priv->lens = 0;
       break;
     case DRAG_PANNING:
+      priv->updatePosition(priv->cursorPoint, true);
       break;
     default:
       return false;
@@ -3614,7 +3653,7 @@ QDjVuPrivate::pointerScroll(const QPoint &p)
   if (dx == 0 && dy == 0)
     return;
   movePos = currentPos;
-  moveRef = pointerPoint - QPoint(dx,dy);
+  movePoint = cursorPoint - QPoint(dx,dy);
   changeLayout(CHANGE_VIEW|CHANGE_SCROLLBARS);
 }
 
@@ -3625,12 +3664,12 @@ QDjVuWidget::mouseMoveEvent(QMouseEvent *event)
 {
   event->accept();
   QPoint p = event->pos();
-  priv->pointerPoint = p;
+  priv->cursorPoint = p;
   priv->updateModifiers(event->modifiers(), event->buttons());
   switch (priv->dragMode)
     {
     case DRAG_LINKING:
-      priv->updatePointerPosition(event->pos());
+      priv->updatePosition(event->pos());
       p = p - priv->dragStart;
       if (p.manhattanLength() <= 8)
         break;
@@ -3638,22 +3677,22 @@ QDjVuWidget::mouseMoveEvent(QMouseEvent *event)
       priv->dragMode = DRAG_PANNING;
       // fall through
     case DRAG_PANNING:
-      priv->moveRef = priv->pointerPoint;
-      priv->movePos = priv->currentPos;
+      priv->movePoint = priv->cursorPoint;
+      priv->movePos = priv->cursorPos;
       priv->changeLayout(CHANGE_VIEW|CHANGE_SCROLLBARS);
       break;
     case DRAG_SELECTING:
-      priv->updatePointerPosition(p);
+      priv->updatePosition(p);
       priv->changeSelectedRectangle(QRect(priv->dragStart, event->pos()));
       priv->pointerScroll(p);
       break;
     case DRAG_LENSING:
-      priv->updatePointerPosition(p);
+      priv->updatePosition(p);
       priv->lens->recenter(event->pos());
       priv->pointerScroll(p);
       break;
     default:
-      priv->updatePointerPosition(p);
+      priv->updatePosition(p);
       break;
     }
 }
@@ -3680,12 +3719,6 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
           return;
         case Qt::Key_F2: 
           setContinuous(!continuous()); 
-          return;
-        case Qt::Key_Less: 
-          prevPage(); 
-          return;
-        case Qt::Key_Greater: 
-          nextPage(); 
           return;
         case Qt::Key_BracketLeft: 
           rotateLeft(); 
@@ -3727,18 +3760,29 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
           else
             moveToPageBottom();
           return;
-        case Qt::Key_Space:
+        case Qt::Key_PageUp:
+          prevPage(); 
+          return;
+        case Qt::Key_PageDown:
+          nextPage(); 
+          return;
+       case Qt::Key_Space:
           readNext();
           return;
         case Qt::Key_Backspace:
           readPrev();
           return;
-          
+
+        case Qt::Key_Left:
+        case Qt::Key_Right:
+        case Qt::Key_Up:
+        case Qt::Key_Down:
+          QAbstractScrollArea::keyPressEvent(event);           
+          return;
+
         default:
-          break;
+          return;
         }
-      // QAbstractScrollArea key bindings
-      QAbstractScrollArea::keyPressEvent(event); 
     }
 }
 
@@ -3839,7 +3883,7 @@ QDjVuWidget::chooseTooltip(void)
   QString comment = linkComment();
   viewport()->setToolTip(comment);
   if (comment.isEmpty())
-    QToolTip::showText(priv->pointerPoint, comment, viewport());
+    QToolTip::showText(priv->cursorPoint, comment, viewport());
 }
 
 
@@ -4109,14 +4153,27 @@ QDjVuWidget::prevPage(void)
 void 
 QDjVuWidget::firstPage(void)
 {
-  setPage(0);
+  Position pos;
+  pos.pageNo = 0;
+  pos.inPage = false;
+  pos.posView = pos.posPage = QPoint(0,0);
+  setPosition(pos);
 }
 
 /*! Move to the last page. */
 void 
 QDjVuWidget::lastPage(void)
 {
-  setPage(priv->numPages-1);
+  Position pos;
+  QPoint p;
+  pos.pageNo = priv->numPages - 1;
+  pos.inPage = false;
+  pos.posPage = QPoint(0,0);
+  QRect &r = priv->pageData[priv->numPages-1].rect;
+  pos.posView = r.bottomRight() - r.topLeft(); // WRONG
+  p.rx() = priv->visibleRect.width() - priv->borderSize;
+  p.ry() = priv->visibleRect.height() - priv->borderSize;
+  setPosition(pos, p);
 }
 
 
@@ -4125,19 +4182,20 @@ void
 QDjVuWidget::moveToPageTop(void)
 {
   Position pos = priv->currentPos;
-  QPoint point = priv->pointerPoint;
+  QPoint point = priv->currentPoint;
   pos.inPage = false;
   pos.posView.ry() = 0;
   point.ry() = priv->borderSize;
   setPosition(pos, point);
 }
 
+
 /*! Move to bottom of current page. */
 void 
 QDjVuWidget::moveToPageBottom(void)
 {
   Position pos = priv->currentPos;
-  QPoint point = priv->pointerPoint;
+  QPoint point = priv->currentPoint;
   pos.inPage = false;
   if (pos.pageNo>=0 && pos.pageNo<priv->numPages)
     pos.posView.ry() = priv->pageData[pos.pageNo].rect.height();
@@ -4145,19 +4203,81 @@ QDjVuWidget::moveToPageBottom(void)
   setPosition(pos, point);
 }
 
-/*! Move to next position in reading order. */
+
+/*! Move to next position in approximate reading order. */
 void 
 QDjVuWidget::readNext(void)
 {
-  // TODO
+  QPoint point = priv->currentPoint;
+  Position pos = priv->currentPos;
+  int bs = priv->borderSize;
+  if (priv->pageMap.contains(pos.pageNo))
+    {
+      Page *p = priv->pageMap[pos.pageNo];
+      QRect nv = priv->visibleRect.adjusted(bs,bs,-bs,-bs);
+      QRect v = nv.intersect(p->rect);
+      if (v.bottom() < p->rect.bottom())
+        {
+          // scroll in page
+          point.ry() = bs;
+          nv.moveTop(v.bottom());
+          nv.moveBottom(qMin(nv.bottom(), p->rect.bottom()));
+          pos.inPage = false;
+          pos.posView.ry() = nv.top() - p->rect.top();
+          setPosition(pos, point);
+          return;
+        }
+    }
+  // scroll to next page
+  if (pos.pageNo < priv->numPages - 1)
+    {
+      point.rx() = bs;
+      point.ry() = bs;
+      pos.pageNo += 1;
+      pos.inPage = false;
+      pos.posView = QPoint(0,0);
+      setPosition(pos, point);
+    }
 }
 
-/*! Move to previous position in reading order. */
+
+/*! Move to previous position in approximate reading order. */
 void 
 QDjVuWidget::readPrev(void)
 {
-  // TODO
+  QPoint point = priv->currentPoint;
+  Position pos = priv->currentPos;
+  int bs = priv->borderSize;
+  if (priv->pageMap.contains(pos.pageNo))
+    {
+      Page *p = priv->pageMap[pos.pageNo];
+      QRect nv = priv->visibleRect.adjusted(bs,bs,-bs,-bs);
+      QRect v = nv.intersect(p->rect);
+      if (v.top() > p->rect.top())
+        {
+          // scroll in page
+          point.ry() = bs;
+          nv.moveBottom(v.top());
+          nv.moveTop(qMax(nv.top(), p->rect.top()));
+          pos.inPage = false;
+          pos.posView.ry() = nv.top() - p->rect.top();
+          setPosition(pos, point);
+          return;
+        }
+    }
+  // scroll to previous page
+  if (pos.pageNo > 0)
+    {
+      point.rx() = priv->visibleRect.width() - bs;
+      point.ry() = priv->visibleRect.height() - bs;
+      pos.pageNo -= 1;
+      pos.inPage = false;
+      QRect &r = priv->pageData[priv->numPages-1].rect; // WRONG
+      pos.posView = r.bottomRight() - r.topLeft();
+      setPosition(pos, point);
+    }
 }
+
 
 
 
@@ -4209,8 +4329,10 @@ QDjVuWidget::readPrev(void)
   when more data is available, or when the user
   changes zoom, rotation, layout, display mode, etc. */
 
-/*! \fn QDjVuWidget::pointerModeChanged(PointerMode)
-  This signal is emitted when the \a pointerMode property changes. */
+/*! \fn QDjVuWidget::pageChanged(int pageno)
+  This signal is emitted when the current page number is changed.
+  This refer to the current page used when moving the document
+  to keep reading (space bar). */
 
 /*! \fn QDjVuWidget::pointerPosition(const Position &pos, const PageInfo &page)
   This signal is emitted when the mouse move. 

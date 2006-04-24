@@ -207,6 +207,7 @@ public slots:
 
 signals:
   void layoutChanged();
+  void pageChanged(int pageno);
   void pointerPosition(const Position &pos, const PageInfo &page);
   void pointerEnter(const Position &pos, miniexp_t maparea);
   void pointerLeave(const Position &pos, miniexp_t maparea);
