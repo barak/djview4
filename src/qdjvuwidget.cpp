@@ -680,7 +680,7 @@ public:
   bool paintMapAreas(QImage&, Page*, const QRect&, bool);
   bool paintPage(QPainter&, Page*, const QRegion&);
   void paintAll(QPainter&, const QRegion&);
-  void pointerScroll(const QPoint &p);
+  bool pointerScroll(const QPoint &p);
   void changeSelectedRectangle(const QRect &rect);
   bool eventFilter(QObject*, QEvent*);
   
@@ -1232,12 +1232,12 @@ QDjVuPrivate::makeLayout()
             continue;
           layoutChange &= ~UPDATE_PAGES;
           layoutChange &= ~UPDATE_ALL;
-          // Attention: scroll can generate a repaintEvent
-          // and call makeLayout again. This is why we
-          // clear the flags before.
-          widget->viewport()->scroll(dx,dy);
-          selectedRect.translate(dx, dy);
           dragStart += QPoint(dx,dy);
+          selectedRect.translate(dx, dy);
+          // Attention: scroll can generate a paintEvent
+          // and call makeLayout again. This is why we
+          // do these four things before.
+          widget->viewport()->scroll(dx,dy);
           checkCurrentMapArea();
           emit widget->layoutChanged();
         }
@@ -3662,7 +3662,7 @@ QDjVuWidget::mouseReleaseEvent(QMouseEvent *event)
 }
 
 
-void
+bool
 QDjVuPrivate::pointerScroll(const QPoint &p)
 {
   int dx = 0;
@@ -3677,11 +3677,11 @@ QDjVuPrivate::pointerScroll(const QPoint &p)
   else if (p.y() < r.top())
     dy = -lineStep;
   if (dx == 0 && dy == 0)
-    return;
-  // WRONG
+    return false;
   movePos = cursorPos;
   movePoint = cursorPoint - QPoint(dx,dy);
   changeLayout(CHANGE_VIEW|CHANGE_SCROLLBARS);
+  return true;
 }
 
 
@@ -3715,8 +3715,8 @@ QDjVuWidget::mouseMoveEvent(QMouseEvent *event)
       break;
     case DRAG_LENSING:
       priv->updatePosition(p);
-      priv->lens->recenter(event->pos());
-      priv->pointerScroll(p);
+      if (! priv->pointerScroll(p))
+        priv->lens->recenter(event->pos());
       break;
     default:
       priv->updatePosition(p);
@@ -3981,6 +3981,7 @@ QDjVuLens::recenter(const QPoint &p)
   vrect.moveTo(widget->viewport()->mapToGlobal(vrect.topLeft()));
   setVisible(vrect.intersects(rect));
   setGeometry(rect);
+  QCoreApplication::flush();
 }
 
 void 
