@@ -3678,7 +3678,8 @@ QDjVuPrivate::pointerScroll(const QPoint &p)
     dy = -lineStep;
   if (dx == 0 && dy == 0)
     return;
-  movePos = currentPos;
+  // WRONG
+  movePos = cursorPos;
   movePoint = cursorPoint - QPoint(dx,dy);
   changeLayout(CHANGE_VIEW|CHANGE_SCROLLBARS);
 }
@@ -3735,6 +3736,7 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
       if (done) 
         return;
       // Standard key bindings
+      event->accept();
       switch(event->key())
         {
 #ifndef NO_DEBUG_KEY_BINDINGS
@@ -3797,7 +3799,7 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_PageDown:
           nextPage(); 
           return;
-       case Qt::Key_Space:
+        case Qt::Key_Space:
           readNext();
           return;
         case Qt::Key_Backspace:
@@ -3810,6 +3812,7 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
           QAbstractScrollArea::keyPressEvent(event);           
           return;
         default:
+          event->ignore();
           return;
         }
     }
@@ -3956,7 +3959,7 @@ QDjVuLens::event(QEvent *event)
                              widget->viewport()->mapFromGlobal(pos),
                              pos, oldEvent->button(), oldEvent->buttons(),
                              oldEvent->modifiers());
-        return widget->event(&newEvent);
+        return widget->viewportEvent(&newEvent);
       }
     default:
       break;
