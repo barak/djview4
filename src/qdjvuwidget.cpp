@@ -303,6 +303,41 @@ flatten_hiddentext(miniexp_t p)
 }
 
 
+// ----------------------------------------
+// Position
+
+
+/*! \class QDjVuWidget::Position
+  \brief Defines a position in the document.
+
+  Variable \a pageNo indicates the closest page number.
+
+  Flag \a inPage indicates that the position falls inside 
+  a page with known geometry. Variable \a posPage then 
+  indicates the position within the full resolution 
+  page coordinates (same coordinates as those used 
+  for the DjVu page annotations). 
+
+  Variable \a posView usually indicates the position 
+  relative to the top-left corner of the page rectangle
+  when both flags \a anchorRight and \a anchorBottom
+  are \a false, as is usually the case.  These flags are only used
+  to change the reference corner when using \a QDjVuWidget::setPosition.
+
+  Finally flag \a valid indicates whether both \a posPage and
+  \a posView have consistent values. */
+
+Position::Position()
+  : pageNo(0), 
+    posPage(0,0), 
+    posView(0,0),
+    inPage(false), 
+    anchorRight(false), 
+    anchorBottom(false),
+    valid(false)
+{
+}
+
 
 
 // ----------------------------------------
@@ -677,14 +712,6 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *parent)
   docStopped = false;
   docFailed = false;
   numPages = 1;
-  currentPos.pageNo = 0;
-  currentPos.inPage = false;
-  currentPos.posPage = currentPos.posView = QPoint(0,0);
-  currentPoint = QPoint(0,0);
-  cursorPos.pageNo = 0;
-  cursorPos.inPage = false;
-  cursorPos.posPage = cursorPos.posView = QPoint(0,0);
-  cursorPoint = QPoint(0,0);
   // aspect
   zoom = 100;
   rotation = 0;
@@ -1060,6 +1087,10 @@ QDjVuPrivate::makeLayout()
             {
               Page *p = pageMap[movePos.pageNo];
               QPoint dp = p->rect.topLeft() + movePos.posView;
+              if (movePos.anchorRight)
+                dp.rx() += p->rect.width() - 1;
+              if (movePos.anchorBottom)
+                dp.ry() += p->rect.height() - 1;
               if (movePos.inPage)
                 {
                   QRect pr(0, 0, p->width, p->height);
@@ -1334,12 +1365,7 @@ QDjVuPrivate::findPosition(const QPoint &point)
       pos.posView = deskPoint - bestPage->rect.topLeft(); 
       pos.posPage = bestPage->mapper.unMapped(deskPoint);
       pos.inPage = (bestDistance==0 && bestPage->dpi>0);
-    }
-  else
-    {
-      pos.pageNo = 0;
-      pos.inPage = false;
-      pos.posView = pos.posPage = QPoint(0,0);
+      pos.valid = true;
     }
   return pos;
 }
@@ -1382,15 +1408,21 @@ QDjVuPrivate::updatePosition(const QPoint &point, bool click, bool links)
 void 
 QDjVuPrivate::updateCurrentPoint(const Position &pos)
 {
-  bool changePos = false;
-  QPoint point(0,0);
+  QPoint point;
+  bool changePos = !pos.valid;
   if (pageMap.contains(pos.pageNo))
     {
       Page *p = pageMap[pos.pageNo];
       if (pos.inPage)
         point = p->mapper.mapped(pos.posPage);
       else
-        point = p->rect.topLeft() + pos.posView;
+        {
+          point = p->rect.topLeft() + pos.posView;
+          if (pos.anchorRight)
+            point.rx() += p->rect.width() - 1;
+          if (pos.anchorBottom)
+            point.ry() += p->rect.height() - 1;
+        }
     }
   else 
     {
@@ -1415,7 +1447,7 @@ QDjVuPrivate::updateCurrentPoint(const Position &pos)
   currentPoint = point - visibleRect.topLeft();
   // update currentPos
   int oldPage = currentPos.pageNo;
-  if (changePos)
+  if (changePos || pos.anchorRight || pos.anchorBottom)
     currentPos = findPosition(currentPoint);
   else
     currentPos = pos;
@@ -1691,16 +1723,9 @@ QDjVuWidget::setDocument(QDjVuDocument *d, bool own)
       // update
       priv->docinfo();
       priv->visibleRect.setRect(0,0,0,0);
-      priv->currentPos.pageNo = -1;
-      priv->currentPos.pageNo = 0;
-      priv->currentPos.inPage = 0;
-      priv->currentPos.posView = QPoint(0,0);
-      priv->currentPos.posPage = QPoint(0,0);
+      priv->currentPos = Position();
       priv->currentPoint = QPoint(0,0);
-      priv->cursorPos.pageNo = 0;
-      priv->cursorPos.inPage = 0;
-      priv->cursorPos.posView = QPoint(0,0);
-      priv->cursorPos.posPage = QPoint(0,0);
+      priv->cursorPos = Position();
       priv->layoutChange = 0;
       priv->changeLayout(CHANGE_PAGES|UPDATE_ALL);
       setPage(0);
@@ -3330,6 +3355,7 @@ QDjVuWidget::viewportEvent(QEvent *event)
       break;
     case QEvent::Leave:
       QApplication::instance()->removeEventFilter(priv);
+      priv->checkCurrentMapArea(true);
       break;
     default:
       break;
@@ -3706,11 +3732,12 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
       // Capturing this signal can override any key binding
       bool done = false;
       emit keyPressSignal(event, done);
-      if (done) return;
-#ifndef NO_DEBUG_KEY_BINDINGS
-      // Debug key bindings
+      if (done) 
+        return;
+      // Standard key bindings
       switch(event->key())
         {
+#ifndef NO_DEBUG_KEY_BINDINGS
         case Qt::Key_S: 
           setZoom(ZOOM_STRETCH); 
           return;
@@ -3720,19 +3747,7 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_F2: 
           setContinuous(!continuous()); 
           return;
-        case Qt::Key_BracketLeft: 
-          rotateLeft(); 
-          return;
-        case Qt::Key_BracketRight: 
-          rotateRight(); 
-          return;
-        default:
-          break;
-        }
 #endif
-      // QDjVuWidget key bindings
-      switch(event->key())
-        {
         case Qt::Key_1:
           setZoom(100);
           return;
@@ -3742,11 +3757,27 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_3:
           setZoom(300);
           return;
+        case Qt::Key_W:
+          setZoom(ZOOM_FITWIDTH);
+          return;
+        case Qt::Key_P:
+          setZoom(ZOOM_FITPAGE);
+          return;
         case Qt::Key_Plus: 
+          priv->updateCurrentPoint(priv->cursorPos);
           zoomIn(); 
           return;
         case Qt::Key_Minus: 
+          priv->updateCurrentPoint(priv->cursorPos);
           zoomOut(); 
+          return;
+        case Qt::Key_BracketLeft: 
+          priv->updateCurrentPoint(priv->cursorPos);
+          rotateLeft(); 
+          return;
+        case Qt::Key_BracketRight: 
+          priv->updateCurrentPoint(priv->cursorPos);
+          rotateRight(); 
           return;
         case Qt::Key_Home:
           if (event->modifiers() == Qt::ControlModifier)
@@ -3772,14 +3803,12 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Backspace:
           readPrev();
           return;
-
         case Qt::Key_Left:
         case Qt::Key_Right:
         case Qt::Key_Up:
         case Qt::Key_Down:
           QAbstractScrollArea::keyPressEvent(event);           
           return;
-
         default:
           return;
         }
@@ -4169,8 +4198,9 @@ QDjVuWidget::lastPage(void)
   pos.pageNo = priv->numPages - 1;
   pos.inPage = false;
   pos.posPage = QPoint(0,0);
-  QRect &r = priv->pageData[priv->numPages-1].rect;
-  pos.posView = r.bottomRight() - r.topLeft(); // WRONG
+  pos.posView = QPoint(0,0);
+  pos.anchorRight = true;
+  pos.anchorBottom = true;
   p.rx() = priv->visibleRect.width() - priv->borderSize;
   p.ry() = priv->visibleRect.height() - priv->borderSize;
   setPosition(pos, p);
@@ -4268,12 +4298,12 @@ QDjVuWidget::readPrev(void)
   // scroll to previous page
   if (pos.pageNo > 0)
     {
-      point.rx() = priv->visibleRect.width() - bs;
+      point.rx() = bs;
       point.ry() = priv->visibleRect.height() - bs;
       pos.pageNo -= 1;
       pos.inPage = false;
-      QRect &r = priv->pageData[priv->numPages-1].rect; // WRONG
-      pos.posView = r.bottomRight() - r.topLeft();
+      pos.posView = QPoint(0,0);
+      pos.anchorBottom = true;
       setPosition(pos, point);
     }
 }
@@ -4291,18 +4321,6 @@ QDjVuWidget::readPrev(void)
 // ----------------------------------------
 // DOCUMENTATION
 
-
-/*! \class QDjVuWidget::Position
-  \brief Defines a position in the document.
-
-  Variable \a pageNo indicates the closest page number.
-  Variable \a posView indicates the position relative
-  to the top-left corner of the page rectangle.
-  Flag \a inPage indicates that the position falls inside 
-  a page with known geometry. Variable \a posPage then 
-  indicates the position within the full resolution 
-  page coordinates (same coordinates as those used 
-  for the DjVu page annotations). */
 
 /*! \class QDjVuWidget::PageInfo
   \brief Defines the geometry of a DjVu page. 

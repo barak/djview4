@@ -87,9 +87,13 @@ public:
 
   struct Position {
     int    pageNo;
-    bool   inPage;
-    QPoint posView;
     QPoint posPage;
+    QPoint posView;
+    bool   inPage;
+    bool   anchorRight;
+    bool   anchorBottom;
+    bool   valid;
+    Position();
   };
 
   struct PageInfo {
