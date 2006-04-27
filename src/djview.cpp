@@ -30,10 +30,8 @@ main(int argc, char *argv[])
 {
   QApplication app(argc, argv);  
   QDjVuContext djvuContext(argv[0]);
-
   QDjView *main = new QDjView(djvuContext);
   bool okay = true;
-  
   if (argc > 1)
     {
       QString arg = argv[1];
@@ -43,10 +41,11 @@ main(int argc, char *argv[])
       else
         okay = main->open(arg);
     }
-  
   main->show();
-  if (okay)
-    return app.exec();
-  main->execErrorDialog();
-  return 10;
+  if (! okay)
+    {
+      main->execErrorDialog();
+      return 10;
+    }
+  return app.exec();
 }
