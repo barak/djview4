@@ -29,18 +29,20 @@ top_srcdir=..
 QTDEBUG=
 LIBDEBUG=
 PKGS= QtCore${QTDEBUG} QtGui${QTDEBUG} QtNetwork${QTDEBUG} ddjvuapi
-LIBS=${LIBDEBUG} `pkg-config --libs ${PKGS}`
-CXXFLAGS=`pkg-config --cflags ${PKGS}` -Wall ${OPTS}
+LIBS=${LIBDEBUG} $(shell pkg-config --libs ${PKGS})
+CXXFLAGS=$(shell pkg-config --cflags ${PKGS}) -Wall ${OPTS}
 
 SOURCES=qdjvu.h qdjvu.cpp\
 	qdjvuhttp.h qdjvuhttp.cpp\
 	qdjvuwidget.h qdjvuwidget.cpp qdjvuwidget.qrc\
+	qdjviewprefs.h qdjviewprefs.cpp \
+	qdjview.h qdjview.cpp \
+	qdjviewdialogerror.ui \
 	djview.cpp
 
 PROGRAM=djview
 
 debug: FORCE
-	#${MAKE} all QTDEBUG= LIBDEBUG=-Llib OPTS=-g
 	${MAKE} all QTDEBUG=_debug LIBDEBUG=-Llib OPTS=-g
 
 all: ${PROGRAM}
@@ -61,14 +63,13 @@ doc: FORCE
 	-${RM} -rf 2>/dev/null doc
 	doxygen
 
+depend: FORCE
+	for n in $(filter %.cpp,${SOURCES}) ; do \
+	  ${CXX} -MM -MG $(patsubst -I/%,-isystem /%,${CXXFLAGS}) $$n ; \
+	done >> Makefile.dep
+
 
 FORCE:
 
-
-# Dependencies
-
-qdjvu.o: qdjvu.h
-qdjvuhttp.o: qdjvuhttp.h qdjvu.h
-qdjvuwidget.o: qdjvuwidget.h qdjvu.h
-djview.o: qdjvuwidget.h qdjvu.h qdjvuhttp.h
+include Makefile.dep
 

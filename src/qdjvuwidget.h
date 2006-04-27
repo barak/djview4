@@ -160,8 +160,8 @@ public slots:
   void setLensSize(int);
 
 public:
-  QString errorMessage(int n=0);
-  QString infoMessage(int n=0);
+  QString pastErrorMessage(int n=0);
+  QString pastInfoMessage(int n=0);
   bool startSelecting(const QPoint &point);
   bool startPanning(const QPoint &point);
   bool startLensing(const QPoint &point);
@@ -220,7 +220,9 @@ signals:
   void errorCondition(int pageno);
   void stopCondition(int pageno);
   void keyPressSignal(QKeyEvent *event, bool &done);
-
+  void error(QString message, QString filename, int lineno);
+  void info(QString message);
+  
 private:
   QDjVuPrivate *priv;
   friend class QDjVuPrivate;

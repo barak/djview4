@@ -306,6 +306,8 @@ QDjVuDocument::setFileName(QDjVuContext *ctx, QString f, bool cache)
   if (! info.isReadable())
     {
       qWarning("QDjVuDocument::setFileName: cannot read file");
+      QString msg = tr("Cannot open '%1' for reading").arg(f);
+      emit error(msg, __FILE__, __LINE__);
       return false;
     }
   if (! (document = ddjvu_document_create_by_filename(*ctx, b, cache)))

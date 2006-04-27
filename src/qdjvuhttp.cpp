@@ -116,6 +116,8 @@ QDjVuHttpDocument::setUrl(QDjVuContext *ctx, QUrl url, bool cache)
       return true;
     }
   qWarning("QDjVuHttoDocument::setUrl: unrecognized url");
+  QString msg = tr("Unrecognized url '%1'").arg(url.toString());
+  emit error(msg, __FILE__, __LINE__);
   return false;
 }
 
@@ -159,7 +161,7 @@ QDjVuHttpDocument::schedule(void)
       conn.streamid = req.streamid;
       QString g = req.url.toEncoded(QUrl::RemoveAuthority|QUrl::RemoveScheme);
       conn.reqid = conn.http->get(g);
-      QString m = QString("Requesting %1").arg(req.url.toString());
+      QString m = tr("Requesting %1").arg(req.url.toString());
       emit info(m);
     }
 }
@@ -198,7 +200,8 @@ QDjVuHttpDocument::response(const QHttpResponseHeader &resp)
             if (conn.streamid >= 0)
               ddjvu_stream_close(*this, conn.streamid, false);
             conn.streamid = -1;
-            QString msg = QString("Http status %1").arg(status);
+            QString msg = tr("Http status %1 for url '%2'")
+              .arg(status).arg(url.toString());
             emit error(msg, __FILE__, __LINE__);
           }
         return;

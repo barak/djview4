@@ -1,0 +1,33 @@
+qdjvu.o: qdjvu.cpp moc_qdjvu.inc
+qdjvuhttp.o: qdjvuhttp.cpp qdjvuhttp.h
+qdjvuwidget.o: qdjvuwidget.cpp qdjvu.h qdjvuwidget.h moc_qdjvuwidget.inc
+qdjviewprefs.o: qdjviewprefs.cpp qdjviewprefs.h qdjvuwidget.h qdjvu.h
+qdjview.o: qdjview.cpp qdjview.h qdjviewprefs.h qdjvuwidget.h qdjvu.h \
+  qdjvuhttp.h
+djview.o: djview.cpp
+qdjvu.o: qdjvu.cpp moc_qdjvu.inc
+qdjvuhttp.o: qdjvuhttp.cpp qdjvuhttp.h
+qdjvuwidget.o: qdjvuwidget.cpp qdjvu.h qdjvuwidget.h moc_qdjvuwidget.inc
+qdjviewprefs.o: qdjviewprefs.cpp qdjviewprefs.h qdjvuwidget.h qdjvu.h
+qdjview.o: qdjview.cpp qdjview.h qdjvu.h qdjviewprefs.h qdjvuwidget.h \
+  qdjvuhttp.h
+djview.o: djview.cpp
+qdjvu.o: qdjvu.cpp moc_qdjvu.inc
+qdjvuhttp.o: qdjvuhttp.cpp qdjvuhttp.h
+qdjvuwidget.o: qdjvuwidget.cpp qdjvu.h qdjvuwidget.h moc_qdjvuwidget.inc
+qdjviewprefs.o: qdjviewprefs.cpp qdjviewprefs.h qdjvuwidget.h qdjvu.h
+djview.o: djview.cpp
+qdjvu.o: qdjvu.cpp moc_qdjvu.inc
+qdjvuhttp.o: qdjvuhttp.cpp qdjvuhttp.h
+qdjvuwidget.o: qdjvuwidget.cpp qdjvu.h qdjvuwidget.h moc_qdjvuwidget.inc
+qdjviewprefs.o: qdjviewprefs.cpp qdjviewprefs.h qdjvuwidget.h qdjvu.h
+qdjview.o: qdjview.cpp qdjview.h qdjvu.h qdjviewprefs.h qdjvuwidget.h \
+  qdjvuhttp.h ui_qdjviewdialogerror.h
+djview.o: djview.cpp
+qdjvu.o: qdjvu.cpp moc_qdjvu.inc
+qdjvuhttp.o: qdjvuhttp.cpp qdjvuhttp.h
+qdjvuwidget.o: qdjvuwidget.cpp qdjvu.h qdjvuwidget.h moc_qdjvuwidget.inc
+qdjviewprefs.o: qdjviewprefs.cpp qdjviewprefs.h qdjvuwidget.h qdjvu.h
+qdjview.o: qdjview.cpp qdjview.h qdjvu.h qdjviewprefs.h qdjvuwidget.h \
+  qdjvuhttp.h ui_qdjviewdialogerror.h moc_qdjview.inc
+djview.o: djview.cpp

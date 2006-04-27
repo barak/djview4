@@ -21,28 +21,32 @@
 #include <locale.h>
 
 #include <qdjvu.h>
-#include <qdjvuhttp.h>
-#include <qdjvuwidget.h>
+#include <qdjview.h>
 
 #include <QApplication>
-#include <QPushButton>
-#include <QFileInfo>
 
 int 
 main(int argc, char *argv[])
 {
   QApplication app(argc, argv);  
+  QDjVuContext djvuContext(argv[0]);
 
-  QDjVuContext djvuCtx(argv[0]);
-  QDjVuWidget hello;
-  QDjVuHttpDocument djvuDoc;
-  QString arg = (argc>1) ? argv[1] : "FILES/test.djvu";
-  if (arg.startsWith("file:/") || 
-      arg.startsWith("http:/") )
-    djvuDoc.setUrl(&djvuCtx, QUrl(arg));
-  else
-    djvuDoc.setFileName(&djvuCtx, arg);
-  hello.setDocument(&djvuDoc);
-  hello.show();
-  return app.exec();
+  QDjView *main = new QDjView(djvuContext);
+  bool okay = true;
+  
+  if (argc > 1)
+    {
+      QString arg = argv[1];
+      if (arg.startsWith("file:/") || 
+          arg.startsWith("http:/") )
+        okay = main->open(QUrl(arg));
+      else
+        okay = main->open(arg);
+    }
+  
+  main->show();
+  if (okay)
+    return app.exec();
+  main->execErrorDialog();
+  return 10;
 }

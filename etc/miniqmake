@@ -96,7 +96,7 @@ do
         *.ui)
                 base=`basename $src .ui`
                 target="ui_${base}.h"
-                echo "$target.h : ${xdir}$base.ui"
+                echo "$target : ${xdir}$base.ui"
                 echo "	\${UIC} ${xdir}$base.ui -o $target"
                 gens="$gens $target"
                 ;;
