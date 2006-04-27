@@ -24,6 +24,7 @@
 #include <qdjview.h>
 
 #include <QApplication>
+#include <QRegExp>
 
 int 
 main(int argc, char *argv[])
@@ -35,8 +36,7 @@ main(int argc, char *argv[])
   if (argc > 1)
     {
       QString arg = argv[1];
-      if (arg.startsWith("file:/") || 
-          arg.startsWith("http:/") )
+      if (arg.contains(QRegExp("^[a-zA-Z]{3,8}:/")))
         okay = main->open(QUrl(arg));
       else
         okay = main->open(arg);
@@ -44,7 +44,7 @@ main(int argc, char *argv[])
   main->show();
   if (! okay)
     {
-      main->execErrorDialog();
+      main->execErrorDialog(QMessageBox::Critical);
       return 10;
     }
   return app.exec();

@@ -21,29 +21,30 @@ CXX = g++
 MOC = moc-qt4
 UIC = uic-qt4
 RCC = rcc
-OPTS = -O2
 
 srcdir=.
 top_srcdir=..
 
 QTDEBUG=
-LIBDEBUG=
+OPTS = -O2
 PKGS= QtCore${QTDEBUG} QtGui${QTDEBUG} QtNetwork${QTDEBUG} ddjvuapi
-LIBS=${LIBDEBUG} $(shell pkg-config --libs ${PKGS})
-CXXFLAGS=$(shell pkg-config --cflags ${PKGS}) -Wall ${OPTS}
+LIBS=$(shell pkg-config --libs ${PKGS})
+FLGS=$(shell pkg-config --cflags ${PKGS})
+
+CXXFLAGS= -Wall ${FLGS} ${OPTS}
 
 SOURCES=qdjvu.h qdjvu.cpp\
 	qdjvuhttp.h qdjvuhttp.cpp\
 	qdjvuwidget.h qdjvuwidget.cpp qdjvuwidget.qrc\
 	qdjviewprefs.h qdjviewprefs.cpp \
-	qdjview.h qdjview.cpp \
+	qdjview.h qdjview.cpp qdjview.qrc \
 	qdjviewdialogerror.ui \
 	djview.cpp
 
 PROGRAM=djview
 
 debug: FORCE
-	${MAKE} all QTDEBUG=_debug LIBDEBUG=-Llib OPTS=-g
+	${MAKE} all QTDEBUG=_debug OPTS=-g
 
 all: ${PROGRAM}
 

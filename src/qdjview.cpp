@@ -19,17 +19,23 @@
 #include <string.h>
 
 #include <QObject>
+#include <QCoreApplication>
+#include <QApplication>
 #include <QMainWindow>
 #include <QMenuBar>
 #include <QStatusBar>
+#include <QStackedWidget>
+#include <QLabel>
 #include <QToolBar>
 #include <QAction>
+#include <QIcon>
 #include <QMenu>
 #include <QString>
 #include <QList>
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QPalette>
+#include <QRegExp>
 
 #include "qdjview.h"
 #include "qdjviewprefs.h"
@@ -52,8 +58,9 @@ class QDjViewDialogError : public QDialog
   Q_OBJECT
 public:
   QDjViewDialogError(QWidget *parent);
+  void prepare(QMessageBox::Icon icon, QString caption);
 public slots:
-  void error(QString, QString, int);
+  void error(QString message, QString filename, int lineno);
   void okay(void);
 private:
   Ui::QDjViewDialogError ui;
@@ -65,22 +72,31 @@ QDjViewDialogError::QDjViewDialogError(QWidget *parent)
 {
   ui.setupUi(this);
   connect(ui.okButton, SIGNAL(clicked()), this, SLOT(okay()));
-  ui.iconLabel->setPixmap(QMessageBox::standardIcon(QMessageBox::Warning));
   QPalette palette = ui.textEdit->palette();
   palette.setColor(QPalette::Base, palette.color(QPalette::Window));
   ui.textEdit->setPalette(palette);
+  setWindowTitle(tr("DjView Error Message"));
 }
 
 void 
 QDjViewDialogError::error(QString message, QString, int)
 {
-  const int maxSize = 6;
-  messages.prepend("<li>" + message + "</li>");
-  if (messages.size() > maxSize)
+  // Remove [1-nnnnn] prefix from djvulibre-3.5
+  if (message.startsWith("["))
+    message = message.replace(QRegExp("^\\[\\d*-?\\d*\\]\\s*") , "");
+  // Ignore empty and duplicate messages
+  if (message.isEmpty()) 
+    return;
+  if (!messages.isEmpty() && message == messages[0]) 
+    return;
+  // Add message
+  messages.prepend(message);
+  if (messages.size() >= 16)
     messages.removeLast();
+  // Show message
   QString html;
   for (int i=0; i<messages.size(); i++)
-    html = messages[i] + html;
+    html = "<li>" + messages[i] + "</li>" + html;
   html = "<html><ul>" + html + "</ul></html>";
   ui.textEdit->setHtml(html);
   QScrollBar *scrollBar = ui.textEdit->verticalScrollBar();
@@ -88,18 +104,46 @@ QDjViewDialogError::error(QString message, QString, int)
 }
 
 void 
+QDjViewDialogError::prepare(QMessageBox::Icon icon, QString caption)
+{
+  if (icon != QMessageBox::NoIcon)
+    ui.iconLabel->setPixmap(QMessageBox::standardIcon(icon));
+  if (!caption.isEmpty())
+    setWindowTitle(caption);
+}
+
+void 
 QDjViewDialogError::okay()
 {
   messages.clear();
   accept();
+  hide();
 }
+
+void
+QDjView::raiseErrorDialog(QMessageBox::Icon icon, 
+                          QString caption, QString message)
+{
+  errorDialog->error(message, QString(), 0);
+  errorDialog->prepare(icon, caption);
+  errorDialog->show();
+  errorDialog->raise();
+}
+
+int
+QDjView::execErrorDialog(QMessageBox::Icon icon, 
+                         QString caption, QString message)
+{
+  errorDialog->error(message, QString(), 0);
+  errorDialog->prepare(icon, caption);
+  return errorDialog->exec();
+}
+
+
 
 
 // ----------------------------------------
 // QDJVIEW
-
-
-
 
 
 QDjView::~QDjView()
@@ -112,22 +156,36 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
     viewerMode(mode),
     document(0)
 {
-  widget = new QDjVuWidget(this);
+  central = new QStackedWidget(this);
+  widget = new QDjVuWidget(central);
+  splash = new QLabel(central);
+  splash->setPixmap(QPixmap(":/images/splash.png"));
+  central->addWidget(widget);
+  central->addWidget(splash);
+  central->setCurrentWidget(splash);
+  setCentralWidget(central);
+
   errorDialog = new QDjViewDialogError(this);
-
-
+  
   connect(widget, SIGNAL(errorCondition(int)),
-          this, SLOT(raiseErrorDialog()) );
-
-  setCentralWidget(widget);
-  setWindowTitle("DjView");
+          this, SLOT(errorCondition(int)));
+  
+  setWindowTitle(tr("DjView"));
+  setWindowIcon(QIcon(":/images/icon32_djvu.png"));
+  if (QApplication::windowIcon().isNull())
+    QApplication::setWindowIcon(windowIcon());
 }
 
-
+QDjVuWidget *
+QDjView::djvuWidget()
+{
+  return widget;
+}
 
 void 
 QDjView::closeDocument()
 {
+  central->setCurrentWidget(splash);
   widget->setDocument(0);
   document = 0;
 }
@@ -138,6 +196,7 @@ QDjView::open(QDjVuDocument *document, bool own)
   closeDocument();
   document = document;
   widget->setDocument(document, own);
+  central->setCurrentWidget(widget);
 }
 
 bool
@@ -149,10 +208,12 @@ QDjView::open(QString filename)
   doc->setFileName(&djvuContext, filename);
   if (!doc->isValid())
     {
-      raiseErrorDialog(QString(tr("Cannot open '%1'").arg(filename)));
+      raiseErrorDialog(QMessageBox::Critical,
+                       tr("Open DjVu file ..."),
+                       tr("Cannot open file '%1'.").arg(filename) );
       return false;
     }
-  setWindowTitle(QString("Djview - %1").arg(filename));
+  setWindowTitle(tr("Djview - %1").arg(filename));
   open(doc, true);
   return true;
 }
@@ -166,30 +227,29 @@ QDjView::open(QUrl url)
   doc->setUrl(&djvuContext, url);
   if (!doc->isValid())
     {
-      raiseErrorDialog(QString(tr("Cannot open '%1'").arg(url.toString())));
+      raiseErrorDialog(QMessageBox::Critical,
+                       tr("Open DjVu document ..."),
+                       tr("Cannot open URL '%1'.").arg(url.toString()) );
       return false;
     }
-  setWindowTitle(QString("Djview - %1").arg(url.toString()));
+  setWindowTitle(tr("Djview - %1").arg(url.toString()));
   open(doc, true);
   return true;
 }
 
-void
-QDjView::raiseErrorDialog(QString message)
+void 
+QDjView::errorCondition(int pageno)
 {
-  if (! message.isEmpty())
-    errorDialog->error(message,__FILE__,__LINE__);
-  errorDialog->show();
-  errorDialog->raise();
+  QString message;
+  if (pageno >= 0)
+    message = tr("Cannot decode page %1.").arg(pageno);
+  else
+    message = tr("Cannot decode document.");
+  raiseErrorDialog(QMessageBox::Warning,
+                   tr("Decoding DjVu document ..."),
+                   message);
 }
 
-int
-QDjView::execErrorDialog(QString message)
-{
-  if (! message.isEmpty())
-    errorDialog->error(message,__FILE__,__LINE__);
-  return errorDialog->exec();
-}
 
 
 // ----------------------------------------

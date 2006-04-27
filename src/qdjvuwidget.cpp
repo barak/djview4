@@ -26,9 +26,7 @@
 #include "qdjvu.h"
 #include "qdjvuwidget.h"
 
-#include <QDebug>
 #include <QWidget>
-#include <QEventLoop>
 #include <QMenu>
 #include <QCursor>
 #include <QApplication>
@@ -1569,7 +1567,6 @@ QDjVuPrivate::redisplayPage()
 void 
 QDjVuPrivate::error(QString message, QString filename, int lineno)
 {
-  qDebug() << "ERROR" << message;
   emit widget->error(message, filename, lineno);
   errorMessages.prepend(message);
   while (errorMessages.size() > maxMessages)
@@ -1579,7 +1576,6 @@ QDjVuPrivate::error(QString message, QString filename, int lineno)
 void 
 QDjVuPrivate::info(QString message)
 {
-  qDebug() << "INFO" << message;
   emit widget->info(message);
   infoMessages.prepend(message);
   while (infoMessages.size() > maxMessages)
@@ -1611,6 +1607,9 @@ QDjVuWidget::~QDjVuWidget()
 QDjVuWidget::QDjVuWidget(QWidget *parent)
   : QAbstractScrollArea(parent), priv(new QDjVuPrivate(this))
 {
+  setFocusPolicy(Qt::StrongFocus);
+  setSizePolicy(QSizePolicy::MinimumExpanding, 
+                QSizePolicy::MinimumExpanding);
   // setup viewport
   viewport()->setAttribute(Qt::WA_NoSystemBackground);
   viewport()->setAttribute(Qt::WA_PaintOnScreen);
@@ -1623,6 +1622,9 @@ QDjVuWidget::QDjVuWidget(QWidget *parent)
 QDjVuWidget::QDjVuWidget(QDjVuDocument *doc, QWidget *parent)
   : QAbstractScrollArea(parent), priv(new QDjVuPrivate(this))
 {
+  setFocusPolicy(Qt::StrongFocus);
+  setSizePolicy(QSizePolicy::MinimumExpanding, 
+                QSizePolicy::MinimumExpanding);
   viewport()->setAttribute(Qt::WA_NoSystemBackground);
   viewport()->setAttribute(Qt::WA_PaintOnScreen);
   viewport()->setAttribute(Qt::WA_StaticContents);

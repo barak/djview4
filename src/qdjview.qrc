@@ -1,0 +1,7 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+<qresource>
+     <file>images/splash.png</file>
+     <file>images/icon32_djvu.png</file>
+</qresource>
+</RCC>

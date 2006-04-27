@@ -99,12 +99,14 @@ QDjVuHttpDocument::setUrl(QDjVuContext *ctx, QUrl url, bool cache)
   if (url.isValid())
     {
       okay = true;
-      if (url.scheme()=="http" && ! url.host().isEmpty())
+      QString scheme = url.scheme().toLower();
+      if (scheme == "http")
         QDjVuDocument::setUrl(ctx, url, cache);
-      else if (url.scheme()=="file" && url.host().isEmpty())
+      else if (scheme == "file" && url.host().isEmpty())
         QDjVuDocument::setFileName(ctx, url.toLocalFile(), cache);
       else
-        okay = false;
+        emit error(tr("Unsupported url scheme '%1:'.").arg(scheme), 
+                   __FILE__, __LINE__ );
       if (! isValid())
         okay = false;
     }
@@ -115,9 +117,7 @@ QDjVuHttpDocument::setUrl(QDjVuContext *ctx, QUrl url, bool cache)
       this->cache = cache;
       return true;
     }
-  qWarning("QDjVuHttoDocument::setUrl: unrecognized url");
-  QString msg = tr("Unrecognized url '%1'").arg(url.toString());
-  emit error(msg, __FILE__, __LINE__);
+  qWarning("QDjVuHttpDocument::setUrl: unrecognized url");
   return false;
 }
 
@@ -161,7 +161,7 @@ QDjVuHttpDocument::schedule(void)
       conn.streamid = req.streamid;
       QString g = req.url.toEncoded(QUrl::RemoveAuthority|QUrl::RemoveScheme);
       conn.reqid = conn.http->get(g);
-      QString m = tr("Requesting %1").arg(req.url.toString());
+      QString m = tr("Requesting '%1'").arg(req.url.toString());
       emit info(m);
     }
 }
@@ -200,8 +200,9 @@ QDjVuHttpDocument::response(const QHttpResponseHeader &resp)
             if (conn.streamid >= 0)
               ddjvu_stream_close(*this, conn.streamid, false);
             conn.streamid = -1;
-            QString msg = tr("Http status %1 for url '%2'")
-              .arg(status).arg(url.toString());
+            QString msg = tr("Received HTTP Status %1 while retrieving '%2'.")
+              .arg(status)
+              .arg(url.toString());
             emit error(msg, __FILE__, __LINE__);
           }
         return;
@@ -229,7 +230,12 @@ QDjVuHttpDocument::finished(int id, bool err)
       {
         Conn& conn = connections[c];
         if (err)
-          emit error(conn.http->errorString() , __FILE__, __LINE__);
+          {
+            QString msg = tr("%1 while retrieving '%2'.")
+              .arg(conn.http->errorString())
+              .arg(url.toString());
+            emit error(msg , __FILE__, __LINE__);
+          }
         if (conn.streamid >= 0)
           ddjvu_stream_close(*this, conn.streamid, false);
         conn.reqid = 0;

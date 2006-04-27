@@ -21,8 +21,13 @@
 
 #include <QObject>
 #include <QMainWindow>
+#include <QMessageBox>
 #include <QString>
 #include <QUrl>
+
+class QLabel;
+class QAction;
+class QStackedWidget;
 
 #include "qdjvu.h"
 #include "qdjviewprefs.h"
@@ -47,20 +52,29 @@ class QDjView : public QMainWindow
 
   QDjView(QDjVuContext &context, ViewerMode mode=STANDALONE, QWidget *parent=0);
 
-  void closeDocument();
   void open(QDjVuDocument *document, bool own=true);
   bool open(QString filename);
   bool open(QUrl url);
+  void closeDocument();
+  QDjVuWidget *djvuWidget();
+  
 
-public slots:  
-  void raiseErrorDialog(QString message = QString());
-  int  execErrorDialog(QString message = QString());
+public slots:
+  void raiseErrorDialog(QMessageBox::Icon icon, 
+                        QString caption="", QString message="");
+  int  execErrorDialog (QMessageBox::Icon icon,
+                        QString caption="", QString message="");
+  
+protected slots:
+  void errorCondition(int);
 
 protected:
   QDjVuContext &djvuContext;
   const QDjView::ViewerMode viewerMode;
   
+  QLabel             *splash;
   QDjVuWidget        *widget;
+  QStackedWidget     *central;
   QDjVuDocument      *document;
   QDjViewDialogError *errorDialog;
 
