@@ -16,10 +16,28 @@
 
 // $Id$
 
+#include <QPointer>
+#include <QCoreApplication>
+#include <QMutex>
+#include <QMutexLocker>
+
 #include "qdjviewprefs.h"
 
 
-QDjViewPrefs::ModeSpecific::ModeSpecific()
+static QPointer<QDjViewPrefs> preferences;
+
+QDjViewPrefs *
+QDjViewPrefs::create(void)
+{
+  QMutex mutex;
+  QMutexLocker locker(&mutex);
+  if (! preferences)
+    preferences = new QDjViewPrefs();
+  return preferences;
+}
+
+
+QDjViewPrefs::Appearance::Appearance()
   : flags    ( SHOW_ALL|HANDLE_ALL|ACTION_ALL ),
     zoom     ( QDjVuWidget::ZOOM_FITWIDTH ),
     dispMode ( QDjVuWidget::DISPLAY_COLOR ),
@@ -28,16 +46,22 @@ QDjViewPrefs::ModeSpecific::ModeSpecific()
 {
 }
 
-
-QDjViewPrefs::QDjViewPrefs()
+QDjViewPrefs::QDjViewPrefs(void)
+  : QObject(QCoreApplication::instance())
 {
   // Sane defaults
   forStandalone.flags &= ~(SHOW_SIDEBAR);
-  forFullPagePlugin.flags &= ~(SHOW_MENUBAR|SHOW_STATUSBAR|SHOW_SIDEBAR);  
-  forEmbeddedPlugin.flags &= ~(SHOW_MENUBAR|SHOW_STATUSBAR|SHOW_SIDEBAR);  
-  forEmbeddedPlugin.flags &= ~(SHOW_TOOLBAR);
+  forFullScreen.flags &= ~(SHOW_ALL);
+  forFullScreen.flags |= (SHOW_FRAME);
   
-
+  forFullPagePlugin.flags &= ~(SHOW_ALL);
+  forFullPagePlugin.flags |= (SHOW_FRAME|SHOW_TOOLBAR|LAYOUT_PAGESETTINGS);
+  forEmbeddedPlugin.flags &= ~(SHOW_ALL);
+  forEmbeddedPlugin.flags |= (SHOW_FRAME|LAYOUT_PAGESETTINGS);
+  
+  gamma = 2.2;
+  printerGamma = 0;
+  optimizeLCD = true;
 }
 
 

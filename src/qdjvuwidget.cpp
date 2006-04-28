@@ -1372,6 +1372,8 @@ QDjVuPrivate::findPosition(const QPoint &point)
 void 
 QDjVuPrivate::updatePosition(const QPoint &point, bool click, bool links)
 {
+  if (point.isNull())
+    return;
   // locate
   bool changed = false;
   cursorPoint = point;
@@ -1730,6 +1732,7 @@ QDjVuWidget::setDocument(QDjVuDocument *d, bool own)
       priv->currentPos = Position();
       priv->currentPoint = QPoint(0,0);
       priv->cursorPos = Position();
+      priv->cursorPoint = QPoint(0,0);
       priv->layoutChange = 0;
       priv->changeLayout(CHANGE_PAGES|UPDATE_ALL);
       setPage(0);
@@ -3355,11 +3358,19 @@ QDjVuWidget::viewportEvent(QEvent *event)
   switch (event->type())
     {
     case QEvent::Enter:
+      // Install filter to capture modifiers
       QApplication::instance()->installEventFilter(priv);
       break;
     case QEvent::Leave:
+      // Remove filter to capture modifiers
       QApplication::instance()->removeEventFilter(priv);
+      // Uncheck any active map area
       priv->checkCurrentMapArea(true);
+      break;
+    case QEvent::ShortcutOverride:
+      // Override shortcuts if keyboard is disabled!
+      if (!priv->keyboardEnabled)
+        event->accept();
       break;
     default:
       break;
@@ -3743,17 +3754,6 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
       event->accept();
       switch(event->key())
         {
-#ifndef NO_DEBUG_KEY_BINDINGS
-        case Qt::Key_S: 
-          setZoom(ZOOM_STRETCH); 
-          return;
-        case Qt::Key_F1: 
-          setSideBySide(!sideBySide()); 
-          return;
-        case Qt::Key_F2: 
-          setContinuous(!continuous()); 
-          return;
-#endif
         case Qt::Key_1:
           setZoom(100);
           return;
@@ -3769,14 +3769,6 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_P:
           setZoom(ZOOM_FITPAGE);
           return;
-        case Qt::Key_Plus: 
-          priv->updateCurrentPoint(priv->cursorPos);
-          zoomIn(); 
-          return;
-        case Qt::Key_Minus: 
-          priv->updateCurrentPoint(priv->cursorPos);
-          zoomOut(); 
-          return;
         case Qt::Key_BracketLeft: 
           priv->updateCurrentPoint(priv->cursorPos);
           rotateLeft(); 
@@ -3784,6 +3776,14 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_BracketRight: 
           priv->updateCurrentPoint(priv->cursorPos);
           rotateRight(); 
+          return;
+        case Qt::Key_Plus: 
+          priv->updateCurrentPoint(priv->cursorPos);
+          zoomIn(); 
+          return;
+        case Qt::Key_Minus: 
+          priv->updateCurrentPoint(priv->cursorPos);
+          zoomOut(); 
           return;
         case Qt::Key_Home:
           if (event->modifiers() == Qt::ControlModifier)

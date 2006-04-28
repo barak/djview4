@@ -23,18 +23,28 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QString>
+#include <QList>
 #include <QUrl>
 
-class QLabel;
-class QAction;
-class QStackedWidget;
+#include <libdjvu/miniexp.h>
+#include <libdjvu/ddjvuapi.h>
 
 #include "qdjvu.h"
+#include "qdjvuwidget.h"
 #include "qdjviewprefs.h"
 
 
-class QDjViewPrivate;
+class QLabel;
+class QAction;
+class QStackedLayout;
 class QDjViewDialogError;
+class QMenu;
+class QMenuBar;
+class QToolBar;
+class QStatusBar;
+
+
+
 
 class QDjView : public QMainWindow
 {
@@ -47,8 +57,6 @@ class QDjView : public QMainWindow
     EMBEDDED_PLUGIN = 1,
     FULLPAGE_PLUGIN = 2
   };
-
-  virtual ~QDjView();
 
   QDjView(QDjVuContext &context, ViewerMode mode=STANDALONE, QWidget *parent=0);
 
@@ -65,25 +73,58 @@ public slots:
   int  execErrorDialog (QMessageBox::Icon icon,
                         QString caption="", QString message="");
   
+protected:
+  typedef QDjVuWidget::Position Position;
+  typedef QDjVuWidget::PageInfo PageInfo;
+  QAction *makeAction(QString text);
+  QAction *makeAction(QString text, bool value);
+  void createActions(void);
+  void updateActions(void);
+  bool eventFilter(QObject *watched, QEvent *event);
+
+  QString pageName(int pageno);
+
 protected slots:
+  void docinfo();
+  void layoutChanged();
+  void pageChanged(int pageno);
   void errorCondition(int);
+  void pointerPosition(const Position &pos, const PageInfo &page);
+  void pointerEnter(const Position &pos, miniexp_t maparea);
+  void pointerLeave(const Position &pos, miniexp_t maparea);
+  void pointerClick(const Position &pos, miniexp_t maparea);
+  void pointerSelect(const QPoint &pointerPos, const QRect &rect);
 
 protected:
-  QDjVuContext &djvuContext;
-  const QDjView::ViewerMode viewerMode;
+  const ViewerMode          viewerMode;
+  QDjVuContext             &djvuContext;
+  QDjViewPrefs             *generalPrefs;
+  QDjViewPrefs::Appearance *appearancePrefs;
+  int                       appearanceFlags;
   
   QLabel             *splash;
   QDjVuWidget        *widget;
-  QStackedWidget     *central;
-  QDjVuDocument      *document;
+  QStackedLayout     *layout;
   QDjViewDialogError *errorDialog;
-
-  QDjViewPrefs    preferences;
+  QMenu              *contextMenu;
+  QMenuBar           *menuBar;
+  QStatusBar         *statusBar;
+  QLabel             *statusBarLabel1;
+  QLabel             *statusBarLabel2;
+  QToolBar           *toolBar;
+  QToolBar           *searchBar;
+  
+  QDjVuDocument          *document;
+  QString                 documentFileName;
+  QUrl                    documentUrl;
+  QList<ddjvu_fileinfo_t> documentPages;
 
   QAction *actionNew;
   QAction *actionOpen;
   QAction *actionClose;
+  QAction *actionQuit;
   QAction *actionSave;
+  QAction *actionExport;
   QAction *actionPrint;
   QAction *actionSearch;
   QAction *actionZoomIn;
@@ -96,6 +137,10 @@ protected:
   QAction *actionNavLast;
   QAction *actionRotateLeft;
   QAction *actionRotateRight;
+  QAction *actionRotate0;
+  QAction *actionRotate90;
+  QAction *actionRotate180;
+  QAction *actionRotate270;
   QAction *actionPageInfo;
   QAction *actionDocInfo;
   QAction *actionAbout;
@@ -105,6 +150,7 @@ protected:
   QAction *actionDisplayBackground;
   QAction *actionPreferences;
   QAction *actionViewToolbar;
+  QAction *actionViewSearchbar;
   QAction *actionViewSidebar;
   QAction *actionViewStatusbar;
   QAction *actionViewFullScreen;

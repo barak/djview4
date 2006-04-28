@@ -19,28 +19,34 @@
 #ifndef QDJVIEWPREFS_H
 #define QDJVIEWPREFS_H
 
+#include <QObject>
 
 #include "qdjvuwidget.h"
 
-#include "QFlags"
 
-
-struct QDjViewPrefs
+class QDjViewPrefs : public QObject
 {
-  QDjViewPrefs();
+  Q_OBJECT
+
+private:
+  QDjViewPrefs(void);
+  
+public:
+  static QDjViewPrefs *create();
 
   enum {
     SHOW_MENUBAR        = 0x01,
     SHOW_TOOLBAR        = 0x02,
-    SHOW_SIDEBAR        = 0x04,
-    SHOW_STATUSBAR      = 0x08,
-    SHOW_SCROLLBARS     = 0x10,
-    SHOW_FRAME          = 0x20,
-    SHOW_ALL   = 0x3f,
+    SHOW_SEARCHBAR      = 0x04,
+    SHOW_SIDEBAR        = 0x08,
+    SHOW_STATUSBAR      = 0x10,
+    SHOW_SCROLLBARS     = 0x20,
+    SHOW_FRAME          = 0x40,
+    SHOW_ALL   = 0x7f,
     LAYOUT_CONTINUOUS   = 0x100,
     LAYOUT_SIDEBYSIDE   = 0x200,
     LAYOUT_PAGESETTINGS = 0x400,
-    LAYOUT_ALL = 0x700,
+    LAYOUT_ALL = 0xf00,
     HANDLE_KEYBOARD     = 0x1000,
     HANDLE_LINKS        = 0x2000,
     HANDLE_CONTEXTMENU  = 0x4000,
@@ -60,8 +66,8 @@ struct QDjViewPrefs
     ACTION_ALL = 0x0fff0000,
   };
 
-  struct ModeSpecific {
-    ModeSpecific();
+  struct Appearance {
+    Appearance();
     int flags;
     int zoom;
     QDjVuWidget::DisplayMode dispMode;
@@ -69,14 +75,16 @@ struct QDjViewPrefs
     QDjVuWidget::Align       vAlign;
   };
 
-  ModeSpecific forStandalone;
-  ModeSpecific forEmbeddedPlugin;
-  ModeSpecific forFullPagePlugin;
+  Appearance forStandalone;
+  Appearance forFullScreen;
+  Appearance forEmbeddedPlugin;
+  Appearance forFullPagePlugin;
+
+  double gamma;
+  double printerGamma;
+  bool   optimizeLCD;
   
 };
-
-
-
 
 
 #endif
