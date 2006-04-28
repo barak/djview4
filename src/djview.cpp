@@ -20,8 +20,8 @@
 #include <libdjvu/miniexp.h>
 #include <locale.h>
 
-#include <qdjvu.h>
-#include <qdjview.h>
+#include "qdjvu.h"
+#include "qdjview.h"
 
 #include <QApplication>
 #include <QRegExp>
@@ -41,6 +41,7 @@ main(int argc, char *argv[])
       else
         okay = main->open(arg);
     }
+  main->resize(640,400);
   main->show();
   if (! okay)
     {

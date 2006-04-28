@@ -731,8 +731,8 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *parent)
   hyperlinkEnabled = true;
   mouseEnabled = true;
   lineStep = 12;
-  buttons = Qt::NoButton;
-  modifiers = Qt::NoModifier;
+  buttons = (Qt::MouseButtons)(-1);
+  modifiers = (Qt::KeyboardModifiers)(-1);
   modifiersForLinks = Qt::ShiftModifier;
   modifiersForLens = Qt::ShiftModifier|Qt::ControlModifier;
   modifiersForSelect = Qt::ControlModifier;
@@ -2108,7 +2108,6 @@ QDjVuWidget::setContextMenu(QMenu *m)
   if (priv->contextMenu)
     delete priv->contextMenu;
   priv->contextMenu = m;
-  priv->contextMenu->setParent(this);
 }
 
 

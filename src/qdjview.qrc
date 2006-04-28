@@ -3,5 +3,29 @@
 <qresource>
      <file>images/splash.png</file>
      <file>images/icon32_djvu.png</file>
+     <file>images/icon_back.png</file>
+     <file>images/icon_close.png</file>
+     <file>images/icon_continuous.png</file>
+     <file>images/icon_djvu.png</file>
+     <file>images/icon_export.png</file>
+     <file>images/icon_find.png</file>
+     <file>images/icon_first.png</file>
+     <file>images/icon_forw.png</file>
+     <file>images/icon_fullscreen.png</file>
+     <file>images/icon_last.png</file>
+     <file>images/icon_new.png</file>
+     <file>images/icon_next.png</file>
+     <file>images/icon_open.png</file>
+     <file>images/icon_prefs.png</file>
+     <file>images/icon_prev.png</file>
+     <file>images/icon_print.png</file>
+     <file>images/icon_quit.png</file>
+     <file>images/icon_rotateleft.png</file>
+     <file>images/icon_rotateright.png</file>
+     <file>images/icon_save.png</file>
+     <file>images/icon_sidebar.png</file>
+     <file>images/icon_sidebyside.png</file>
+     <file>images/icon_zoomin.png</file>
+     <file>images/icon_zoomout.png</file>
 </qresource>
 </RCC>

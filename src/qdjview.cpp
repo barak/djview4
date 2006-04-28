@@ -26,13 +26,17 @@
 #include <QCoreApplication>
 #include <QApplication>
 #include <QMainWindow>
+#include <QDockWidget>
 #include <QMenuBar>
 #include <QStatusBar>
+#include <QDockWidget>
 #include <QStackedLayout>
+#include <QComboBox>
 #include <QFrame>
 #include <QLabel>
 #include <QToolBar>
 #include <QAction>
+#include <QActionGroup>
 #include <QIcon>
 #include <QFont>
 #include <QMenu>
@@ -156,6 +160,13 @@ operator<<(QAction *action, QIcon icon)
 }
 
 static inline QAction * 
+operator<<(QAction *action, QActionGroup &group)
+{
+  action->setActionGroup(&group);
+  return action;
+}
+
+static inline QAction * 
 operator<<(QAction *action, QKeySequence shortcut)
 {
   action->setShortcut(shortcut);
@@ -175,6 +186,12 @@ operator<<(QAction *action, QString string)
 void
 QDjView::createActions()
 {
+  // Create action groups
+  zoomActionGroup = new QActionGroup(this);
+  modeActionGroup = new QActionGroup(this);
+  rotationActionGroup  = new QActionGroup(this);
+  
+  // Create actions
   actionNew = makeAction(tr("&New", "File|New"))
     << QKeySequence(tr("Ctrl+N", "File|New"))
     << QIcon(":/images/icon_new.png")
@@ -185,11 +202,12 @@ QDjView::createActions()
     << tr("Open a DjVu document.");
   actionClose = makeAction(tr("&Close", "File|Close"))
     << QKeySequence(tr("Ctrl+W", "File|Close"))
+    << QIcon(":/images/icon_close.png")
     << tr("Close this window.");
   actionQuit = makeAction(tr("&Quit", "File|Quit"))
     << QKeySequence(tr("Ctrl+Q", "File|Quit"))
+    << QIcon(":/images/icon_quit.png")
     << tr("Close all windows and quit the application.");
-  
   actionSave = makeAction(tr("&Save", "File|Save"))
     << QKeySequence(tr("Ctrl+S", "File|Save"))
     << QIcon(":/images/icon_save.png")
@@ -200,78 +218,104 @@ QDjView::createActions()
     << QKeySequence(tr("Ctrl+P", "File|Print"))
     << QIcon(":/images/icon_print.png")
     << tr("Print the DjVu document.");
-
   actionSearch = makeAction(tr("&Find"))
     << QKeySequence(tr("Ctrl+F", "Find"))
     << QIcon(":/images/icon_find.png")
     << tr("Find text in the DjVu document.");
   actionZoomIn = makeAction(tr("Zoom &In"))
-    << QKeySequence(tr("Ctrl++", "Zoom|In"))
     << QIcon(":/images/icon_zoomin.png")
     << tr("Increase the magnification.");
   actionZoomOut = makeAction(tr("Zoom &Out"))
-    << QKeySequence(tr("Ctrl+-", "Zoom|Out"))
     << QIcon(":/images/icon_zoomout.png")
     << tr("Decrease the magnification.");
-  actionZoomFitWidth = makeAction(tr("Fit &Width"))
-    << tr("Set magnification to fit page width.");
-  actionZoomFitPage = makeAction(tr("Fit &Page"))
-    << tr("Set magnification to fit page.");
-  
+  actionZoomFitWidth = makeAction(tr("Fit &Width", "Zoom|Fitwith"),false)
+    << tr("Set magnification to fit page width.")
+    << *zoomActionGroup;
+  actionZoomFitPage = makeAction(tr("Fit &Page", "Zoom|Fitpage"),false)
+    << tr("Set magnification to fit page.")
+    << *zoomActionGroup;
+  actionZoomOneToOne = makeAction(tr("One &to one", "Zoom|1:1"),false)
+    << tr("Set full resolution magnification.")
+    << *zoomActionGroup;
+  actionZoom300 = makeAction(tr("&300%", "Zoom|300%"), false)
+    << tr("Magnify 300%")
+    << *zoomActionGroup;
+  actionZoom200 = makeAction(tr("&200%", "Zoom|200%"), false)
+    << tr("Magnify 300%")
+    << *zoomActionGroup;
+  actionZoom150 = makeAction(tr("150%", "Zoom|150%"), false)
+    << tr("Magnify 300%")
+    << *zoomActionGroup;
+  actionZoom100 = makeAction(tr("&100%", "Zoom|100%"), false)
+    << tr("Magnify 300%")
+    << *zoomActionGroup;
+  actionZoom75 = makeAction(tr("&75%", "Zoom|75%"), false)
+    << tr("Magnify 300%")
+    << *zoomActionGroup;
+  actionZoom50 = makeAction(tr("&50%", "Zoom|50%"), false)
+    << tr("Magnify 300%")
+    << *zoomActionGroup;
   actionNavFirst = makeAction(tr("&First Page"))
-    << QIcon(":images/icon_first.png")
+    << QIcon(":/images/icon_first.png")
     << tr("Jump to first document page.");
   actionNavNext = makeAction(tr("&Next Page"))
-    << QIcon(":images/icon_next.png")
+    << QIcon(":/images/icon_next.png")
     << tr("Jump to next document page.");
   actionNavPrev = makeAction(tr("&Previous Page"))
-    << QIcon(":images/icon_prev.png")
+    << QIcon(":/images/icon_prev.png")
     << tr("Jump to previous document page.");
   actionNavLast = makeAction(tr("&Last Page"))
-    << QIcon(":images/icon_last.png")
+    << QIcon(":/images/icon_last.png")
     << tr("Jump to last document page.");
-  
   actionRotateLeft = makeAction(tr("Rotate &Left"))
-    << QIcon(":images/icon_rotateleft.png")
+    << QIcon(":/images/icon_rotateleft.png")
     << tr("Rotate page image counter-clockwise.");
-  actionRotateLeft = makeAction(tr("Rotate &Right"))
-    << QIcon(":images/icon_rotateright.png")
+  actionRotateRight = makeAction(tr("Rotate &Right"))
+    << QIcon(":/images/icon_rotateright.png")
     << tr("Rotate page image clockwise.");
-  actionRotate0 = makeAction(tr("Rotate &0°"))
-    << tr("Set natural page orientation.");
-  actionRotate0 = makeAction(tr("Rotate &90°"))
-    << tr("Turn page on its left side.");
-  actionRotate0 = makeAction(tr("Rotate &180°"))
-    << tr("Turn page upside-down.");
-  actionRotate0 = makeAction(tr("Rotate &270°"))
-    << tr("Turn page on its right side.");
-
+  actionRotate0 = makeAction(tr("Rotate &0\260"), false)
+    << tr("Set natural page orientation.")
+    << *rotationActionGroup;
+  actionRotate90 = makeAction(tr("Rotate &90\260"), false)
+    << tr("Turn page on its left side.")
+    << *rotationActionGroup;
+  actionRotate180 = makeAction(tr("Rotate &180\260"), false)
+    << tr("Turn page upside-down.")
+    << *rotationActionGroup;
+  actionRotate270 = makeAction(tr("Rotate &270\260"), false)
+    << tr("Turn page on its right side.")
+    << *rotationActionGroup;
   actionPageInfo = makeAction(tr("Page &Information"))
     << tr("Show DjVu encoding information for the current page.");
   actionDocInfo = makeAction(tr("&Document Information"))
     << tr("Show DjVu encoding information for the document.");
   actionAbout = makeAction(tr("&About DjView"))
+    << QIcon(":/images/icon_djvu.png")
     << tr("Show information about this program.");
-
-  actionDisplayColor = makeAction(tr("&Color", "Display|Color"))
-    << tr("Display document in full colors.");
-  actionDisplayBW = makeAction(tr("&Mask", "Display|BW"))
-    << tr("Only display the document black&white stencil.");
-  actionDisplayForeground = makeAction(tr("&Foreground", "Display|Foreground"))
-    << tr("Only display the foreground layer.");
-  actionDisplayBackground = makeAction(tr("&Background", "Display|Background"))
-    << tr("Only display the background layer.");
-
+  actionDisplayColor = makeAction(tr("&Color", "Display|Color"), false)
+    << tr("Display document in full colors.")
+    << *modeActionGroup;
+  actionDisplayBW = makeAction(tr("&Mask", "Display|BW"), false)
+    << tr("Only display the document black&white stencil.")
+    << *modeActionGroup;
+  actionDisplayForeground = makeAction(tr("&Foreground", "Display|Foreground"), false)
+    << tr("Only display the foreground layer.")
+    << *modeActionGroup;
+  actionDisplayBackground = makeAction(tr("&Background", "Display|Background"), false)
+    << tr("Only display the background layer.")
+    << *modeActionGroup;
   actionPreferences = makeAction(tr("Prefere&nces")) 
+    << QIcon(":/images/icon_prefs.png")
     << tr("Show the preferences dialog.");
-  
-  actionViewToolbar = makeAction(tr("&Toolbar","View|Toolbar"), false)
-    << tr("Show/hide the standard toolbar.");
-  actionViewSearchbar = makeAction(tr("&Searchbar","View|Searchbar"), false)
-    << tr("Show/hide the search toolbar.");
-  actionViewStatusbar = makeAction(tr("S&tatusbar","View|Statusbar"), false)
-    << tr("Show/hide the search toolbar.");
-  actionViewSidebar = makeAction(tr("Side&bar","View|Sidebar"), false)
+  actionViewToolBar = toolBar->toggleViewAction()
+    << tr("Show/hide the standard toolBar.");
+  actionViewSearchBar = searchBar->toggleViewAction()
+    << QKeySequence("F10")
+    << QIcon(":/images/icon_find.png")
+    << tr("Show/hide the search toolBar.");
+  actionViewStatusbar = makeAction(tr("Statusbar"), true)
+    << tr("Show/hide the status bar.");
+  actionViewSidebar = sideBar->toggleViewAction()
     << QKeySequence("F9")
     << QIcon(":/images/icon_sidebar.png")
     << tr("Show/hide the side bar.");
@@ -279,7 +323,6 @@ QDjView::createActions()
     << QKeySequence("F11")
     << QIcon(":/images/icon_fullscreen.png")
     << tr("Toggle full screen mode.");
-  
   actionLayoutContinuous = makeAction(tr("&Continuous","Layout"), false)
     << QIcon(":/images/icon_continuous.png")
     << QKeySequence("F2")
@@ -291,10 +334,153 @@ QDjView::createActions()
   actionLayoutPageSettings = makeAction(tr("Obey &annotations"), false)
     << tr("Obey/ignore layout instructions from the page data.");
 
-  // Temporary
-  QMenu *menu = menuBar->addMenu("Layout");
-  menu->addAction(actionLayoutContinuous);
-  menu->addAction(actionLayoutSideBySide);
+  // Layout main menu
+  QMenu *fileMenu = menuBar->addMenu(tr("&File", "File|"));
+  if (viewerMode == STANDALONE)
+    fileMenu->addAction(actionNew);
+  if (viewerMode == STANDALONE)
+    fileMenu->addAction(actionOpen);
+  if (viewerMode == STANDALONE)
+    fileMenu->addSeparator();
+  fileMenu->addAction(actionSave);
+  fileMenu->addAction(actionExport);
+  fileMenu->addAction(actionPrint);
+  if (viewerMode == STANDALONE)
+    fileMenu->addSeparator();
+  if (viewerMode == STANDALONE)
+    fileMenu->addAction(actionClose);
+  if (viewerMode == STANDALONE)
+    fileMenu->addAction(actionQuit);
+  QMenu *editMenu = menuBar->addMenu(tr("&Edit", "Edit|"));
+  editMenu->addAction(actionSearch);
+  editMenu->addSeparator();
+  editMenu->addAction(actionDocInfo);
+  editMenu->addAction(actionPageInfo);
+  QMenu *viewMenu = menuBar->addMenu(tr("&View", "View|"));
+  QMenu *zoomMenu = viewMenu->addMenu(tr("&Zoom","View|Zoom"));
+  zoomMenu->addAction(actionZoomIn);
+  zoomMenu->addAction(actionZoomOut);
+  zoomMenu->addSeparator();
+  zoomMenu->addAction(actionZoomOneToOne);
+  zoomMenu->addAction(actionZoomFitWidth);
+  zoomMenu->addAction(actionZoomFitPage);
+  zoomMenu->addSeparator();
+  zoomMenu->addAction(actionZoom300);
+  zoomMenu->addAction(actionZoom200);
+  zoomMenu->addAction(actionZoom150);
+  zoomMenu->addAction(actionZoom100);
+  zoomMenu->addAction(actionZoom75);
+  zoomMenu->addAction(actionZoom50);
+  QMenu *rotationMenu = viewMenu->addMenu(tr("&Rotate","View|Rotate"));
+  rotationMenu->addAction(actionRotateLeft);
+  rotationMenu->addAction(actionRotateRight);
+  rotationMenu->addSeparator();
+  rotationMenu->addAction(actionRotate0);
+  rotationMenu->addAction(actionRotate90);
+  rotationMenu->addAction(actionRotate180);
+  rotationMenu->addAction(actionRotate270);
+  QMenu *modeMenu = viewMenu->addMenu(tr("&Display","View|Display"));
+  modeMenu->addAction(actionDisplayColor);
+  modeMenu->addAction(actionDisplayBW);
+  modeMenu->addAction(actionDisplayForeground);
+  modeMenu->addAction(actionDisplayBackground);
+  viewMenu->addSeparator();
+  viewMenu->addAction(actionLayoutContinuous);
+  viewMenu->addAction(actionLayoutSideBySide);
+  if (viewerMode == STANDALONE)
+    viewMenu->addSeparator();
+  if (viewerMode == STANDALONE)
+    viewMenu->addAction(actionViewFullScreen);
+  QMenu *gotoMenu = menuBar->addMenu(tr("&Go", "Go|"));
+  gotoMenu->addAction(actionNavFirst);
+  gotoMenu->addAction(actionNavPrev);
+  gotoMenu->addAction(actionNavNext);
+  gotoMenu->addAction(actionNavLast);
+  QMenu *settingsMenu = menuBar->addMenu(tr("&Settings", "Settings|"));
+  QMenu *toolBarMenu = settingsMenu->addMenu("S&how");
+  toolBarMenu->addAction(actionViewSidebar);
+  toolBarMenu->addAction(actionViewSearchBar);
+  toolBarMenu->addAction(actionViewToolBar);
+  toolBarMenu->addAction(actionViewStatusbar);
+  settingsMenu->addSeparator();
+  settingsMenu->addAction(actionPreferences);
+  QMenu *helpMenu = menuBar->addMenu(tr("&Help", "Help|"));
+  helpMenu->addAction(actionAbout);
+
+  // Layout context menu
+  gotoMenu = contextMenu->addMenu(tr("&Go", "Go|"));
+  gotoMenu->addAction(actionNavFirst);
+  gotoMenu->addAction(actionNavPrev);
+  gotoMenu->addAction(actionNavNext);
+  gotoMenu->addAction(actionNavLast);
+  zoomMenu = contextMenu->addMenu(tr("&Zoom","View|Zoom"));
+  zoomMenu->addAction(actionZoomIn);
+  zoomMenu->addAction(actionZoomOut);
+  zoomMenu->addSeparator();
+  zoomMenu->addAction(actionZoomOneToOne);
+  zoomMenu->addAction(actionZoomFitWidth);
+  zoomMenu->addAction(actionZoomFitPage);
+  zoomMenu->addSeparator();
+  zoomMenu->addAction(actionZoom300);
+  zoomMenu->addAction(actionZoom200);
+  zoomMenu->addAction(actionZoom150);
+  zoomMenu->addAction(actionZoom100);
+  zoomMenu->addAction(actionZoom75);
+  zoomMenu->addAction(actionZoom50);
+  rotationMenu = contextMenu->addMenu(tr("&Rotate","View|Rotate"));
+  rotationMenu->addAction(actionRotateLeft);
+  rotationMenu->addAction(actionRotateRight);
+  rotationMenu->addSeparator();
+  rotationMenu->addAction(actionRotate0);
+  rotationMenu->addAction(actionRotate90);
+  rotationMenu->addAction(actionRotate180);
+  rotationMenu->addAction(actionRotate270);
+  modeMenu = contextMenu->addMenu(tr("&Display","View|Display"));
+  modeMenu->addAction(actionDisplayColor);
+  modeMenu->addAction(actionDisplayBW);
+  modeMenu->addAction(actionDisplayForeground);
+  modeMenu->addAction(actionDisplayBackground);
+  contextMenu->addSeparator();
+  contextMenu->addAction(actionLayoutContinuous);
+  contextMenu->addAction(actionLayoutSideBySide);
+  contextMenu->addSeparator();
+  contextMenu->addAction(actionSearch);
+  contextMenu->addSeparator();
+  contextMenu->addAction(actionSave);
+  contextMenu->addAction(actionExport);
+  contextMenu->addAction(actionPrint);
+  contextMenu->addSeparator();
+  contextMenu->addAction(actionPreferences);
+  contextMenu->addAction(actionAbout);
+  
+  // Layout toolBar
+  modeCombo->hide();
+  //pageCombo->hide();
+  //zoomCombo->hide();
+  if (viewerMode == STANDALONE)
+    toolBar->addAction(actionOpen);
+  toolBar->addAction(actionSave);
+  toolBar->addAction(actionPrint);
+  toolBar->addAction(actionSearch);
+  toolBar->addAction(actionLayoutContinuous);
+  toolBar->addAction(actionLayoutSideBySide);
+  toolBar->addWidget(modeCombo);
+  toolBar->addWidget(zoomCombo);
+  toolBar->addAction(actionZoomIn);
+  toolBar->addAction(actionZoomOut);
+  //toolBar->addAction(actionRotateRight);
+  //toolBar->addAction(actionRotateLeft);
+  toolBar->addWidget(pageCombo);
+  toolBar->addAction(actionNavFirst);
+  toolBar->addAction(actionNavPrev);
+  toolBar->addAction(actionNavNext);
+  toolBar->addAction(actionNavLast);
+
+  // temporary connections
+  connect(actionQuit, SIGNAL(triggered()),
+          QCoreApplication::instance(), SLOT(quit()));
+  connect(actionClose, SIGNAL(triggered()),
+          this, SLOT(close()));
   connect(actionLayoutContinuous,SIGNAL(toggled(bool)),
           widget, SLOT(setContinuous(bool)));
   connect(actionLayoutSideBySide,SIGNAL(toggled(bool)),
@@ -388,22 +574,42 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   QFont font = QApplication::font();
   font.setPointSize(font.pointSize() - 3);
   QFontMetrics metric(font);
-  statusBarLabel1 = new QLabel(statusBar);
-  statusBarLabel1->setFont(font);
-  statusBarLabel1->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-  statusBarLabel1->setFrameStyle(QFrame::Panel);
-  statusBarLabel1->setFrameShadow(QFrame::Sunken);
-  statusBarLabel1->setMinimumWidth(metric.width(" 88 (8888x8888@888dpi) ")); 
-  statusBar->addPermanentWidget(statusBarLabel1);
-  statusBarLabel2 = new QLabel(statusBar);
-  statusBarLabel2->setFont(font);
-  statusBarLabel2->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-  statusBarLabel2->setFrameStyle(QFrame::Panel);
-  statusBarLabel2->setFrameShadow(QFrame::Sunken);
-  statusBarLabel2->setMinimumWidth(metric.width(" x=888 y=888 "));
-  statusBar->addPermanentWidget(statusBarLabel2);
+  pageLabel = new QLabel(statusBar);
+  pageLabel->setFont(font);
+  pageLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+  pageLabel->setFrameStyle(QFrame::Panel);
+  pageLabel->setFrameShadow(QFrame::Sunken);
+  pageLabel->setMinimumWidth(metric.width(" 88 (8888x8888@888dpi) ")); 
+  statusBar->addPermanentWidget(pageLabel);
+  mouseLabel = new QLabel(statusBar);
+  mouseLabel->setFont(font);
+  mouseLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+  mouseLabel->setFrameStyle(QFrame::Panel);
+  mouseLabel->setFrameShadow(QFrame::Sunken);
+  mouseLabel->setMinimumWidth(metric.width(" x=888 y=888 "));
+  statusBar->addPermanentWidget(mouseLabel);
   setStatusBar(statusBar);
-  
+  // - toolBar  
+  toolBar = new QToolBar(this);
+  toolBar->setObjectName("toolbar");
+  toolBar->setWindowTitle("Toolbar");
+  modeCombo = new QComboBox(toolBar);
+  zoomCombo = new QComboBox(toolBar);
+  pageCombo = new QComboBox(toolBar);
+  addToolBar(toolBar);
+  // - searchBar  
+  searchBar = new QToolBar(this);  // for now
+  searchBar->setObjectName("searchbar");
+  searchBar->setWindowTitle("Searchbar");
+  addToolBar(searchBar);
+  searchBar->hide();
+  // - sidebar  
+  sideBar = new QDockWidget(this);  // for now
+  sideBar->setObjectName("sidebar");
+  sideBar->setWindowTitle("Sidebar");
+  addDockWidget(Qt::LeftDockWidgetArea, sideBar);
+
+
   // create actions
   createActions();
   updateActions();
@@ -538,8 +744,8 @@ QDjView::eventFilter(QObject *watched, QEvent *event)
     case QEvent::Leave:
       if (watched == widget->viewport())
         {
-          statusBarLabel1->clear();
-          statusBarLabel2->clear();
+          pageLabel->clear();
+          mouseLabel->clear();
           statusBar->clearMessage();
           return false;
         }
@@ -593,14 +799,17 @@ QDjView::pageChanged(int pageno)
 void 
 QDjView::pointerPosition(const Position &pos, const PageInfo &page)
 {
-  QLabel *p = statusBarLabel1;
-  QLabel *m = statusBarLabel2;
+  // setup page label
+  QLabel *p = pageLabel;
   p->setText(tr(" %1 (%2x%3@%4dpi) ").arg(pageName(pos.pageNo)).
              arg(page.width).arg(page.height).arg(page.dpi) );
   p->setMinimumWidth(qMax(p->minimumWidth(), p->sizeHint().width()));
-  m->clear();
+  // setup mouse label
+  QLabel *m = mouseLabel;
   if (pos.inPage)
     m->setText(tr(" x=%1 y=%2 ").arg(pos.posPage.x()).arg(pos.posPage.y()));
+  else
+  m->clear();
   m->setMinimumWidth(qMax(m->minimumWidth(), m->sizeHint().width()));
 }
 
@@ -618,6 +827,8 @@ QDjView::pointerEnter(const Position &pos, miniexp_t maparea)
     link = tr("Turn %1 pages forward.").arg(link.mid(2).toInt());
   else if (link.contains(QRegExp("^#-\\d+$")))
     link = tr("Turn %1 pages backward.").arg(link.mid(2).toInt());
+  else if (link.startsWith("#="))
+    link = tr("Go to page: %1.").arg(link.mid(2));
   else if (link.startsWith("#"))
     link = tr("Go to page: %1.").arg(link.mid(1));
   else

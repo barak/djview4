@@ -36,13 +36,15 @@
 
 class QLabel;
 class QAction;
+class QActionGroup;
 class QStackedLayout;
 class QDjViewDialogError;
 class QMenu;
 class QMenuBar;
 class QToolBar;
+class QDockWidget;
 class QStatusBar;
-
+class QComboBox;
 
 
 
@@ -109,15 +111,23 @@ protected:
   QMenu              *contextMenu;
   QMenuBar           *menuBar;
   QStatusBar         *statusBar;
-  QLabel             *statusBarLabel1;
-  QLabel             *statusBarLabel2;
+  QLabel             *pageLabel;
+  QLabel             *mouseLabel;
   QToolBar           *toolBar;
+  QComboBox          *modeCombo;
+  QComboBox          *zoomCombo;
+  QComboBox          *pageCombo;
   QToolBar           *searchBar;
+  QDockWidget        *sideBar;
   
   QDjVuDocument          *document;
   QString                 documentFileName;
   QUrl                    documentUrl;
   QList<ddjvu_fileinfo_t> documentPages;
+
+  QActionGroup *zoomActionGroup;
+  QActionGroup *modeActionGroup;
+  QActionGroup *rotationActionGroup;
 
   QAction *actionNew;
   QAction *actionOpen;
@@ -131,6 +141,13 @@ protected:
   QAction *actionZoomOut;
   QAction *actionZoomFitWidth;
   QAction *actionZoomFitPage;
+  QAction *actionZoomOneToOne;
+  QAction *actionZoom300;
+  QAction *actionZoom200;
+  QAction *actionZoom150;
+  QAction *actionZoom100;
+  QAction *actionZoom75;
+  QAction *actionZoom50;
   QAction *actionNavFirst;
   QAction *actionNavNext;
   QAction *actionNavPrev;
@@ -149,8 +166,8 @@ protected:
   QAction *actionDisplayForeground;
   QAction *actionDisplayBackground;
   QAction *actionPreferences;
-  QAction *actionViewToolbar;
-  QAction *actionViewSearchbar;
+  QAction *actionViewToolBar;
+  QAction *actionViewSearchBar;
   QAction *actionViewSidebar;
   QAction *actionViewStatusbar;
   QAction *actionViewFullScreen;
