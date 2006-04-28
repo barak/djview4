@@ -37,8 +37,9 @@ SOURCES=qdjvu.h qdjvu.cpp\
 	qdjvuhttp.h qdjvuhttp.cpp\
 	qdjvuwidget.h qdjvuwidget.cpp qdjvuwidget.qrc\
 	qdjviewprefs.h qdjviewprefs.cpp \
-	qdjview.h qdjview.cpp qdjview.qrc \
+	qdjviewdialogs.h qdjviewdialogs.cpp \
 	qdjviewdialogerror.ui \
+	qdjview.h qdjview.cpp qdjview.qrc \
 	djview.cpp
 
 PROGRAM=djview
@@ -65,10 +66,9 @@ doc: FORCE
 	doxygen
 
 depend: FORCE
-	for n in $(filter %.cpp,${SOURCES}) ; do \
-	  ${CXX} -MM -MG $(patsubst -I/%,-isystem /%,${CXXFLAGS}) $$n ; \
-	done >> Makefile.dep
-
+	${CXX} -MM -MG > Makefile.dep \
+	  $(patsubst -I/%,-isystem /%,${CXXFLAGS}) \
+	  $(filter %.cpp,${SOURCES})
 
 FORCE:
 

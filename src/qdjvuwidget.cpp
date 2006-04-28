@@ -4265,16 +4265,19 @@ QDjVuWidget::readNext(void)
           return;
         }
     }
-  // scroll to next page
-  if (pos.pageNo < priv->numPages - 1)
+  // find forward a partially hidden page
+  while (pos.pageNo < priv->numPages - 1)
     {
-      point.rx() = bs;
-      point.ry() = bs;
       pos.pageNo += 1;
-      pos.inPage = false;
-      pos.posView = QPoint(0,0);
-      setPosition(pos, point);
+      if (! priv->pageMap.contains(pos.pageNo) ||
+          ! priv->visibleRect.contains(priv->pageMap[pos.pageNo]->rect) )
+        break;
     }
+  point.rx() = bs;
+  point.ry() = bs;
+  pos.inPage = false;
+  pos.posView = QPoint(0,0);
+  setPosition(pos, point);
 }
 
 
@@ -4302,17 +4305,20 @@ QDjVuWidget::readPrev(void)
           return;
         }
     }
-  // scroll to previous page
-  if (pos.pageNo > 0)
+  // find backward a partially hidden page
+  while (pos.pageNo > 0)
     {
-      point.rx() = bs;
-      point.ry() = priv->visibleRect.height() - bs;
       pos.pageNo -= 1;
-      pos.inPage = false;
-      pos.posView = QPoint(0,0);
-      pos.anchorBottom = true;
-      setPosition(pos, point);
+      if (! priv->pageMap.contains(pos.pageNo) ||
+          ! priv->visibleRect.contains(priv->pageMap[pos.pageNo]->rect) )
+        break;
     }
+  point.rx() = bs;
+  point.ry() = priv->visibleRect.height() - bs;
+  pos.inPage = false;
+  pos.posView = QPoint(0,0);
+  pos.anchorBottom = true;
+  setPosition(pos, point);
 }
 
 

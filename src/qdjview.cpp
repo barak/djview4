@@ -48,93 +48,22 @@
 #include <QPalette>
 #include <QRegExp>
 
-#include "qdjview.h"
-#include "qdjviewprefs.h"
 #include "qdjvu.h"
 #include "qdjvuhttp.h"
 #include "qdjvuwidget.h"
-
-
-#include "ui_qdjviewdialogerror.h"
-
-
-
-// ----------------------------------------
-// QDJVIEWDIALOGERROR
+#include "qdjview.h"
+#include "qdjviewprefs.h"
+#include "qdjviewdialogs.h"
 
 
 
-class QDjViewDialogError : public QDialog
-{
-  Q_OBJECT
-public:
-  QDjViewDialogError(QWidget *parent);
-  void prepare(QMessageBox::Icon icon, QString caption);
-public slots:
-  void error(QString message, QString filename, int lineno);
-  void okay(void);
-private:
-  Ui::QDjViewDialogError ui;
-  QList<QString> messages;
-};
 
-QDjViewDialogError::QDjViewDialogError(QWidget *parent)
-  : QDialog(parent)
-{
-  ui.setupUi(this);
-  connect(ui.okButton, SIGNAL(clicked()), this, SLOT(okay()));
-  ui.textEdit->viewport()->setBackgroundRole(QPalette::Window);
-  setWindowTitle(tr("DjView Error Message"));
-}
 
-void 
-QDjViewDialogError::error(QString message, QString, int)
-{
-  // Remove [1-nnnnn] prefix from djvulibre-3.5
-  if (message.startsWith("["))
-    message = message.replace(QRegExp("^\\[\\d*-?\\d*\\]\\s*") , "");
-  // Ignore empty and duplicate messages
-  if (message.isEmpty()) 
-    return;
-  if (!messages.isEmpty() && message == messages[0]) 
-    return;
-  // Add message
-  messages.prepend(message);
-  if (messages.size() >= 16)
-    messages.removeLast();
-  // Show message
-  QString html;
-  for (int i=0; i<messages.size(); i++)
-    html = "<li>" + messages[i] + "</li>" + html;
-  html = "<html><ul>" + html + "</ul></html>";
-  ui.textEdit->setHtml(html);
-  QScrollBar *scrollBar = ui.textEdit->verticalScrollBar();
-  scrollBar->setValue(scrollBar->maximum());
-}
-
-void 
-QDjViewDialogError::prepare(QMessageBox::Icon icon, QString caption)
-{
-  if (icon != QMessageBox::NoIcon)
-    ui.iconLabel->setPixmap(QMessageBox::standardIcon(icon));
-  if (!caption.isEmpty())
-    setWindowTitle(caption);
-}
-
-void 
-QDjViewDialogError::okay()
-{
-  messages.clear();
-  accept();
-  hide();
-}
 
 
 
 // ----------------------------------------
-// QDJVIEW ACTIONS
-
-
+// ACTIONS
 
 
 QAction *
@@ -267,6 +196,12 @@ QDjView::createActions()
   actionNavLast = makeAction(tr("&Last Page"))
     << QIcon(":/images/icon_last.png")
     << tr("Jump to last document page.");
+  actionBack = makeAction(tr("&Backward"))
+    << QIcon(":/images/icon_back.png")
+    << tr("Backward in history.");
+  actionForw = makeAction(tr("&Forward"))
+    << QIcon(":/images/icon_forw.png")
+    << tr("Forward in history.");
   actionRotateLeft = makeAction(tr("Rotate &Left"))
     << QIcon(":/images/icon_rotateleft.png")
     << tr("Rotate page image counter-clockwise.");
@@ -307,15 +242,11 @@ QDjView::createActions()
   actionPreferences = makeAction(tr("Prefere&nces")) 
     << QIcon(":/images/icon_prefs.png")
     << tr("Show the preferences dialog.");
-  actionViewToolBar = toolBar->toggleViewAction()
-    << tr("Show/hide the standard toolBar.");
-  actionViewSearchBar = searchBar->toggleViewAction()
-    << QKeySequence("F10")
-    << QIcon(":/images/icon_find.png")
-    << tr("Show/hide the search toolBar.");
-  actionViewStatusbar = makeAction(tr("Statusbar"), true)
+  actionViewToolBar = makeAction(tr("Show &tool bar"),true)
+    << tr("Show/hide the standard tool bar.");
+  actionViewStatusbar = makeAction(tr("Show &status bar"), true)
     << tr("Show/hide the status bar.");
-  actionViewSidebar = sideBar->toggleViewAction()
+  actionViewSidebar = makeAction(tr("Show s&ide bar"),true)
     << QKeySequence("F9")
     << QIcon(":/images/icon_sidebar.png")
     << tr("Show/hide the side bar.");
@@ -333,6 +264,33 @@ QDjView::createActions()
     << tr("Toggle side-by-side layout mode.");
   actionLayoutPageSettings = makeAction(tr("Obey &annotations"), false)
     << tr("Obey/ignore layout instructions from the page data.");
+
+  
+  // temporary connections
+  connect(actionQuit, SIGNAL(triggered()),
+          QCoreApplication::instance(), SLOT(quit()));
+  connect(actionClose, SIGNAL(triggered()),
+          this, SLOT(close()));
+  connect(actionLayoutContinuous,SIGNAL(toggled(bool)),
+          widget, SLOT(setContinuous(bool)));
+  connect(actionLayoutSideBySide,SIGNAL(toggled(bool)),
+          widget, SLOT(setSideBySide(bool)));
+  
+}
+
+void
+QDjView::updateActions()
+{
+}
+
+
+
+// ----------------------------------------
+// MENUS
+
+void
+QDjView::createMenus()
+{
 
   // Layout main menu
   QMenu *fileMenu = menuBar->addMenu(tr("&File", "File|"));
@@ -397,11 +355,11 @@ QDjView::createActions()
   gotoMenu->addAction(actionNavNext);
   gotoMenu->addAction(actionNavLast);
   QMenu *settingsMenu = menuBar->addMenu(tr("&Settings", "Settings|"));
-  QMenu *toolBarMenu = settingsMenu->addMenu("S&how");
-  toolBarMenu->addAction(actionViewSidebar);
-  toolBarMenu->addAction(actionViewSearchBar);
-  toolBarMenu->addAction(actionViewToolBar);
-  toolBarMenu->addAction(actionViewStatusbar);
+  settingsMenu->addAction(actionViewSidebar);
+  settingsMenu->addAction(actionViewToolBar);
+  settingsMenu->addAction(actionViewStatusbar);
+  settingsMenu->addSeparator();
+  settingsMenu->addAction(actionLayoutPageSettings);
   settingsMenu->addSeparator();
   settingsMenu->addAction(actionPreferences);
   QMenu *helpMenu = menuBar->addMenu(tr("&Help", "Help|"));
@@ -452,51 +410,100 @@ QDjView::createActions()
   contextMenu->addSeparator();
   contextMenu->addAction(actionPreferences);
   contextMenu->addAction(actionAbout);
-  
-  // Layout toolBar
-  modeCombo->hide();
-  //pageCombo->hide();
-  //zoomCombo->hide();
-  if (viewerMode == STANDALONE)
-    toolBar->addAction(actionOpen);
-  toolBar->addAction(actionSave);
-  toolBar->addAction(actionPrint);
-  toolBar->addAction(actionSearch);
-  toolBar->addAction(actionLayoutContinuous);
-  toolBar->addAction(actionLayoutSideBySide);
-  toolBar->addWidget(modeCombo);
-  toolBar->addWidget(zoomCombo);
-  toolBar->addAction(actionZoomIn);
-  toolBar->addAction(actionZoomOut);
-  //toolBar->addAction(actionRotateRight);
-  //toolBar->addAction(actionRotateLeft);
-  toolBar->addWidget(pageCombo);
-  toolBar->addAction(actionNavFirst);
-  toolBar->addAction(actionNavPrev);
-  toolBar->addAction(actionNavNext);
-  toolBar->addAction(actionNavLast);
-
-  // temporary connections
-  connect(actionQuit, SIGNAL(triggered()),
-          QCoreApplication::instance(), SLOT(quit()));
-  connect(actionClose, SIGNAL(triggered()),
-          this, SLOT(close()));
-  connect(actionLayoutContinuous,SIGNAL(toggled(bool)),
-          widget, SLOT(setContinuous(bool)));
-  connect(actionLayoutSideBySide,SIGNAL(toggled(bool)),
-          widget, SLOT(setSideBySide(bool)));
-
 }
 
 
+
+// ----------------------------------------
+// TOOLBAR
+
+
 void
-QDjView::updateActions()
+QDjView::updateToolBar(void)
 {
+  bool wasHidden = toolBar->isHidden();
+  toolBar->hide();
+  toolBar->clear();
+
+  modeCombo->hide();
+  pageCombo->hide();
+  zoomCombo->hide();
+  
+  if (viewerMode == STANDALONE) 
+    {
+      if (tools & QDjViewPrefs::TOOL_NEW)
+        toolBar->addAction(actionNew);
+      if (tools & QDjViewPrefs::TOOL_OPEN)
+        toolBar->addAction(actionOpen);
+    }
+  if (tools & QDjViewPrefs::TOOL_SAVE)
+    {
+      toolBar->addAction(actionSave);
+    }
+  if (tools & QDjViewPrefs::TOOL_PRINT)
+    {
+      toolBar->addAction(actionPrint);
+    }
+  if (tools & QDjViewPrefs::TOOL_SEARCH)
+    {
+      toolBar->addAction(actionSearch);
+    }
+  if (tools & QDjViewPrefs::TOOL_LAYOUT)
+    {
+      toolBar->addAction(actionLayoutContinuous);
+      toolBar->addAction(actionLayoutSideBySide);
+    }
+  if ((tools & QDjViewPrefs::TOOL_MODECOMBO) ||
+      (tools & QDjViewPrefs::TOOL_MODEBUTTONS) )
+    {
+      modeCombo->show();
+      toolBar->addWidget(modeCombo);
+    }
+  if (tools & QDjViewPrefs::TOOL_ZOOMCOMBO)
+    {
+      zoomCombo->show();
+      toolBar->addWidget(zoomCombo);
+    }
+  if (tools & QDjViewPrefs::TOOL_ZOOMBUTTONS)
+    {
+      toolBar->addAction(actionZoomIn);
+      toolBar->addAction(actionZoomOut);
+    }
+  if (tools & QDjViewPrefs::TOOL_ROTATE)
+    {
+      toolBar->addAction(actionRotateRight);
+      toolBar->addAction(actionRotateLeft);
+    }
+  if (tools & QDjViewPrefs::TOOL_PAGECOMBO)
+    {
+      pageCombo->show();
+      toolBar->addWidget(pageCombo);
+    }
+  if (tools & QDjViewPrefs::TOOL_FIRSTLAST)
+    {
+      toolBar->addAction(actionNavFirst);
+    }
+  if (tools & QDjViewPrefs::TOOL_PREVNEXT)
+    {
+      toolBar->addAction(actionNavPrev);
+      toolBar->addAction(actionNavNext);
+    }
+  if (tools & QDjViewPrefs::TOOL_FIRSTLAST)
+    {
+      toolBar->addAction(actionNavLast);
+    }
+  if (tools & QDjViewPrefs::TOOL_BACKFORW)
+    {
+      toolBar->addAction(actionBack);
+      toolBar->addAction(actionForw);
+    }
+
+  toolBar->setVisible(!wasHidden);
 }
 
 
 // ----------------------------------------
-// QDJVIEW
+// CONSTRUCTOR
 
 
 QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
@@ -513,7 +520,8 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
     appearancePrefs = &generalPrefs->forFullPagePlugin;
   else
     appearancePrefs = &generalPrefs->forStandalone;
-  appearanceFlags = appearancePrefs->flags;
+  options = appearancePrefs->options;
+  tools = generalPrefs->tools;
   
   // create dialogs
   // - error dialog
@@ -597,21 +605,16 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   zoomCombo = new QComboBox(toolBar);
   pageCombo = new QComboBox(toolBar);
   addToolBar(toolBar);
-  // - searchBar  
-  searchBar = new QToolBar(this);  // for now
-  searchBar->setObjectName("searchbar");
-  searchBar->setWindowTitle("Searchbar");
-  addToolBar(searchBar);
-  searchBar->hide();
   // - sidebar  
   sideBar = new QDockWidget(this);  // for now
   sideBar->setObjectName("sidebar");
   sideBar->setWindowTitle("Sidebar");
   addDockWidget(Qt::LeftDockWidgetArea, sideBar);
-
-
+  
   // create actions
   createActions();
+  createMenus();
+  updateToolBar();
   updateActions();
 
   // setup
@@ -864,13 +867,6 @@ QDjView::errorCondition(int pageno)
                    tr("Decoding DjVu document ..."),
                    message);
 }
-
-
-
-// ----------------------------------------
-// MOC
-
-#include "moc_qdjview.inc"
 
 
 

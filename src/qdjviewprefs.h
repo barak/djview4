@@ -20,6 +20,8 @@
 #define QDJVIEWPREFS_H
 
 #include <QObject>
+#include <QByteArray>
+#include <QFlags>
 
 #include "qdjvuwidget.h"
 
@@ -28,63 +30,81 @@ class QDjViewPrefs : public QObject
 {
   Q_OBJECT
 
-private:
-  QDjViewPrefs(void);
-  
 public:
-  static QDjViewPrefs *create();
 
-  enum {
-    SHOW_MENUBAR        = 0x01,
-    SHOW_TOOLBAR        = 0x02,
-    SHOW_SEARCHBAR      = 0x04,
-    SHOW_SIDEBAR        = 0x08,
-    SHOW_STATUSBAR      = 0x10,
-    SHOW_SCROLLBARS     = 0x20,
-    SHOW_FRAME          = 0x40,
-    SHOW_ALL   = 0x7f,
-    LAYOUT_CONTINUOUS   = 0x100,
-    LAYOUT_SIDEBYSIDE   = 0x200,
-    LAYOUT_PAGESETTINGS = 0x400,
-    LAYOUT_ALL = 0xf00,
+  enum Option {
+    SHOW_MENUBAR        = 0x0001,
+    SHOW_TOOLBAR        = 0x0002,
+    SHOW_SIDEBAR        = 0x0004,
+    SHOW_STATUSBAR      = 0x0010,
+    SHOW_SCROLLBARS     = 0x0020,
+    SHOW_FRAME          = 0x0040,
+    LAYOUT_CONTINUOUS   = 0x0100,
+    LAYOUT_SIDEBYSIDE   = 0x0200,
+    LAYOUT_PAGESETTINGS = 0x0400,
     HANDLE_KEYBOARD     = 0x1000,
     HANDLE_LINKS        = 0x2000,
     HANDLE_CONTEXTMENU  = 0x4000,
-    HANDLE_ALL = 0x7000,
-    ACTION_MODECOMBO    = 0x00010000,
-    ACTION_MODEBUTTONS  = 0x00020000,
-    ACTION_ZOOMCOMBO    = 0x00040000,
-    ACTION_ZOOMBUTTONS  = 0x00080000,
-    ACTION_PAGECOMBO    = 0x00100000,
-    ACTION_PREVNEXT     = 0x00200000,
-    ACTION_FIRSTLAST    = 0x00400000,
-    ACTION_BACKFORW     = 0x00800000,
-    ACTION_ROTATE       = 0x01000000,
-    ACTION_SEARCH       = 0x02000000,
-    ACTION_SAVE         = 0x04000000,
-    ACTION_PRINT        = 0x08000000,
-    ACTION_ALL = 0x0fff0000,
+    DEFAULT_OPTIONS = 0x7077,
   };
+
+  Q_DECLARE_FLAGS(Options, Option)
+
+  enum Tool {
+    TOOL_MODECOMBO    = 0x00001,
+    TOOL_MODEBUTTONS  = 0x00002,
+    TOOL_ZOOMCOMBO    = 0x00004,
+    TOOL_ZOOMBUTTONS  = 0x00008,
+    TOOL_PAGECOMBO    = 0x00010,
+    TOOL_PREVNEXT     = 0x00020,
+    TOOL_FIRSTLAST    = 0x00040,
+    TOOL_BACKFORW     = 0x00080,
+    TOOL_ROTATE       = 0x00100,
+    TOOL_SEARCH       = 0x00200,
+    TOOL_SAVE         = 0x00400,
+    TOOL_PRINT        = 0x00800,
+    TOOL_OPEN         = 0x01000,
+    TOOL_NEW          = 0x02000,
+    TOOL_LAYOUT       = 0x04000,
+    DEFAULT_TOOLS = 0x5e7c
+  };
+
+  Q_DECLARE_FLAGS(Tools, Tool)
 
   struct Appearance {
     Appearance();
-    int flags;
-    int zoom;
+    Options                  options;
+    int                      zoom;
     QDjVuWidget::DisplayMode dispMode;
     QDjVuWidget::Align       hAlign;
     QDjVuWidget::Align       vAlign;
+    QByteArray               toolState;
   };
 
   Appearance forStandalone;
   Appearance forFullScreen;
   Appearance forEmbeddedPlugin;
   Appearance forFullPagePlugin;
-
+  Tools  tools;
   double gamma;
   double printerGamma;
   bool   optimizeLCD;
   
+  static QDjViewPrefs *create();
+  void load();
+  void save();
+  void publishChange();
+  
+signals:
+  void preferencesChanged();
+
+private:
+  QDjViewPrefs(void);
 };
+
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(QDjViewPrefs::Options)
+Q_DECLARE_OPERATORS_FOR_FLAGS(QDjViewPrefs::Tools)
 
 
 #endif

@@ -38,30 +38,28 @@ QDjViewPrefs::create(void)
 
 
 QDjViewPrefs::Appearance::Appearance()
-  : flags    ( SHOW_ALL|HANDLE_ALL|ACTION_ALL ),
-    zoom     ( QDjVuWidget::ZOOM_FITWIDTH ),
-    dispMode ( QDjVuWidget::DISPLAY_COLOR ),
-    hAlign   ( QDjVuWidget::ALIGN_CENTER ),
-    vAlign   ( QDjVuWidget::ALIGN_CENTER )
+  : options(QDjViewPrefs::DEFAULT_OPTIONS),
+    zoom(QDjVuWidget::ZOOM_FITWIDTH),
+    dispMode(QDjVuWidget::DISPLAY_COLOR),
+    hAlign(QDjVuWidget::ALIGN_CENTER),
+    vAlign(QDjVuWidget::ALIGN_CENTER)
 {
 }
 
 QDjViewPrefs::QDjViewPrefs(void)
-  : QObject(QCoreApplication::instance())
+  : QObject(QCoreApplication::instance()),
+    tools(DEFAULT_TOOLS),
+    gamma(2.2),
+    printerGamma(0.0),
+    optimizeLCD(false)
 {
-  // Sane defaults
-  forStandalone.flags &= ~(SHOW_SIDEBAR);
-  forFullScreen.flags &= ~(SHOW_ALL);
-  forFullScreen.flags |= (SHOW_FRAME);
-  
-  forFullPagePlugin.flags &= ~(SHOW_ALL);
-  forFullPagePlugin.flags |= (SHOW_FRAME|SHOW_TOOLBAR|LAYOUT_PAGESETTINGS);
-  forEmbeddedPlugin.flags &= ~(SHOW_ALL);
-  forEmbeddedPlugin.flags |= (SHOW_FRAME|LAYOUT_PAGESETTINGS);
-  
-  gamma = 2.2;
-  printerGamma = 0;
-  optimizeLCD = true;
+  forFullScreen.options &= ~(SHOW_MENUBAR|SHOW_STATUSBAR);
+  forFullScreen.options &= ~(SHOW_TOOLBAR|SHOW_SIDEBAR);
+  forFullPagePlugin.options |= LAYOUT_PAGESETTINGS;
+  forFullPagePlugin.options &= ~(SHOW_MENUBAR|SHOW_STATUSBAR);
+  forEmbeddedPlugin.options |= LAYOUT_PAGESETTINGS;
+  forEmbeddedPlugin.options &= ~(SHOW_MENUBAR|SHOW_STATUSBAR);
+  forEmbeddedPlugin.options &= ~(SHOW_TOOLBAR|SHOW_SIDEBAR);
 }
 
 

@@ -82,8 +82,9 @@ protected:
   QAction *makeAction(QString text, bool value);
   void createActions(void);
   void updateActions(void);
+  void createMenus(void);
+  void updateToolBar(void);
   bool eventFilter(QObject *watched, QEvent *event);
-
   QString pageName(int pageno);
 
 protected slots:
@@ -102,7 +103,9 @@ protected:
   QDjVuContext             &djvuContext;
   QDjViewPrefs             *generalPrefs;
   QDjViewPrefs::Appearance *appearancePrefs;
-  int                       appearanceFlags;
+  
+  QDjViewPrefs::Options     options;
+  QDjViewPrefs::Tools       tools;
   
   QLabel             *splash;
   QDjVuWidget        *widget;
@@ -117,7 +120,6 @@ protected:
   QComboBox          *modeCombo;
   QComboBox          *zoomCombo;
   QComboBox          *pageCombo;
-  QToolBar           *searchBar;
   QDockWidget        *sideBar;
   
   QDjVuDocument          *document;
@@ -152,6 +154,8 @@ protected:
   QAction *actionNavNext;
   QAction *actionNavPrev;
   QAction *actionNavLast;
+  QAction *actionBack;
+  QAction *actionForw;
   QAction *actionRotateLeft;
   QAction *actionRotateRight;
   QAction *actionRotate0;
@@ -167,7 +171,6 @@ protected:
   QAction *actionDisplayBackground;
   QAction *actionPreferences;
   QAction *actionViewToolBar;
-  QAction *actionViewSearchBar;
   QAction *actionViewSidebar;
   QAction *actionViewStatusbar;
   QAction *actionViewFullScreen;
