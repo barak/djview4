@@ -31,9 +31,9 @@ class QDjVuHttpDocument : public QDjVuDocument
   Q_OBJECT
 
 public:
-  QDjVuHttpDocument(QObject *parent=0);
-  QDjVuHttpDocument(int nconnections, QObject *parent=0);
-  QDjVuHttpDocument(QDjVuContext *ctx, QUrl url, QObject *parent=0);
+  QDjVuHttpDocument(int nConnections=4, bool autoDelete=false, QObject *parent=0);
+  QDjVuHttpDocument(bool autoDelete, QObject *parent=0);
+  QDjVuHttpDocument(QObject *parent);
   void setProxy(QString host, int port=8080, QString user="", QString pass="");
   bool setUrl(QDjVuContext *ctx, QUrl url, bool cache=true);
   

@@ -25,6 +25,7 @@
 
 #include <QDebug>
 #include <QCoreApplication>
+#include <QAtomic>
 #include <QFileInfo>
 #include <QFile>
 #include <QString>
@@ -201,8 +202,10 @@ class QDjVuDocumentPrivate : public QObject
 {
   Q_OBJECT
 public:
+  bool autoDelete;
+  QAtomic refCount;
   QSet<QObject*> running;
-  QDjVuDocumentPrivate(QObject *parent=0);
+  QDjVuDocumentPrivate();
   void add(QObject *p);
   void add(QDjVuPage *p);
 protected slots:
@@ -212,8 +215,8 @@ signals:
   void idle();
 };
 
-QDjVuDocumentPrivate::QDjVuDocumentPrivate(QObject *parent)
-  : QObject(parent)
+QDjVuDocumentPrivate::QDjVuDocumentPrivate()
+  : autoDelete(false)
 {
 }
 
@@ -260,33 +263,61 @@ QDjVuDocumentPrivate::pageinfo()
 
 QDjVuDocument::~QDjVuDocument()
 {
-  if (isValid())
+  if (document)
     {
       ddjvu_document_set_user_data(document, 0);
       ddjvu_document_release(document);
       document = 0;
     }
+  if (priv)
+    {
+      delete priv;
+      priv = 0;
+    }
 }
 
 /*! Construct an empty \a QDjVuDocument object.
-    Argument \a parent indicates its parent in 
-    the \a QObject hierarchy. */
+  Argument \a parent indicates its parent in the \a QObject hierarchy. 
+  When argument \a autoDelete is set to true, the object also 
+  maintains a reference count that can be modified using functions
+  \a ref() and \a deref(). The object is deleted when function \a deref()
+  decrements the reference count to zero. */
 
-QDjVuDocument::QDjVuDocument(QObject *parent)
-  : QObject(parent), document(0), priv(new QDjVuDocumentPrivate(this))
+QDjVuDocument::QDjVuDocument(bool autoDelete, QObject *parent)
+  : QObject(parent), document(0), priv(new QDjVuDocumentPrivate)
 {
+  priv->autoDelete = autoDelete;
   connect(priv, SIGNAL(idle()), this, SIGNAL(idle()));
 }
 
 /*! \overload */
 
-
-QDjVuDocument::QDjVuDocument(QDjVuContext *ctx, QString f, QObject *parent)
-  : QObject(parent), document(0), priv(new QDjVuDocumentPrivate(this))
+QDjVuDocument::QDjVuDocument(QObject *parent)
+  : QObject(parent), document(0), priv(new QDjVuDocumentPrivate)
 {
   connect(priv, SIGNAL(idle()), this, SIGNAL(idle()));
-  setFileName(ctx, f);
 }
+
+/*! Increments the reference count. */
+
+void 
+QDjVuDocument::ref()
+{
+  priv->refCount.ref();
+}
+
+/*! Decrements the reference count. 
+  If the object was created with flag \a autoDelete,
+  function \a deleteLater() is called when the 
+  reference count reaches 0. */
+
+void 
+QDjVuDocument::deref()
+{
+  if (!priv->refCount.deref() && priv->autoDelete)
+    delete this;
+}
+
 
 /*! Associates the \a QDjVuDocument object with the 
     \a QDjVuContext object \ctx in order to decode

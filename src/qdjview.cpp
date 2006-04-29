@@ -25,6 +25,8 @@
 #include <QObject>
 #include <QCoreApplication>
 #include <QApplication>
+#include <QEvent>
+#include <QCloseEvent>
 #include <QMainWindow>
 #include <QDockWidget>
 #include <QMenuBar>
@@ -506,6 +508,7 @@ QDjView::updateToolBar(void)
 // CONSTRUCTOR
 
 
+
 QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   : QMainWindow(parent),
     viewerMode(mode),
@@ -523,13 +526,13 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   options = appearancePrefs->options;
   tools = generalPrefs->tools;
   
-  // create dialogs
-  // - error dialog
+  // Create dialogs
   errorDialog = new QDjViewDialogError(this);
   
-  // create widgets
-  QWidget *central = new QWidget(this);
+  // Create widgets
+
   // - djvu widget
+  QWidget *central = new QWidget(this);
   widget = new QDjVuWidget(central);
   widget->setFrameShape(QFrame::Panel);
   widget->setFrameShadow(QFrame::Sunken);
@@ -565,22 +568,26 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 #if QT_VERSION >= 0x040100
   splash->setAutoFillBackground(true);
 #endif
+
   // - central layout
   layout = new QStackedLayout(central);
   layout->addWidget(widget);
   layout->addWidget(splash);
   layout->setCurrentWidget(splash);
   setCentralWidget(central);
+
   // - context menu
   contextMenu = new QMenu(this);
   widget->setContextMenu(contextMenu);
+
   // - menubar
   menuBar = new QMenuBar(this);
   setMenuBar(menuBar);
+
   // - statusbar
   statusBar = new QStatusBar(this);
   QFont font = QApplication::font();
-  font.setPointSize(font.pointSize() - 3);
+  font.setPointSize(font.pointSize() * 3 / 4);
   QFontMetrics metric(font);
   pageLabel = new QLabel(statusBar);
   pageLabel->setFont(font);
@@ -597,7 +604,8 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   mouseLabel->setMinimumWidth(metric.width(" x=888 y=888 "));
   statusBar->addPermanentWidget(mouseLabel);
   setStatusBar(statusBar);
-  // - toolBar  
+
+  // - toolbar  
   toolBar = new QToolBar(this);
   toolBar->setObjectName("toolbar");
   toolBar->setWindowTitle("Toolbar");
@@ -605,26 +613,26 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   zoomCombo = new QComboBox(toolBar);
   pageCombo = new QComboBox(toolBar);
   addToolBar(toolBar);
+
   // - sidebar  
   sideBar = new QDockWidget(this);  // for now
   sideBar->setObjectName("sidebar");
   sideBar->setWindowTitle("Sidebar");
   addDockWidget(Qt::LeftDockWidgetArea, sideBar);
   
-  // create actions
+  // Create actions
   createActions();
   createMenus();
   updateToolBar();
   updateActions();
 
-  // setup
+  // Setup
   setWindowTitle(tr("DjView"));
   setWindowIcon(QIcon(":/images/icon32_djvu.png"));
   if (QApplication::windowIcon().isNull())
     QApplication::setWindowIcon(windowIcon());
-  
-  // connections
 }
+
 
 QDjVuWidget *
 QDjView::djvuWidget()
@@ -632,71 +640,99 @@ QDjView::djvuWidget()
   return widget;
 }
 
+
 void 
 QDjView::closeDocument()
 {
   layout->setCurrentWidget(splash);
-  if (document)
-    disconnect(document, 0, this, 0);
+  QDjVuDocument *doc = document;
+  if (doc)
+    disconnect(doc, 0, this, 0);
+  widget->setDocument(0);
   documentPages.clear();
   documentFileName.clear();
   documentUrl.clear();
   document = 0;
-  widget->setDocument(0);
+  if (doc)
+    emit documentClosed();
 }
 
+
 void 
-QDjView::open(QDjVuDocument *doc, bool own)
+QDjView::open(QDjVuDocument *doc)
 {
   closeDocument();
   document = doc;
-  widget->setDocument(document, own);
-  docinfo();
-  connect(document,SIGNAL(docinfo(void)), this, SLOT(docinfo(void)));
+  connect(doc,SIGNAL(destroyed(void)), this, SLOT(closeDocument(void)));
+  connect(doc,SIGNAL(docinfo(void)), this, SLOT(docinfo(void)));
+  disconnect(document, 0, errorDialog, 0);
+  widget->setDocument(document);
   layout->setCurrentWidget(widget);
+  updateActions();
+  docinfo();
 }
+
 
 bool
 QDjView::open(QString filename)
 {
   closeDocument();
-  QDjVuDocument *doc = new QDjVuDocument(this);
+  QDjVuDocument *doc = new QDjVuDocument(true);
   connect(doc, SIGNAL(error(QString,QString,int)),
           errorDialog, SLOT(error(QString,QString,int)));
   doc->setFileName(&djvuContext, filename);
   if (!doc->isValid())
     {
+      delete doc;
       raiseErrorDialog(QMessageBox::Critical,
                        tr("Open DjVu file ..."),
                        tr("Cannot open file '%1'.").arg(filename) );
       return false;
     }
+  open(doc);
   setWindowTitle(tr("Djview - %1").arg(filename));
-  open(doc, true);
   documentFileName = filename;
   return true;
 }
+
 
 bool
 QDjView::open(QUrl url)
 {
   closeDocument();
-  QDjVuHttpDocument *doc = new QDjVuHttpDocument(this);
+  QDjVuHttpDocument *doc = new QDjVuHttpDocument(true);
   connect(doc, SIGNAL(error(QString,QString,int)),
           errorDialog, SLOT(error(QString,QString,int)));
   doc->setUrl(&djvuContext, url);
   if (!doc->isValid())
     {
+      delete doc;
       raiseErrorDialog(QMessageBox::Critical,
                        tr("Open DjVu document ..."),
                        tr("Cannot open URL '%1'.").arg(url.toString()) );
       return false;
     }
+  open(doc);
   setWindowTitle(tr("Djview - %1").arg(url.toString()));
-  open(doc, true);
   documentUrl = url;
+  parseCgiArguments(url);
   return true;
 }
+
+
+void 
+QDjView::goToPage(int)
+{
+  // TODO
+}
+
+
+void 
+QDjView::goToPage(QString)
+{
+  // TODO
+}
+
 
 void
 QDjView::raiseErrorDialog(QMessageBox::Icon icon, 
@@ -708,6 +744,7 @@ QDjView::raiseErrorDialog(QMessageBox::Icon icon,
   errorDialog->raise();
 }
 
+
 int
 QDjView::execErrorDialog(QMessageBox::Icon icon, 
                          QString caption, QString message)
@@ -716,6 +753,35 @@ QDjView::execErrorDialog(QMessageBox::Icon icon,
   errorDialog->prepare(icon, caption);
   return errorDialog->exec();
 }
+
+
+bool 
+QDjView::parseArgument(QString keyEqualValue)
+{
+  int n = keyEqualValue.indexOf("=");
+  if (n < 0)
+    return parseArgument(keyEqualValue, "yes");
+  else
+    return parseArgument(keyEqualValue.left(n),
+                         keyEqualValue.mid(n+1));
+}
+
+
+bool 
+QDjView::parseArgument(QString key, QString value)
+{
+  // TODO
+  return false;
+}
+
+
+void 
+QDjView::parseCgiArguments(QUrl url)
+{
+  // TODO
+}
+
+
 
 
 // -----------------------------------
@@ -736,7 +802,15 @@ QDjView::pageName(int pageno)
 
 
 // -----------------------------------
-// EVENT FILTER
+// OVERRIDES
+
+
+void
+QDjView::closeEvent(QCloseEvent *event)
+{
+  closeDocument();
+  QMainWindow::closeEvent(event);
+}
 
 
 bool 
@@ -767,8 +841,8 @@ QDjView::eventFilter(QObject *watched, QEvent *event)
 void 
 QDjView::docinfo()
 {
-  if (document &&
-      ddjvu_document_decoding_status(*document) == DDJVU_JOB_OK)
+  if (document && documentPages.size()==0 &&
+      ddjvu_document_decoding_status(*document)==DDJVU_JOB_OK)
     {
       // Obtain information about pages.
       int n = ddjvu_document_get_filenum(*document);
@@ -794,10 +868,12 @@ QDjView::layoutChanged()
 {
 }
 
+
 void 
 QDjView::pageChanged(int pageno)
 {
 }
+
 
 void 
 QDjView::pointerPosition(const Position &pos, const PageInfo &page)
@@ -815,6 +891,7 @@ QDjView::pointerPosition(const Position &pos, const PageInfo &page)
   m->clear();
   m->setMinimumWidth(qMax(m->minimumWidth(), m->sizeHint().width()));
 }
+
 
 void 
 QDjView::pointerEnter(const Position &pos, miniexp_t maparea)
@@ -839,21 +916,25 @@ QDjView::pointerEnter(const Position &pos, miniexp_t maparea)
   statusBar->showMessage(link);
 }
 
+
 void 
 QDjView::pointerLeave(const Position &pos, miniexp_t maparea)
 {
   statusBar->clearMessage();
 }
 
+
 void 
 QDjView::pointerClick(const Position &pos, miniexp_t maparea)
 {
 }
 
+
 void 
 QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
 {
 }
+
 
 void 
 QDjView::errorCondition(int pageno)

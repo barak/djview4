@@ -31,7 +31,10 @@ main(int argc, char *argv[])
 {
   QApplication app(argc, argv);  
   QDjVuContext djvuContext(argv[0]);
+
   QDjView *main = new QDjView(djvuContext);
+  main->setAttribute(Qt::WA_DeleteOnClose);
+
   bool okay = true;
   if (argc > 1)
     {

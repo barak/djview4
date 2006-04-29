@@ -49,31 +49,39 @@ QDjVuHttpDocument::init(void)
 
 
 /*! Construct a \a QDjVuHttpDocument object that can perform
-    up to \a nconnections simultaneous HTTP connections. */
+    up to \a nConnections simultaneous HTTP connections. 
+    See \a QDjVuDocument::QDjVuDocument for the explanation
+    of the other two arguments. */
 
-QDjVuHttpDocument::QDjVuHttpDocument(int nconnections, QObject *p)
-  : QDjVuDocument(p), connections(nconnections), ctx(0)
+QDjVuHttpDocument::QDjVuHttpDocument(int nConnections, bool autoDelete, 
+                                     QObject *parent)
+  : QDjVuDocument(autoDelete, parent), 
+    connections(nConnections), 
+    ctx(0)
 {
   init();
 }
 
 
-/*! Convenience constructor that allows 4 simultaneous HTTP connections. */
+/*! \overload */
 
-QDjVuHttpDocument::QDjVuHttpDocument(QObject *p)
-  : QDjVuDocument(p), connections(4), ctx(0)
+QDjVuHttpDocument::QDjVuHttpDocument(bool autoDelete, QObject *parent)
+  : QDjVuDocument(autoDelete, parent), 
+    connections(4), 
+    ctx(0)
 {
   init();
 }
 
-/*! Convenience constructor that calls \a setUrl 
-  to specify the target url. */
 
-QDjVuHttpDocument::QDjVuHttpDocument(QDjVuContext *ctx, QUrl url, QObject *p)
-  : QDjVuDocument(p), connections(4), ctx(0)
+/*! \overload */
+
+QDjVuHttpDocument::QDjVuHttpDocument(QObject *parent)
+  : QDjVuDocument(parent), 
+    connections(4), 
+    ctx(0)
 {
   init();
-  setUrl(ctx, url, true);
 }
 
 

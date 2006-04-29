@@ -45,7 +45,7 @@ class QToolBar;
 class QDockWidget;
 class QStatusBar;
 class QComboBox;
-
+class QCloseEvent;
 
 
 class QDjView : public QMainWindow
@@ -61,19 +61,28 @@ class QDjView : public QMainWindow
   };
 
   QDjView(QDjVuContext &context, ViewerMode mode=STANDALONE, QWidget *parent=0);
-
-  void open(QDjVuDocument *document, bool own=true);
+  
+  void open(QDjVuDocument *document);
   bool open(QString filename);
   bool open(QUrl url);
-  void closeDocument();
+
   QDjVuWidget *djvuWidget();
   
+  bool parseArgument(QString keyEqualValue);
+  bool parseArgument(QString key, QString value);
+  void parseCgiArguments(QUrl url);
 
 public slots:
+  void closeDocument();
+  void goToPage(int);
+  void goToPage(QString);
   void raiseErrorDialog(QMessageBox::Icon icon, 
                         QString caption="", QString message="");
   int  execErrorDialog (QMessageBox::Icon icon,
                         QString caption="", QString message="");
+
+signals:
+  void documentClosed();
   
 protected:
   typedef QDjVuWidget::Position Position;
@@ -84,8 +93,11 @@ protected:
   void updateActions(void);
   void createMenus(void);
   void updateToolBar(void);
-  bool eventFilter(QObject *watched, QEvent *event);
+
   QString pageName(int pageno);
+
+  virtual bool eventFilter(QObject *watched, QEvent *event);
+  virtual void closeEvent(QCloseEvent *event);
 
 protected slots:
   void docinfo();

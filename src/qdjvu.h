@@ -100,8 +100,10 @@ protected:
 
 public:
   virtual ~QDjVuDocument();
-  QDjVuDocument(QObject *parent=0);
-  QDjVuDocument(QDjVuContext *ctx, QString filename, QObject *parent=0);
+  QDjVuDocument(QObject *parent);
+  QDjVuDocument(bool autoDelete=false, QObject *parent=0);
+  void ref();
+  void deref();
   bool setFileName(QDjVuContext *ctx, QString filename, bool cache=true);
 protected:
   bool setUrl(QDjVuContext *ctx, QUrl url, bool cache=true);

@@ -108,7 +108,7 @@ public:
   QDjVuWidget(QDjVuDocument *doc, QWidget *parent=0);
   
   QDjVuDocument *document(void) const;
-  void setDocument(QDjVuDocument *d, bool own=false);
+  void setDocument(QDjVuDocument *d);
   int page(void) const;
   Position position(void) const;
   Position position(const QPoint &point) const;

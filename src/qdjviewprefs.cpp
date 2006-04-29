@@ -32,7 +32,10 @@ QDjViewPrefs::create(void)
   QMutex mutex;
   QMutexLocker locker(&mutex);
   if (! preferences)
-    preferences = new QDjViewPrefs();
+    {
+      preferences = new QDjViewPrefs();
+      preferences->load();
+    }
   return preferences;
 }
 
@@ -50,8 +53,7 @@ QDjViewPrefs::QDjViewPrefs(void)
   : QObject(QCoreApplication::instance()),
     tools(DEFAULT_TOOLS),
     gamma(2.2),
-    printerGamma(0.0),
-    optimizeLCD(false)
+    printerGamma(0.0)
 {
   forFullScreen.options &= ~(SHOW_MENUBAR|SHOW_STATUSBAR);
   forFullScreen.options &= ~(SHOW_TOOLBAR|SHOW_SIDEBAR);
@@ -62,6 +64,17 @@ QDjViewPrefs::QDjViewPrefs(void)
   forEmbeddedPlugin.options &= ~(SHOW_TOOLBAR|SHOW_SIDEBAR);
 }
 
+
+
+void
+QDjViewPrefs::load(void)
+{
+}
+
+void
+QDjViewPrefs::save(void)
+{
+}
 
 
 

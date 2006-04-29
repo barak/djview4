@@ -88,15 +88,10 @@ public:
   Tools  tools;
   double gamma;
   double printerGamma;
-  bool   optimizeLCD;
   
   static QDjViewPrefs *create();
   void load();
   void save();
-  void publishChange();
-  
-signals:
-  void preferencesChanged();
 
 private:
   QDjViewPrefs(void);

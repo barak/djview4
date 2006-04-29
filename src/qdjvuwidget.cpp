@@ -566,8 +566,8 @@ class QDjVuPrivate : public QObject
   Q_OBJECT
 
 private:
-  ~QDjVuPrivate();
-  QDjVuPrivate(QDjVuWidget *parent);
+  virtual ~QDjVuPrivate();
+  QDjVuPrivate(QDjVuWidget *widget);
   friend class QDjVuWidget;
   friend class QDjVuLens;
 
@@ -575,7 +575,6 @@ public:
   QDjVuWidget * const widget;   // the widget
 
   QDjVuDocument  *doc;
-  bool docOwned;                // document is a child of the widget
   bool docFailed;               // page decoding has failed
   bool docStopped;              // page decoding has stopped
   bool docReady;                // page decoding is done
@@ -696,16 +695,19 @@ public slots:
 
 QDjVuPrivate::~QDjVuPrivate()
 {
-  ddjvu_format_release(renderFormat);
+  if (doc) 
+    doc->deref();
+  doc = 0;
+  if (renderFormat)
+    ddjvu_format_release(renderFormat);
   renderFormat = 0;
 }
 
-QDjVuPrivate::QDjVuPrivate(QDjVuWidget *parent)
-  : QObject(parent), widget(parent)
+QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
+  : widget(widget)
 {
   // doc
   doc = 0;
-  docOwned = false;
   docReady = false;
   docStopped = false;
   docFailed = false;
@@ -1600,6 +1602,8 @@ QDjVuPrivate::info(QString message)
 
 QDjVuWidget::~QDjVuWidget()
 {
+  delete priv;
+  priv = 0;
 }
 
 /*! Construct a \a QDjVuWidget instance.
@@ -1687,29 +1691,29 @@ QDjVuWidget::document(void) const
     the widget. */
 
 void 
-QDjVuWidget::setDocument(QDjVuDocument *d, bool own)
+QDjVuWidget::setDocument(QDjVuDocument *d)
 {
   if (d != priv->doc)
     {
       // cleanup
       if (priv->doc)
-        disconnect(priv->doc, 0, priv, 0);
-      if (priv->doc && priv->docOwned)
-        delete priv->doc;
+        {
+          disconnect(priv->doc, 0, priv, 0);
+          priv->doc->deref();
+        }
       priv->doc = 0;
       priv->pageData.clear();
       priv->pageLayout.clear();
       priv->pageMap.clear();
       priv->pageVisible.clear();
       // setup
+      if (d)
+        d->ref();
       priv->doc = d;
       priv->docReady = false;
       priv->docStopped = false;
       priv->docFailed = false;
       priv->numPages = 1;
-      priv->docOwned = own;
-      if (priv->doc && priv->docOwned)
-        priv->doc->setParent(this);
       if (! (priv->doc && priv->doc->isValid()))
         priv->docFailed = true;
       // connect
@@ -1725,9 +1729,9 @@ QDjVuWidget::setDocument(QDjVuDocument *d, bool own)
                   priv, SLOT(info(QString)));
           connect(priv->doc, SIGNAL(idle()),
                   priv, SLOT(makePageRequests()));
+          priv->docinfo();
         }
       // update
-      priv->docinfo();
       priv->visibleRect.setRect(0,0,0,0);
       priv->currentPos = Position();
       priv->currentPoint = QPoint(0,0);
@@ -4175,14 +4179,31 @@ QDjVuWidget::displayModeForeground(void)
 void 
 QDjVuWidget::nextPage(void)
 {
-  setPage(qMin(page()+1, priv->numPages-1));
+  // Skip all fully displayed pages
+  int pageNo = page();
+  while (pageNo < priv->numPages - 1)
+    {
+      pageNo += 1;
+      if (! priv->pageMap.contains(pageNo) ||
+          ! priv->visibleRect.contains(priv->pageMap[pageNo]->rect) )
+        break;
+    }
+  setPage(pageNo);
 }
 
 /*! Move to the previous page. */
 void 
 QDjVuWidget::prevPage(void)
 {
-  setPage(qMax(page()-1, 0));
+  int pageNo = page();
+  while (pageNo > 0)
+    {
+      pageNo -= 1;
+      if (! priv->pageMap.contains(pageNo) ||
+          ! priv->visibleRect.contains(priv->pageMap[pageNo]->rect) )
+        break;
+    }
+  setPage(pageNo);
 }
 
 /*! Move to the first page. */
