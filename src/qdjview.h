@@ -46,7 +46,7 @@ class QDockWidget;
 class QStatusBar;
 class QComboBox;
 class QCloseEvent;
-
+class QStringList;
 
 class QDjView : public QMainWindow
 {
@@ -89,26 +89,31 @@ protected:
   typedef QDjVuWidget::PageInfo PageInfo;
   QAction *makeAction(QString text);
   QAction *makeAction(QString text, bool value);
+  void createCombos(void);
   void createActions(void);
-  void updateActions(void);
   void createMenus(void);
-  void updateToolBar(void);
-
+  void applyTools(void);
+  void applyOptions(void);
+  void applyPreferences(void);
+  
+  int pageNum(void);
   QString pageName(int pageno);
 
   virtual bool eventFilter(QObject *watched, QEvent *event);
   virtual void closeEvent(QCloseEvent *event);
 
 protected slots:
-  void docinfo();
-  void layoutChanged();
-  void pageChanged(int pageno);
+void docinfo();
   void errorCondition(int);
   void pointerPosition(const Position &pos, const PageInfo &page);
   void pointerEnter(const Position &pos, miniexp_t maparea);
   void pointerLeave(const Position &pos, miniexp_t maparea);
   void pointerClick(const Position &pos, miniexp_t maparea);
   void pointerSelect(const QPoint &pointerPos, const QRect &rect);
+  
+  void updateActions(void);
+  void updateActionsLater();
+  void modeComboActivated(int);
 
 protected:
   const ViewerMode          viewerMode;
@@ -139,10 +144,12 @@ protected:
   QUrl                    documentUrl;
   QList<ddjvu_fileinfo_t> documentPages;
 
+  bool needToUpdateActions;
+  QList<QAction*> allActions;
   QActionGroup *zoomActionGroup;
   QActionGroup *modeActionGroup;
   QActionGroup *rotationActionGroup;
-
+  
   QAction *actionNew;
   QAction *actionOpen;
   QAction *actionClose;
@@ -183,8 +190,8 @@ protected:
   QAction *actionDisplayBackground;
   QAction *actionPreferences;
   QAction *actionViewToolBar;
-  QAction *actionViewSidebar;
-  QAction *actionViewStatusbar;
+  QAction *actionViewSideBar;
+  QAction *actionViewStatusBar;
   QAction *actionViewFullScreen;
   QAction *actionLayoutContinuous;
   QAction *actionLayoutSideBySide;

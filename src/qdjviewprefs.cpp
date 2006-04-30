@@ -42,10 +42,7 @@ QDjViewPrefs::create(void)
 
 QDjViewPrefs::Appearance::Appearance()
   : options(QDjViewPrefs::DEFAULT_OPTIONS),
-    zoom(QDjVuWidget::ZOOM_FITWIDTH),
-    dispMode(QDjVuWidget::DISPLAY_COLOR),
-    hAlign(QDjVuWidget::ALIGN_CENTER),
-    vAlign(QDjVuWidget::ALIGN_CENTER)
+    zoom(QDjVuWidget::ZOOM_FITWIDTH)
 {
 }
 
@@ -53,7 +50,11 @@ QDjViewPrefs::QDjViewPrefs(void)
   : QObject(QCoreApplication::instance()),
     tools(DEFAULT_TOOLS),
     gamma(2.2),
-    printerGamma(0.0)
+    printerGamma(0.0),
+    cacheSize(10*1024*1024),
+    pixelCacheSize(256*1024),
+    lensSize(300),
+    lensPower(3)
 {
   forFullScreen.options &= ~(SHOW_MENUBAR|SHOW_STATUSBAR);
   forFullScreen.options &= ~(SHOW_TOOLBAR|SHOW_SIDEBAR);

@@ -1686,9 +1686,16 @@ QDjVuWidget::document(void) const
 }
 
 /*! Specify the \a QDjVuDocument shown by this widget.
-    Parameter \a own indicates that the \a QDjVuDocument object
-    becomes a child of the widget and will be destroyed by 
-    the widget. */
+  The caller is responsible to ensure that the 
+  document object \a d remains allocated until
+  the djvu widget is either destroyed or directed
+  to use another document.
+  Two techniques are interesting:
+  The first consists of capturing the document signal \a destroyed()
+  and to call \a setDocument(0) before the destruction occurs.
+  The second consists of allocating the document object 
+  in \a autoDelete mode, since the djvu widget calls
+  methods \a ref() and \a deref() adequately. */
 
 void 
 QDjVuWidget::setDocument(QDjVuDocument *d)

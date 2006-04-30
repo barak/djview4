@@ -25,6 +25,7 @@
 #include <QObject>
 #include <QCoreApplication>
 #include <QApplication>
+#include <QTimer>
 #include <QEvent>
 #include <QCloseEvent>
 #include <QMainWindow>
@@ -62,6 +63,34 @@
 
 
 
+// ----------------------------------------
+// COMBO BOXES
+
+void
+QDjView::createCombos(void)
+{
+  // - mode combo box
+  modeCombo = new QComboBox(toolBar);
+  modeCombo->addItem(tr("Color","modeCombo"), 
+                     QDjVuWidget::DISPLAY_COLOR );
+  modeCombo->addItem(tr("Stencil","modeCombo"), 
+                     QDjVuWidget::DISPLAY_STENCIL );
+  modeCombo->addItem(tr("Foreground","modeCombo"), 
+                     QDjVuWidget::DISPLAY_FG );
+  modeCombo->addItem(tr("Background","modeCombo"), 
+                     QDjVuWidget::DISPLAY_BG );
+  connect(modeCombo, SIGNAL(activated(int)),
+          this, SLOT(modeComboActivated(int)) );
+  connect(modeCombo, SIGNAL(activated(int)),
+          this, SLOT(updateActionsLater()) );
+
+  // - zoom combo box
+  zoomCombo = new QComboBox(toolBar);
+
+  // - page combo box
+  pageCombo = new QComboBox(toolBar);
+
+}
 
 
 // ----------------------------------------
@@ -83,36 +112,58 @@ QDjView::makeAction(QString text, bool value)
   return action;
 }
 
-static inline QAction * 
-operator<<(QAction *action, QIcon icon)
-{
-  action->setIcon(icon);
-  return action;
+namespace {
+
+  static inline QAction * 
+  operator<<(QAction *action, QIcon icon)
+  {
+    action->setIcon(icon);
+    return action;
+  }
+  
+  static inline QAction * 
+  operator<<(QAction *action, QActionGroup &group)
+  {
+    action->setActionGroup(&group);
+    return action;
+  }
+  
+  static inline QAction * 
+  operator<<(QAction *action, QKeySequence shortcut)
+  {
+    action->setShortcut(shortcut);
+    return action;
+  }
+  
+  static inline QAction * 
+  operator<<(QAction *action, QString string)
+  {
+    if (action->text().isNull())
+      action->setText(string);
+    else if (action->statusTip().isNull())
+      action->setStatusTip(string);
+    else if (action->toolTip().isNull())
+      action->setToolTip(string);
+    return action;
+  }
+  
+  struct Trigger {
+    QObject *object;
+    const char *slot;
+    Trigger(QObject *object, const char *slot)
+      : object(object), slot(slot) { } 
+  };
+
+  static inline QAction *
+  operator<<(QAction *action, Trigger trigger)
+  {
+    QObject::connect(action, SIGNAL(triggered(bool)),
+                     trigger.object, trigger.slot);
+    return action;
+  }
+
 }
 
-static inline QAction * 
-operator<<(QAction *action, QActionGroup &group)
-{
-  action->setActionGroup(&group);
-  return action;
-}
-
-static inline QAction * 
-operator<<(QAction *action, QKeySequence shortcut)
-{
-  action->setShortcut(shortcut);
-  return action;
-}
-
-static inline QAction * 
-operator<<(QAction *action, QString string)
-{
-  if (action->statusTip().isEmpty())
-    action->setStatusTip(string);
-  else if (action->toolTip().isEmpty())
-    action->setToolTip(string);
-  return action;
-}
 
 void
 QDjView::createActions()
@@ -134,11 +185,13 @@ QDjView::createActions()
   actionClose = makeAction(tr("&Close", "File|Close"))
     << QKeySequence(tr("Ctrl+W", "File|Close"))
     << QIcon(":/images/icon_close.png")
-    << tr("Close this window.");
+    << tr("Close this window.")
+    << Trigger(this, SLOT(close()));
   actionQuit = makeAction(tr("&Quit", "File|Quit"))
     << QKeySequence(tr("Ctrl+Q", "File|Quit"))
     << QIcon(":/images/icon_quit.png")
-    << tr("Close all windows and quit the application.");
+    << tr("Close all windows and quit the application.")
+    << Trigger(QCoreApplication::instance(), SLOT(quit()));
   actionSave = makeAction(tr("&Save", "File|Save"))
     << QKeySequence(tr("Ctrl+S", "File|Save"))
     << QIcon(":/images/icon_save.png")
@@ -155,10 +208,12 @@ QDjView::createActions()
     << tr("Find text in the DjVu document.");
   actionZoomIn = makeAction(tr("Zoom &In"))
     << QIcon(":/images/icon_zoomin.png")
-    << tr("Increase the magnification.");
+    << tr("Increase the magnification.")
+    << Trigger(widget, SLOT(zoomIn()));
   actionZoomOut = makeAction(tr("Zoom &Out"))
     << QIcon(":/images/icon_zoomout.png")
-    << tr("Decrease the magnification.");
+    << tr("Decrease the magnification.")
+    << Trigger(widget, SLOT(zoomOut()));
   actionZoomFitWidth = makeAction(tr("Fit &Width", "Zoom|Fitwith"),false)
     << tr("Set magnification to fit page width.")
     << *zoomActionGroup;
@@ -188,16 +243,24 @@ QDjView::createActions()
     << *zoomActionGroup;
   actionNavFirst = makeAction(tr("&First Page"))
     << QIcon(":/images/icon_first.png")
-    << tr("Jump to first document page.");
+    << tr("Jump to first document page.")
+    << Trigger(widget, SLOT(firstPage()))
+    << Trigger(this, SLOT(updateActionsLater()));
   actionNavNext = makeAction(tr("&Next Page"))
     << QIcon(":/images/icon_next.png")
-    << tr("Jump to next document page.");
+    << tr("Jump to next document page.")
+    << Trigger(widget, SLOT(nextPage()))
+    << Trigger(this, SLOT(updateActionsLater()));
   actionNavPrev = makeAction(tr("&Previous Page"))
     << QIcon(":/images/icon_prev.png")
-    << tr("Jump to previous document page.");
+    << tr("Jump to previous document page.")
+    << Trigger(widget, SLOT(prefPage()))
+    << Trigger(this, SLOT(updateActionsLater()));
   actionNavLast = makeAction(tr("&Last Page"))
     << QIcon(":/images/icon_last.png")
-    << tr("Jump to last document page.");
+    << tr("Jump to last document page.")
+    << Trigger(widget, SLOT(lastPage()))
+    << Trigger(this, SLOT(updateActionsLater()));
   actionBack = makeAction(tr("&Backward"))
     << QIcon(":/images/icon_back.png")
     << tr("Backward in history.");
@@ -206,10 +269,14 @@ QDjView::createActions()
     << tr("Forward in history.");
   actionRotateLeft = makeAction(tr("Rotate &Left"))
     << QIcon(":/images/icon_rotateleft.png")
-    << tr("Rotate page image counter-clockwise.");
+    << tr("Rotate page image counter-clockwise.")
+    << Trigger(widget, SLOT(rotateLeft()))
+    << Trigger(this, SLOT(updateActionsLater()));
   actionRotateRight = makeAction(tr("Rotate &Right"))
     << QIcon(":/images/icon_rotateright.png")
-    << tr("Rotate page image clockwise.");
+    << tr("Rotate page image clockwise.")
+    << Trigger(widget, SLOT(rotateRight()))
+    << Trigger(this, SLOT(updateActionsLater()));
   actionRotate0 = makeAction(tr("Rotate &0\260"), false)
     << tr("Set natural page orientation.")
     << *rotationActionGroup;
@@ -231,27 +298,41 @@ QDjView::createActions()
     << tr("Show information about this program.");
   actionDisplayColor = makeAction(tr("&Color", "Display|Color"), false)
     << tr("Display document in full colors.")
+    << Trigger(widget, SLOT(displayModeColor()))
+    << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
   actionDisplayBW = makeAction(tr("&Mask", "Display|BW"), false)
     << tr("Only display the document black&white stencil.")
+    << Trigger(widget, SLOT(displayModeStencil()))
+    << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
   actionDisplayForeground = makeAction(tr("&Foreground", "Display|Foreground"), false)
     << tr("Only display the foreground layer.")
+    << Trigger(widget, SLOT(displayModeForeground()))
+    << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
   actionDisplayBackground = makeAction(tr("&Background", "Display|Background"), false)
     << tr("Only display the background layer.")
+    << Trigger(widget, SLOT(displayModeBackground()))
+    << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
   actionPreferences = makeAction(tr("Prefere&nces")) 
     << QIcon(":/images/icon_prefs.png")
     << tr("Show the preferences dialog.");
-  actionViewToolBar = makeAction(tr("Show &tool bar"),true)
-    << tr("Show/hide the standard tool bar.");
-  actionViewStatusbar = makeAction(tr("Show &status bar"), true)
-    << tr("Show/hide the status bar.");
-  actionViewSidebar = makeAction(tr("Show s&ide bar"),true)
+  actionViewSideBar = sideBar->toggleViewAction() 
+    << tr("Show s&ide bar")
     << QKeySequence("F9")
     << QIcon(":/images/icon_sidebar.png")
-    << tr("Show/hide the side bar.");
+    << tr("Show/hide the side bar.")
+    << Trigger(this, SLOT(updateActionsLater()));
+  actionViewToolBar = toolBar->toggleViewAction()
+    << tr("Show &tool bar")
+    << tr("Show/hide the standard tool bar.")
+    << Trigger(this, SLOT(updateActionsLater()));
+  actionViewStatusBar = makeAction(tr("Show &status bar"), true)
+    << tr("Show/hide the status bar.")
+    << Trigger(statusBar,SLOT(setVisible(bool)))
+    << Trigger(this, SLOT(updateActionsLater()));
   actionViewFullScreen = makeAction(tr("&Full Screen","View|FullScreen"), false)
     << QKeySequence("F11")
     << QIcon(":/images/icon_fullscreen.png")
@@ -259,31 +340,103 @@ QDjView::createActions()
   actionLayoutContinuous = makeAction(tr("&Continuous","Layout"), false)
     << QIcon(":/images/icon_continuous.png")
     << QKeySequence("F2")
-    << tr("Toggle continuous layout mode.");
+    << tr("Toggle continuous layout mode.")
+    << Trigger(widget, SLOT(setContinuous(bool)))
+    << Trigger(this, SLOT(updateActionsLater()));
   actionLayoutSideBySide = makeAction(tr("&Side by side","Layout"), false)
     << QIcon(":/images/icon_sidebyside.png")
     << QKeySequence("F3")
-    << tr("Toggle side-by-side layout mode.");
+    << tr("Toggle side-by-side layout mode.")
+    << Trigger(widget, SLOT(setSideBySide(bool)))
+    << Trigger(this, SLOT(updateActionsLater()));
   actionLayoutPageSettings = makeAction(tr("Obey &annotations"), false)
-    << tr("Obey/ignore layout instructions from the page data.");
+    << tr("Obey/ignore layout instructions from the page data.")
+    << Trigger(widget, SLOT(setPageSettings(bool)));
 
-  
-  // temporary connections
-  connect(actionQuit, SIGNAL(triggered()),
-          QCoreApplication::instance(), SLOT(quit()));
-  connect(actionClose, SIGNAL(triggered()),
-          this, SLOT(close()));
-  connect(actionLayoutContinuous,SIGNAL(toggled(bool)),
-          widget, SLOT(setContinuous(bool)));
-  connect(actionLayoutSideBySide,SIGNAL(toggled(bool)),
-          widget, SLOT(setSideBySide(bool)));
-  
+  // Enumerate all actions
+  QAction *a;
+  QObject *o;
+  allActions.clear();
+  foreach(o, children())
+    if ((a = qobject_cast<QAction*>(o)))
+      allActions << a;
 }
+
 
 void
 QDjView::updateActions()
 {
+  // Enable all actions
+  foreach(QAction *action, allActions)
+    action->setEnabled(true);
+  
+  // Some actions are only available in standalone mode
+  actionNew->setVisible(viewerMode == STANDALONE);
+  actionOpen->setVisible(viewerMode == STANDALONE);
+  actionClose->setVisible(viewerMode == STANDALONE);
+  actionQuit->setVisible(viewerMode == STANDALONE);
+  actionViewFullScreen->setVisible(viewerMode == STANDALONE);
+  
+  
+  // - zoom combo and actions
+
+  // - mode combo and actions
+  QDjVuWidget::DisplayMode mode = widget->displayMode();
+  modeCombo->setCurrentIndex(modeCombo->findData(QVariant(mode)));
+  actionDisplayColor->setChecked(mode == QDjVuWidget::DISPLAY_COLOR);
+  actionDisplayBW->setChecked(mode == QDjVuWidget::DISPLAY_STENCIL);
+  actionDisplayBackground->setChecked(mode == QDjVuWidget::DISPLAY_BG);
+  actionDisplayForeground->setChecked(mode == QDjVuWidget::DISPLAY_FG);
+  
+  // - page combo and actions
+  int pagenum = documentPages.size();
+  int pageno = widget->page();
+  pageCombo->setCurrentIndex(pageno);
+  pageCombo->setEnabled(pagenum > 0);
+  actionNavFirst->setEnabled(pagenum>0);
+  actionNavPrev->setEnabled(pagenum>0 && pageno>0);
+  actionNavNext->setEnabled(pagenum>0 && pageno<pagenum-1);
+  actionNavLast->setEnabled(pagenum>0);
+
+  // - misc actions
+  actionLayoutContinuous->setChecked(widget->continuous());  
+  actionLayoutSideBySide->setChecked(widget->sideBySide());
+  actionLayoutPageSettings->setChecked(widget->pageSettings());
+
+
+  // Disable almost everything when document==0
+  if (! document)
+    {
+      foreach(QAction *action, allActions)
+        if (action != actionNew &&
+            action != actionOpen &&
+            action != actionClose &&
+            action != actionQuit &&
+            action != actionViewToolBar &&
+            action != actionViewStatusBar &&
+            action != actionViewSideBar &&
+            action != actionAbout )
+          action->setEnabled(false);
+    }
+  
+  // Update option flags
+#define setFlag(flag, test) \
+  options = (options & ~(QDjViewPrefs::flag)) \
+          | ((test) ? (QDjViewPrefs::flag) \
+                    : (QDjViewPrefs::Option)0)
+  setFlag(SHOW_TOOLBAR,        !toolBar->isHidden());
+  setFlag(SHOW_SIDEBAR,        !sideBar->isHidden());
+  setFlag(SHOW_STATUSBAR,      !statusBar->isHidden());
+  setFlag(LAYOUT_CONTINUOUS,   widget->continuous());
+  setFlag(LAYOUT_SIDEBYSIDE,   widget->sideBySide());
+  setFlag(LAYOUT_PAGESETTINGS, widget->pageSettings());
+#undef setFlag
+
+  // Finished
+  needToUpdateActions = false;
 }
+
+
 
 
 
@@ -357,9 +510,9 @@ QDjView::createMenus()
   gotoMenu->addAction(actionNavNext);
   gotoMenu->addAction(actionNavLast);
   QMenu *settingsMenu = menuBar->addMenu(tr("&Settings", "Settings|"));
-  settingsMenu->addAction(actionViewSidebar);
+  settingsMenu->addAction(actionViewSideBar);
   settingsMenu->addAction(actionViewToolBar);
-  settingsMenu->addAction(actionViewStatusbar);
+  settingsMenu->addAction(actionViewStatusBar);
   settingsMenu->addSeparator();
   settingsMenu->addAction(actionLayoutPageSettings);
   settingsMenu->addSeparator();
@@ -417,11 +570,11 @@ QDjView::createMenus()
 
 
 // ----------------------------------------
-// TOOLBAR
+// APPLY OPTIONS/TOOLS/PREFERENCES
 
 
 void
-QDjView::updateToolBar(void)
+QDjView::applyTools(void)
 {
   bool wasHidden = toolBar->isHidden();
   toolBar->hide();
@@ -504,6 +657,19 @@ QDjView::updateToolBar(void)
 }
 
 
+void
+QDjView::applyOptions(void)
+{
+}
+
+
+void
+QDjView::applyPreferences(void)
+{
+}
+
+
+
 // ----------------------------------------
 // CONSTRUCTOR
 
@@ -513,7 +679,8 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   : QMainWindow(parent),
     viewerMode(mode),
     djvuContext(context),
-    document(0)
+    document(0),
+    needToUpdateActions(false)
 {
   // obtain preferences
   generalPrefs = QDjViewPrefs::create();
@@ -542,9 +709,9 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   connect(widget, SIGNAL(error(QString,QString,int)),
           errorDialog, SLOT(error(QString,QString,int)));
   connect(widget, SIGNAL(layoutChanged()),
-          this, SLOT(layoutChanged()));
+          this, SLOT(updateActionsLater()));
   connect(widget, SIGNAL(pageChanged(int)),
-          this, SLOT(pageChanged(int)));
+          this, SLOT(updateActionsLater()));
   connect(widget, SIGNAL(pointerPosition(const Position&,const PageInfo&)),
           this, SLOT(pointerPosition(const Position&,const PageInfo&)));
   connect(widget, SIGNAL(pointerEnter(const Position&,miniexp_t)),
@@ -608,29 +775,27 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   // - toolbar  
   toolBar = new QToolBar(this);
   toolBar->setObjectName("toolbar");
-  toolBar->setWindowTitle("Toolbar");
-  modeCombo = new QComboBox(toolBar);
-  zoomCombo = new QComboBox(toolBar);
-  pageCombo = new QComboBox(toolBar);
   addToolBar(toolBar);
 
   // - sidebar  
   sideBar = new QDockWidget(this);  // for now
   sideBar->setObjectName("sidebar");
-  sideBar->setWindowTitle("Sidebar");
   addDockWidget(Qt::LeftDockWidgetArea, sideBar);
   
-  // Create actions
-  createActions();
-  createMenus();
-  updateToolBar();
-  updateActions();
-
-  // Setup
+  // Setup main window
   setWindowTitle(tr("DjView"));
   setWindowIcon(QIcon(":/images/icon32_djvu.png"));
   if (QApplication::windowIcon().isNull())
     QApplication::setWindowIcon(windowIcon());
+
+  // Setup everything else
+  createCombos();
+  createActions();
+  createMenus();
+  applyTools();
+  applyOptions();
+  applyPreferences();
+  updateActions();
 }
 
 
@@ -788,6 +953,13 @@ QDjView::parseCgiArguments(QUrl url)
 // UTILITIES
 
 
+int 
+QDjView::pageNum(void)
+{
+  return documentPages.size();
+}
+
+
 QString 
 QDjView::pageName(int pageno)
 {
@@ -801,6 +973,8 @@ QDjView::pageName(int pageno)
 }
 
 
+
+
 // -----------------------------------
 // OVERRIDES
 
@@ -808,6 +982,7 @@ QDjView::pageName(int pageno)
 void
 QDjView::closeEvent(QCloseEvent *event)
 {
+  generalPrefs->toolState = saveState();
   closeDocument();
   QMainWindow::closeEvent(event);
 }
@@ -854,24 +1029,18 @@ QDjView::docinfo()
           if (info.type == 'P')
             documentPages << info;
         }
-      if (documentPages.size() != ddjvu_document_get_pagenum(*document))
+      n = documentPages.size();
+      if (n != ddjvu_document_get_pagenum(*document))
         qWarning("Internal (docinfo): inconsistent number of pages.");
+      
+      // Fill page combo
+      pageCombo->clear();
+      for (int j=0; j<n; j++)
+        pageCombo->addItem(pageName(j));
       
       // Update actions
       updateActions();
     }
-}
-
-
-void 
-QDjView::layoutChanged()
-{
-}
-
-
-void 
-QDjView::pageChanged(int pageno)
-{
 }
 
 
@@ -949,6 +1118,25 @@ QDjView::errorCondition(int pageno)
                    message);
 }
 
+
+
+void
+QDjView::updateActionsLater()
+{
+  if (! needToUpdateActions)
+    {
+      needToUpdateActions = true;
+      QTimer::singleShot(0, this, SLOT(updateActions()));
+    }
+}
+
+
+void
+QDjView::modeComboActivated(int index)
+{
+  int mode = modeCombo->itemData(index).toUInt();
+  widget->setDisplayMode((QDjVuWidget::DisplayMode)mode);
+}
 
 
 /* -------------------------------------------------------------

@@ -75,20 +75,21 @@ public:
     Appearance();
     Options                  options;
     int                      zoom;
-    QDjVuWidget::DisplayMode dispMode;
-    QDjVuWidget::Align       hAlign;
-    QDjVuWidget::Align       vAlign;
-    QByteArray               toolState;
   };
 
   Appearance forStandalone;
   Appearance forFullScreen;
   Appearance forEmbeddedPlugin;
   Appearance forFullPagePlugin;
-  Tools  tools;
-  double gamma;
-  double printerGamma;
-  
+  Tools      tools;
+  QByteArray toolState;
+  double     gamma;
+  double     printerGamma;
+  long       cacheSize;
+  long       pixelCacheSize;
+  int        lensSize;
+  int        lensPower;
+
   static QDjViewPrefs *create();
   void load();
   void save();
