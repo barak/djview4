@@ -254,7 +254,7 @@ QDjView::createActions()
   actionNavPrev = makeAction(tr("&Previous Page"))
     << QIcon(":/images/icon_prev.png")
     << tr("Jump to previous document page.")
-    << Trigger(widget, SLOT(prefPage()))
+    << Trigger(widget, SLOT(prevPage()))
     << Trigger(this, SLOT(updateActionsLater()));
   actionNavLast = makeAction(tr("&Last Page"))
     << QIcon(":/images/icon_last.png")
