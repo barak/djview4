@@ -44,7 +44,6 @@ main(int argc, char *argv[])
       else
         okay = main->open(arg);
     }
-  main->resize(640,400);
   main->show();
   if (! okay)
     {

@@ -26,6 +26,8 @@
 #include <QCoreApplication>
 #include <QApplication>
 #include <QClipboard>
+#include <QWhatsThis>
+#include <QFileInfo>
 #include <QTimer>
 #include <QEvent>
 #include <QCloseEvent>
@@ -36,6 +38,8 @@
 #include <QDockWidget>
 #include <QStackedLayout>
 #include <QComboBox>
+#include <QLineEdit>
+#include <QRegExpValidator>
 #include <QFrame>
 #include <QLabel>
 #include <QToolBar>
@@ -67,19 +71,16 @@
 // ----------------------------------------
 // COMBO BOXES
 
+
 void
 QDjView::createCombos(void)
 {
   // - mode combo box
   modeCombo = new QComboBox(toolBar);
-  modeCombo->addItem(tr("Color","modeCombo"), 
-                     QDjVuWidget::DISPLAY_COLOR );
-  modeCombo->addItem(tr("Stencil","modeCombo"), 
-                     QDjVuWidget::DISPLAY_STENCIL );
-  modeCombo->addItem(tr("Foreground","modeCombo"), 
-                     QDjVuWidget::DISPLAY_FG );
-  modeCombo->addItem(tr("Background","modeCombo"), 
-                     QDjVuWidget::DISPLAY_BG );
+  modeCombo->addItem(tr("Color","modeCombo"), QDjVuWidget::DISPLAY_COLOR);
+  modeCombo->addItem(tr("Stencil","modeCombo"), QDjVuWidget::DISPLAY_STENCIL);
+  modeCombo->addItem(tr("Foreground","modeCombo"), QDjVuWidget::DISPLAY_FG);
+  modeCombo->addItem(tr("Background","modeCombo"), QDjVuWidget::DISPLAY_BG );
   connect(modeCombo, SIGNAL(activated(int)),
           this, SLOT(modeComboActivated(int)) );
   connect(modeCombo, SIGNAL(activated(int)),
@@ -87,11 +88,33 @@ QDjView::createCombos(void)
 
   // - zoom combo box
   zoomCombo = new QComboBox(toolBar);
+  zoomCombo->addItem(tr("FitWidth","zoomCombo"), QDjVuWidget::ZOOM_FITWIDTH);
+  zoomCombo->addItem(tr("FitPage","zoomCombo"), QDjVuWidget::ZOOM_FITPAGE);
+  zoomCombo->addItem(tr("Stretch","zoomCombo"), QDjVuWidget::ZOOM_STRETCH);
+  zoomCombo->addItem(tr("1:1","zoomCombo"), QDjVuWidget::ZOOM_ONE2ONE);
+  zoomCombo->addItem(tr("300%","zoomCombo"), 300);
+  zoomCombo->addItem(tr("200%","zoomCombo"), 200);
+  zoomCombo->addItem(tr("150%","zoomCombo"), 150);
+  zoomCombo->addItem(tr("100%","zoomCombo"), 100);
+  zoomCombo->addItem(tr("75%","zoomCombo"), 75);
+  zoomCombo->addItem(tr("50%","zoomCombo"), 50);
+  connect(zoomCombo, SIGNAL(activated(int)),
+          this, SLOT(zoomComboActivated(int)) );
+  zoomCombo->setEditable(true);
+  zoomCombo->setInsertPolicy(QComboBox::NoInsert);
+  connect(zoomCombo->lineEdit(), SIGNAL(editingFinished()),
+          this, SLOT(zoomComboEdited()) );
 
   // - page combo box
   pageCombo = new QComboBox(toolBar);
+  pageCombo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+  pageCombo->setMinimumWidth(80);
   connect(pageCombo, SIGNAL(activated(int)),
-          this, SLOT(goToPage(int)));
+          this, SLOT(pageComboActivated(int)));
+  pageCombo->setEditable(true);
+  pageCombo->setInsertPolicy(QComboBox::NoInsert);
+  connect(pageCombo->lineEdit(), SIGNAL(editingFinished()),
+          this, SLOT(pageComboEdited()) );
   
 }
 
@@ -115,58 +138,60 @@ QDjView::makeAction(QString text, bool value)
   return action;
 }
 
-namespace {
-
-  static inline QAction * 
-  operator<<(QAction *action, QIcon icon)
-  {
-    action->setIcon(icon);
-    return action;
-  }
-  
-  static inline QAction * 
-  operator<<(QAction *action, QActionGroup &group)
-  {
-    action->setActionGroup(&group);
-    return action;
-  }
-  
-  static inline QAction * 
-  operator<<(QAction *action, QKeySequence shortcut)
-  {
-    action->setShortcut(shortcut);
-    return action;
-  }
-  
-  static inline QAction * 
-  operator<<(QAction *action, QString string)
-  {
-    if (action->text().isNull())
-      action->setText(string);
-    else if (action->statusTip().isNull())
-      action->setStatusTip(string);
-    else if (action->toolTip().isNull())
-      action->setToolTip(string);
-    return action;
-  }
-  
-  struct Trigger {
-    QObject *object;
-    const char *slot;
-    Trigger(QObject *object, const char *slot)
-      : object(object), slot(slot) { } 
-  };
-
-  static inline QAction *
-  operator<<(QAction *action, Trigger trigger)
-  {
-    QObject::connect(action, SIGNAL(triggered(bool)),
-                     trigger.object, trigger.slot);
-    return action;
-  }
-
+static inline QAction * 
+operator<<(QAction *action, QIcon icon)
+{
+  action->setIcon(icon);
+  return action;
 }
 
+static inline QAction * 
+operator<<(QAction *action, QActionGroup &group)
+{
+  action->setActionGroup(&group);
+  return action;
+}
+
+static inline QAction * 
+operator<<(QAction *action, QKeySequence shortcut)
+{
+  action->setShortcut(shortcut);
+  return action;
+}
+
+static inline QAction * 
+operator<<(QAction *action, QString string)
+{
+  if (action->text().isNull())
+    action->setText(string);
+  else if (action->statusTip().isNull())
+    action->setStatusTip(string);
+  else if (action->whatsThis().isNull())
+    action->setWhatsThis(string);
+  return action;
+}
+  
+struct Trigger {
+  QObject *object;
+  const char *slot;
+  Trigger(QObject *object, const char *slot)
+    : object(object), slot(slot) { } 
+};
+
+static inline QAction *
+operator<<(QAction *action, Trigger trigger)
+{
+  QObject::connect(action, SIGNAL(triggered(bool)),
+                   trigger.object, trigger.slot);
+  return action;
+}
+
+static inline QAction *
+operator<<(QAction *action, QVariant variant)
+{
+  action->setData(variant);
+  return action;
+}
 
 void
 QDjView::createActions()
@@ -181,183 +206,255 @@ QDjView::createActions()
     << QKeySequence(tr("Ctrl+N", "File|New"))
     << QIcon(":/images/icon_new.png")
     << tr("Create a new DjView window.");
+
   actionOpen = makeAction(tr("&Open", "File|Open"))
     << QKeySequence(tr("Ctrl+O", "File|Open"))
     << QIcon(":/images/icon_open.png")
     << tr("Open a DjVu document.");
+
   actionClose = makeAction(tr("&Close", "File|Close"))
     << QKeySequence(tr("Ctrl+W", "File|Close"))
     << QIcon(":/images/icon_close.png")
     << tr("Close this window.")
     << Trigger(this, SLOT(close()));
+
   actionQuit = makeAction(tr("&Quit", "File|Quit"))
     << QKeySequence(tr("Ctrl+Q", "File|Quit"))
     << QIcon(":/images/icon_quit.png")
     << tr("Close all windows and quit the application.")
     << Trigger(QCoreApplication::instance(), SLOT(quit()));
+
   actionSave = makeAction(tr("&Save as...", "File|Save"))
     << QKeySequence(tr("Ctrl+S", "File|Save"))
     << QIcon(":/images/icon_save.png")
     << tr("Save the DjVu document.");
+
   actionExport = makeAction(tr("&Export as...", "File|Export"))
     << tr("Export the DjVu document under another format.");
+
   actionPrint = makeAction(tr("&Print...", "File|Print"))
     << QKeySequence(tr("Ctrl+P", "File|Print"))
     << QIcon(":/images/icon_print.png")
     << tr("Print the DjVu document.");
+
   actionSearch = makeAction(tr("&Find..."))
     << QKeySequence(tr("Ctrl+F", "Find"))
     << QIcon(":/images/icon_find.png")
-    << tr("Find text in the DjVu document.");
+    << tr("Find text in the document.");
+
   actionSelect = makeAction(tr("&Select"), false)
     << QIcon(":/images/icon_select.png")
-    << tr("Select rectangle in document (same as middle mouse button).");
+    << tr("Select a rectangle in the document.")
+    << Trigger(this, SLOT(selectActionTriggered(bool)));
+  
   actionZoomIn = makeAction(tr("Zoom &In"))
     << QIcon(":/images/icon_zoomin.png")
     << tr("Increase the magnification.")
     << Trigger(widget, SLOT(zoomIn()));
+
   actionZoomOut = makeAction(tr("Zoom &Out"))
     << QIcon(":/images/icon_zoomout.png")
     << tr("Decrease the magnification.")
     << Trigger(widget, SLOT(zoomOut()));
+
   actionZoomFitWidth = makeAction(tr("Fit &Width", "Zoom|Fitwith"),false)
     << tr("Set magnification to fit page width.")
+    << QVariant(QDjVuWidget::ZOOM_FITWIDTH)
+    << Trigger(this, SLOT(zoomActionTriggered()))
     << *zoomActionGroup;
+
   actionZoomFitPage = makeAction(tr("Fit &Page", "Zoom|Fitpage"),false)
     << tr("Set magnification to fit page.")
+    << QVariant(QDjVuWidget::ZOOM_FITPAGE)
+    << Trigger(this, SLOT(zoomActionTriggered()))
     << *zoomActionGroup;
+
   actionZoomOneToOne = makeAction(tr("One &to one", "Zoom|1:1"),false)
     << tr("Set full resolution magnification.")
+    << QVariant(QDjVuWidget::ZOOM_ONE2ONE)
+    << Trigger(this, SLOT(zoomActionTriggered()))
     << *zoomActionGroup;
+
   actionZoom300 = makeAction(tr("&300%", "Zoom|300%"), false)
     << tr("Magnify 300%")
+    << QVariant(300)
+    << Trigger(this, SLOT(zoomActionTriggered()))
     << *zoomActionGroup;
+
   actionZoom200 = makeAction(tr("&200%", "Zoom|200%"), false)
-    << tr("Magnify 300%")
+    << tr("Magnify 20%")
+    << QVariant(200)
+    << Trigger(this, SLOT(zoomActionTriggered()))
     << *zoomActionGroup;
+
   actionZoom150 = makeAction(tr("150%", "Zoom|150%"), false)
-    << tr("Magnify 300%")
+    << tr("Magnify 150%")
+    << QVariant(200)
+    << Trigger(this, SLOT(zoomActionTriggered()))
     << *zoomActionGroup;
+
   actionZoom100 = makeAction(tr("&100%", "Zoom|100%"), false)
-    << tr("Magnify 300%")
+    << tr("Magnify 100%")
+    << QVariant(100)
+    << Trigger(this, SLOT(zoomActionTriggered()))
     << *zoomActionGroup;
+
   actionZoom75 = makeAction(tr("&75%", "Zoom|75%"), false)
-    << tr("Magnify 300%")
+    << tr("Magnify 75%")
+    << QVariant(75)
+    << Trigger(this, SLOT(zoomActionTriggered()))
     << *zoomActionGroup;
+
   actionZoom50 = makeAction(tr("&50%", "Zoom|50%"), false)
-    << tr("Magnify 300%")
+    << tr("Magnify r0%")
+    << QVariant(50)
+    << Trigger(this, SLOT(zoomActionTriggered()))
     << *zoomActionGroup;
+
   actionNavFirst = makeAction(tr("&First Page"))
     << QIcon(":/images/icon_first.png")
     << tr("Jump to first document page.")
     << Trigger(widget, SLOT(firstPage()))
     << Trigger(this, SLOT(updateActionsLater()));
+
   actionNavNext = makeAction(tr("&Next Page"))
     << QIcon(":/images/icon_next.png")
     << tr("Jump to next document page.")
     << Trigger(widget, SLOT(nextPage()))
     << Trigger(this, SLOT(updateActionsLater()));
+
   actionNavPrev = makeAction(tr("&Previous Page"))
     << QIcon(":/images/icon_prev.png")
     << tr("Jump to previous document page.")
     << Trigger(widget, SLOT(prevPage()))
     << Trigger(this, SLOT(updateActionsLater()));
+
   actionNavLast = makeAction(tr("&Last Page"))
     << QIcon(":/images/icon_last.png")
     << tr("Jump to last document page.")
     << Trigger(widget, SLOT(lastPage()))
     << Trigger(this, SLOT(updateActionsLater()));
+
   actionBack = makeAction(tr("&Backward"))
     << QIcon(":/images/icon_back.png")
     << tr("Backward in history.");
+
   actionForw = makeAction(tr("&Forward"))
     << QIcon(":/images/icon_forw.png")
     << tr("Forward in history.");
+
   actionRotateLeft = makeAction(tr("Rotate &Left"))
     << QIcon(":/images/icon_rotateleft.png")
     << tr("Rotate page image counter-clockwise.")
     << Trigger(widget, SLOT(rotateLeft()))
     << Trigger(this, SLOT(updateActionsLater()));
+
   actionRotateRight = makeAction(tr("Rotate &Right"))
     << QIcon(":/images/icon_rotateright.png")
     << tr("Rotate page image clockwise.")
     << Trigger(widget, SLOT(rotateRight()))
     << Trigger(this, SLOT(updateActionsLater()));
+
   actionRotate0 = makeAction(tr("Rotate &0\260"), false)
     << tr("Set natural page orientation.")
+    << QVariant(0)
+    << Trigger(this, SLOT(rotationActionTriggered()))
     << *rotationActionGroup;
+
   actionRotate90 = makeAction(tr("Rotate &90\260"), false)
     << tr("Turn page on its left side.")
+    << QVariant(1)
+    << Trigger(this, SLOT(rotationActionTriggered()))
     << *rotationActionGroup;
+
   actionRotate180 = makeAction(tr("Rotate &180\260"), false)
     << tr("Turn page upside-down.")
+    << QVariant(2)
+    << Trigger(this, SLOT(rotationActionTriggered()))
     << *rotationActionGroup;
+
   actionRotate270 = makeAction(tr("Rotate &270\260"), false)
     << tr("Turn page on its right side.")
+    << QVariant(3)
+    << Trigger(this, SLOT(rotationActionTriggered()))
     << *rotationActionGroup;
+
   actionPageInfo = makeAction(tr("Page &Information..."))
     << tr("Show DjVu encoding information for the current page.");
+
   actionDocInfo = makeAction(tr("&Document Information..."))
+    << QKeySequence("Ctrl+I")
     << tr("Show DjVu encoding information for the document.");
+
+  actionWhatsThis = QWhatsThis::createAction(this);
+
   actionAbout = makeAction(tr("&About DjView..."))
     << QIcon(":/images/icon_djvu.png")
     << tr("Show information about this program.");
+
   actionDisplayColor = makeAction(tr("&Color", "Display|Color"), false)
     << tr("Display document in full colors.")
     << Trigger(widget, SLOT(displayModeColor()))
     << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
+
   actionDisplayBW = makeAction(tr("&Mask", "Display|BW"), false)
     << tr("Only display the document black&white stencil.")
     << Trigger(widget, SLOT(displayModeStencil()))
     << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
+
   actionDisplayForeground = makeAction(tr("&Foreground", "Display|Foreground"), false)
     << tr("Only display the foreground layer.")
     << Trigger(widget, SLOT(displayModeForeground()))
     << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
+
   actionDisplayBackground = makeAction(tr("&Background", "Display|Background"), false)
     << tr("Only display the background layer.")
     << Trigger(widget, SLOT(displayModeBackground()))
     << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
+
   actionPreferences = makeAction(tr("Prefere&nces...")) 
     << QIcon(":/images/icon_prefs.png")
     << tr("Show the preferences dialog.");
+
   actionViewSideBar = sideBar->toggleViewAction() 
     << tr("Show s&ide bar")
     << QKeySequence("F9")
     << QIcon(":/images/icon_sidebar.png")
     << tr("Show/hide the side bar.")
     << Trigger(this, SLOT(updateActionsLater()));
+
   actionViewToolBar = toolBar->toggleViewAction()
     << tr("Show &tool bar")
     << tr("Show/hide the standard tool bar.")
     << Trigger(this, SLOT(updateActionsLater()));
+
   actionViewStatusBar = makeAction(tr("Show &status bar"), true)
     << tr("Show/hide the status bar.")
     << Trigger(statusBar,SLOT(setVisible(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
+
   actionViewFullScreen = makeAction(tr("&Full Screen","View|FullScreen"), false)
     << QKeySequence("F11")
     << QIcon(":/images/icon_fullscreen.png")
     << tr("Toggle full screen mode.");
+
   actionLayoutContinuous = makeAction(tr("&Continuous","Layout"), false)
     << QIcon(":/images/icon_continuous.png")
     << QKeySequence("F2")
     << tr("Toggle continuous layout mode.")
     << Trigger(widget, SLOT(setContinuous(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
+
   actionLayoutSideBySide = makeAction(tr("&Side by side","Layout"), false)
     << QIcon(":/images/icon_sidebyside.png")
     << QKeySequence("F3")
     << tr("Toggle side-by-side layout mode.")
     << Trigger(widget, SLOT(setSideBySide(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
-  actionLayoutPageSettings = makeAction(tr("Obey &annotations"), false)
-    << tr("Obey/ignore layout instructions from the page data.")
-    << Trigger(widget, SLOT(setPageSettings(bool)));
 
   // Enumerate all actions
   QAction *a;
@@ -383,21 +480,51 @@ QDjView::updateActions()
   actionQuit->setVisible(viewerMode == STANDALONE);
   actionViewFullScreen->setVisible(viewerMode == STANDALONE);
   
-  
   // - zoom combo and actions
+  int zoom = widget->zoom();
+  actionZoomIn->setEnabled(zoom < QDjVuWidget::ZOOM_MAX);
+  actionZoomOut->setEnabled(zoom < 0 || zoom > QDjVuWidget::ZOOM_MIN);
+  actionZoomFitPage->setChecked(zoom == QDjVuWidget::ZOOM_FITPAGE);
+  actionZoomFitWidth->setChecked(zoom == QDjVuWidget::ZOOM_FITWIDTH);
+  actionZoomOneToOne->setChecked(zoom == QDjVuWidget::ZOOM_ONE2ONE);
+  actionZoom300->setChecked(zoom == 300);
+  actionZoom200->setChecked(zoom == 200);
+  actionZoom150->setChecked(zoom == 150);
+  actionZoom100->setChecked(zoom == 100);
+  actionZoom75->setChecked(zoom == 75);
+  actionZoom50->setChecked(zoom == 50);
+  int zoomIndex = zoomCombo->findData(QVariant(zoom));
+  zoomCombo->clearEditText();
+  zoomCombo->setCurrentIndex(zoomIndex);
+  if (zoomIndex < 0 &&
+      zoom >= QDjVuWidget::ZOOM_MIN && 
+      zoom <= QDjVuWidget::ZOOM_MAX)
+    zoomCombo->setEditText(QString("%1%").arg(zoom));
+  else if (zoomIndex >= 0)
+    zoomCombo->setEditText(zoomCombo->itemText(zoomIndex));
 
   // - mode combo and actions
   QDjVuWidget::DisplayMode mode = widget->displayMode();
-  modeCombo->setCurrentIndex(modeCombo->findData(QVariant(mode)));
   actionDisplayColor->setChecked(mode == QDjVuWidget::DISPLAY_COLOR);
   actionDisplayBW->setChecked(mode == QDjVuWidget::DISPLAY_STENCIL);
   actionDisplayBackground->setChecked(mode == QDjVuWidget::DISPLAY_BG);
   actionDisplayForeground->setChecked(mode == QDjVuWidget::DISPLAY_FG);
+  modeCombo->setCurrentIndex(modeCombo->findData(QVariant(mode)));
+  
+  // - rotations
+  int rotation = widget->rotation();
+  actionRotate0->setChecked(rotation == 0);
+  actionRotate90->setChecked(rotation == 1);
+  actionRotate180->setChecked(rotation == 2);
+  actionRotate270->setChecked(rotation == 3);
   
   // - page combo and actions
   int pagenum = documentPages.size();
   int pageno = widget->page();
+  pageCombo->clearEditText();
   pageCombo->setCurrentIndex(pageno);
+  if (pageno >= 0 && pagenum > 0)
+    pageCombo->setEditText(pageName(pageno));
   pageCombo->setEnabled(pagenum > 0);
   actionNavFirst->setEnabled(pagenum>0);
   actionNavPrev->setEnabled(pagenum>0 && pageno>0);
@@ -407,8 +534,6 @@ QDjView::updateActions()
   // - misc actions
   actionLayoutContinuous->setChecked(widget->continuous());  
   actionLayoutSideBySide->setChecked(widget->sideBySide());
-  actionLayoutPageSettings->setChecked(widget->pageSettings());
-
 
   // Disable almost everything when document==0
   if (! document)
@@ -438,7 +563,6 @@ QDjView::updateActions()
       setFlag(SHOW_STATUSBAR,      !statusBar->isHidden());
       setFlag(LAYOUT_CONTINUOUS,   widget->continuous());
       setFlag(LAYOUT_SIDEBYSIDE,   widget->sideBySide());
-      setFlag(LAYOUT_PAGESETTINGS, widget->pageSettings());
 #undef setFlag
     }
 
@@ -448,6 +572,85 @@ QDjView::updateActions()
 
 
 
+// ----------------------------------------
+// WHATSTHIS HELP
+
+
+struct Help {
+  QString s;
+  Help(QString s) : s(s) { }
+  Help& operator>>(QWidget *w) { w->setWhatsThis(s); return *this; }
+  Help& operator>>(QAction *a) { a->setWhatsThis(s); return *this; }
+};
+
+
+void
+QDjView::createWhatsThis()
+{
+  QString ms, ml;
+  ms = QDjViewPrefs::modifiersToString(generalPrefs->modifiersForSelect);
+  ml = QDjViewPrefs::modifiersToString(generalPrefs->modifiersForLens);
+
+  Help(tr("<html><b>Selecting a rectangle...</b><br/> "
+          "Once a rectanglular area is selected, a popup menu "
+          "lets you copy the corresponding text or image. "
+          "Instead of using this tool, you can also hold %1 "
+          "and use the left mouse button."
+          "</html>").arg(ms))
+            >> actionSelect;
+  
+  Help(tr("<html><b>Zooming...</b><br/> "
+          "Choose a zoom level for viewing the document. "
+          "Zoom level <tt>100%</tt> displays the document suitably for a 100 dpi screen. "
+          "Zoom levels <tt>Fit Page</tt> and <tt>Fit Width</tt> ensure that "
+          "the full page or the page width fit in the window. "
+          "</html>"))
+            >> actionZoomIn >> actionZoomOut
+            >> actionZoomFitPage >> actionZoomFitWidth
+            >> actionZoom300 >> actionZoom200 >> actionZoom150
+            >> actionZoom75 >> actionZoom50
+            >> zoomCombo;
+
+  Help(tr("<html><b>Navigating the document...</b><br/> "
+          "Select a specific page of the document. </html>"))
+            >> actionNavFirst >> actionNavPrev >> actionNavNext >> actionNavLast
+            >> pageCombo;
+  
+  Help(tr("<html><b>Continuous layout</b><br/> "
+          "Display all the document pages arranged vertically "
+          "inside the scrollable document viewing area.</html>"))
+            >> actionLayoutContinuous;
+  
+  Help(tr("<html><b>Side by side layout</b><br/> "
+          "Display pairs of pages side by side "
+          "inside the scrollable document viewing area.</html>"))
+            >> actionLayoutSideBySide;
+  
+  Help(tr("<html><b>Page information</b><br/> "
+          "Display the page name followed by the page size in pixels "
+          "and the page resolution in dots per inche. </html>"))
+            >> pageLabel;
+  
+  Help(tr("<html><b>Cursor information</b><br/> "
+          "Display the position of the mouse cursor "
+          "expressed in page coordinates. </html>"))
+            >> mouseLabel;
+
+  Help(tr("<html><b>Document viewing area</b><br/> "
+          "This is the main display area for the DjVu document. <ul>"
+          "<li>Arrows and page keys to navigate the document.</li>"
+          "<li>Space and BackSpace to read the document.</li>"
+          "<li>Keys <tt>+</tt>, <tt>-</tt>, <tt>[</tt>, <tt>]</tt> "
+          "    to zoom and rotate the document.</li>"
+          "<li>Left mouse button for panning and selecting links.</li>"
+          "<li>%1+Left mouse button for selecting text or images.</li>"
+          "<li>%2 for popping the magnification lens.</li>"
+          "</ul></html>").arg(ms).arg(ml))
+            >> widget;
+  
+  // TODO...
+}
+
 
 
 // ----------------------------------------
@@ -456,7 +659,6 @@ QDjView::updateActions()
 void
 QDjView::createMenus()
 {
-
   // Layout main menu
   QMenu *fileMenu = menuBar->addMenu(tr("&File", "File|"));
   if (viewerMode == STANDALONE)
@@ -524,10 +726,10 @@ QDjView::createMenus()
   settingsMenu->addAction(actionViewToolBar);
   settingsMenu->addAction(actionViewStatusBar);
   settingsMenu->addSeparator();
-  settingsMenu->addAction(actionLayoutPageSettings);
-  settingsMenu->addSeparator();
   settingsMenu->addAction(actionPreferences);
   QMenu *helpMenu = menuBar->addMenu(tr("&Help", "Help|"));
+  helpMenu->addAction(actionWhatsThis);
+  helpMenu->addSeparator();
   helpMenu->addAction(actionAbout);
 
   // Layout context menu
@@ -573,7 +775,11 @@ QDjView::createMenus()
   contextMenu->addAction(actionExport);
   contextMenu->addAction(actionPrint);
   contextMenu->addSeparator();
+  contextMenu->addAction(actionDocInfo);
+  contextMenu->addAction(actionPageInfo);
   contextMenu->addAction(actionPreferences);
+  contextMenu->addSeparator();
+  contextMenu->addAction(actionWhatsThis);
   contextMenu->addAction(actionAbout);
 }
 
@@ -676,9 +882,31 @@ QDjView::createToolBar(void)
 void
 QDjView::applyOptions(void)
 {
-  
+  // Booleans
+  menuBar->setVisible(options & QDjViewPrefs::SHOW_MENUBAR);
+  toolBar->setVisible(options & QDjViewPrefs::SHOW_TOOLBAR);
+  sideBar->setVisible(options & QDjViewPrefs::SHOW_SIDEBAR);
+  statusBar->setVisible(options & QDjViewPrefs::SHOW_STATUSBAR);
+  widget->setDisplayFrame(options & QDjViewPrefs::SHOW_FRAME);
+  widget->setContinuous(options & QDjViewPrefs::LAYOUT_CONTINUOUS);
+  widget->setSideBySide(options & QDjViewPrefs::LAYOUT_SIDEBYSIDE);
+  widget->enableKeyboard(options & QDjViewPrefs::HANDLE_KEYBOARD);
+  widget->enableMouse(options & QDjViewPrefs::HANDLE_MOUSE);
+  widget->enableHyperlink(options & QDjViewPrefs::HANDLE_LINKS);
 
-  
+  // Scrollbars
+  Qt::ScrollBarPolicy scrollBarPolicy = Qt::ScrollBarAlwaysOff;
+  if (options & QDjViewPrefs::SHOW_SCROLLBARS)
+    scrollBarPolicy = Qt::ScrollBarAsNeeded;
+  widget->setHorizontalScrollBarPolicy(scrollBarPolicy);
+  widget->setVerticalScrollBarPolicy(scrollBarPolicy);
+
+  // ContextMenu
+  if (options & QDjViewPrefs::HANDLE_CONTEXTMENU)
+    widget->setContextMenu(contextMenu);
+  else
+    widget->setContextMenu(0);    
+
   // Recreate toolbar when changed
   if (toolBarOptions != tools)
     createToolBar();
@@ -691,6 +919,22 @@ QDjView::applyOptions(void)
 void
 QDjView::applyPreferences(void)
 {
+  // Window state
+  if (generalPrefs->windowState.size() > 0)
+    restoreState(generalPrefs->windowState);
+  if (generalPrefs->windowSize.isValid())
+    resize(generalPrefs->windowSize);
+  // Other preferences
+  widget->setZoom(appearancePrefs->zoom);
+  widget->setModifiersForLens(generalPrefs->modifiersForLens);
+  widget->setModifiersForSelect(generalPrefs->modifiersForSelect);
+  widget->setModifiersForLinks(generalPrefs->modifiersForLinks);
+  widget->setGamma(generalPrefs->gamma);
+  djvuContext.setCacheSize(generalPrefs->cacheSize);
+  widget->setPixelCacheSize(generalPrefs->pixelCacheSize);
+  widget->setLensSize(generalPrefs->lensSize);
+  widget->setLensPower(generalPrefs->lensPower);
+  //widget->settingsAreDefaults()
 }
 
 
@@ -802,12 +1046,14 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   // - toolbar  
   toolBar = new QToolBar(this);
   toolBar->setObjectName("toolbar");
+  toolBar->setAllowedAreas(Qt::TopToolBarArea|Qt::BottomToolBarArea);
   addToolBar(toolBar);
   toolBarOptions = 0;
 
   // - sidebar  
   sideBar = new QDockWidget(this);  // for now
   sideBar->setObjectName("sidebar");
+  sideBar->setAllowedAreas(Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea);
   addDockWidget(Qt::LeftDockWidgetArea, sideBar);
   
   // Setup main window
@@ -820,8 +1066,9 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   createCombos();
   createActions();
   createMenus();
-  applyOptions();
+  createWhatsThis();
   applyPreferences();
+  applyOptions();
   updateActions();
 }
 
@@ -882,8 +1129,9 @@ QDjView::open(QString filename)
       return false;
     }
   open(doc);
-  setWindowTitle(tr("Djview - %1").arg(filename));
+  setWindowTitle(tr("Djview - %1[*]").arg(filename));
   documentFileName = filename;
+  documentUrl = QUrl::fromLocalFile(QFileInfo(filename).absoluteFilePath());
   return true;
 }
 
@@ -905,7 +1153,7 @@ QDjView::open(QUrl url)
       return false;
     }
   open(doc);
-  setWindowTitle(tr("Djview - %1").arg(url.toString()));
+  setWindowTitle(tr("Djview - %1[*]").arg(url.toString()));
   documentUrl = url;
   parseCgiArguments(url);
   return true;
@@ -945,14 +1193,12 @@ QDjView::goToPage(QString name, int from)
         from = widget->page();
       // Handle names starting with hash mark
       if (name.startsWith("#") &&
-          name.contains(QRegExp("^#[-+=]?\\d+$")))
+          name.contains(QRegExp("^#[-+]?\\d+$")))
         {
           if (name[1]=='+')
             pageno = qMin(from + name.mid(2).toInt(), pagenum-1);
           else if (name[1]=='-')
             pageno = qMax(from - name.mid(2).toInt(), 0);
-          else if (name[1]=='=')
-            pageno = qBound(1, name.mid(2).toInt(), pagenum) - 1;
           else
             pageno = qBound(1, name.mid(1).toInt(), pagenum) - 1;
         }
@@ -968,6 +1214,9 @@ QDjView::goToPage(QString name, int from)
         for (int i=0; i<from; i++)
           if (! strcmp(utf8Name, documentPages[i].title))
             { pageno = i; break; }
+      // Otherwise try a number in range [1..pagenum]
+      if (pageno < 0 || pageno >= pagenum)
+        pageno = name.toInt() - 1;
       // Otherwise let ddjvuapi do the search
       if (pageno < 0 || pageno >= pagenum)
         pageno = ddjvu_document_search_pageno(*document, utf8Name);
@@ -1061,8 +1310,11 @@ QDjView::pageName(int pageno)
 void
 QDjView::closeEvent(QCloseEvent *event)
 {
-  generalPrefs->toolState = saveState();
-  generalPrefs->save();
+  generalPrefs->windowState = saveState();
+  if (isWindow() && !isHidden() && !isFullScreen() &&
+      !isMaximized() && !isMinimized())
+    generalPrefs->windowSize = size();
+  generalPrefs->saveWindow();
   closeDocument();
   // Accept close event
   QMainWindow::closeEvent(event);
@@ -1264,6 +1516,7 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
   if (actionSelect->isChecked())
     {
       actionSelect->setChecked(false);
+      selectActionTriggered(false);
     }
 }
 
@@ -1309,6 +1562,72 @@ QDjView::modeComboActivated(int index)
 {
   int mode = modeCombo->itemData(index).toUInt();
   widget->setDisplayMode((QDjVuWidget::DisplayMode)mode);
+}
+
+
+void
+QDjView::zoomComboActivated(int index)
+{
+  int zoom = zoomCombo->itemData(index).toUInt();
+  widget->setZoom(zoom);
+  widget->setFocus();
+}
+
+
+void 
+QDjView::zoomComboEdited(void)
+{
+  bool okay;
+  QString text = zoomCombo->lineEdit()->text();
+  int zoom = text.replace(QRegExp("\\s*%?$"),"").trimmed().toInt(&okay);
+  if (okay && zoom>0)
+    widget->setZoom(zoom);
+  updateActionsLater();
+  widget->setFocus();
+}
+
+
+void 
+QDjView::pageComboActivated(int index)
+{
+  goToPage(index);
+  updateActionsLater();
+  widget->setFocus();
+}
+
+
+void 
+QDjView::pageComboEdited(void)
+{
+  goToPage(pageCombo->lineEdit()->text().trimmed());
+  updateActionsLater();
+  widget->setFocus();
+}
+
+
+void 
+QDjView::rotationActionTriggered(void)
+{
+  QAction *action = qobject_cast<QAction*>(sender());
+  widget->setRotation(action->data().toInt());
+}
+
+
+void 
+QDjView::zoomActionTriggered(void)
+{
+  QAction *action = qobject_cast<QAction*>(sender());
+  widget->setZoom(action->data().toInt());
+}
+
+
+void 
+QDjView::selectActionTriggered(bool checked)
+{
+  if (checked)
+    widget->setModifiersForSelect(Qt::NoModifier);
+  else
+    widget->setModifiersForSelect(generalPrefs->modifiersForSelect);
 }
 
 

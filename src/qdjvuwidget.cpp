@@ -2116,8 +2116,6 @@ QDjVuWidget::contextMenu(void) const
 void 
 QDjVuWidget::setContextMenu(QMenu *m)
 {
-  if (priv->contextMenu)
-    delete priv->contextMenu;
   priv->contextMenu = m;
 }
 
@@ -2295,6 +2293,73 @@ QDjVuWidget::setLensSize(int size)
   priv->lensSize = qBound(0,size,500);
 }
 
+/*! \property QDjVuWidget::modifiersForLens
+  Sets the modifier that should be depressed in 
+  order to display the magnifying lens. 
+  Default: Control + Shift. */
+
+Qt::KeyboardModifiers 
+QDjVuWidget::modifiersForLens()
+{
+  return priv->modifiersForLens;
+}
+
+void
+QDjVuWidget::setModifiersForLens(Qt::KeyboardModifiers m)
+{
+  if (priv->modifiersForLens != m)
+    {
+      priv->modifiersForLens = m;
+      if (priv->dragMode == DRAG_NONE)
+        modifierEvent(priv->modifiers, priv->buttons, priv->cursorPoint);
+    }
+}
+
+/*! \property QDjVuWidget::modifiersForSelect
+  Sets the modifier that should be depressed 
+  in conjunction with the left mouse button in 
+  order to select a rectangular area.
+  Default: Control. */
+
+Qt::KeyboardModifiers 
+QDjVuWidget::modifiersForSelect()
+{
+  return priv->modifiersForSelect;
+}
+
+void
+QDjVuWidget::setModifiersForSelect(Qt::KeyboardModifiers m)
+{
+  if (priv->modifiersForSelect != m)
+    {
+      priv->modifiersForSelect = m;
+      if (priv->dragMode == DRAG_NONE)
+        modifierEvent(priv->modifiers, priv->buttons, priv->cursorPoint);
+    }
+}
+
+
+/*! \property QDjVuWidget::modifiersForLinks
+  Sets the modifier that should be depressed in 
+  order to display all hyperlinks.
+  Default: Shift. */
+
+Qt::KeyboardModifiers 
+QDjVuWidget::modifiersForLinks()
+{
+  return priv->modifiersForLinks;
+}
+
+void
+QDjVuWidget::setModifiersForLinks(Qt::KeyboardModifiers m)
+{
+  if (priv->modifiersForLinks != m)
+    {
+      priv->modifiersForLinks = m;
+      if (priv->dragMode == DRAG_NONE)
+        modifierEvent(priv->modifiers, priv->buttons, priv->cursorPoint);
+    }
+}
 
 
 // ----------------------------------------
@@ -3634,27 +3699,30 @@ QDjVuWidget::modifierEvent(Qt::KeyboardModifiers modifiers,
         {
           viewport()->setCursor(Qt::ArrowCursor);
         }
-      else if (modifiers == priv->modifiersForLens)
+      else if (modifiers == priv->modifiersForLens &&
+               (modifiers != Qt::NoModifier || buttons != Qt::NoButton) )
         {
           viewport()->setCursor(Qt::CrossCursor);
           startLensing(point);
         }
-      else if (modifiers == priv->modifiersForSelect)
+      else if (modifiers == priv->modifiersForSelect &&
+               buttons != Qt::MidButton )
         {
           viewport()->setCursor(Qt::CrossCursor);
           if (buttons != Qt::NoButton)
             startSelecting(point);
+        }
+      else if (modifiers == Qt::NoModifier &&
+               buttons == Qt::MidButton )
+        {
+          viewport()->setCursor(Qt::CrossCursor);
+          startSelecting(point);
         }
       else if (priv->hyperlinkEnabled && !linkUrl().isEmpty())
         {
           viewport()->setCursor(Qt::ArrowCursor);
           if (buttons != Qt::NoButton)
             startLinking(point);
-        }
-      else if (buttons == Qt::MidButton)
-        {
-          viewport()->setCursor(Qt::CrossCursor);
-          startSelecting(point);
         }
       else if (buttons != Qt::NoButton)
         {
@@ -3672,21 +3740,24 @@ QDjVuWidget::modifierEvent(Qt::KeyboardModifiers modifiers,
 void 
 QDjVuWidget::mousePressEvent(QMouseEvent *event)
 {
-  mouseMoveEvent(event);
+  if (! event->isAccepted())
+    mouseMoveEvent(event);
 }
 
 /*! Overridden \a QAbstractScrollArea virtual function. */
 void 
 QDjVuWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
-  mouseMoveEvent(event);
+  if (! event->isAccepted())
+    mouseMoveEvent(event);
 }
 
 /*! Overridden \a QAbstractScrollArea virtual function. */
 void 
 QDjVuWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-  mouseMoveEvent(event);
+  if (! event->isAccepted())
+    mouseMoveEvent(event);
 }
 
 
@@ -3756,7 +3827,7 @@ QDjVuWidget::mouseMoveEvent(QMouseEvent *event)
 void 
 QDjVuWidget::keyPressEvent(QKeyEvent *event)
 {
-  if (priv->keyboardEnabled)
+  if (priv->keyboardEnabled && !event->isAccepted())
     {
       // Capturing this signal can override any key binding
       bool done = false;

@@ -34,29 +34,58 @@ class QDjVuWidget : public QAbstractScrollArea
 {
   Q_OBJECT
   Q_ENUMS(DisplayMode PointerMode Align)
-  Q_PROPERTY(int page READ page WRITE setPage)
-  Q_PROPERTY(int rotation READ rotation WRITE setRotation)
-  Q_PROPERTY(int zoom READ zoom WRITE setZoom)
-  Q_PROPERTY(double gamma READ gamma WRITE setGamma)
-  Q_PROPERTY(DisplayMode displayMode READ displayMode WRITE setDisplayMode)
-  Q_PROPERTY(bool displayFrame READ displayFrame WRITE setDisplayFrame)
-  Q_PROPERTY(Align horizAlign READ horizAlign WRITE setHorizAlign)
-  Q_PROPERTY(Align vertAlign READ vertAlign WRITE setVertAlign)
-  Q_PROPERTY(bool sideBySide READ sideBySide WRITE setSideBySide)
-  Q_PROPERTY(bool continuous READ continuous WRITE setContinuous)
-  Q_PROPERTY(QBrush borderBrush READ borderBrush WRITE setBorderBrush)
-  Q_PROPERTY(int borderSize READ borderSize WRITE setBorderSize)
-  Q_PROPERTY(int pixelCacheSize READ pixelCacheSize WRITE setPixelCacheSize)
-  Q_PROPERTY(bool pageSettings READ pageSettings WRITE setPageSettings)
-  Q_PROPERTY(bool pageMapArea READ pageMapAreas WRITE setPageMapAreas)
-  Q_PROPERTY(bool keyboardEnabled READ keyboardEnabled WRITE enableKeyboard)
-  Q_PROPERTY(bool hyperlinkEnabled READ hyperlinkEnabled WRITE enableHyperlink)
-  Q_PROPERTY(bool mouseEnabled READ mouseEnabled WRITE enableMouse)
-  Q_PROPERTY(int lensPower READ lensPower WRITE setLensPower)
-  Q_PROPERTY(int lensSize READ lensSize WRITE setLensSize)
-  Q_PROPERTY(QDjVuDocument* document READ document WRITE setDocument)
-  Q_PROPERTY(QMenu* contextMenu READ contextMenu WRITE setContextMenu)
-  Q_PROPERTY(Position position READ position WRITE setPosition)
+  Q_PROPERTY(int page 
+             READ page WRITE setPage)
+  Q_PROPERTY(int rotation 
+             READ rotation WRITE setRotation)
+  Q_PROPERTY(int zoom 
+             READ zoom WRITE setZoom)
+  Q_PROPERTY(double gamma 
+             READ gamma WRITE setGamma)
+  Q_PROPERTY(DisplayMode displayMode 
+             READ displayMode WRITE setDisplayMode)
+  Q_PROPERTY(bool displayFrame 
+             READ displayFrame WRITE setDisplayFrame)
+  Q_PROPERTY(Align horizAlign 
+             READ horizAlign WRITE setHorizAlign)
+  Q_PROPERTY(Align vertAlign 
+             READ vertAlign WRITE setVertAlign)
+  Q_PROPERTY(bool sideBySide 
+             READ sideBySide WRITE setSideBySide)
+  Q_PROPERTY(bool continuous 
+             READ continuous WRITE setContinuous)
+  Q_PROPERTY(QBrush borderBrush 
+             READ borderBrush WRITE setBorderBrush)
+  Q_PROPERTY(int borderSize 
+             READ borderSize WRITE setBorderSize)
+  Q_PROPERTY(int pixelCacheSize 
+             READ pixelCacheSize WRITE setPixelCacheSize)
+  Q_PROPERTY(bool pageSettings 
+             READ pageSettings WRITE setPageSettings)
+  Q_PROPERTY(bool pageMapArea 
+             READ pageMapAreas WRITE setPageMapAreas)
+  Q_PROPERTY(bool keyboardEnabled 
+             READ keyboardEnabled WRITE enableKeyboard)
+  Q_PROPERTY(bool hyperlinkEnabled 
+             READ hyperlinkEnabled WRITE enableHyperlink)
+  Q_PROPERTY(bool mouseEnabled 
+             READ mouseEnabled WRITE enableMouse)
+  Q_PROPERTY(int lensPower 
+             READ lensPower WRITE setLensPower)
+  Q_PROPERTY(int lensSize 
+             READ lensSize WRITE setLensSize)
+  Q_PROPERTY(QDjVuDocument* document 
+             READ document WRITE setDocument)
+  Q_PROPERTY(QMenu* contextMenu 
+             READ contextMenu WRITE setContextMenu)
+  Q_PROPERTY(Position position 
+             READ position WRITE setPosition)
+  Q_PROPERTY(Qt::KeyboardModifiers modifiersForLens 
+             READ modifiersForLens WRITE setModifiersForLens)
+  Q_PROPERTY(Qt::KeyboardModifiers modifiersForSelect 
+             READ modifiersForSelect WRITE setModifiersForSelect)
+  Q_PROPERTY(Qt::KeyboardModifiers modifiersForLinks
+             READ modifiersForLinks WRITE setModifiersForLinks)
 
 public:
 
@@ -108,7 +137,6 @@ public:
   QDjVuWidget(QDjVuDocument *doc, QWidget *parent=0);
   
   QDjVuDocument *document(void) const;
-  void setDocument(QDjVuDocument *d);
   int page(void) const;
   Position position(void) const;
   Position position(const QPoint &point) const;
@@ -133,8 +161,12 @@ public:
   bool hyperlinkEnabled(void) const;
   int lensPower(void) const;
   int lensSize(void) const;
+  Qt::KeyboardModifiers modifiersForLens();
+  Qt::KeyboardModifiers modifiersForSelect();
+  Qt::KeyboardModifiers modifiersForLinks();
 
 public slots:
+  void setDocument(QDjVuDocument *d);
   void setPage(int p);
   void setPosition(const Position &pos);
   void setPosition(const Position &pos, const QPoint &point);
@@ -158,6 +190,9 @@ public slots:
   void enableHyperlink(bool);
   void setLensPower(int);
   void setLensSize(int);
+  void setModifiersForLens(Qt::KeyboardModifiers);
+  void setModifiersForSelect(Qt::KeyboardModifiers);
+  void setModifiersForLinks(Qt::KeyboardModifiers);
 
 public:
   QString pastErrorMessage(int n=0);

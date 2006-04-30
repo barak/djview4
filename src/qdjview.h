@@ -98,6 +98,7 @@ protected:
   void createCombos(void);
   void createActions(void);
   void createMenus(void);
+  void createWhatsThis(void);
   void applyPreferences(void);
   int pageNum(void);
   QString pageName(int pageno);
@@ -115,10 +116,17 @@ protected slots:
   void pointerSelect(const QPoint &pointerPos, const QRect &rect);
   
   void updateActions(void);
-  void updateActionsLater();
+  void updateActionsLater(void);
   void applyOptions(void);
   void applyOptionsLater(void);
   void modeComboActivated(int);
+  void zoomComboActivated(int);
+  void zoomComboEdited(void);
+  void pageComboActivated(int);
+  void pageComboEdited(void);
+  void rotationActionTriggered(void);
+  void zoomActionTriggered(void);
+  void selectActionTriggered(bool);
 
 protected:
 
@@ -199,6 +207,7 @@ protected:
   QAction *actionPageInfo;
   QAction *actionDocInfo;
   QAction *actionAbout;
+  QAction *actionWhatsThis;
   QAction *actionDisplayColor;
   QAction *actionDisplayBW;
   QAction *actionDisplayForeground;
@@ -210,7 +219,6 @@ protected:
   QAction *actionViewFullScreen;
   QAction *actionLayoutContinuous;
   QAction *actionLayoutSideBySide;
-  QAction *actionLayoutPageSettings;
 
 };
 

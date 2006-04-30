@@ -19,11 +19,16 @@
 #ifndef QDJVIEWPREFS_H
 #define QDJVIEWPREFS_H
 
+#include <Qt>
 #include <QObject>
 #include <QByteArray>
 #include <QFlags>
 
 #include "qdjvuwidget.h"
+
+#ifndef DJVIEW_VERSION
+# define DJVIEW_VERSION 0x40000
+#endif
 
 
 class QDjViewPrefs : public QObject
@@ -41,11 +46,11 @@ public:
     SHOW_FRAME          = 0x0040,
     LAYOUT_CONTINUOUS   = 0x0100,
     LAYOUT_SIDEBYSIDE   = 0x0200,
-    LAYOUT_PAGESETTINGS = 0x0400,
-    HANDLE_KEYBOARD     = 0x1000,
-    HANDLE_LINKS        = 0x2000,
-    HANDLE_CONTEXTMENU  = 0x4000,
-    DEFAULT_OPTIONS = 0x7077,
+    HANDLE_MOUSE        = 0x1000,
+    HANDLE_KEYBOARD     = 0x2000,
+    HANDLE_LINKS        = 0x4000,
+    HANDLE_CONTEXTMENU  = 0x8000,
+    DEFAULT_OPTIONS = 0xF077,
   };
 
   Q_DECLARE_FLAGS(Options, Option)
@@ -77,13 +82,23 @@ public:
     Options                  options;
     int                      zoom;
   };
+  
+  static QString versionString();
+  static QString modifiersToString(Qt::KeyboardModifiers);
+  static Qt::KeyboardModifiers stringToModifiers(QString);
 
   Appearance forStandalone;
   Appearance forFullScreen;
   Appearance forEmbeddedPlugin;
   Appearance forFullPagePlugin;
   Tools      tools;
-  QByteArray toolState;
+
+  QSize      windowSize;
+  QByteArray windowState;
+
+  Qt::KeyboardModifiers modifiersForLens;
+  Qt::KeyboardModifiers modifiersForSelect;
+  Qt::KeyboardModifiers modifiersForLinks;
   double     gamma;
   double     printerGamma;
   long       cacheSize;
@@ -94,6 +109,7 @@ public:
   static QDjViewPrefs *create();
   void load();
   void save();
+  void saveWindow();
 
 private:
   QDjViewPrefs(void);

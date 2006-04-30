@@ -49,6 +49,10 @@ QDjViewPrefs::Appearance::Appearance()
 QDjViewPrefs::QDjViewPrefs(void)
   : QObject(QCoreApplication::instance()),
     tools(DEFAULT_TOOLS),
+    windowSize(640,400),
+    modifiersForLens(Qt::ControlModifier|Qt::ShiftModifier),
+    modifiersForSelect(Qt::ControlModifier),
+    modifiersForLinks(Qt::ShiftModifier),
     gamma(2.2),
     printerGamma(0.0),
     cacheSize(10*1024*1024),
@@ -58,13 +62,58 @@ QDjViewPrefs::QDjViewPrefs(void)
 {
   forFullScreen.options &= ~(SHOW_MENUBAR|SHOW_STATUSBAR);
   forFullScreen.options &= ~(SHOW_TOOLBAR|SHOW_SIDEBAR);
-  forFullPagePlugin.options |= LAYOUT_PAGESETTINGS;
   forFullPagePlugin.options &= ~(SHOW_MENUBAR|SHOW_STATUSBAR);
-  forEmbeddedPlugin.options |= LAYOUT_PAGESETTINGS;
   forEmbeddedPlugin.options &= ~(SHOW_MENUBAR|SHOW_STATUSBAR);
   forEmbeddedPlugin.options &= ~(SHOW_TOOLBAR|SHOW_SIDEBAR);
 }
 
+
+QString 
+QDjViewPrefs::versionString()
+{
+  QString version = QString("%1.%2");
+  version = version.arg((DJVIEW_VERSION>>16)&0xFF);
+  version = version.arg((DJVIEW_VERSION>>8)&0xFF);
+  if (DJVIEW_VERSION & 0xFF)
+    version = version + QString(".%1").arg(DJVIEW_VERSION&0xFF);
+  return version;
+}
+
+
+QString 
+QDjViewPrefs::modifiersToString(Qt::KeyboardModifiers m)
+{
+  QStringList l;
+  if (m & Qt::MetaModifier)
+    l << "Meta";
+  if (m & Qt::AltModifier)
+    l << "Alt";
+  if (m & Qt::ControlModifier)
+    l << "Control";
+  if (m & Qt::ShiftModifier)
+    l << "Shift";
+  return l.join("+");
+}
+
+
+Qt::KeyboardModifiers 
+QDjViewPrefs::stringToModifiers(QString s)
+{
+  Qt::KeyboardModifiers m = Qt::NoModifier;
+  QStringList l = s.split("+");
+  foreach(s, l)
+    {
+      if (s.toLower() == "shift")
+        m |= Qt::ShiftModifier;
+      else if (s.toLower() == "control")
+        m |= Qt::ControlModifier;
+      else if (s.toLower() == "alt")
+        m |= Qt::AltModifier;
+      else if (s.toLower() == "meta")
+        m |= Qt::MetaModifier;
+    }
+  return m;
+}
 
 
 void
@@ -72,8 +121,15 @@ QDjViewPrefs::load(void)
 {
 }
 
+
 void
 QDjViewPrefs::save(void)
+{
+}
+
+
+void
+QDjViewPrefs::saveWindow(void)
 {
 }
 
