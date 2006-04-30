@@ -195,17 +195,17 @@ QDjView::createActions()
     << QIcon(":/images/icon_quit.png")
     << tr("Close all windows and quit the application.")
     << Trigger(QCoreApplication::instance(), SLOT(quit()));
-  actionSave = makeAction(tr("&Save", "File|Save"))
+  actionSave = makeAction(tr("&Save as...", "File|Save"))
     << QKeySequence(tr("Ctrl+S", "File|Save"))
     << QIcon(":/images/icon_save.png")
     << tr("Save the DjVu document.");
-  actionExport = makeAction(tr("&Export", "File|Export"))
+  actionExport = makeAction(tr("&Export as...", "File|Export"))
     << tr("Export the DjVu document under another format.");
-  actionPrint = makeAction(tr("&Print", "File|Print"))
+  actionPrint = makeAction(tr("&Print...", "File|Print"))
     << QKeySequence(tr("Ctrl+P", "File|Print"))
     << QIcon(":/images/icon_print.png")
     << tr("Print the DjVu document.");
-  actionSearch = makeAction(tr("&Find"))
+  actionSearch = makeAction(tr("&Find..."))
     << QKeySequence(tr("Ctrl+F", "Find"))
     << QIcon(":/images/icon_find.png")
     << tr("Find text in the DjVu document.");
@@ -295,11 +295,11 @@ QDjView::createActions()
   actionRotate270 = makeAction(tr("Rotate &270\260"), false)
     << tr("Turn page on its right side.")
     << *rotationActionGroup;
-  actionPageInfo = makeAction(tr("Page &Information"))
+  actionPageInfo = makeAction(tr("Page &Information..."))
     << tr("Show DjVu encoding information for the current page.");
-  actionDocInfo = makeAction(tr("&Document Information"))
+  actionDocInfo = makeAction(tr("&Document Information..."))
     << tr("Show DjVu encoding information for the document.");
-  actionAbout = makeAction(tr("&About DjView"))
+  actionAbout = makeAction(tr("&About DjView..."))
     << QIcon(":/images/icon_djvu.png")
     << tr("Show information about this program.");
   actionDisplayColor = makeAction(tr("&Color", "Display|Color"), false)
@@ -322,7 +322,7 @@ QDjView::createActions()
     << Trigger(widget, SLOT(displayModeBackground()))
     << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
-  actionPreferences = makeAction(tr("Prefere&nces")) 
+  actionPreferences = makeAction(tr("Prefere&nces...")) 
     << QIcon(":/images/icon_prefs.png")
     << tr("Show the preferences dialog.");
   actionViewSideBar = sideBar->toggleViewAction() 
@@ -1237,12 +1237,12 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
   // Prepare menu
   QMenu *menu = new QMenu(this);
   QAction *copyText = menu->addAction(tr("&Copy text (%1)").arg(s));
-  QAction *saveText = menu->addAction(tr("&Save text"));
+  QAction *saveText = menu->addAction(tr("&Save text as..."));
   copyText->setEnabled(l>0);
   saveText->setEnabled(l>0);
   menu->addSeparator();
   QAction *copyImage = menu->addAction(tr("Copy image (%1x%2 pixels)").arg(w).arg(h));
-  QAction *saveImage = menu->addAction(tr("Save image"));
+  QAction *saveImage = menu->addAction(tr("Save image as..."));
   menu->addSeparator();
   QAction *zoom = menu->addAction(tr("Zoom to rectangle"));
   
