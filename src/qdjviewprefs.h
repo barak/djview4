@@ -59,14 +59,15 @@ public:
     TOOL_PREVNEXT     = 0x00020,
     TOOL_FIRSTLAST    = 0x00040,
     TOOL_BACKFORW     = 0x00080,
-    TOOL_ROTATE       = 0x00100,
-    TOOL_SEARCH       = 0x00200,
-    TOOL_SAVE         = 0x00400,
-    TOOL_PRINT        = 0x00800,
-    TOOL_OPEN         = 0x01000,
-    TOOL_NEW          = 0x02000,
+    TOOL_NEW          = 0x00100,
+    TOOL_OPEN         = 0x00200,
+    TOOL_SEARCH       = 0x00400,
+    TOOL_SELECT       = 0x00800,
+    TOOL_SAVE         = 0x01000,
+    TOOL_PRINT        = 0x02000,
     TOOL_LAYOUT       = 0x04000,
-    DEFAULT_TOOLS = 0x5e7c
+    TOOL_ROTATE       = 0x08000,
+    DEFAULT_TOOLS = 0x7e7c
   };
 
   Q_DECLARE_FLAGS(Tools, Tool)

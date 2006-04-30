@@ -25,6 +25,7 @@
 #include <QObject>
 #include <QCoreApplication>
 #include <QApplication>
+#include <QClipboard>
 #include <QTimer>
 #include <QEvent>
 #include <QCloseEvent>
@@ -89,7 +90,9 @@ QDjView::createCombos(void)
 
   // - page combo box
   pageCombo = new QComboBox(toolBar);
-
+  connect(pageCombo, SIGNAL(activated(int)),
+          this, SLOT(goToPage(int)));
+  
 }
 
 
@@ -206,6 +209,9 @@ QDjView::createActions()
     << QKeySequence(tr("Ctrl+F", "Find"))
     << QIcon(":/images/icon_find.png")
     << tr("Find text in the DjVu document.");
+  actionSelect = makeAction(tr("&Select"), false)
+    << QIcon(":/images/icon_select.png")
+    << tr("Select rectangle in document (same as middle mouse button).");
   actionZoomIn = makeAction(tr("Zoom &In"))
     << QIcon(":/images/icon_zoomin.png")
     << tr("Increase the magnification.")
@@ -420,17 +426,21 @@ QDjView::updateActions()
     }
   
   // Update option flags
+  if (! needToApplyOptions)
+    {
 #define setFlag(flag, test) \
   options = (options & ~(QDjViewPrefs::flag)) \
           | ((test) ? (QDjViewPrefs::flag) \
                     : (QDjViewPrefs::Option)0)
-  setFlag(SHOW_TOOLBAR,        !toolBar->isHidden());
-  setFlag(SHOW_SIDEBAR,        !sideBar->isHidden());
-  setFlag(SHOW_STATUSBAR,      !statusBar->isHidden());
-  setFlag(LAYOUT_CONTINUOUS,   widget->continuous());
-  setFlag(LAYOUT_SIDEBYSIDE,   widget->sideBySide());
-  setFlag(LAYOUT_PAGESETTINGS, widget->pageSettings());
+      // Track options changeable by user interaction
+      setFlag(SHOW_TOOLBAR,        !toolBar->isHidden());
+      setFlag(SHOW_SIDEBAR,        !sideBar->isHidden());
+      setFlag(SHOW_STATUSBAR,      !statusBar->isHidden());
+      setFlag(LAYOUT_CONTINUOUS,   widget->continuous());
+      setFlag(LAYOUT_SIDEBYSIDE,   widget->sideBySide());
+      setFlag(LAYOUT_PAGESETTINGS, widget->pageSettings());
 #undef setFlag
+    }
 
   // Finished
   needToUpdateActions = false;
@@ -574,16 +584,17 @@ QDjView::createMenus()
 
 
 void
-QDjView::applyTools(void)
+QDjView::createToolBar(void)
 {
+  // Hide toolbar
   bool wasHidden = toolBar->isHidden();
   toolBar->hide();
   toolBar->clear();
-
+  // Hide combo boxes
   modeCombo->hide();
   pageCombo->hide();
   zoomCombo->hide();
-  
+  // Use options to compose toolbar
   if (viewerMode == STANDALONE) 
     {
       if (tools & QDjViewPrefs::TOOL_NEW)
@@ -602,6 +613,10 @@ QDjView::applyTools(void)
   if (tools & QDjViewPrefs::TOOL_SEARCH)
     {
       toolBar->addAction(actionSearch);
+    }
+  if (tools & QDjViewPrefs::TOOL_SELECT)
+    {
+      toolBar->addAction(actionSelect);
     }
   if (tools & QDjViewPrefs::TOOL_LAYOUT)
     {
@@ -652,14 +667,24 @@ QDjView::applyTools(void)
       toolBar->addAction(actionBack);
       toolBar->addAction(actionForw);
     }
-
+  // Done
   toolBar->setVisible(!wasHidden);
+  toolBarOptions = tools;
 }
 
 
 void
 QDjView::applyOptions(void)
 {
+  
+
+  
+  // Recreate toolbar when changed
+  if (toolBarOptions != tools)
+    createToolBar();
+
+  // Done
+  needToApplyOptions = false;
 }
 
 
@@ -680,7 +705,9 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
     viewerMode(mode),
     djvuContext(context),
     document(0),
-    needToUpdateActions(false)
+    needToUpdateActions(false),
+    needToApplyOptions(false),
+    pendingPageNo(-1)
 {
   // obtain preferences
   generalPrefs = QDjViewPrefs::create();
@@ -776,6 +803,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   toolBar = new QToolBar(this);
   toolBar->setObjectName("toolbar");
   addToolBar(toolBar);
+  toolBarOptions = 0;
 
   // - sidebar  
   sideBar = new QDockWidget(this);  // for now
@@ -792,7 +820,6 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   createCombos();
   createActions();
   createMenus();
-  applyTools();
   applyOptions();
   applyPreferences();
   updateActions();
@@ -886,16 +913,68 @@ QDjView::open(QUrl url)
 
 
 void 
-QDjView::goToPage(int)
+QDjView::goToPage(int pageno)
 {
-  // TODO
+  int pagenum = documentPages.size();
+  if (!pagenum || !document)
+    {
+      pendingPageNo = pageno;
+      pendingPageName.clear();
+    }
+  else
+    {
+      widget->setPage(pageno);
+      updateActionsLater();
+    }
 }
 
 
 void 
-QDjView::goToPage(QString)
+QDjView::goToPage(QString name, int from)
 {
-  // TODO
+  int pagenum = documentPages.size();
+  if (!pagenum || !document)
+    {
+      pendingPageNo = -1;
+      pendingPageName = name;
+    }
+  else
+    {
+      int pageno = -1;
+      if (from < 0)
+        from = widget->page();
+      // Handle names starting with hash mark
+      if (name.startsWith("#") &&
+          name.contains(QRegExp("^#[-+=]?\\d+$")))
+        {
+          if (name[1]=='+')
+            pageno = qMin(from + name.mid(2).toInt(), pagenum-1);
+          else if (name[1]=='-')
+            pageno = qMax(from - name.mid(2).toInt(), 0);
+          else if (name[1]=='=')
+            pageno = qBound(1, name.mid(2).toInt(), pagenum) - 1;
+          else
+            pageno = qBound(1, name.mid(1).toInt(), pagenum) - 1;
+        }
+      else if (name.startsWith("#="))
+        name = name.mid(2);
+      // Search exact name starting from current page
+      QByteArray utf8Name= name.toUtf8();
+      if (pageno < 0 || pageno >= pagenum)
+        for (int i=from; i<pagenum; i++)
+          if (! strcmp(utf8Name, documentPages[i].title))
+            { pageno = i; break; }
+      if (pageno < 0 || pageno >= pagenum)
+        for (int i=0; i<from; i++)
+          if (! strcmp(utf8Name, documentPages[i].title))
+            { pageno = i; break; }
+      // Otherwise let ddjvuapi do the search
+      if (pageno < 0 || pageno >= pagenum)
+        pageno = ddjvu_document_search_pageno(*document, utf8Name);
+      // Done
+      if (pageno >= 0 && pageno < pagenum)
+        widget->setPage(pageno);
+    }
 }
 
 
@@ -983,7 +1062,9 @@ void
 QDjView::closeEvent(QCloseEvent *event)
 {
   generalPrefs->toolState = saveState();
+  generalPrefs->save();
   closeDocument();
+  // Accept close event
   QMainWindow::closeEvent(event);
 }
 
@@ -1038,8 +1119,15 @@ QDjView::docinfo()
       for (int j=0; j<n; j++)
         pageCombo->addItem(pageName(j));
       
+      // Apply pending changes
+      if (! pendingPageName.isNull())
+        goToPage(pendingPageName);
+      else if (pendingPageNo >= 0)
+        goToPage(pendingPageNo);
+      // ... TODO ...
+      
       // Update actions
-      updateActions();
+      updateActionsLater();
     }
 }
 
@@ -1065,24 +1153,37 @@ QDjView::pointerPosition(const Position &pos, const PageInfo &page)
 void 
 QDjView::pointerEnter(const Position &pos, miniexp_t maparea)
 {
+  // Display information message about hyperlink
   QString link = widget->linkUrl();
   if (link.isEmpty())
     return;
-  if (link == "#+1")
-    link = tr("Turn 1 page forward.");
-  else if (link == "#-1")
-    link = tr("Turn 1 page backward.");
-  else if (link.contains(QRegExp("^#\\+\\d+$")))
-    link = tr("Turn %1 pages forward.").arg(link.mid(2).toInt());
-  else if (link.contains(QRegExp("^#-\\d+$")))
-    link = tr("Turn %1 pages backward.").arg(link.mid(2).toInt());
+  QString target = widget->linkTarget();
+  if (target=="_self" || target=="_page")
+    target.clear();
+  QString message;
+  if (link.startsWith("#") &&
+      link.contains(QRegExp("^#[-+]\\d+$")) )
+    {
+      int n = link.mid(2).toInt();
+      if (link[1]=='+')  // i18n: fix plural forms.
+        message = (n>1) ? tr("Go: %1 pages forward.") 
+          : tr("Go: %1 page forward.");
+      else
+        message = (n>1) ? tr("Go: %1 pages backward.") 
+          : tr("Go: %1 page backward.");
+      message = message.arg(n);
+    }
   else if (link.startsWith("#="))
-    link = tr("Go to page: %1.").arg(link.mid(2));
+    message = tr("Go: page %1.").arg(link.mid(2));
   else if (link.startsWith("#"))
-    link = tr("Go to page: %1.").arg(link.mid(1));
+    message = tr("Go: page %1.").arg(link.mid(1));
   else
-    link = tr("Link: %1.").arg(link);
-  statusBar->showMessage(link);
+    message = tr("Link: %1").arg(link);
+  if (!target.isEmpty())
+    message = message + " (in other window.)";
+  
+  
+  statusBar->showMessage(link+" "+message);
 }
 
 
@@ -1096,12 +1197,74 @@ QDjView::pointerLeave(const Position &pos, miniexp_t maparea)
 void 
 QDjView::pointerClick(const Position &pos, miniexp_t maparea)
 {
+  // Obtain link information
+  QString link = widget->linkUrl();
+  if (link.isEmpty())
+    return;
+  QString target = widget->linkTarget();
+  if (target=="_self" || target=="_page")
+    target.clear();
+  // Execute link
+  if (link.startsWith("#"))
+    {
+      // Same document
+      if (target.isNull())
+        goToPage(link, pos.pageNo);
+      else
+        qWarning("TODO: same document, different window");
+    }
+  else if (viewerMode == STANDALONE)
+    {
+      qWarning("TODO: other document, standalone");
+    }
+  else
+    {
+      qWarning("TODO: other document, plugin");
+    }
 }
 
 
 void 
 QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
 {
+  // Collect text
+  QString text=widget->getTextForRect(rect);
+  int l = text.size();
+  int w = rect.width();
+  int h = rect.height();
+  QString s = tr("%1 characters").arg(l);
+  
+  // Prepare menu
+  QMenu *menu = new QMenu(this);
+  QAction *copyText = menu->addAction(tr("&Copy text (%1)").arg(s));
+  QAction *saveText = menu->addAction(tr("&Save text"));
+  copyText->setEnabled(l>0);
+  saveText->setEnabled(l>0);
+  menu->addSeparator();
+  QAction *copyImage = menu->addAction(tr("Copy image (%1x%2 pixels)").arg(w).arg(h));
+  QAction *saveImage = menu->addAction(tr("Save image"));
+  menu->addSeparator();
+  QAction *zoom = menu->addAction(tr("Zoom to rectangle"));
+  
+  // Execute menu
+  QAction *action = menu->exec(pointerPos-QPoint(5,5), copyText);
+  if (action == zoom)
+    widget->zoomRect(rect);
+  else if (action == copyText)
+    QApplication::clipboard()->setText(text);
+  else if (action == saveText)
+    { /* TODO */ }
+  else if (action == copyImage)
+    QApplication::clipboard()->setImage(widget->getImageForRect(rect));
+  else if (action == saveImage)
+    { /* TODO */ }
+  
+  // Cancel select mode.
+  updateActionsLater();
+  if (actionSelect->isChecked())
+    {
+      actionSelect->setChecked(false);
+    }
 }
 
 
@@ -1118,6 +1281,16 @@ QDjView::errorCondition(int pageno)
                    message);
 }
 
+
+void
+QDjView::applyOptionsLater()
+{
+  if (! needToApplyOptions)
+    {
+      needToApplyOptions = true;
+      QTimer::singleShot(0, this, SLOT(applyOptions()));
+    }
+}
 
 
 void

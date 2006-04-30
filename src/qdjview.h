@@ -74,8 +74,8 @@ class QDjView : public QMainWindow
 
 public slots:
   void closeDocument();
-  void goToPage(int);
-  void goToPage(QString);
+  void goToPage(int pageno);
+  void goToPage(QString name, int from=-1);
   void raiseErrorDialog(QMessageBox::Icon icon, 
                         QString caption="", QString message="");
   int  execErrorDialog (QMessageBox::Icon icon,
@@ -85,25 +85,28 @@ signals:
   void documentClosed();
   
 protected:
+
   typedef QDjVuWidget::Position Position;
   typedef QDjVuWidget::PageInfo PageInfo;
+  typedef QDjViewPrefs::Appearance Appearance;
+  typedef QDjViewPrefs::Options Options;
+  typedef QDjViewPrefs::Tools Tools;
+
   QAction *makeAction(QString text);
   QAction *makeAction(QString text, bool value);
+  void createToolBar(void);
   void createCombos(void);
   void createActions(void);
   void createMenus(void);
-  void applyTools(void);
-  void applyOptions(void);
   void applyPreferences(void);
-  
   int pageNum(void);
   QString pageName(int pageno);
-
   virtual bool eventFilter(QObject *watched, QEvent *event);
   virtual void closeEvent(QCloseEvent *event);
 
 protected slots:
-void docinfo();
+
+  void docinfo();
   void errorCondition(int);
   void pointerPosition(const Position &pos, const PageInfo &page);
   void pointerEnter(const Position &pos, miniexp_t maparea);
@@ -113,16 +116,18 @@ void docinfo();
   
   void updateActions(void);
   void updateActionsLater();
+  void applyOptions(void);
+  void applyOptionsLater(void);
   void modeComboActivated(int);
 
 protected:
-  const ViewerMode          viewerMode;
-  QDjVuContext             &djvuContext;
-  QDjViewPrefs             *generalPrefs;
-  QDjViewPrefs::Appearance *appearancePrefs;
-  
-  QDjViewPrefs::Options     options;
-  QDjViewPrefs::Tools       tools;
+
+  const ViewerMode   viewerMode;
+
+  QDjViewPrefs  *generalPrefs;
+  Appearance    *appearancePrefs;
+  Options        options;
+  Tools          tools;
   
   QLabel             *splash;
   QDjVuWidget        *widget;
@@ -139,12 +144,21 @@ protected:
   QComboBox          *pageCombo;
   QDockWidget        *sideBar;
   
+  QDjVuContext           &djvuContext;
   QDjVuDocument          *document;
   QString                 documentFileName;
   QUrl                    documentUrl;
   QList<ddjvu_fileinfo_t> documentPages;
 
-  bool needToUpdateActions;
+  bool  needToUpdateActions;
+  bool  needToApplyOptions;
+  Tools toolBarOptions;
+
+  int     pendingPageNo;
+  QString pendingPageName;
+  QRect   pendingHilite;
+  QString pendingSearch;
+
   QList<QAction*> allActions;
   QActionGroup *zoomActionGroup;
   QActionGroup *modeActionGroup;
@@ -158,6 +172,7 @@ protected:
   QAction *actionExport;
   QAction *actionPrint;
   QAction *actionSearch;
+  QAction *actionSelect;
   QAction *actionZoomIn;
   QAction *actionZoomOut;
   QAction *actionZoomFitWidth;

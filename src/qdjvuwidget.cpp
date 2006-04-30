@@ -2908,8 +2908,10 @@ QDjVuWidget::linkComment(void)
   Returns the empty string if no text is available. */
 
 QString
-QDjVuWidget::getTextForRect(const QRect &target)
+QDjVuWidget::getTextForRect(const QRect &vtarget)
 {
+  QRect target = vtarget;
+  target.translate(priv->visibleRect.topLeft());
   Keywords &k = *keywords();
   int separator = 6;
   QString ans;
@@ -2974,6 +2976,7 @@ QDjVuWidget::getTextForRect(const QRect &target)
 QImage
 QDjVuWidget::getImageForRect(const QRect &rect)
 {
+  priv->changeSelectedRectangle(QRect());
   QImage img(rect.width(), rect.height(), QImage::Format_RGB32);
   QRegion region = rect;
   QPainter paint;
@@ -3588,8 +3591,8 @@ QDjVuWidget::stopInteraction(void)
     case DRAG_SELECTING:
       priv->updatePosition(priv->cursorPoint, true);
       temp = priv->selectedRect;
-      priv->changeSelectedRectangle(QRect());
       emit pointerSelect(viewport()->mapToGlobal(priv->cursorPoint), temp);
+      priv->changeSelectedRectangle(QRect());
       break;
     case DRAG_LENSING:
       priv->lens->hide();
