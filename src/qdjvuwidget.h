@@ -189,13 +189,7 @@ public slots:
   void setModifiersForLens(Qt::KeyboardModifiers);
   void setModifiersForSelect(Qt::KeyboardModifiers);
   void setModifiersForLinks(Qt::KeyboardModifiers);
-
-  void setDefaultZoom(int);
-  void setDefaultDisplayMode(DisplayMode m);
-  void setDefaultBorderBrush(QBrush);
-  void setDefaultBorderSize(int);
-  void setDefaultHorizAlign(Align);
-  void setDefaultVertAlign(Align);
+  void makeDefaults(void);
 
 public:
   QString pastErrorMessage(int n=0);

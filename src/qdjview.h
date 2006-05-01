@@ -118,32 +118,34 @@ protected slots:
   
   void updateActions(void);
   void updateActionsLater(void);
-  void applyOptions(void);
-  void applyOptionsLater(void);
   void modeComboActivated(int);
   void zoomComboActivated(int);
   void zoomComboEdited(void);
   void pageComboActivated(int);
   void pageComboEdited(void);
-  void rotationActionTriggered(void);
-  void zoomActionTriggered(void);
-  void selectActionTriggered(bool);
+  void performRotation(void);
+  void performZoom(void);
+  void performSelect(bool);
+  void performViewFullScreen(bool);
 
 protected:
 
+  // mode
   const ViewerMode   viewerMode;
-
+  
+  // preferences
   QDjViewPrefs  *prefs;
   Options        options;
-  Options        optionsChanged;
   Tools          tools;
-  Tools          toolsChanged;
   Tools          toolsCached;
-  
+
+  // dialogs
+  QDjViewDialogError *errorDialog;
+
+  // widgets
   QLabel             *splash;
   QDjVuWidget        *widget;
   QStackedLayout     *layout;
-  QDjViewDialogError *errorDialog;
   QMenu              *contextMenu;
   QMenuBar           *menuBar;
   QStatusBar         *statusBar;
@@ -154,26 +156,30 @@ protected:
   QComboBox          *zoomCombo;
   QComboBox          *pageCombo;
   QDockWidget        *sideBar;
-  
+
+  // document data
   QDjVuContext           &djvuContext;
   QDjVuDocument          *document;
   QString                 documentFileName;
   QUrl                    documentUrl;
   QList<ddjvu_fileinfo_t> documentPages;
 
-  bool  needToUpdateActions;
-  bool  needToApplyOptions;
-
+  // delayed settings
   int     pendingPageNo;
   QString pendingPageName;
   QRect   pendingHilite;
   QString pendingSearch;
 
+  // delayed updates
+  bool  needToUpdateActions;
+
+  // action lists
   QList<QAction*> allActions;
   QActionGroup *zoomActionGroup;
   QActionGroup *modeActionGroup;
   QActionGroup *rotationActionGroup;
-  
+
+  // all actions
   QAction *actionNew;
   QAction *actionOpen;
   QAction *actionClose;
@@ -221,7 +227,10 @@ protected:
   QAction *actionViewFullScreen;
   QAction *actionLayoutContinuous;
   QAction *actionLayoutSideBySide;
-
+  
+  // fullscreen variables
+  Options          fsOptions;
+  Qt::WindowStates fsSavedState;
 };
 
 

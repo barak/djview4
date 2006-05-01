@@ -245,7 +245,7 @@ QDjView::createActions()
   actionSelect = makeAction(tr("&Select"), false)
     << QIcon(":/images/icon_select.png")
     << tr("Select a rectangle in the document.")
-    << Trigger(this, SLOT(selectActionTriggered(bool)));
+    << Trigger(this, SLOT(performSelect(bool)));
   
   actionZoomIn = makeAction(tr("Zoom &In"))
     << QIcon(":/images/icon_zoomin.png")
@@ -260,55 +260,55 @@ QDjView::createActions()
   actionZoomFitWidth = makeAction(tr("Fit &Width", "Zoom|Fitwith"),false)
     << tr("Set magnification to fit page width.")
     << QVariant(QDjVuWidget::ZOOM_FITWIDTH)
-    << Trigger(this, SLOT(zoomActionTriggered()))
+    << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
   actionZoomFitPage = makeAction(tr("Fit &Page", "Zoom|Fitpage"),false)
     << tr("Set magnification to fit page.")
     << QVariant(QDjVuWidget::ZOOM_FITPAGE)
-    << Trigger(this, SLOT(zoomActionTriggered()))
+    << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
   actionZoomOneToOne = makeAction(tr("One &to one", "Zoom|1:1"),false)
     << tr("Set full resolution magnification.")
     << QVariant(QDjVuWidget::ZOOM_ONE2ONE)
-    << Trigger(this, SLOT(zoomActionTriggered()))
+    << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
   actionZoom300 = makeAction(tr("&300%", "Zoom|300%"), false)
     << tr("Magnify 300%")
     << QVariant(300)
-    << Trigger(this, SLOT(zoomActionTriggered()))
+    << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
   actionZoom200 = makeAction(tr("&200%", "Zoom|200%"), false)
     << tr("Magnify 20%")
     << QVariant(200)
-    << Trigger(this, SLOT(zoomActionTriggered()))
+    << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
   actionZoom150 = makeAction(tr("150%", "Zoom|150%"), false)
     << tr("Magnify 150%")
     << QVariant(200)
-    << Trigger(this, SLOT(zoomActionTriggered()))
+    << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
   actionZoom100 = makeAction(tr("&100%", "Zoom|100%"), false)
     << tr("Magnify 100%")
     << QVariant(100)
-    << Trigger(this, SLOT(zoomActionTriggered()))
+    << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
   actionZoom75 = makeAction(tr("&75%", "Zoom|75%"), false)
     << tr("Magnify 75%")
     << QVariant(75)
-    << Trigger(this, SLOT(zoomActionTriggered()))
+    << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
   actionZoom50 = makeAction(tr("&50%", "Zoom|50%"), false)
     << tr("Magnify r0%")
     << QVariant(50)
-    << Trigger(this, SLOT(zoomActionTriggered()))
+    << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
   actionNavFirst = makeAction(tr("&First Page"))
@@ -358,31 +358,31 @@ QDjView::createActions()
   actionRotate0 = makeAction(tr("Rotate &0\260"), false)
     << tr("Set natural page orientation.")
     << QVariant(0)
-    << Trigger(this, SLOT(rotationActionTriggered()))
+    << Trigger(this, SLOT(performRotation()))
     << *rotationActionGroup;
 
   actionRotate90 = makeAction(tr("Rotate &90\260"), false)
     << tr("Turn page on its left side.")
     << QVariant(1)
-    << Trigger(this, SLOT(rotationActionTriggered()))
+    << Trigger(this, SLOT(performRotation()))
     << *rotationActionGroup;
 
   actionRotate180 = makeAction(tr("Rotate &180\260"), false)
     << tr("Turn page upside-down.")
     << QVariant(2)
-    << Trigger(this, SLOT(rotationActionTriggered()))
+    << Trigger(this, SLOT(performRotation()))
     << *rotationActionGroup;
 
   actionRotate270 = makeAction(tr("Rotate &270\260"), false)
     << tr("Turn page on its right side.")
     << QVariant(3)
-    << Trigger(this, SLOT(rotationActionTriggered()))
+    << Trigger(this, SLOT(performRotation()))
     << *rotationActionGroup;
 
   actionPageInfo = makeAction(tr("Page &Information..."))
     << tr("Show DjVu encoding information for the current page.");
 
-  actionDocInfo = makeAction(tr("&Document Information..."))
+  actionDocInfo = makeAction(tr("Document In&formation..."))
     << QKeySequence("Ctrl+I")
     << tr("Show DjVu encoding information for the document.");
 
@@ -438,10 +438,11 @@ QDjView::createActions()
     << Trigger(statusBar,SLOT(setVisible(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionViewFullScreen = makeAction(tr("&Full Screen","View|FullScreen"), false)
+  actionViewFullScreen = makeAction(tr("F&ull Screen","View|FullScreen"), false)
     << QKeySequence("F11")
     << QIcon(":/images/icon_fullscreen.png")
-    << tr("Toggle full screen mode.");
+    << tr("Toggle full screen mode.")
+    << Trigger(this, SLOT(performViewFullScreen(bool)));
 
   actionLayoutContinuous = makeAction(tr("&Continuous","Layout"), false)
     << QIcon(":/images/icon_continuous.png")
@@ -450,7 +451,7 @@ QDjView::createActions()
     << Trigger(widget, SLOT(setContinuous(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionLayoutSideBySide = makeAction(tr("&Side by side","Layout"), false)
+  actionLayoutSideBySide = makeAction(tr("Side &by side","Layout"), false)
     << QIcon(":/images/icon_sidebyside.png")
     << QKeySequence("F3")
     << tr("Toggle side-by-side layout mode.")
@@ -470,6 +471,10 @@ QDjView::createActions()
 void
 QDjView::updateActions()
 {
+  // Rebuild toolbar if necessary
+  if (tools != toolsCached)
+    createToolBar();
+
   // Enable all actions
   foreach(QAction *action, allActions)
     action->setEnabled(true);
@@ -549,27 +554,12 @@ QDjView::updateActions()
             action != actionViewToolBar &&
             action != actionViewStatusBar &&
             action != actionViewSideBar &&
+            action != actionViewFullScreen &&
             action != actionWhatsThis &&
             action != actionAbout )
           action->setEnabled(false);
     }
   
-  // Update option flags
-  if (! needToApplyOptions)
-    {
-#define setFlag(flag, test) \
-  options = (options & ~(QDjViewPrefs::flag)) \
-          | ((test) ? (QDjViewPrefs::flag) \
-                    : (QDjViewPrefs::Option)0)
-      // Track options changeable by user interaction
-      setFlag(SHOW_TOOLBAR,        !toolBar->isHidden());
-      setFlag(SHOW_SIDEBAR,        !sideBar->isHidden());
-      setFlag(SHOW_STATUSBAR,      !statusBar->isHidden());
-      setFlag(LAYOUT_CONTINUOUS,   widget->continuous());
-      setFlag(LAYOUT_SIDEBYSIDE,   widget->sideBySide());
-#undef setFlag
-    }
-
   // Finished
   needToUpdateActions = false;
 }
@@ -693,16 +683,18 @@ QDjView::createMenus()
   contextMenu->addAction(actionLayoutSideBySide);
   contextMenu->addSeparator();
   contextMenu->addAction(actionSearch);
+  QMenu *infoMenu = contextMenu->addMenu("Infor&mation");
+  infoMenu->addAction(actionPageInfo);
+  infoMenu->addAction(actionDocInfo);
   contextMenu->addSeparator();
   contextMenu->addAction(actionSave);
   contextMenu->addAction(actionExport);
   contextMenu->addAction(actionPrint);
   contextMenu->addSeparator();
-  contextMenu->addAction(actionViewToolBar);
   contextMenu->addAction(actionViewSideBar);
+  contextMenu->addAction(actionViewToolBar);
+  contextMenu->addAction(actionViewFullScreen);
   contextMenu->addSeparator();
-  contextMenu->addAction(actionDocInfo);
-  contextMenu->addAction(actionPageInfo);
   contextMenu->addAction(actionPreferences);
   contextMenu->addSeparator();
   contextMenu->addAction(actionWhatsThis);
@@ -712,7 +704,7 @@ QDjView::createMenus()
 
 
 // ----------------------------------------
-// APPLY OPTIONS/TOOLS/PREFERENCES
+// APPLY PREFERENCES
 
 
 void
@@ -848,17 +840,32 @@ QDjView::enableScrollBars(bool enable)
 
 
 void
-QDjView::applyOptions(void)
+QDjView::applyPreferences(void)
 {
+  // Window state
+  if (prefs->windowState.size() > 0)
+    restoreState(prefs->windowState);
+  if (prefs->windowSize.isValid())
+    resize(prefs->windowSize);
+
+  // Cache size
+  djvuContext.setCacheSize(prefs->cacheSize);
+
   // Toolbar visibility
   menuBar->setVisible(options & QDjViewPrefs::SHOW_MENUBAR);
   toolBar->setVisible(options & QDjViewPrefs::SHOW_TOOLBAR);
   sideBar->setVisible(options & QDjViewPrefs::SHOW_SIDEBAR);
   statusBar->setVisible(options & QDjViewPrefs::SHOW_STATUSBAR);
 
-  // QDjVuWidget options.
-  // When options and appearancePrefs->options match,
-  // one should use the setDefaultXXX variant if available.
+  // Other QDjVuWidget preferences
+  widget->setZoom(prefs->zoom);
+  widget->setModifiersForLens(prefs->modifiersForLens);
+  widget->setModifiersForSelect(prefs->modifiersForSelect);
+  widget->setModifiersForLinks(prefs->modifiersForLinks);
+  widget->setGamma(prefs->gamma);
+  widget->setPixelCacheSize(prefs->pixelCacheSize);
+  widget->setLensSize(prefs->lensSize);
+  widget->setLensPower(prefs->lensPower);
   widget->setDisplayFrame(options & QDjViewPrefs::SHOW_FRAME);
   widget->setContinuous(options & QDjViewPrefs::LAYOUT_CONTINUOUS);
   widget->setSideBySide(options & QDjViewPrefs::LAYOUT_SIDEBYSIDE);
@@ -867,36 +874,9 @@ QDjView::applyOptions(void)
   widget->enableHyperlink(options & QDjViewPrefs::HANDLE_LINKS);
   enableScrollBars(options & QDjViewPrefs::SHOW_SCROLLBARS);
   enableContextMenu(options & QDjViewPrefs::HANDLE_CONTEXTMENU);
-  
-  // Recreate toolbar when changed
-  if (toolsCached != tools)
-    createToolBar();
-  
-  // Done
-  needToApplyOptions = false;
-}
 
-
-void
-QDjView::applyPreferences(void)
-{
-  // Window state
-  if (prefs->windowState.size() > 0)
-    restoreState(prefs->windowState);
-  if (prefs->windowSize.isValid())
-    resize(prefs->windowSize);
-  // Cache size
-  djvuContext.setCacheSize(prefs->cacheSize);
-  // Other QDjVuWidget preferences
-  // Use the setDefaultXXXX variant when available.
-  widget->setDefaultZoom(prefs->zoom);
-  widget->setModifiersForLens(prefs->modifiersForLens);
-  widget->setModifiersForSelect(prefs->modifiersForSelect);
-  widget->setModifiersForLinks(prefs->modifiersForLinks);
-  widget->setGamma(prefs->gamma);
-  widget->setPixelCacheSize(prefs->pixelCacheSize);
-  widget->setLensSize(prefs->lensSize);
-  widget->setLensPower(prefs->lensPower);
+  // Make everything default actions
+  widget->makeDefaults();
 }
 
 
@@ -1013,23 +993,19 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
     viewerMode(mode),
     djvuContext(context),
     document(0),
-    needToUpdateActions(false),
-    needToApplyOptions(false),
-    pendingPageNo(-1)
+    pendingPageNo(-1),
+    needToUpdateActions(false)
 {
   // obtain preferences
   prefs = QDjViewPrefs::create();
-
+  tools = prefs->tools;
   options = prefs->forStandalone;
-  optionsChanged = 0;
+  fsOptions = prefs->forFullScreen;
   if (viewerMode == EMBEDDED_PLUGIN)
     options = prefs->forEmbeddedPlugin;
   else if (viewerMode == FULLPAGE_PLUGIN)
     options = prefs->forFullPagePlugin;
-
-  toolsChanged = 0;
   toolsCached = 0;
-  tools = prefs->tools;
   
   // Create dialogs
   errorDialog = new QDjViewDialogError(this);
@@ -1134,7 +1110,6 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   createMenus();
   createWhatsThis();
   applyPreferences();
-  applyOptions();
   updateActions();
 }
 
@@ -1582,7 +1557,7 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
   if (actionSelect->isChecked())
     {
       actionSelect->setChecked(false);
-      selectActionTriggered(false);
+      performSelect(false);
     }
 }
 
@@ -1598,17 +1573,6 @@ QDjView::errorCondition(int pageno)
   raiseErrorDialog(QMessageBox::Warning,
                    tr("Decoding DjVu document ..."),
                    message);
-}
-
-
-void
-QDjView::applyOptionsLater()
-{
-  if (! needToApplyOptions)
-    {
-      needToApplyOptions = true;
-      QTimer::singleShot(0, this, SLOT(applyOptions()));
-    }
 }
 
 
@@ -1672,7 +1636,7 @@ QDjView::pageComboEdited(void)
 
 
 void 
-QDjView::rotationActionTriggered(void)
+QDjView::performRotation(void)
 {
   QAction *action = qobject_cast<QAction*>(sender());
   widget->setRotation(action->data().toInt());
@@ -1680,7 +1644,7 @@ QDjView::rotationActionTriggered(void)
 
 
 void 
-QDjView::zoomActionTriggered(void)
+QDjView::performZoom(void)
 {
   QAction *action = qobject_cast<QAction*>(sender());
   widget->setZoom(action->data().toInt());
@@ -1688,13 +1652,102 @@ QDjView::zoomActionTriggered(void)
 
 
 void 
-QDjView::selectActionTriggered(bool checked)
+QDjView::performSelect(bool checked)
 {
   if (checked)
     widget->setModifiersForSelect(Qt::NoModifier);
   else
     widget->setModifiersForSelect(prefs->modifiersForSelect);
 }
+
+
+void 
+QDjView::performViewFullScreen(bool checked)
+{
+  if (viewerMode != STANDALONE)
+    return;
+  
+  if (checked)
+    {
+      // Save toolbar visibility
+      options &= ~QDjViewPrefs::SHOW_MENUBAR;
+      options &= ~QDjViewPrefs::SHOW_TOOLBAR;
+      options &= ~QDjViewPrefs::SHOW_STATUSBAR;
+      options &= ~QDjViewPrefs::SHOW_SIDEBAR;
+      options &= ~QDjViewPrefs::SHOW_SCROLLBARS;
+      options &= ~QDjViewPrefs::SHOW_FRAME;
+      if (! menuBar->isHidden())
+        options |= QDjViewPrefs::SHOW_MENUBAR;
+      if (! toolBar->isHidden())
+        options |= QDjViewPrefs::SHOW_TOOLBAR;
+      if (! sideBar->isHidden())
+        options |= QDjViewPrefs::SHOW_SIDEBAR;
+      if (! statusBar->isHidden())
+        options |= QDjViewPrefs::SHOW_STATUSBAR;
+      if (widget->verticalScrollBarPolicy() != Qt::ScrollBarAlwaysOff)
+        options |= QDjViewPrefs::SHOW_SCROLLBARS;
+      if (widget->displayFrame())
+        options |= QDjViewPrefs::SHOW_FRAME;
+      // Apply fullscreen options
+      menuBar->setVisible(fsOptions & QDjViewPrefs::SHOW_MENUBAR);
+      toolBar->setVisible(fsOptions & QDjViewPrefs::SHOW_TOOLBAR);
+      sideBar->setVisible(fsOptions & QDjViewPrefs::SHOW_SIDEBAR);
+      statusBar->setVisible(fsOptions & QDjViewPrefs::SHOW_STATUSBAR);
+      enableScrollBars(fsOptions & QDjViewPrefs::SHOW_SCROLLBARS);
+      widget->setDisplayFrame(fsOptions & QDjViewPrefs::SHOW_FRAME);
+      // Make sure full screen action remains accessible (F11)
+      if (! actions().contains(actionViewFullScreen))
+        addAction(actionViewFullScreen);
+      // Run fullscreen
+      Qt::WindowStates state = windowState();
+      fsSavedState = state;
+      state &= ~Qt::WindowMinimized;
+      state &= ~Qt::WindowMaximized;
+      state |= Qt::WindowFullScreen;
+      setWindowState(state);
+    }
+  else
+    {
+      fsOptions &= ~QDjViewPrefs::SHOW_MENUBAR;
+      fsOptions &= ~QDjViewPrefs::SHOW_TOOLBAR;
+      fsOptions &= ~QDjViewPrefs::SHOW_STATUSBAR;
+      fsOptions &= ~QDjViewPrefs::SHOW_SIDEBAR;
+      fsOptions &= ~QDjViewPrefs::SHOW_SCROLLBARS;
+      fsOptions &= ~QDjViewPrefs::SHOW_FRAME;
+      if (! menuBar->isHidden())
+        fsOptions |= QDjViewPrefs::SHOW_MENUBAR;
+      if (! toolBar->isHidden())
+        fsOptions |= QDjViewPrefs::SHOW_TOOLBAR;
+      if (! sideBar->isHidden())
+        fsOptions |= QDjViewPrefs::SHOW_SIDEBAR;
+      if (! statusBar->isHidden())
+        fsOptions |= QDjViewPrefs::SHOW_STATUSBAR;
+      if (widget->verticalScrollBarPolicy() != Qt::ScrollBarAlwaysOff)
+        fsOptions |= QDjViewPrefs::SHOW_SCROLLBARS;
+      if (widget->displayFrame())
+        fsOptions |= QDjViewPrefs::SHOW_FRAME;
+      // Restore normal options
+      menuBar->setVisible(options & QDjViewPrefs::SHOW_MENUBAR);
+      toolBar->setVisible(options & QDjViewPrefs::SHOW_TOOLBAR);
+      sideBar->setVisible(options & QDjViewPrefs::SHOW_SIDEBAR);
+      statusBar->setVisible(options & QDjViewPrefs::SHOW_STATUSBAR);
+      enableScrollBars(options & QDjViewPrefs::SHOW_SCROLLBARS);
+      widget->setDisplayFrame(options & QDjViewPrefs::SHOW_FRAME);
+      // Demote full screen action to normal status
+      if (actions().contains(actionViewFullScreen))
+        removeAction(actionViewFullScreen);
+      // Restore window state
+      Qt::WindowStates state = windowState();
+      state &= ~Qt::WindowFullScreen;
+      state &= ~Qt::WindowMinimized;
+      state &= ~Qt::WindowMaximized;
+      state |= (fsSavedState & Qt::WindowMinimized);
+      state |= (fsSavedState & Qt::WindowMaximized);
+      setWindowState(state);
+    }
+}
+
+
 
 
 /* -------------------------------------------------------------

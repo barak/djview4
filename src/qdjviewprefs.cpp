@@ -59,11 +59,10 @@ QDjViewPrefs::QDjViewPrefs(void)
     lensSize(300),
     lensPower(3)
 {
-  forFullScreen &= ~(SHOW_MENUBAR|SHOW_STATUSBAR);
-  forFullScreen &= ~(SHOW_TOOLBAR|SHOW_SIDEBAR);
-  forFullPagePlugin &= ~(SHOW_MENUBAR|SHOW_STATUSBAR);
-  forEmbeddedPlugin &= ~(SHOW_MENUBAR|SHOW_STATUSBAR);
-  forEmbeddedPlugin &= ~(SHOW_TOOLBAR|SHOW_SIDEBAR);
+  Options mss = (SHOW_MENUBAR|SHOW_STATUSBAR|SHOW_SIDEBAR);
+  forFullScreen &= ~(mss|SHOW_SCROLLBARS|SHOW_TOOLBAR|SHOW_SIDEBAR);
+  forEmbeddedPlugin &= ~(mss|SHOW_TOOLBAR);
+  forFullPagePlugin &= ~(mss);
 }
 
 

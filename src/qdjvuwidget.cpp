@@ -1933,18 +1933,6 @@ QDjVuWidget::setZoom(int z)
   priv->changeZoom();
 }
 
-/*! Same as \a setZoom but indicates that
-  this is a default value that could be
-  overidden by djvu document annotations. */
-
-void 
-QDjVuWidget::setDefaultZoom(int z)
-{
-  priv->qZoom.set(PRIORITY_DEFAULT, z);
-  priv->qZoom.unset(PRIORITY_USER);
-  priv->changeZoom();
-}
-
 void
 QDjVuPrivate::changeZoom(void)
 {
@@ -2026,18 +2014,6 @@ void
 QDjVuWidget::setDisplayMode(DisplayMode m)
 {
   priv->qDisplay.set(PRIORITY_USER, m);
-  priv->changeDisplay();
-}
-
-/*! Same as \a setDisplayMode but indicates that
-  this is a default value that could be
-  overidden by djvu document annotations. */
-
-void 
-QDjVuWidget::setDefaultDisplayMode(DisplayMode m)
-{
-  priv->qDisplay.set(PRIORITY_DEFAULT, m);
-  priv->qDisplay.unset(PRIORITY_USER);
   priv->changeDisplay();
 }
 
@@ -2136,18 +2112,6 @@ QDjVuWidget::setHorizAlign(Align a)
   priv->changeHAlign();
 }
 
-/*! Same as \a setHorizAlign but indicates that
-  this is a default value that could be
-  overidden by djvu document annotations. */
-
-void 
-QDjVuWidget::setDefaultHorizAlign(Align a)
-{
-  priv->qHAlign.set(PRIORITY_DEFAULT, a);
-  priv->qHAlign.unset(PRIORITY_USER);
-  priv->changeHAlign();
-}
-
 void
 QDjVuPrivate::changeHAlign(void)
 {
@@ -2174,18 +2138,6 @@ void
 QDjVuWidget::setVertAlign(Align a)
 {
   priv->qVAlign.set(PRIORITY_USER, a);
-  priv->changeVAlign();
-}
-
-/*! Same as \a setHorizAlign but indicates that
-  this is a default value that could be
-  overidden by djvu document annotations. */
-
-void 
-QDjVuWidget::setDefaultVertAlign(Align a)
-{
-  priv->qVAlign.set(PRIORITY_DEFAULT, a);
-  priv->qVAlign.unset(PRIORITY_USER);
   priv->changeVAlign();
 }
 
@@ -2217,18 +2169,6 @@ QDjVuWidget::setBorderBrush(QBrush b)
   priv->changeBorderBrush();
 }
 
-/*! Same as \a setBorderBrush but indicates that
-  this is a default value that could be
-  overidden by djvu document annotations. */
-
-void 
-QDjVuWidget::setDefaultBorderBrush(QBrush b)
-{
-  priv->qBorderBrush.set(PRIORITY_DEFAULT, b);
-  priv->qBorderBrush.unset(PRIORITY_USER);
-  priv->changeBorderBrush();
-}
-
 void
 QDjVuPrivate::changeBorderBrush(void)
 {
@@ -2242,8 +2182,6 @@ QDjVuPrivate::changeBorderBrush(void)
 
 /*! \property QDjVuWidget::borderSize
   The minimal size of the border around the pages.
-  Flag \a makeDefault indicates that this is a default value
-  that can be overriden by settings defined inside the djvu file.
   Default: 8 pixels. */
 
 
@@ -2257,18 +2195,6 @@ void
 QDjVuWidget::setBorderSize(int b)
 {
   priv->qBorderSize.set(PRIORITY_USER, b);
-  priv->changeBorderSize();
-}
-
-/*! Same as \a setBorderSize but indicates that
-  this is a default value that could be
-  overidden by djvu document annotations. */
-
-void 
-QDjVuWidget::setDefaultBorderSize(int b)
-{
-  priv->qBorderSize.set(PRIORITY_DEFAULT, b);
-  priv->qBorderSize.unset(PRIORITY_USER);
   priv->changeBorderSize();
 }
 
@@ -3209,6 +3135,39 @@ QDjVuWidget::getImageForRect(const QRect &rect)
 // SETTINGS FROM ANNOTATIONS
 
 
+/*! Turn all current settings into default settings
+  that can be overidden by annotations located
+  inside the djvu files. */
+ 
+void
+QDjVuWidget::makeDefaults(void)
+{
+  priv->qZoom.set(PRIORITY_DEFAULT, priv->qZoom);
+  priv->qZoom.unset(PRIORITY_USER);
+  priv->changeZoom();
+
+  priv->qDisplay.set(PRIORITY_DEFAULT, priv->qDisplay);
+  priv->qDisplay.unset(PRIORITY_USER);
+  priv->changeDisplay();
+    
+  priv->qHAlign.set(PRIORITY_DEFAULT, priv->qHAlign);
+  priv->qHAlign.unset(PRIORITY_USER);
+  priv->changeHAlign();
+
+  priv->qVAlign.set(PRIORITY_DEFAULT, priv->qVAlign);
+  priv->qVAlign.unset(PRIORITY_USER);
+  priv->changeVAlign();
+  
+  priv->qBorderBrush.set(PRIORITY_DEFAULT, priv->qBorderBrush);
+  priv->qBorderBrush.unset(PRIORITY_USER);
+  priv->changeBorderBrush();
+
+  priv->qBorderSize.set(PRIORITY_DEFAULT, priv->qBorderSize);
+  priv->qBorderSize.unset(PRIORITY_USER);
+  priv->changeBorderSize();
+}
+
+
 void
 QDjVuPrivate::adjustSettings(Priority priority, miniexp_t annotations)
 {
@@ -3552,11 +3511,6 @@ QDjVuWidget::viewportEvent(QEvent *event)
       QApplication::instance()->removeEventFilter(priv);
       // Uncheck any active map area
       priv->checkCurrentMapArea(true);
-      break;
-    case QEvent::ShortcutOverride:
-      // Override shortcuts if keyboard is disabled!
-      if (!priv->keyboardEnabled)
-        event->accept();
       break;
     default:
       break;
