@@ -72,7 +72,8 @@ public:
     TOOL_PRINT        = 0x02000,
     TOOL_LAYOUT       = 0x04000,
     TOOL_ROTATE       = 0x08000,
-    DEFAULT_TOOLS = 0x7e7c
+    TOOL_WHATSTHIS    = 0x10000,
+    DEFAULT_TOOLS = 0x16e7c
   };
 
   Q_DECLARE_FLAGS(Tools, Tool)

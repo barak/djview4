@@ -37,7 +37,6 @@
 #include <QImage>
 #include <QPixmap>
 #include <QBitmap>
-#include <QRubberBand>
 #include <QToolTip>
 #include <QTimer>
 #include <QRect>
@@ -436,6 +435,64 @@ QRectMapper::unMapped(const QRect &qr)
 END_ANONYMOUS_NAMESPACE
 
 
+// ----------------------------------------
+// PRIORITIZED SETTINGS
+
+// Some settings can be set/unset from several sources
+
+BEGIN_ANONYMOUS_NAMESPACE 
+
+enum Priority {
+  PRIORITY_DEFAULT,
+  PRIORITY_DOCUMENT,
+  PRIORITY_PAGE,
+  PRIORITY_USER
+};  
+
+template<class Value>
+class Prioritized
+{
+public:
+  Prioritized();
+  operator Value() const;
+  void set(Priority priority, Value value);
+  void unset(Priority priority);
+private:
+  bool   flags[PRIORITY_USER+1];
+  Value  values[PRIORITY_USER+1];
+};
+
+template<class Value>
+Prioritized<Value>::Prioritized()
+{
+  for (int i=0; i<=PRIORITY_USER; i++)
+    flags[i] = false;
+}
+
+template<class Value>
+Prioritized<Value>::operator Value() const
+{
+  for (int i=PRIORITY_USER; i>0; i--)
+    if (flags[i]) 
+      return values[i];
+  return values[PRIORITY_DEFAULT];
+}
+
+template<class Value> void
+Prioritized<Value>::set(Priority priority, Value val)
+{
+  values[priority] = val;
+  flags[priority] = true;
+}
+
+template<class Value> void
+Prioritized<Value>::unset(Priority priority)
+{
+  flags[priority] = false;
+}
+
+END_ANONYMOUS_NAMESPACE
+
 
 // ----------------------------------------
 // QDJVULENS (declaration)
@@ -635,16 +692,15 @@ public:
   Qt::KeyboardModifiers modifiersForLinks;  // keys to show hyperlink
   Qt::KeyboardModifiers modifiersForLens;   // keys to show lens
   Qt::KeyboardModifiers modifiersForSelect; // keys to select
-  // pagesettings
-  bool        pageMapAreas;
-  bool        pageSettings;
-  int         savedBorderSize;
-  int         savedZoom;
-  QBrush      savedBorderBrush;
-  DisplayMode savedDisplay;
-  Align       savedHAlign;
-  Align       savedVAlign;
+  // prioritized settings
+  Prioritized<int>         qBorderSize;
+  Prioritized<int>         qZoom;
+  Prioritized<QBrush>      qBorderBrush;
+  Prioritized<DisplayMode> qDisplay;
+  Prioritized<Align>       qHAlign;
+  Prioritized<Align>       qVAlign;
   // hyperlinks
+  bool        pageMapAreas;
   Page       *currentMapAreaPage;
   MapArea    *currentMapArea;
   QString     currentUrl;
@@ -666,7 +722,7 @@ public:
   void updateModifiers(Qt::KeyboardModifiers, Qt::MouseButtons);
   void updatePosition(const QPoint &point, bool click=false, bool links=true);
   void updateCurrentPoint(const Position &pos);
-  void adjustPageSettings();
+  void adjustSettings(Priority priority, miniexp_t expr);
   void prepareMapAreas(Page*);
   bool mustDisplayMapArea(MapArea*);
   void checkCurrentMapArea(bool forceno=false);
@@ -680,7 +736,13 @@ public:
   bool pointerScroll(const QPoint &p);
   void changeSelectedRectangle(const QRect &rect);
   bool eventFilter(QObject*, QEvent*);
-  
+  void changeBorderSize(void);
+  void changeZoom(void);
+  void changeBorderBrush(void);
+  void changeDisplay(void);
+  void changeHAlign(void);
+  void changeVAlign(void);
+
 public slots:
   void makeLayout();
   void makeRedisplay();
@@ -722,11 +784,17 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   sideBySide = false;
   continuous = false;
   borderBrush = QBrush(Qt::lightGray);
-  pageSettings = false;
   unknownSize = QSize(128,128);
   borderSize = 8;
   separatorSize = 12;
   shadowSize = 3;
+  // prioritized
+  qBorderSize.set(PRIORITY_DEFAULT, borderSize);
+  qZoom.set(PRIORITY_DEFAULT, zoom);
+  qBorderBrush.set(PRIORITY_DEFAULT, borderBrush);
+  qDisplay.set(PRIORITY_DEFAULT, display);
+  qHAlign.set(PRIORITY_DEFAULT, hAlign);
+  qVAlign.set(PRIORITY_DEFAULT, vAlign);
   // gui
   contextMenu = 0;
   keyboardEnabled = true;
@@ -756,17 +824,9 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   ddjvu_format_set_y_direction(renderFormat, true);
   ddjvu_format_set_ditherbits(renderFormat, QPixmap::defaultDepth());
   ddjvu_format_set_gamma(renderFormat, gamma);
-  // page settings
-  pageMapAreas = true;
-  pageSettings = true;
-  savedBorderSize = borderSize;
-  savedZoom = zoom;
-  savedBorderBrush = borderBrush;
-  savedDisplay = display;
-  savedHAlign = hAlign;
-  savedVAlign = vAlign;
   // misc
   maxMessages = 20;
+  pageMapAreas = true;
   currentMapAreaPage = 0;
   currentMapArea = 0;
   currentLinkDisplayed = false;
@@ -840,6 +900,10 @@ QDjVuPrivate::makeLayout()
           for(int i=0; i<numPages; i++)
             if (i<loPage && i>=hiPage)
               pageData[i].clear();
+          if (continuous || sideBySide)
+            adjustSettings(PRIORITY_PAGE, miniexp_nil);
+          else
+            adjustSettings(PRIORITY_PAGE, pageLayout[0]->annotations);
         }
       // Layout page sizes
       else if (layoutChange & CHANGE_SIZE)
@@ -873,7 +937,8 @@ QDjVuPrivate::makeLayout()
                 {
                   p->annotations = ddjvu_document_get_pageanno(*doc, n);
                   ddjvu_miniexp_release(*doc, p->annotations);
-                  adjustPageSettings();
+                  if (!continuous && !sideBySide)
+                    adjustSettings(PRIORITY_PAGE, p->annotations);
                   prepareMapAreas(p);
                 }
               if (! p->hiddenText)
@@ -1806,7 +1871,7 @@ QDjVuWidget::position(const QPoint &point) const
 void 
 QDjVuWidget::setPosition(const Position &pos)
 {
-  QPoint topLeft(priv->savedBorderSize, priv->savedBorderSize);
+  QPoint topLeft(priv->borderSize, priv->borderSize);
   setPosition(pos, topLeft);
 }
 
@@ -1851,7 +1916,9 @@ QDjVuWidget::setRotation(int r)
   \a ZOOM_ONE2ONE displays one image pixel for one screen pixel. 
   \a ZOOM_FITWIDTH and \a ZOOM_FITPAGE dynamically compute
   the zoom factor to fit the page(s) inside the display area. 
-  Default: \a ZOOM_100. */
+  Default: \a ZOOM_100. 
+  
+*/
 
 int
 QDjVuWidget::zoom(void) const
@@ -1862,26 +1929,44 @@ QDjVuWidget::zoom(void) const
 void 
 QDjVuWidget::setZoom(int z)
 {
-  if (z != priv->zoom)
+  priv->qZoom.set(PRIORITY_USER, z);    
+  priv->changeZoom();
+}
+
+/*! Same as \a setZoom but indicates that
+  this is a default value that could be
+  overidden by djvu document annotations. */
+
+void 
+QDjVuWidget::setDefaultZoom(int z)
+{
+  priv->qZoom.set(PRIORITY_DEFAULT, z);
+  priv->qZoom.unset(PRIORITY_USER);
+  priv->changeZoom();
+}
+
+void
+QDjVuPrivate::changeZoom(void)
+{
+  int z = qZoom;
+  switch(z)
     {
-      switch(z)
-        {
-        case ZOOM_STRETCH:
-        case ZOOM_ONE2ONE:
-        case ZOOM_FITWIDTH:
-        case ZOOM_FITPAGE:
-          break;
-        default:
-          z = qBound((int)ZOOM_MIN, z, (int)ZOOM_MAX);
-          break;
-        }
-      if (z != priv->zoom)
-        {
-          priv->savedZoom = priv->zoom = z;
-          priv->changeLayout(CHANGE_SCALE|UPDATE_ALL);
-        }
+    case ZOOM_STRETCH:
+    case ZOOM_ONE2ONE:
+    case ZOOM_FITWIDTH:
+    case ZOOM_FITPAGE:
+      break;
+    default:
+      z = qBound((int)ZOOM_MIN, z, (int)ZOOM_MAX);
+      break;
+    }
+  if (zoom != z)
+    {
+      zoom = z;
+      changeLayout(CHANGE_SCALE|UPDATE_ALL);
     }
 }
+
 
 /*! Return the effective zoom factor of the current page.
   This is the same as \a zoom() when the zoom factor is positive.
@@ -1930,6 +2015,7 @@ QDjVuWidget::setGamma(double gamma)
   Display mode for the DjVu images.
   Default: \a DISPLAY_COLOR. */
 
+
 DisplayMode 
 QDjVuWidget::displayMode(void) const
 {
@@ -1939,11 +2025,30 @@ QDjVuWidget::displayMode(void) const
 void 
 QDjVuWidget::setDisplayMode(DisplayMode m)
 {
-  if (m != priv->display)
+  priv->qDisplay.set(PRIORITY_USER, m);
+  priv->changeDisplay();
+}
+
+/*! Same as \a setDisplayMode but indicates that
+  this is a default value that could be
+  overidden by djvu document annotations. */
+
+void 
+QDjVuWidget::setDefaultDisplayMode(DisplayMode m)
+{
+  priv->qDisplay.set(PRIORITY_DEFAULT, m);
+  priv->qDisplay.unset(PRIORITY_USER);
+  priv->changeDisplay();
+}
+
+void
+QDjVuPrivate::changeDisplay()
+{
+  if (display != qDisplay)
     {
-      priv->savedDisplay = priv->display = m;
-      priv->pixelCache.clear();
-      priv->changeLayout(UPDATE_ALL);
+      display = qDisplay;
+      pixelCache.clear();
+      changeLayout(UPDATE_ALL);
     }
 }
 
@@ -1987,7 +2092,6 @@ QDjVuWidget::setSideBySide(bool b)
     {
       priv->sideBySide = b;
       priv->changeLayout(CHANGE_PAGES|UPDATE_ALL);
-      priv->adjustPageSettings();
     }
 }
 
@@ -2011,7 +2115,6 @@ QDjVuWidget::setContinuous(bool b)
     {
       priv->continuous = b;
       priv->changeLayout(CHANGE_PAGES|UPDATE_ALL);
-      priv->adjustPageSettings();
     }
 }
 
@@ -2029,10 +2132,29 @@ QDjVuWidget::horizAlign(void) const
 void 
 QDjVuWidget::setHorizAlign(Align a)
 {
-  if (a != priv->hAlign)
+  priv->qHAlign.set(PRIORITY_USER, a);
+  priv->changeHAlign();
+}
+
+/*! Same as \a setHorizAlign but indicates that
+  this is a default value that could be
+  overidden by djvu document annotations. */
+
+void 
+QDjVuWidget::setDefaultHorizAlign(Align a)
+{
+  priv->qHAlign.set(PRIORITY_DEFAULT, a);
+  priv->qHAlign.unset(PRIORITY_USER);
+  priv->changeHAlign();
+}
+
+void
+QDjVuPrivate::changeHAlign(void)
+{
+  if (hAlign != qHAlign)
     {
-      priv->savedHAlign = priv->hAlign = a;
-      priv->changeLayout(CHANGE_POSITIONS);
+      hAlign = qHAlign;
+      changeLayout(CHANGE_POSITIONS);
     }
 }
 
@@ -2051,17 +2173,36 @@ QDjVuWidget::vertAlign(void) const
 void 
 QDjVuWidget::setVertAlign(Align a)
 {
-  if (a != priv->vAlign)
+  priv->qVAlign.set(PRIORITY_USER, a);
+  priv->changeVAlign();
+}
+
+/*! Same as \a setHorizAlign but indicates that
+  this is a default value that could be
+  overidden by djvu document annotations. */
+
+void 
+QDjVuWidget::setDefaultVertAlign(Align a)
+{
+  priv->qVAlign.set(PRIORITY_DEFAULT, a);
+  priv->qVAlign.unset(PRIORITY_USER);
+  priv->changeVAlign();
+}
+
+void
+QDjVuPrivate::changeVAlign(void)
+{
+  if (vAlign != qVAlign)
     {
-      priv->savedVAlign = priv->vAlign = a;
-      priv->changeLayout(CHANGE_POSITIONS);
+      vAlign = qVAlign;
+      changeLayout(CHANGE_POSITIONS);
     }
 }
 
 /*! \property QDjVuWidget::borderBrush
   Brush used to fill the part of the
-  display area that is not convered
-  by a page. Default: light gray. */
+  display area that is not covered by a page. 
+  Default: light gray. */
 
 QBrush 
 QDjVuWidget::borderBrush(void) const
@@ -2072,17 +2213,38 @@ QDjVuWidget::borderBrush(void) const
 void 
 QDjVuWidget::setBorderBrush(QBrush b)
 {
-  if (b != priv->borderBrush)
+  priv->qBorderBrush.set(PRIORITY_USER, b);
+  priv->changeBorderBrush();
+}
+
+/*! Same as \a setBorderBrush but indicates that
+  this is a default value that could be
+  overidden by djvu document annotations. */
+
+void 
+QDjVuWidget::setDefaultBorderBrush(QBrush b)
+{
+  priv->qBorderBrush.set(PRIORITY_DEFAULT, b);
+  priv->qBorderBrush.unset(PRIORITY_USER);
+  priv->changeBorderBrush();
+}
+
+void
+QDjVuPrivate::changeBorderBrush(void)
+{
+  if (borderBrush != qBorderBrush)
     {
-      priv->savedBorderBrush = priv->borderBrush = b;
-      priv->changeLayout(UPDATE_BORDERS);
+      borderBrush = qBorderBrush;
+      changeLayout(UPDATE_BORDERS);
     }
 }
 
 
 /*! \property QDjVuWidget::borderSize
   The minimal size of the border around the pages.
-  Default: 12 pixels. */
+  Flag \a makeDefault indicates that this is a default value
+  that can be overriden by settings defined inside the djvu file.
+  Default: 8 pixels. */
 
 
 int 
@@ -2094,11 +2256,29 @@ QDjVuWidget::borderSize(void) const
 void 
 QDjVuWidget::setBorderSize(int b)
 {
-  if (b != priv->borderSize && b>=0)
+  priv->qBorderSize.set(PRIORITY_USER, b);
+  priv->changeBorderSize();
+}
+
+/*! Same as \a setBorderSize but indicates that
+  this is a default value that could be
+  overidden by djvu document annotations. */
+
+void 
+QDjVuWidget::setDefaultBorderSize(int b)
+{
+  priv->qBorderSize.set(PRIORITY_DEFAULT, b);
+  priv->qBorderSize.unset(PRIORITY_USER);
+  priv->changeBorderSize();
+}
+
+void
+QDjVuPrivate::changeBorderSize(void)
+{
+  if (borderSize != qBorderSize)
     {
-      priv->savedBorderSize = priv->borderSize = b;
-      priv->separatorSize = b; // same stuff for now.
-      priv->changeLayout(CHANGE_POSITIONS);
+      borderSize = qBorderSize;
+      changeLayout(CHANGE_POSITIONS);
     }
 }
 
@@ -2143,33 +2323,6 @@ QDjVuWidget::setPageMapAreas(bool b)
 }
 
 
-/*! \property QDjVuWidget::pageSettings
-  Indicate how to implement the page annotations specifying 
-  the zoom, border brush, display mode and alignment.
-  These annotations are honored when this property is true
-  and properties \a sideBySide and \a continuous are both false.
-  Furthermore, the presence of such annotations sets the 
-  border size to zero. The zoom, display mode,
-  background brush and alignment are restored
-  when these conditions are no longer met. 
-  Default: \a true. */
-
-bool 
-QDjVuWidget::pageSettings(void) const
-{
-  return priv->pageSettings;
-}
-
-void 
-QDjVuWidget::setPageSettings(bool b)
-{
-  if (b != priv->pageSettings)
-    {
-      priv->pageSettings = b;
-      priv->adjustPageSettings();
-    }
-}
-
 /*! \property QDjVuWidget::keyboardEnabled
   Enables keyboard interaction. 
   This property controls the behavior of 
@@ -2187,10 +2340,7 @@ void
 QDjVuWidget::enableKeyboard(bool b)
 {
   if (b != priv->keyboardEnabled)
-    {
-      priv->keyboardEnabled = b;
-      setFocusPolicy((b) ? Qt::WheelFocus : Qt::NoFocus);
-    }
+    priv->keyboardEnabled = b;
 }
 
 /*! \property QDjVuWidget::keyboardEnabled
@@ -3056,128 +3206,86 @@ QDjVuWidget::getImageForRect(const QRect &rect)
 
 
 // ----------------------------------------
-// PAGE SETTINGS FROM ANNOTATIONS
+// SETTINGS FROM ANNOTATIONS
 
 
 void
-QDjVuPrivate::adjustPageSettings()
+QDjVuPrivate::adjustSettings(Priority priority, miniexp_t annotations)
 {
-  if (!pageSettings || continuous || sideBySide || pageLayout.isEmpty())
+  // Reset everything
+  qZoom.unset(priority);
+  qBorderBrush.unset(priority);
+  qDisplay.unset(priority);
+  qHAlign.unset(priority);
+  qVAlign.unset(priority);
+  qBorderSize.unset(priority);
+
+  // Analyse annotations
+  if (annotations)
     {
-      // quick restore
-      widget->setZoom(savedZoom);
-      widget->setBorderBrush(savedBorderBrush);
-      widget->setDisplayMode(savedDisplay);
-      widget->setHorizAlign(savedHAlign);
-      widget->setVertAlign(savedVAlign);
-      widget->setBorderSize(savedBorderSize);
-    }
-  else
-    {
-      Page *p = pageLayout[0];
-      miniexp_t annotations = p->annotations;
       const char *xbgcolor = ddjvu_anno_get_bgcolor(annotations);
       const char *xzoom = ddjvu_anno_get_zoom(annotations);
       const char *xmode = ddjvu_anno_get_mode(annotations);
       const char *xhorizalign = ddjvu_anno_get_horizalign(annotations);
       const char *xvertalign = ddjvu_anno_get_vertalign(annotations);
-      {
-        // border color
-        QBrush saved = savedBorderBrush;
-        QBrush adjust = saved;
-        QColor color;
-        if (xbgcolor && xbgcolor[0]=='#')
-          color.setNamedColor(xbgcolor);
-        if (color.isValid())
-          adjust = QBrush(color);
-        widget->setBorderBrush(adjust);
-        savedBorderBrush = saved;
-      }
-      {
-        // zoom
-        int saved = savedZoom;
-        int adjust = saved;
-        if (xzoom)
-          {
-            if (xzoom == QLatin1String("stretch"))
-              adjust = ZOOM_STRETCH;
-            else if (xzoom == QLatin1String("one2one"))
-              adjust = ZOOM_ONE2ONE;
-            else if (xzoom == QLatin1String("width"))
-              adjust = ZOOM_FITWIDTH;
-            else if (xzoom == QLatin1String("page"))
-              adjust = ZOOM_FITPAGE;
-            else if (xzoom[0]=='d' && all_numbers(xzoom+1))
-              adjust = qBound((int)ZOOM_MIN, 
-                              (int)strtol(xzoom+1,0,10), 
-                              (int)ZOOM_MAX);
-          }
-        widget->setZoom(adjust);
-        savedZoom = saved;
-      }
-      {
-        // display mode
-        DisplayMode saved = savedDisplay;
-        DisplayMode adjust = saved;
-        if (xmode)
-          {
-            if (xmode == QLatin1String("color"))
-              adjust = DISPLAY_COLOR;
-            else if (xmode == QLatin1String("bw") || 
-                     xmode == QLatin1String("black"))
-              adjust = DISPLAY_STENCIL;
-            else if (xmode == QLatin1String("fore") || 
-                     xmode == QLatin1String("fg"))
-              adjust = DISPLAY_FG;
-            else if (xmode == QLatin1String("back") || 
-                     xmode == QLatin1String("bg"))
-              adjust = DISPLAY_BG;
-          }
-        widget->setDisplayMode(adjust);
-        savedDisplay = saved;
-      }
-      {
-        // horiz align
-        Align saved = savedHAlign;
-        Align adjust = saved;
-        if (xhorizalign)
-          {
-            if (xhorizalign == QLatin1String("left"))
-              adjust = ALIGN_LEFT;
-            else if (xhorizalign == QLatin1String("center"))
-              adjust = ALIGN_CENTER;
-            else if (xhorizalign == QLatin1String("right"))
-              adjust = ALIGN_RIGHT;
-          }
-        widget->setHorizAlign(adjust);
-        savedHAlign = saved;
-      }
-      {
-        // vert align
-        Align saved = savedVAlign;
-        Align adjust = saved;
-        if (xvertalign)
-          {
-            if (xvertalign == QLatin1String("top"))
-              adjust = ALIGN_TOP;
-            else if (xvertalign == QLatin1String("center"))
-              adjust = ALIGN_CENTER;
-            else if (xvertalign == QLatin1String("bottom"))
-              adjust = ALIGN_BOTTOM;
-          }
-        widget->setVertAlign(adjust);
-        savedVAlign = saved;
-      }
-      {
-        // border
-        int saved = savedBorderSize;
-        int adjust = saved;
-        if (xbgcolor || xzoom || xhorizalign || xvertalign)
-          adjust = 0;
-        widget->setBorderSize(adjust);
-        savedBorderSize = saved;
-      }
+      // border color
+      if (xbgcolor && xbgcolor[0]=='#')
+        {
+          QColor color(xbgcolor);
+          qBorderBrush.set(priority, QBrush(color));
+        }
+      // zoom
+      if (xzoom == QLatin1String("stretch"))
+        qZoom.set(priority, ZOOM_STRETCH);
+      else if (xzoom == QLatin1String("one2one"))
+        qZoom.set(priority, ZOOM_ONE2ONE);
+      else if (xzoom == QLatin1String("width"))
+        qZoom.set(priority, ZOOM_FITWIDTH);
+      else if (xzoom == QLatin1String("page"))
+        qZoom.set(priority, ZOOM_FITPAGE);
+      else if (xzoom && xzoom[0]=='d' && all_numbers(xzoom+1))
+        {
+          int zoom = strtol(xzoom+1,0,10);
+          qZoom.set(priority, qBound((int)ZOOM_MIN, zoom, (int)ZOOM_MAX));
+        }
+      // display mode
+      if (xmode == QLatin1String("color"))
+        qDisplay.set(priority, DISPLAY_COLOR);
+      else if (xmode == QLatin1String("bw") || 
+               xmode == QLatin1String("black"))
+        qDisplay.set(priority, DISPLAY_STENCIL);
+      else if (xmode == QLatin1String("fore") || 
+               xmode == QLatin1String("fg"))
+        qDisplay.set(priority, DISPLAY_FG);
+      else if (xmode == QLatin1String("back") || 
+               xmode == QLatin1String("bg"))
+        qDisplay.set(priority, DISPLAY_BG);
+      // horiz align
+      if (xhorizalign == QLatin1String("left"))
+        qHAlign.set(priority, ALIGN_LEFT);
+      else if (xhorizalign == QLatin1String("center"))
+        qHAlign.set(priority, ALIGN_CENTER);
+      else if (xhorizalign == QLatin1String("right"))
+        qHAlign.set(priority, ALIGN_RIGHT);
+      // vert align
+      if (xvertalign == QLatin1String("top"))
+        qVAlign.set(priority, ALIGN_TOP);
+      else if (xvertalign == QLatin1String("center"))
+        qVAlign.set(priority, ALIGN_CENTER);
+      else if (xvertalign == QLatin1String("bottom"))
+        qVAlign.set(priority, ALIGN_BOTTOM);
+      // border size
+      if (xbgcolor || xzoom || xhorizalign || xvertalign)
+        qBorderSize.set(priority, 0);
     }
+  
+  // Apply changes
+  changeZoom();
+  changeHAlign();
+  changeVAlign();
+  changeDisplay();
+  changeBorderSize();
+  changeBorderBrush();
 }
 
 
@@ -3699,6 +3807,10 @@ QDjVuWidget::modifierEvent(Qt::KeyboardModifiers modifiers,
         {
           viewport()->setCursor(Qt::ArrowCursor);
         }
+      else if (buttons & Qt::RightButton)
+        {
+          return; // Wait for the contextMenuEvent
+        }
       else if (modifiers == priv->modifiersForLens &&
                (modifiers != Qt::NoModifier || buttons != Qt::NoButton) )
         {
@@ -3740,24 +3852,21 @@ QDjVuWidget::modifierEvent(Qt::KeyboardModifiers modifiers,
 void 
 QDjVuWidget::mousePressEvent(QMouseEvent *event)
 {
-  if (! event->isAccepted())
-    mouseMoveEvent(event);
+  mouseMoveEvent(event);
 }
 
 /*! Overridden \a QAbstractScrollArea virtual function. */
 void 
 QDjVuWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
-  if (! event->isAccepted())
-    mouseMoveEvent(event);
+  mouseMoveEvent(event);
 }
 
 /*! Overridden \a QAbstractScrollArea virtual function. */
 void 
 QDjVuWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-  if (! event->isAccepted())
-    mouseMoveEvent(event);
+  mouseMoveEvent(event);
 }
 
 
@@ -3827,7 +3936,7 @@ QDjVuWidget::mouseMoveEvent(QMouseEvent *event)
 void 
 QDjVuWidget::keyPressEvent(QKeyEvent *event)
 {
-  if (priv->keyboardEnabled && !event->isAccepted())
+  if (priv->keyboardEnabled)
     {
       // Capturing this signal can override any key binding
       bool done = false;

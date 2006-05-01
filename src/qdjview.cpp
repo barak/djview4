@@ -393,13 +393,13 @@ QDjView::createActions()
     << tr("Show information about this program.");
 
   actionDisplayColor = makeAction(tr("&Color", "Display|Color"), false)
-    << tr("Display document in full colors.")
+    << tr("Display everything.")
     << Trigger(widget, SLOT(displayModeColor()))
     << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
 
-  actionDisplayBW = makeAction(tr("&Mask", "Display|BW"), false)
-    << tr("Only display the document black&white stencil.")
+  actionDisplayBW = makeAction(tr("&Stencil", "Display|BW"), false)
+    << tr("Only display the document bitonal stencil.")
     << Trigger(widget, SLOT(displayModeStencil()))
     << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
@@ -493,6 +493,7 @@ QDjView::updateActions()
   actionZoom100->setChecked(zoom == 100);
   actionZoom75->setChecked(zoom == 75);
   actionZoom50->setChecked(zoom == 50);
+  zoomCombo->setEnabled(!!document);
   int zoomIndex = zoomCombo->findData(QVariant(zoom));
   zoomCombo->clearEditText();
   zoomCombo->setCurrentIndex(zoomIndex);
@@ -510,7 +511,8 @@ QDjView::updateActions()
   actionDisplayBackground->setChecked(mode == QDjVuWidget::DISPLAY_BG);
   actionDisplayForeground->setChecked(mode == QDjVuWidget::DISPLAY_FG);
   modeCombo->setCurrentIndex(modeCombo->findData(QVariant(mode)));
-  
+  modeCombo->setEnabled(!!document);
+
   // - rotations
   int rotation = widget->rotation();
   actionRotate0->setChecked(rotation == 0);
@@ -546,6 +548,7 @@ QDjView::updateActions()
             action != actionViewToolBar &&
             action != actionViewStatusBar &&
             action != actionViewSideBar &&
+            action != actionWhatsThis &&
             action != actionAbout )
           action->setEnabled(false);
     }
@@ -610,33 +613,48 @@ QDjView::createWhatsThis()
             >> actionZoom300 >> actionZoom200 >> actionZoom150
             >> actionZoom75 >> actionZoom50
             >> zoomCombo;
+  
+  Help(tr("<html><b>Rotating the pages...</b><br/> "
+          "Choose to display pages in portrait or landscape mode. "
+          "You can also turn them upside down.</html>"))
+            >> actionRotateLeft >> actionRotateRight
+            >> actionRotate0 >> actionRotate90
+            >> actionRotate180 >> actionRotate270;
+
+  Help(tr("<html><b>Display mode...</b><br/> "
+          "DjVu images compose a background layer and a foreground layer "
+          "using a stencil. The display mode specifies with layers "
+          "should be displayed.</html>"))
+            >> actionDisplayColor >> actionDisplayBW
+            >> actionDisplayForeground >> actionDisplayBackground
+            >> modeCombo;
 
   Help(tr("<html><b>Navigating the document...</b><br/> "
-          "Select a specific page of the document. </html>"))
+          "Jump to a specific page of the document. </html>"))
             >> actionNavFirst >> actionNavPrev >> actionNavNext >> actionNavLast
             >> pageCombo;
   
-  Help(tr("<html><b>Continuous layout</b><br/> "
+  Help(tr("<html><b>Continuous layout.</b><br/> "
           "Display all the document pages arranged vertically "
           "inside the scrollable document viewing area.</html>"))
             >> actionLayoutContinuous;
   
-  Help(tr("<html><b>Side by side layout</b><br/> "
+  Help(tr("<html><b>Side by side layout.</b><br/> "
           "Display pairs of pages side by side "
           "inside the scrollable document viewing area.</html>"))
             >> actionLayoutSideBySide;
   
-  Help(tr("<html><b>Page information</b><br/> "
+  Help(tr("<html><b>Page information.</b><br/> "
           "Display the page name followed by the page size in pixels "
-          "and the page resolution in dots per inche. </html>"))
+          "and the page resolution in dots per inch. </html>"))
             >> pageLabel;
   
-  Help(tr("<html><b>Cursor information</b><br/> "
+  Help(tr("<html><b>Cursor information.</b><br/> "
           "Display the position of the mouse cursor "
           "expressed in page coordinates. </html>"))
             >> mouseLabel;
 
-  Help(tr("<html><b>Document viewing area</b><br/> "
+  Help(tr("<html><b>Document viewing area.</b><br/> "
           "This is the main display area for the DjVu document. <ul>"
           "<li>Arrows and page keys to navigate the document.</li>"
           "<li>Space and BackSpace to read the document.</li>"
@@ -648,6 +666,12 @@ QDjView::createWhatsThis()
           "</ul></html>").arg(ms).arg(ml))
             >> widget;
   
+  Help(tr("<html><b>Document viewing area.</b><br/> "
+          "This is the main display area for the DjVu document. "
+          "But you must first open a DjVu document to see anything."
+          "</html>"))
+            >> splash;
+    
   // TODO...
 }
 
@@ -873,6 +897,9 @@ QDjView::createToolBar(void)
       toolBar->addAction(actionBack);
       toolBar->addAction(actionForw);
     }
+  // WhatsThis?
+  if (tools & QDjViewPrefs::TOOL_WHATSTHIS)
+    toolBar->addAction(actionWhatsThis);
   // Done
   toolBar->setVisible(!wasHidden);
   toolBarOptions = tools;
@@ -882,25 +909,29 @@ QDjView::createToolBar(void)
 void
 QDjView::applyOptions(void)
 {
-  // Booleans
+  // Toolbar visibility
   menuBar->setVisible(options & QDjViewPrefs::SHOW_MENUBAR);
   toolBar->setVisible(options & QDjViewPrefs::SHOW_TOOLBAR);
   sideBar->setVisible(options & QDjViewPrefs::SHOW_SIDEBAR);
   statusBar->setVisible(options & QDjViewPrefs::SHOW_STATUSBAR);
+
+  // QDjVuWidget options.
+  // When options and appearancePrefs->options match,
+  // one should use the setDefaultXXX variant if available.
   widget->setDisplayFrame(options & QDjViewPrefs::SHOW_FRAME);
   widget->setContinuous(options & QDjViewPrefs::LAYOUT_CONTINUOUS);
   widget->setSideBySide(options & QDjViewPrefs::LAYOUT_SIDEBYSIDE);
   widget->enableKeyboard(options & QDjViewPrefs::HANDLE_KEYBOARD);
   widget->enableMouse(options & QDjViewPrefs::HANDLE_MOUSE);
   widget->enableHyperlink(options & QDjViewPrefs::HANDLE_LINKS);
-
+  
   // Scrollbars
   Qt::ScrollBarPolicy scrollBarPolicy = Qt::ScrollBarAlwaysOff;
   if (options & QDjViewPrefs::SHOW_SCROLLBARS)
     scrollBarPolicy = Qt::ScrollBarAsNeeded;
   widget->setHorizontalScrollBarPolicy(scrollBarPolicy);
   widget->setVerticalScrollBarPolicy(scrollBarPolicy);
-
+  
   // ContextMenu
   if (options & QDjViewPrefs::HANDLE_CONTEXTMENU)
     widget->setContextMenu(contextMenu);
@@ -910,7 +941,7 @@ QDjView::applyOptions(void)
   // Recreate toolbar when changed
   if (toolBarOptions != tools)
     createToolBar();
-
+  
   // Done
   needToApplyOptions = false;
 }
@@ -924,17 +955,18 @@ QDjView::applyPreferences(void)
     restoreState(generalPrefs->windowState);
   if (generalPrefs->windowSize.isValid())
     resize(generalPrefs->windowSize);
-  // Other preferences
-  widget->setZoom(appearancePrefs->zoom);
+  // Cache size
+  djvuContext.setCacheSize(generalPrefs->cacheSize);
+  // Other QDjVuWidget preferences
+  // Use the setDefaultXXXX variant when available.
+  widget->setDefaultZoom(appearancePrefs->zoom);
   widget->setModifiersForLens(generalPrefs->modifiersForLens);
   widget->setModifiersForSelect(generalPrefs->modifiersForSelect);
   widget->setModifiersForLinks(generalPrefs->modifiersForLinks);
   widget->setGamma(generalPrefs->gamma);
-  djvuContext.setCacheSize(generalPrefs->cacheSize);
   widget->setPixelCacheSize(generalPrefs->pixelCacheSize);
   widget->setLensSize(generalPrefs->lensSize);
   widget->setLensPower(generalPrefs->lensPower);
-  //widget->settingsAreDefaults()
 }
 
 
