@@ -40,19 +40,18 @@ QDjViewPrefs::create(void)
 }
 
 
-QDjViewPrefs::Appearance::Appearance()
-  : options(QDjViewPrefs::DEFAULT_OPTIONS),
-    zoom(QDjVuWidget::ZOOM_FITWIDTH)
-{
-}
-
 QDjViewPrefs::QDjViewPrefs(void)
   : QObject(QCoreApplication::instance()),
+    forStandalone(QDjViewPrefs::DEFAULT_OPTIONS),
+    forFullScreen(QDjViewPrefs::DEFAULT_OPTIONS),
+    forEmbeddedPlugin(QDjViewPrefs::DEFAULT_OPTIONS),
+    forFullPagePlugin(QDjViewPrefs::DEFAULT_OPTIONS),
     tools(DEFAULT_TOOLS),
     windowSize(640,400),
     modifiersForLens(Qt::ControlModifier|Qt::ShiftModifier),
     modifiersForSelect(Qt::ControlModifier),
     modifiersForLinks(Qt::ShiftModifier),
+    zoom(QDjVuWidget::ZOOM_FITWIDTH),
     gamma(2.2),
     printerGamma(0.0),
     cacheSize(10*1024*1024),
@@ -60,11 +59,11 @@ QDjViewPrefs::QDjViewPrefs(void)
     lensSize(300),
     lensPower(3)
 {
-  forFullScreen.options &= ~(SHOW_MENUBAR|SHOW_STATUSBAR);
-  forFullScreen.options &= ~(SHOW_TOOLBAR|SHOW_SIDEBAR);
-  forFullPagePlugin.options &= ~(SHOW_MENUBAR|SHOW_STATUSBAR);
-  forEmbeddedPlugin.options &= ~(SHOW_MENUBAR|SHOW_STATUSBAR);
-  forEmbeddedPlugin.options &= ~(SHOW_TOOLBAR|SHOW_SIDEBAR);
+  forFullScreen &= ~(SHOW_MENUBAR|SHOW_STATUSBAR);
+  forFullScreen &= ~(SHOW_TOOLBAR|SHOW_SIDEBAR);
+  forFullPagePlugin &= ~(SHOW_MENUBAR|SHOW_STATUSBAR);
+  forEmbeddedPlugin &= ~(SHOW_MENUBAR|SHOW_STATUSBAR);
+  forEmbeddedPlugin &= ~(SHOW_TOOLBAR|SHOW_SIDEBAR);
 }
 
 

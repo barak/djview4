@@ -2,7 +2,7 @@
 <RCC version="1.0">
 <qresource>
      <file>images/splash.png</file>
-     <file>images/icon32_djvu.png</file>
+     <file>images/djvu.png</file>
      <file>images/icon_back.png</file>
      <file>images/icon_close.png</file>
      <file>images/icon_continuous.png</file>

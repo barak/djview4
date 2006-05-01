@@ -787,7 +787,7 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   unknownSize = QSize(128,128);
   borderSize = 8;
   separatorSize = 12;
-  shadowSize = 3;
+  shadowSize = 2;
   // prioritized
   qBorderSize.set(PRIORITY_DEFAULT, borderSize);
   qZoom.set(PRIORITY_DEFAULT, zoom);
@@ -4056,12 +4056,14 @@ QDjVuWidget::paintDesk(QPainter &p, const QRegion &region)
 void 
 QDjVuWidget::paintFrame(QPainter &p, const QRect &rect, int sw)
 {
-  QBrush brush(Qt::darkGray, Qt::SolidPattern);
-  // draw shadow and frame
+  // draw shadow 
+  QBrush brush(QColor(0,0,0,80));
   p.setPen(Qt::NoPen);
   p.setBrush(brush);
-  p.drawRect(rect.right()+1, rect.top()+sw,sw, rect.height());
-  p.drawRect(rect.left()+sw, rect.bottom()+1, rect.width(), sw);
+  p.drawRect(rect.right()+1, rect.top()+sw, sw, rect.height());
+  if (rect.width() > sw)
+    p.drawRect(rect.left()+sw, rect.bottom()+1, rect.width()-sw, sw);
+  // draw frame
   p.setBrush(Qt::NoBrush);
   QPen pen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
   p.setPen(pen);

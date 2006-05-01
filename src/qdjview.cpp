@@ -429,6 +429,7 @@ QDjView::createActions()
 
   actionViewToolBar = toolBar->toggleViewAction()
     << tr("Show &tool bar")
+    << QKeySequence("F10")
     << tr("Show/hide the standard tool bar.")
     << Trigger(this, SLOT(updateActionsLater()));
 
@@ -576,108 +577,6 @@ QDjView::updateActions()
 
 
 // ----------------------------------------
-// WHATSTHIS HELP
-
-
-struct Help {
-  QString s;
-  Help(QString s) : s(s) { }
-  Help& operator>>(QWidget *w) { w->setWhatsThis(s); return *this; }
-  Help& operator>>(QAction *a) { a->setWhatsThis(s); return *this; }
-};
-
-
-void
-QDjView::createWhatsThis()
-{
-  QString ms, ml;
-  ms = QDjViewPrefs::modifiersToString(generalPrefs->modifiersForSelect);
-  ml = QDjViewPrefs::modifiersToString(generalPrefs->modifiersForLens);
-
-  Help(tr("<html><b>Selecting a rectangle...</b><br/> "
-          "Once a rectanglular area is selected, a popup menu "
-          "lets you copy the corresponding text or image. "
-          "Instead of using this tool, you can also hold %1 "
-          "and use the left mouse button."
-          "</html>").arg(ms))
-            >> actionSelect;
-  
-  Help(tr("<html><b>Zooming...</b><br/> "
-          "Choose a zoom level for viewing the document. "
-          "Zoom level <tt>100%</tt> displays the document suitably for a 100 dpi screen. "
-          "Zoom levels <tt>Fit Page</tt> and <tt>Fit Width</tt> ensure that "
-          "the full page or the page width fit in the window. "
-          "</html>"))
-            >> actionZoomIn >> actionZoomOut
-            >> actionZoomFitPage >> actionZoomFitWidth
-            >> actionZoom300 >> actionZoom200 >> actionZoom150
-            >> actionZoom75 >> actionZoom50
-            >> zoomCombo;
-  
-  Help(tr("<html><b>Rotating the pages...</b><br/> "
-          "Choose to display pages in portrait or landscape mode. "
-          "You can also turn them upside down.</html>"))
-            >> actionRotateLeft >> actionRotateRight
-            >> actionRotate0 >> actionRotate90
-            >> actionRotate180 >> actionRotate270;
-
-  Help(tr("<html><b>Display mode...</b><br/> "
-          "DjVu images compose a background layer and a foreground layer "
-          "using a stencil. The display mode specifies with layers "
-          "should be displayed.</html>"))
-            >> actionDisplayColor >> actionDisplayBW
-            >> actionDisplayForeground >> actionDisplayBackground
-            >> modeCombo;
-
-  Help(tr("<html><b>Navigating the document...</b><br/> "
-          "Jump to a specific page of the document. </html>"))
-            >> actionNavFirst >> actionNavPrev >> actionNavNext >> actionNavLast
-            >> pageCombo;
-  
-  Help(tr("<html><b>Continuous layout.</b><br/> "
-          "Display all the document pages arranged vertically "
-          "inside the scrollable document viewing area.</html>"))
-            >> actionLayoutContinuous;
-  
-  Help(tr("<html><b>Side by side layout.</b><br/> "
-          "Display pairs of pages side by side "
-          "inside the scrollable document viewing area.</html>"))
-            >> actionLayoutSideBySide;
-  
-  Help(tr("<html><b>Page information.</b><br/> "
-          "Display the page name followed by the page size in pixels "
-          "and the page resolution in dots per inch. </html>"))
-            >> pageLabel;
-  
-  Help(tr("<html><b>Cursor information.</b><br/> "
-          "Display the position of the mouse cursor "
-          "expressed in page coordinates. </html>"))
-            >> mouseLabel;
-
-  Help(tr("<html><b>Document viewing area.</b><br/> "
-          "This is the main display area for the DjVu document. <ul>"
-          "<li>Arrows and page keys to navigate the document.</li>"
-          "<li>Space and BackSpace to read the document.</li>"
-          "<li>Keys <tt>+</tt>, <tt>-</tt>, <tt>[</tt>, <tt>]</tt> "
-          "    to zoom and rotate the document.</li>"
-          "<li>Left mouse button for panning and selecting links.</li>"
-          "<li>%1+Left mouse button for selecting text or images.</li>"
-          "<li>%2 for popping the magnification lens.</li>"
-          "</ul></html>").arg(ms).arg(ml))
-            >> widget;
-  
-  Help(tr("<html><b>Document viewing area.</b><br/> "
-          "This is the main display area for the DjVu document. "
-          "But you must first open a DjVu document to see anything."
-          "</html>"))
-            >> splash;
-    
-  // TODO...
-}
-
-
-
-// ----------------------------------------
 // MENUS
 
 void
@@ -799,6 +698,9 @@ QDjView::createMenus()
   contextMenu->addAction(actionExport);
   contextMenu->addAction(actionPrint);
   contextMenu->addSeparator();
+  contextMenu->addAction(actionViewToolBar);
+  contextMenu->addAction(actionViewSideBar);
+  contextMenu->addSeparator();
   contextMenu->addAction(actionDocInfo);
   contextMenu->addAction(actionPageInfo);
   contextMenu->addAction(actionPreferences);
@@ -897,12 +799,51 @@ QDjView::createToolBar(void)
       toolBar->addAction(actionBack);
       toolBar->addAction(actionForw);
     }
-  // WhatsThis?
   if (tools & QDjViewPrefs::TOOL_WHATSTHIS)
-    toolBar->addAction(actionWhatsThis);
+    {
+      toolBar->addAction(actionWhatsThis);
+    }
+  // Allowed areas
+  Qt::ToolBarAreas areas = 0;
+  if (tools & QDjViewPrefs::TOOLBAR_TOP)
+    areas |= Qt::TopToolBarArea;
+  if (tools & QDjViewPrefs::TOOLBAR_BOTTOM)
+    areas |= Qt::BottomToolBarArea;
+  if (areas)
+    toolBar->setAllowedAreas(areas);
   // Done
   toolBar->setVisible(!wasHidden);
-  toolBarOptions = tools;
+  toolsCached = tools;
+}
+
+
+void 
+QDjView::enableContextMenu(bool enable)
+{
+  QMenu *oldContextMenu = widget->contextMenu();
+  if (!enable || oldContextMenu != contextMenu)
+    {
+      if (oldContextMenu)
+        widget->removeAction(oldContextMenu->menuAction());
+      widget->setContextMenu(0);
+    }
+  if (contextMenu && enable && oldContextMenu != contextMenu)
+    {
+      if (contextMenu)
+        widget->addAction(contextMenu->menuAction());
+      widget->setContextMenu(contextMenu);
+    }
+}
+
+
+void 
+QDjView::enableScrollBars(bool enable)
+{
+  Qt::ScrollBarPolicy policy = Qt::ScrollBarAlwaysOff;
+  if (enable) 
+    policy = Qt::ScrollBarAsNeeded;
+  widget->setHorizontalScrollBarPolicy(policy);
+  widget->setVerticalScrollBarPolicy(policy);
 }
 
 
@@ -924,22 +865,11 @@ QDjView::applyOptions(void)
   widget->enableKeyboard(options & QDjViewPrefs::HANDLE_KEYBOARD);
   widget->enableMouse(options & QDjViewPrefs::HANDLE_MOUSE);
   widget->enableHyperlink(options & QDjViewPrefs::HANDLE_LINKS);
+  enableScrollBars(options & QDjViewPrefs::SHOW_SCROLLBARS);
+  enableContextMenu(options & QDjViewPrefs::HANDLE_CONTEXTMENU);
   
-  // Scrollbars
-  Qt::ScrollBarPolicy scrollBarPolicy = Qt::ScrollBarAlwaysOff;
-  if (options & QDjViewPrefs::SHOW_SCROLLBARS)
-    scrollBarPolicy = Qt::ScrollBarAsNeeded;
-  widget->setHorizontalScrollBarPolicy(scrollBarPolicy);
-  widget->setVerticalScrollBarPolicy(scrollBarPolicy);
-  
-  // ContextMenu
-  if (options & QDjViewPrefs::HANDLE_CONTEXTMENU)
-    widget->setContextMenu(contextMenu);
-  else
-    widget->setContextMenu(0);    
-
   // Recreate toolbar when changed
-  if (toolBarOptions != tools)
+  if (toolsCached != tools)
     createToolBar();
   
   // Done
@@ -951,22 +881,124 @@ void
 QDjView::applyPreferences(void)
 {
   // Window state
-  if (generalPrefs->windowState.size() > 0)
-    restoreState(generalPrefs->windowState);
-  if (generalPrefs->windowSize.isValid())
-    resize(generalPrefs->windowSize);
+  if (prefs->windowState.size() > 0)
+    restoreState(prefs->windowState);
+  if (prefs->windowSize.isValid())
+    resize(prefs->windowSize);
   // Cache size
-  djvuContext.setCacheSize(generalPrefs->cacheSize);
+  djvuContext.setCacheSize(prefs->cacheSize);
   // Other QDjVuWidget preferences
   // Use the setDefaultXXXX variant when available.
-  widget->setDefaultZoom(appearancePrefs->zoom);
-  widget->setModifiersForLens(generalPrefs->modifiersForLens);
-  widget->setModifiersForSelect(generalPrefs->modifiersForSelect);
-  widget->setModifiersForLinks(generalPrefs->modifiersForLinks);
-  widget->setGamma(generalPrefs->gamma);
-  widget->setPixelCacheSize(generalPrefs->pixelCacheSize);
-  widget->setLensSize(generalPrefs->lensSize);
-  widget->setLensPower(generalPrefs->lensPower);
+  widget->setDefaultZoom(prefs->zoom);
+  widget->setModifiersForLens(prefs->modifiersForLens);
+  widget->setModifiersForSelect(prefs->modifiersForSelect);
+  widget->setModifiersForLinks(prefs->modifiersForLinks);
+  widget->setGamma(prefs->gamma);
+  widget->setPixelCacheSize(prefs->pixelCacheSize);
+  widget->setLensSize(prefs->lensSize);
+  widget->setLensPower(prefs->lensPower);
+}
+
+
+
+// ----------------------------------------
+// WHATSTHIS HELP
+
+
+struct Help {
+  QString s;
+  Help(QString s) : s(s) { }
+  Help& operator>>(QWidget *w) { w->setWhatsThis(s); return *this; }
+  Help& operator>>(QAction *a) { a->setWhatsThis(s); return *this; }
+};
+
+
+void
+QDjView::createWhatsThis()
+{
+  QString ms, ml;
+  ms = QDjViewPrefs::modifiersToString(prefs->modifiersForSelect);
+  ml = QDjViewPrefs::modifiersToString(prefs->modifiersForLens);
+
+  Help(tr("<html><b>Selecting a rectangle...</b><br/> "
+          "Once a rectanglular area is selected, a popup menu "
+          "lets you copy the corresponding text or image. "
+          "Instead of using this tool, you can also hold %1 "
+          "and use the left mouse button."
+          "</html>").arg(ms))
+            >> actionSelect;
+  
+  Help(tr("<html><b>Zooming...</b><br/> "
+          "Choose a zoom level for viewing the document. "
+          "Zoom level <tt>100%</tt> displays the document suitably for a 100 dpi screen. "
+          "Zoom levels <tt>Fit Page</tt> and <tt>Fit Width</tt> ensure that "
+          "the full page or the page width fit in the window. "
+          "</html>"))
+            >> actionZoomIn >> actionZoomOut
+            >> actionZoomFitPage >> actionZoomFitWidth
+            >> actionZoom300 >> actionZoom200 >> actionZoom150
+            >> actionZoom75 >> actionZoom50
+            >> zoomCombo;
+  
+  Help(tr("<html><b>Rotating the pages...</b><br/> "
+          "Choose to display pages in portrait or landscape mode. "
+          "You can also turn them upside down.</html>"))
+            >> actionRotateLeft >> actionRotateRight
+            >> actionRotate0 >> actionRotate90
+            >> actionRotate180 >> actionRotate270;
+
+  Help(tr("<html><b>Display mode...</b><br/> "
+          "DjVu images compose a background layer and a foreground layer "
+          "using a stencil. The display mode specifies with layers "
+          "should be displayed.</html>"))
+            >> actionDisplayColor >> actionDisplayBW
+            >> actionDisplayForeground >> actionDisplayBackground
+            >> modeCombo;
+
+  Help(tr("<html><b>Navigating the document...</b><br/> "
+          "Jump to a specific page of the document. </html>"))
+            >> actionNavFirst >> actionNavPrev >> actionNavNext >> actionNavLast
+            >> pageCombo;
+  
+  Help(tr("<html><b>Continuous layout.</b><br/> "
+          "Display all the document pages arranged vertically "
+          "inside the scrollable document viewing area.</html>"))
+            >> actionLayoutContinuous;
+  
+  Help(tr("<html><b>Side by side layout.</b><br/> "
+          "Display pairs of pages side by side "
+          "inside the scrollable document viewing area.</html>"))
+            >> actionLayoutSideBySide;
+  
+  Help(tr("<html><b>Page information.</b><br/> "
+          "Display the page name followed by the page size in pixels "
+          "and the page resolution in dots per inch. </html>"))
+            >> pageLabel;
+  
+  Help(tr("<html><b>Cursor information.</b><br/> "
+          "Display the position of the mouse cursor "
+          "expressed in page coordinates. </html>"))
+            >> mouseLabel;
+
+  Help(tr("<html><b>Document viewing area.</b><br/> "
+          "This is the main display area for the DjVu document. <ul>"
+          "<li>Arrows and page keys to navigate the document.</li>"
+          "<li>Space and BackSpace to read the document.</li>"
+          "<li>Keys <tt>+</tt>, <tt>-</tt>, <tt>[</tt>, <tt>]</tt> "
+          "    to zoom and rotate the document.</li>"
+          "<li>Left mouse button for panning and selecting links.</li>"
+          "<li>%1+Left mouse button for selecting text or images.</li>"
+          "<li>%2 for popping the magnification lens.</li>"
+          "</ul></html>").arg(ms).arg(ml))
+            >> widget;
+  
+  Help(tr("<html><b>Document viewing area.</b><br/> "
+          "This is the main display area for the DjVu document. "
+          "But you must first open a DjVu document to see anything."
+          "</html>"))
+            >> splash;
+    
+  // TODO...
 }
 
 
@@ -986,15 +1018,18 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
     pendingPageNo(-1)
 {
   // obtain preferences
-  generalPrefs = QDjViewPrefs::create();
+  prefs = QDjViewPrefs::create();
+
+  options = prefs->forStandalone;
+  optionsChanged = 0;
   if (viewerMode == EMBEDDED_PLUGIN)
-    appearancePrefs = &generalPrefs->forEmbeddedPlugin;
+    options = prefs->forEmbeddedPlugin;
   else if (viewerMode == FULLPAGE_PLUGIN)
-    appearancePrefs = &generalPrefs->forFullPagePlugin;
-  else
-    appearancePrefs = &generalPrefs->forStandalone;
-  options = appearancePrefs->options;
-  tools = generalPrefs->tools;
+    options = prefs->forFullPagePlugin;
+
+  toolsChanged = 0;
+  toolsCached = 0;
+  tools = prefs->tools;
   
   // Create dialogs
   errorDialog = new QDjViewDialogError(this);
@@ -1048,7 +1083,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 
   // - context menu
   contextMenu = new QMenu(this);
-  widget->setContextMenu(contextMenu);
+  enableContextMenu(true);
 
   // - menubar
   menuBar = new QMenuBar(this);
@@ -1080,7 +1115,6 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   toolBar->setObjectName("toolbar");
   toolBar->setAllowedAreas(Qt::TopToolBarArea|Qt::BottomToolBarArea);
   addToolBar(toolBar);
-  toolBarOptions = 0;
 
   // - sidebar  
   sideBar = new QDockWidget(this);  // for now
@@ -1090,7 +1124,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   
   // Setup main window
   setWindowTitle(tr("DjView"));
-  setWindowIcon(QIcon(":/images/icon32_djvu.png"));
+  setWindowIcon(QIcon(":/images/djvu.png"));
   if (QApplication::windowIcon().isNull())
     QApplication::setWindowIcon(windowIcon());
 
@@ -1342,11 +1376,11 @@ QDjView::pageName(int pageno)
 void
 QDjView::closeEvent(QCloseEvent *event)
 {
-  generalPrefs->windowState = saveState();
+  prefs->windowState = saveState();
   if (isWindow() && !isHidden() && !isFullScreen() &&
       !isMaximized() && !isMinimized())
-    generalPrefs->windowSize = size();
-  generalPrefs->saveWindow();
+    prefs->windowSize = size();
+  prefs->saveWindow();
   closeDocument();
   // Accept close event
   QMainWindow::closeEvent(event);
@@ -1659,7 +1693,7 @@ QDjView::selectActionTriggered(bool checked)
   if (checked)
     widget->setModifiersForSelect(Qt::NoModifier);
   else
-    widget->setModifiersForSelect(generalPrefs->modifiersForSelect);
+    widget->setModifiersForSelect(prefs->modifiersForSelect);
 }
 
 

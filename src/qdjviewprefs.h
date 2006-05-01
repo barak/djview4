@@ -56,6 +56,8 @@ public:
   Q_DECLARE_FLAGS(Options, Option)
 
   enum Tool {
+    TOOLBAR_TOP       = 0x80000000,
+    TOOLBAR_BOTTOM    = 0x40000000,
     TOOL_MODECOMBO    = 0x00001,
     TOOL_MODEBUTTONS  = 0x00002,
     TOOL_ZOOMCOMBO    = 0x00004,
@@ -73,26 +75,20 @@ public:
     TOOL_LAYOUT       = 0x04000,
     TOOL_ROTATE       = 0x08000,
     TOOL_WHATSTHIS    = 0x10000,
-    DEFAULT_TOOLS = 0x16e7c
-  };
-
-  Q_DECLARE_FLAGS(Tools, Tool)
-
-  struct Appearance {
-    Appearance();
-    Options                  options;
-    int                      zoom;
+    DEFAULT_TOOLS = 0xC0016E7C
   };
   
+  Q_DECLARE_FLAGS(Tools, Tool)
+    
   static QString versionString();
   static QString modifiersToString(Qt::KeyboardModifiers);
   static Qt::KeyboardModifiers stringToModifiers(QString);
 
-  Appearance forStandalone;
-  Appearance forFullScreen;
-  Appearance forEmbeddedPlugin;
-  Appearance forFullPagePlugin;
-  Tools      tools;
+  Options forStandalone;
+  Options forFullScreen;
+  Options forEmbeddedPlugin;
+  Options forFullPagePlugin;
+  Tools   tools;
 
   QSize      windowSize;
   QByteArray windowState;
@@ -100,6 +96,7 @@ public:
   Qt::KeyboardModifiers modifiersForLens;
   Qt::KeyboardModifiers modifiersForSelect;
   Qt::KeyboardModifiers modifiersForLinks;
+  int        zoom;
   double     gamma;
   double     printerGamma;
   long       cacheSize;

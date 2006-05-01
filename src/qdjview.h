@@ -88,7 +88,6 @@ protected:
 
   typedef QDjVuWidget::Position Position;
   typedef QDjVuWidget::PageInfo PageInfo;
-  typedef QDjViewPrefs::Appearance Appearance;
   typedef QDjViewPrefs::Options Options;
   typedef QDjViewPrefs::Tools Tools;
 
@@ -99,6 +98,8 @@ protected:
   void createActions(void);
   void createMenus(void);
   void createWhatsThis(void);
+  void enableContextMenu(bool);
+  void enableScrollBars(bool);
   void applyPreferences(void);
   int pageNum(void);
   QString pageName(int pageno);
@@ -132,10 +133,12 @@ protected:
 
   const ViewerMode   viewerMode;
 
-  QDjViewPrefs  *generalPrefs;
-  Appearance    *appearancePrefs;
+  QDjViewPrefs  *prefs;
   Options        options;
+  Options        optionsChanged;
   Tools          tools;
+  Tools          toolsChanged;
+  Tools          toolsCached;
   
   QLabel             *splash;
   QDjVuWidget        *widget;
@@ -160,7 +163,6 @@ protected:
 
   bool  needToUpdateActions;
   bool  needToApplyOptions;
-  Tools toolBarOptions;
 
   int     pendingPageNo;
   QString pendingPageName;
