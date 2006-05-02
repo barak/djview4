@@ -21,10 +21,13 @@
 
 #include <QObject>
 #include <QDialog>
+#include <QLabel>
 #include <QMessageBox>
 
 
-// ----------- QDJVIEWDIALOGERROR
+
+// ----------- QDJVIEWERRORDIALOG
+
 
 class QDjViewErrorDialog : public QDialog
 {
@@ -37,9 +40,12 @@ public slots:
   void error(QString message, QString filename, int lineno);
   void okay(void);
 private:
+  void compose(void);
   struct Private;
   Private *d;
 };
+
+
 
 
 

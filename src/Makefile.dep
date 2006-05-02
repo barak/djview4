@@ -1,4 +1,4 @@
-qdjvu.o: qdjvu.cpp moc_qdjvu.inc
+qdjvu.o: qdjvu.cpp qdjvu.h moc_qdjvu.inc
 qdjvuhttp.o: qdjvuhttp.cpp qdjvuhttp.h
 qdjvuwidget.o: qdjvuwidget.cpp qdjvu.h qdjvuwidget.h moc_qdjvuwidget.inc
 qdjviewprefs.o: qdjviewprefs.cpp qdjviewprefs.h qdjvuwidget.h qdjvu.h

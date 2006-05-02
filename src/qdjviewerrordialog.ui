@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>440</width>
-    <height>140</height>
+    <width>538</width>
+    <height>142</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -107,10 +107,10 @@
      <item>
       <widget class="QPushButton" name="okButton" >
        <property name="text" >
-        <string>Ok</string>
+        <string>&amp;Ok</string>
        </property>
        <property name="default" >
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>

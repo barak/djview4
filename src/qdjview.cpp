@@ -60,6 +60,7 @@
 #include <QTextStream>
 #include <QTimer>
 #include <QToolBar>
+#include <QUrl>
 #include <QWhatsThis>
 
 #include "qdjvu.h"
@@ -168,11 +169,11 @@ operator<<(QAction *action, QKeySequence shortcut)
 static inline QAction * 
 operator<<(QAction *action, QString string)
 {
-  if (action->text().isNull())
+  if (action->text().isEmpty())
     action->setText(string);
-  else if (action->statusTip().isNull())
+  else if (action->statusTip().isEmpty())
     action->setStatusTip(string);
-  else if (action->whatsThis().isNull())
+  else if (action->whatsThis().isEmpty())
     action->setWhatsThis(string);
   return action;
 }
@@ -398,7 +399,8 @@ QDjView::createActions()
 
   actionAbout = makeAction(tr("&About DjView..."))
     << QIcon(":/images/icon_djvu.png")
-    << tr("Show information about this program.");
+    << tr("Show information about this program.")
+    << Trigger(this, SLOT(performAbout()));
 
   actionDisplayColor = makeAction(tr("&Color", "Display|Color"), false)
     << tr("Display everything.")
@@ -486,6 +488,9 @@ QDjView::updateActions()
   // Enable all actions
   foreach(QAction *action, allActions)
     action->setEnabled(true);
+
+  // Some actions are not yet implemented
+  actionExport->setVisible(false);
   
   // Some actions are only available in standalone mode
   actionNew->setVisible(viewerMode == STANDALONE);
@@ -1112,17 +1117,14 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 }
 
 
-QDjVuWidget *
-QDjView::getDjVuWidget()
+QString
+QDjView::getShortFileName()
 {
-  return widget;
-}
-
-
-QDjViewErrorDialog *
-QDjView::getErrorDialog()
-{
-  return errorDialog;
+  if (! documentFileName.isEmpty())
+    return QFileInfo(documentFileName).fileName();
+  else if (! documentUrl.isEmpty())
+    return documentUrl.path().section('/', -1);
+  return QString();
 }
 
 
@@ -1150,8 +1152,8 @@ QDjView::open(QDjVuDocument *doc)
   document = doc;
   connect(doc,SIGNAL(destroyed(void)), this, SLOT(closeDocument(void)));
   connect(doc,SIGNAL(docinfo(void)), this, SLOT(docinfo(void)));
-  disconnect(document, 0, errorDialog, 0);
   widget->setDocument(document);
+  disconnect(document, 0, errorDialog, 0);
   layout->setCurrentWidget(widget);
   updateActions();
   docinfo();
@@ -1169,16 +1171,15 @@ QDjView::open(QString filename)
   if (!doc->isValid())
     {
       delete doc;
-      raiseErrorDialog(QMessageBox::Critical,
-                       tr("Open DjVu file ..."),
-                       tr("Cannot open file '%1'.").arg(filename) );
+      addToErrorDialog(tr("Cannot open file '%1'.").arg(filename));
+      raiseErrorDialog(QMessageBox::Critical, tr("Opening DjVu file..."));
       return false;
     }
   open(doc);
   QFileInfo fileinfo(filename);
-  setWindowTitle(tr("Djview - %1[*]").arg(fileinfo.fileName()));
   documentUrl = QUrl::fromLocalFile(fileinfo.absoluteFilePath());
   documentFileName = filename;
+  setWindowTitle(tr("Djview - %1[*]").arg(getShortFileName()));
   return true;
 }
 
@@ -1194,15 +1195,14 @@ QDjView::open(QUrl url)
   if (!doc->isValid())
     {
       delete doc;
-      raiseErrorDialog(QMessageBox::Critical,
-                       tr("Open DjVu document ..."),
-                       tr("Cannot open URL '%1'.").arg(url.toString()) );
+      addToErrorDialog(tr("Cannot open URL '%1'.").arg(url.toString()));
+      raiseErrorDialog(QMessageBox::Critical, tr("Opening DjVu document..."));
       return false;
     }
   open(doc);
-  setWindowTitle(tr("Djview - %1[*]").arg(url.toString()));
   documentUrl = url;
   parseCgiArguments(url);
+  setWindowTitle(tr("Djview - %1[*]").arg(getShortFileName()));
   return true;
 }
 
@@ -1275,22 +1275,26 @@ QDjView::goToPage(QString name, int from)
 
 
 void
-QDjView::raiseErrorDialog(QMessageBox::Icon icon, 
-                          QString caption, QString message)
+QDjView::addToErrorDialog(QString message)
 {
-  errorDialog->error(message, QString(), 0);
-  errorDialog->prepare(icon, caption);
+  errorDialog->error(message, __FILE__, __LINE__);
+}
+
+
+void
+QDjView::raiseErrorDialog(QMessageBox::Icon icon, QString caption)
+{
+  errorDialog->prepare(icon, makeCaption(caption));
   errorDialog->show();
   errorDialog->raise();
+  errorDialog->activateWindow();
 }
 
 
 int
-QDjView::execErrorDialog(QMessageBox::Icon icon, 
-                         QString caption, QString message)
+QDjView::execErrorDialog(QMessageBox::Icon icon, QString caption)
 {
-  errorDialog->error(message, QString(), 0);
-  errorDialog->prepare(icon, caption);
+  errorDialog->prepare(icon, makeCaption(caption));
   return errorDialog->exec();
 }
 
@@ -1386,6 +1390,100 @@ QDjView::copyWindow(void)
     }
   return other;
 }
+
+
+QString 
+QDjView::makeCaption(QString caption)
+{
+  QString f = getShortFileName();
+  if (! caption.isEmpty() && ! f.isEmpty())
+    caption = caption + " - [" + f + "]";
+  return caption;
+}
+
+
+bool 
+QDjView::saveTextFile(QString text, QString filename)
+{
+  // obtain filename
+  QString caption = makeCaption(tr("Save text", "dialog caption"));
+  if (filename.isEmpty())
+    {
+      QString filters = "Text files (*.txt);;All files (*)";
+      filename = QFileDialog::getSaveFileName(this, caption, "", filters);
+      if (filename.isEmpty())
+        return false;
+    }
+  // open file
+  errno = 0;
+  QFile file(filename);
+  if (! file.open(QIODevice::WriteOnly|QIODevice::Truncate))
+    {
+      QString message = file.errorString();
+      if (file.error() == QFile::OpenError && errno > 0)
+        message = strerror(errno);
+      QMessageBox::critical(this, caption,
+                            tr("Cannot write file '%1'\n%2.")
+                            .arg(QFileInfo(filename).fileName())
+                            .arg(message) );
+      file.remove();
+      return false;
+    }
+  // save text in current locale encoding
+  QTextStream(&file) << text;
+  return true;
+}
+
+
+bool 
+QDjView::saveImageFile(QImage image, QString filename)
+{
+  // obtain filename with suitable suffix
+  QString caption = makeCaption(tr("Save image", "dialog caption"));
+  if (filename.isEmpty())
+    {
+      QStringList patterns;
+      foreach(QByteArray format, QImageWriter::supportedImageFormats())
+        patterns << "*." + QString(format).toLower();
+      QString filters = QString("All supported files (%1);;All files (*)");
+      filters = filters.arg(patterns.join(" "));
+      filename = QFileDialog::getSaveFileName(this, caption, filename, filters);
+      if (filename.isEmpty())
+        return false;
+    }
+  // suffix
+  QString suffix = QFileInfo(filename).suffix();
+  if (suffix.isEmpty())
+    {
+      QMessageBox::critical(this, caption,
+                            tr("Cannot determine file format.\n"
+                               "Filename '%1' has no suffix.")
+                            .arg(QFileInfo(filename).fileName()) );
+      return false;
+    }
+  // write
+  errno = 0;
+  QFile file(filename);
+  QImageWriter writer(&file, suffix.toLatin1());
+  if (! writer.write(image))
+    {
+      QString message = file.errorString();
+      if (writer.error() == QImageWriter::UnsupportedFormatError)
+        message = tr("Image format %1 is not supported.").arg(suffix.toUpper());
+      else if (file.error() == QFile::OpenError && errno > 0)
+        message = strerror(errno);
+      QMessageBox::critical(this, caption,
+                            tr("Cannot write file '%1'.\n%2.")
+                            .arg(QFileInfo(filename).fileName())
+                            .arg(message) );
+      file.remove();
+      return false;
+    }
+  return true;
+}
+
+
+
 
 
 // -----------------------------------
@@ -1545,7 +1643,7 @@ QDjView::pointerClick(const Position &pos, miniexp_t maparea)
   if (link.startsWith("#"))
     {
       // Same document
-      if (target.isNull())
+      if (target.isEmpty())
         goToPage(link, pos.pageNo);
       else
         qWarning("TODO: same document, different window");
@@ -1588,74 +1686,13 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
   if (action == zoom)
     widget->zoomRect(rect);
   else if (action == copyText)
-    {
-      QApplication::clipboard()->setText(text);
-    }
+    QApplication::clipboard()->setText(text);
   else if (action == saveText)
-    {
-      QString caption = tr("Save text", "dialog caption");
-      QString filters = "All files (*)";
-      QString filename = QFileDialog::getSaveFileName(this, caption, "", filters);
-      if (!filename.isNull())
-        {
-          QFile file(filename);
-          if (file.open(QIODevice::WriteOnly|QIODevice::Truncate))
-            {
-              QTextStream(&file) << text;
-            }
-          else
-            {
-              QString message = file.errorString();
-              if (file.error() == QFile::OpenError && errno > 0)
-                message = strerror(errno);
-              QMessageBox::critical(this, tr("Save text"),
-                                    tr("Cannot write this file.\n%1.").arg(message) );
-            }
-        }
-    }
+    saveTextFile(text);
   else if (action == copyImage)
-    {
-      QApplication::clipboard()->setImage(widget->getImageForRect(rect));
-    }
+    QApplication::clipboard()->setImage(widget->getImageForRect(rect));
   else if (action == saveImage)
-    {
-#if 0
-      QString caption = tr("Save image", "dialog caption");
-      QString filter = "All files (*)";
-      QList<QByteArray> formats = QImageWriter::supportedImageFormats();
-      QFileDialog *fd = new QFileDialog(this);
-      fd->setWindowTitle(caption);
-      fd->setAcceptMode(QFileDialog::AcceptSave);
-      fd->setFileMode(QFileDialog::AnyFile);
-      fd->setFilter("All files (*)");
-      fd->setDirectory(QDir::currentPath());
-      fd->setOrientation(Qt::Vertical);
-      QLabel *ext = new QLabel("extension");
-      ext->setFrameShape(QFrame::Box);
-      fd->setExtension(ext);
-      fd->showExtension(true);
-      QByteArray format = "png";
-      QString filename;
-      if (fd->exec())
-        filename = fd->selectedFiles().first();
-      delete fd;
-      if (! filename.isNull())
-        {
-          errno = 0;
-          QImageWriter writer(filename, format);
-          if (! writer.write(widget->getImageForRect(rect)))
-            {
-              QString message = writer.device()->errorString();
-              if (writer.error() == QImageWriter::UnsupportedFormatError)
-                message = "Unsupported image format";
-              else if (errno > 0)
-                message += strerror(errno);
-              QMessageBox::critical(this, tr("Save image"),
-                                    tr("Cannot write this file.\n%2.").arg(message));
-            }
-        }
-#endif
-    }
+    saveImageFile(widget->getImageForRect(rect));
   
   // Cancel select mode.
   updateActionsLater();
@@ -1675,9 +1712,8 @@ QDjView::errorCondition(int pageno)
     message = tr("Cannot decode page %1.").arg(pageno);
   else
     message = tr("Cannot decode document.");
-  raiseErrorDialog(QMessageBox::Warning,
-                   tr("Decoding DjVu document ..."),
-                   message);
+  addToErrorDialog(message);
+  raiseErrorDialog(QMessageBox::Warning, tr("Decoding DjVu document..."));
 }
 
 
@@ -1746,6 +1782,32 @@ QDjView::pageComboEdited(void)
 // SIGNALS IMPLEMENTING ACTIONS
 
 
+
+void
+QDjView::performAbout(void)
+{
+  QString html = 
+    tr("<html>"
+        "<h2>DjVuLibre DjView %1</h2>"
+       "<p>"
+      "Viewer for DjVu documents<br>"
+       "<a href=http://djvulibre.djvuzone.org>http://djvulibre.djvuzone.org</a><br>"
+       "Copyright \251 2006- L\351on Bottou."
+       "</p>"
+       "<p align=justify><small>"
+       "This program is free software. "
+       "You can redistribute or modify it under the terms of the "
+       "GNU General Public License as published by the Free Software Foundation. "
+       "This program is distributed <i>without any warranty</i>. "
+       "See the GNU General Public License for more details."
+       "</small></p>"
+       "</html>")
+    .arg(QDjViewPrefs::versionString());
+
+  QMessageBox::about(this, tr("About DjView"), html);
+}
+
+
 void
 QDjView::performNew(void)
 {
@@ -1764,7 +1826,7 @@ QDjView::performOpen(void)
   QString caption = tr("Open", "dialog caption");
   QString filters = "DjVu files (*.djvu *.djv)";
   QString filename = QFileDialog::getOpenFileName(this, caption, "", filters);
-  if (! filename.isNull())
+  if (! filename.isEmpty())
     open(filename);
 }
 

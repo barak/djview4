@@ -16,7 +16,9 @@
 
 // $Id$
 
+#include "qdjviewdialogs.h"
 
+#include <QDebug>
 
 #include <QObject>
 #include <QApplication>
@@ -26,16 +28,17 @@
 #include <QString>
 #include <QList>
 
-#include "qdjviewdialogs.h"
 
 
-// ----------- QDJVIEWDIALOGERROR
+
+// ----------- QDJVIEWERRORDIALOG
 
 #include "ui_qdjviewerrordialog.h"
 
 struct QDjViewErrorDialog::Private {
   Ui::QDjViewErrorDialog ui;
   QList<QString> messages;
+  void compose();
 };
 
 QDjViewErrorDialog::~QDjViewErrorDialog()
@@ -49,33 +52,36 @@ QDjViewErrorDialog::QDjViewErrorDialog(QWidget *parent)
 {
   d->ui.setupUi(this);
   connect(d->ui.okButton, SIGNAL(clicked()), this, SLOT(okay()));
-  d->ui.textEdit->viewport()->setBackgroundRole(QPalette::Window);
+  d->ui.textEdit->viewport()->setBackgroundRole(QPalette::Background);
   setWindowTitle(tr("DjView Error Message"));
 }
 
-void 
-QDjViewErrorDialog::error(QString message, QString, int)
+
+void
+QDjViewErrorDialog::compose()
 {
-  // Remove [1-nnnnn] prefix from djvulibre-3.5
-  if (message.startsWith("["))
-    message = message.replace(QRegExp("^\\[\\d*-?\\d*\\]\\s*") , "");
-  // Ignore empty and duplicate messages
-  if (message.isEmpty()) 
-    return;
-  if (!d->messages.isEmpty() && message == d->messages[0]) 
-    return;
-  // Add message
-  d->messages.prepend(message);
-  if (d->messages.size() >= 16)
-    d->messages.removeLast();
-  // Show message
   QString html;
   for (int i=0; i<d->messages.size(); i++)
     html = "<li>" + d->messages[i] + "</li>" + html;
-  html = "<html><ul>" + html + "</ul></html>";
-  d->ui.textEdit->setHtml(html);
+  d->ui.textEdit->setHtml("<html><ul>" + html + "</ul></html>");
   QScrollBar *scrollBar = d->ui.textEdit->verticalScrollBar();
   scrollBar->setValue(scrollBar->maximum());
+}
+
+void 
+QDjViewErrorDialog::error(QString msg, QString, int)
+{
+  // Remove [1-nnnnn] prefix from djvulibre-3.5
+  if (msg.startsWith("["))
+    msg = msg.replace(QRegExp("^\\[\\d*-?\\d*\\]\\s*") , "");
+  // Ignore empty and duplicate messages
+  if (msg.isEmpty()) return;
+  if (!d->messages.isEmpty() && msg == d->messages[0]) return;
+  // Add message
+  d->messages.prepend(msg);
+  while (d->messages.size() >= 16)
+    d->messages.removeLast();
+  compose();
 }
 
 void 

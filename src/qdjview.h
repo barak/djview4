@@ -55,7 +55,6 @@ class QDjView : public QMainWindow
   Q_OBJECT
 
  public:
-
   enum ViewerMode {
     STANDALONE = 0,
     EMBEDDED_PLUGIN = 1,
@@ -64,36 +63,43 @@ class QDjView : public QMainWindow
 
   QDjView(QDjVuContext &context, ViewerMode mode=STANDALONE, QWidget *parent=0);
   
-  void open(QDjVuDocument *document);
-  bool open(QString filename);
-  bool open(QUrl url);
-  
-  QDjVuWidget *getDjVuWidget();
-  QDjViewErrorDialog *getErrorDialog();
-  
-  bool parseArgument(QString keyEqualValue);
-  bool parseArgument(QString key, QString value);
-  void parseCgiArguments(QUrl url);
+  QDjVuWidget        *getDjVuWidget()       { return widget; }
+  QDjViewErrorDialog *getErrorDialog()      { return errorDialog; }
+  QDjVuDocument      *getDocument()         { return document; } 
+  QString             getDocumentFileName() { return documentFileName; }
+  QUrl                getDocumentUrl()      { return documentUrl; }
+  QString             getShortFileName();
+
+  bool  parseArgument(QString keyEqualValue);
+  bool  parseArgument(QString key, QString value);
+  void  parseCgiArguments(QUrl url);
+
+  int         pageNum(void);
+  QString     pageName(int pageno);
+  QDjView    *copyWindow(void);
+  bool        saveTextFile(QString text, QString filename=QString());
+  bool        saveImageFile(QImage image, QString filename=QString());
 
 public slots:
-  void closeDocument();
-  void goToPage(int pageno);
-  void goToPage(QString name, int from=-1);
-  void raiseErrorDialog(QMessageBox::Icon icon, 
-                        QString caption="", QString message="");
-  int  execErrorDialog (QMessageBox::Icon icon,
-                        QString caption="", QString message="");
-
-signals:
-  void documentClosed();
+  bool  open(QString filename);
+  bool  open(QUrl url);
+  void  closeDocument();
+  void  goToPage(int pageno);
+  void  goToPage(QString name, int from=-1);
+  void  addToErrorDialog(QString message);
+  void  raiseErrorDialog(QMessageBox::Icon icon, QString caption=QString());
+  int   execErrorDialog (QMessageBox::Icon icon, QString caption=QString());
   
-protected:
+signals:
+  void  documentClosed();
 
+protected:
   typedef QDjVuWidget::Position Position;
   typedef QDjVuWidget::PageInfo PageInfo;
   typedef QDjViewPrefs::Options Options;
   typedef QDjViewPrefs::Tools Tools;
 
+  void  open(QDjVuDocument *document);
   QAction *makeAction(QString text);
   QAction *makeAction(QString text, bool value);
   void createToolBar(void);
@@ -104,15 +110,11 @@ protected:
   void enableContextMenu(bool);
   void enableScrollBars(bool);
   void applyPreferences(void);
-  int pageNum(void);
-  QString pageName(int pageno);
-  QDjView *copyWindow(void);
-
+  QString makeCaption(QString);
   virtual bool eventFilter(QObject *watched, QEvent *event);
   virtual void closeEvent(QCloseEvent *event);
 
 protected slots:
-
   void docinfo();
   void errorCondition(int);
   void pointerPosition(const Position &pos, const PageInfo &page);
@@ -120,7 +122,6 @@ protected slots:
   void pointerLeave(const Position &pos, miniexp_t maparea);
   void pointerClick(const Position &pos, miniexp_t maparea);
   void pointerSelect(const QPoint &pointerPos, const QRect &rect);
-  
   void updateActions(void);
   void updateActionsLater(void);
   void modeComboActivated(int);
@@ -129,6 +130,7 @@ protected slots:
   void pageComboActivated(int);
   void pageComboEdited(void);
   
+  void performAbout(void);
   void performNew(void);
   void performOpen(void);
   void performRotation(void);
@@ -138,19 +140,15 @@ protected slots:
   
 
 protected:
-
   // mode
   const ViewerMode   viewerMode;
-  
   // preferences
   QDjViewPrefs  *prefs;
   Options        options;
   Tools          tools;
   Tools          toolsCached;
-
   // dialogs
   QDjViewErrorDialog *errorDialog;
-
   // widgets
   QLabel             *splash;
   QDjVuWidget        *widget;
@@ -165,29 +163,24 @@ protected:
   QComboBox          *zoomCombo;
   QComboBox          *pageCombo;
   QDockWidget        *sideBar;
-
   // document data
   QDjVuContext           &djvuContext;
   QDjVuDocument          *document;
   QString                 documentFileName;
   QUrl                    documentUrl;
   QList<ddjvu_fileinfo_t> documentPages;
-
   // delayed settings
   int     pendingPageNo;
   QString pendingPageName;
   QRect   pendingHilite;
   QString pendingSearch;
-
   // delayed updates
   bool  needToUpdateActions;
-
   // action lists
   QList<QAction*> allActions;
   QActionGroup *zoomActionGroup;
   QActionGroup *modeActionGroup;
   QActionGroup *rotationActionGroup;
-
   // all actions
   QAction *actionNew;
   QAction *actionOpen;
@@ -236,8 +229,7 @@ protected:
   QAction *actionViewFullScreen;
   QAction *actionLayoutContinuous;
   QAction *actionLayoutSideBySide;
-  
-  // fullscreen variables
+  // fullscreen stuff
   Options          fsOptions;
   Qt::WindowStates fsSavedState;
 };

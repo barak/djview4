@@ -19,36 +19,92 @@
 #include <libdjvu/ddjvuapi.h>
 #include <libdjvu/miniexp.h>
 #include <locale.h>
+#include <stdio.h>
 
 #include "qdjvu.h"
 #include "qdjview.h"
+#include "qdjvuwidget.h"
 
+#include <QtGlobal>
 #include <QApplication>
 #include <QRegExp>
+
+
+static void 
+usage()
+{
+  fprintf(stderr,"usage: djview [options] [filename-or-http-url]\n");
+  exit(10);
+}
+
+
+static QtMsgHandler qtDefaultHandler;
+
+void 
+qtMessageHandler(QtMsgType type, const char *msg)
+{
+  switch (type) 
+    {
+    case QtDebugMsg:
+    case QtWarningMsg:
+      break;
+    case QtCriticalMsg:
+    case QtFatalMsg:
+      qtDefaultHandler(type, msg);
+      break;
+    }
+}
 
 int 
 main(int argc, char *argv[])
 {
+  qtDefaultHandler = qInstallMsgHandler(qtMessageHandler);
   QApplication app(argc, argv);  
   QDjVuContext djvuContext(argv[0]);
-
   QDjView *main = new QDjView(djvuContext);
   main->setAttribute(Qt::WA_DeleteOnClose);
-
-  bool okay = true;
+  
+  // Process command line
+  while (argc > 1 && argv[1][0] == '-')
+    {
+      QString arg = QString::fromLocal8Bit(argv[1]).replace(QRegExp("-+"),"");
+      if (arg == "help")
+        usage();
+      else if (arg == "verbose")
+        qInstallMsgHandler(qtDefaultHandler);
+      else if (! main->parseArgument(arg))
+        fprintf(stderr,"djview: unrecognized option '%s'\n", argv[1]);
+      argc --;
+      argv ++;
+    }
+  main->getDjVuWidget()->makeDefaults();
+  if (argc > 2)
+    usage();
+  
+  // Open file
   if (argc > 1)
     {
-      QString arg = argv[1];
-      if (arg.contains(QRegExp("^[a-zA-Z]{3,8}:/")))
-        okay = main->open(QUrl(arg));
+      QString name = QString::fromLocal8Bit(argv[1]);
+      bool okay = true;
+      if (name.contains(QRegExp("^[a-zA-Z]{3,8}:/")))
+        okay = main->open(QUrl(name));
       else
-        okay = main->open(arg);
+        okay = main->open(name);
+      if (! okay)
+        {
+          fprintf(stderr,"djview: cannot open '%s'.\n", argv[1]);
+          exit(10);
+        }
     }
+
+  // process events
   main->show();
-  if (! okay)
-    {
-      main->execErrorDialog(QMessageBox::Critical);
-      return 10;
-    }
   return app.exec();
 }
+
+
+/* -------------------------------------------------------------
+   Local Variables:
+   c++-font-lock-extra-types: ( "\\sw+_t" "[A-Z]\\sw*[a-z]\\sw*" )
+   End:
+   ------------------------------------------------------------- */

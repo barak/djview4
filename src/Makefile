@@ -45,7 +45,9 @@ SOURCES=qdjvu.h qdjvu.cpp\
 PROGRAM=djview
 
 debug: FORCE
-	${MAKE} all QTDEBUG=_debug OPTS=-g
+	${MAKE} all QTDEBUG=_debug OPTS=-g 
+#	${MAKE} all QTDEBUG=_debug OPTS=-g "LIBS=-Llib ${LIBS}"
+#	${MAKE} all OPTS=-g 
 
 all: ${PROGRAM}
 

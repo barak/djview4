@@ -21,9 +21,10 @@
 #include <libdjvu/ddjvuapi.h>
 #include <libdjvu/miniexp.h>
 
-#include <qdjvu.h>
+#include "qdjvu.h"
 
 #include <QDebug>
+
 #include <QCoreApplication>
 #include <QAtomic>
 #include <QFileInfo>
