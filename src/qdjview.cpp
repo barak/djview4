@@ -964,7 +964,8 @@ QDjView::createWhatsThis()
             >> actionLayoutSideBySide;
   
   Help(tr("<html><b>Page information.</b><br/> "
-          "Display the page name followed by the page size in pixels "
+          "Display information about the page located under the cursor: "
+          "the sequential page number, the page size in pixels, "
           "and the page resolution in dots per inch. </html>"))
             >> pageLabel;
   
@@ -980,6 +981,7 @@ QDjView::createWhatsThis()
           "<li>Keys <tt>+</tt>, <tt>-</tt>, <tt>[</tt>, <tt>]</tt> "
           "    to zoom and rotate the document.</li>"
           "<li>Left mouse button for panning and selecting links.</li>"
+          "<li>Right mouse button for displaying the contextual menu.</li>"
           "<li>%1+Left mouse button for selecting text or images.</li>"
           "<li>%2 for popping the magnification lens.</li>"
           "</ul></html>").arg(ms).arg(ml))
@@ -1082,7 +1084,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   pageLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
   pageLabel->setFrameStyle(QFrame::Panel);
   pageLabel->setFrameShadow(QFrame::Sunken);
-  pageLabel->setMinimumWidth(metric.width(" 88 (8888x8888@888dpi) ")); 
+  pageLabel->setMinimumWidth(metric.width(" P88 8888x8888 888dpi ")); 
   statusBar->addPermanentWidget(pageLabel);
   mouseLabel = new QLabel(statusBar);
   mouseLabel->setFont(font);
@@ -1572,8 +1574,11 @@ QDjView::pointerPosition(const Position &pos, const PageInfo &page)
 {
   // setup page label
   QLabel *p = pageLabel;
-  p->setText(tr(" %1 (%2x%3@%4dpi) ").arg(pageName(pos.pageNo)).
-             arg(page.width).arg(page.height).arg(page.dpi) );
+  p->setText(tr(" P%1 %2x%3 %4dpi ")
+             .arg(pos.pageNo+1)
+             .arg(page.width)
+             .arg(page.height)
+             .arg(page.dpi) );
   p->setMinimumWidth(qMax(p->minimumWidth(), p->sizeHint().width()));
   // setup mouse label
   QLabel *m = mouseLabel;
