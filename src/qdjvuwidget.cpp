@@ -1682,8 +1682,12 @@ QDjVuWidget::QDjVuWidget(QWidget *parent)
   setSizePolicy(QSizePolicy::MinimumExpanding, 
                 QSizePolicy::MinimumExpanding);
   // setup viewport
+#if QT_VERSION >= 0x040100
+  viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
+#else
   viewport()->setAttribute(Qt::WA_NoSystemBackground);
   viewport()->setAttribute(Qt::WA_PaintOnScreen);
+#endif
   viewport()->setAttribute(Qt::WA_StaticContents);
   viewport()->setMouseTracking(true);
 }
@@ -1696,8 +1700,12 @@ QDjVuWidget::QDjVuWidget(QDjVuDocument *doc, QWidget *parent)
   setFocusPolicy(Qt::StrongFocus);
   setSizePolicy(QSizePolicy::MinimumExpanding, 
                 QSizePolicy::MinimumExpanding);
+#if QT_VERSION >= 0x040100
+  viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
+#else
   viewport()->setAttribute(Qt::WA_NoSystemBackground);
   viewport()->setAttribute(Qt::WA_PaintOnScreen);
+#endif
   viewport()->setAttribute(Qt::WA_StaticContents);
   viewport()->setMouseTracking(true);
   setDocument(doc);
