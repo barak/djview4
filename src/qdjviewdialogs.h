@@ -26,12 +26,12 @@
 
 // ----------- QDJVIEWDIALOGERROR
 
-class QDjViewDialogError : public QDialog
+class QDjViewErrorDialog : public QDialog
 {
   Q_OBJECT
 public:
-  ~QDjViewDialogError();
-  QDjViewDialogError(QWidget *parent);
+  ~QDjViewErrorDialog();
+  QDjViewErrorDialog(QWidget *parent);
   void prepare(QMessageBox::Icon icon, QString caption);
 public slots:
   void error(QString message, QString filename, int lineno);

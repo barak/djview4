@@ -38,7 +38,7 @@ SOURCES=qdjvu.h qdjvu.cpp\
 	qdjvuwidget.h qdjvuwidget.cpp qdjvuwidget.qrc\
 	qdjviewprefs.h qdjviewprefs.cpp \
 	qdjviewdialogs.h qdjviewdialogs.cpp \
-	qdjviewdialogerror.ui \
+	qdjviewerrordialog.ui \
 	qdjview.h qdjview.cpp qdjview.qrc \
 	djview.cpp
 

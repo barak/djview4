@@ -17,44 +17,50 @@
 // $Id$
 
 #include <string.h>
+#include <errno.h>
 #include <libdjvu/miniexp.h>
 #include <libdjvu/ddjvuapi.h>
 
 #include <QDebug>
 
-#include <QObject>
-#include <QCoreApplication>
-#include <QApplication>
-#include <QClipboard>
-#include <QWhatsThis>
-#include <QFileInfo>
-#include <QTimer>
-#include <QEvent>
-#include <QCloseEvent>
-#include <QMainWindow>
-#include <QDockWidget>
-#include <QMenuBar>
-#include <QStatusBar>
-#include <QDockWidget>
-#include <QStackedLayout>
-#include <QComboBox>
-#include <QLineEdit>
-#include <QRegExpValidator>
-#include <QFrame>
-#include <QLabel>
-#include <QToolBar>
 #include <QAction>
 #include <QActionGroup>
-#include <QIcon>
+#include <QApplication>
+#include <QClipboard>
+#include <QCloseEvent>
+#include <QComboBox>
+#include <QCoreApplication>
+#include <QDir>
+#include <QDockWidget>
+#include <QDockWidget>
+#include <QEvent>
+#include <QFile>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <QFont>
-#include <QMenu>
-#include <QString>
-#include <QRegExp>
+#include <QFrame>
+#include <QIcon>
+#include <QImageWriter>
+#include <QLabel>
+#include <QLineEdit>
 #include <QList>
+#include <QMainWindow>
+#include <QMenu>
+#include <QMenuBar>
 #include <QMessageBox>
-#include <QScrollBar>
+#include <QObject>
 #include <QPalette>
 #include <QRegExp>
+#include <QRegExp>
+#include <QRegExpValidator>
+#include <QScrollBar>
+#include <QStackedLayout>
+#include <QStatusBar>
+#include <QString>
+#include <QTextStream>
+#include <QTimer>
+#include <QToolBar>
+#include <QWhatsThis>
 
 #include "qdjvu.h"
 #include "qdjvuhttp.h"
@@ -205,12 +211,14 @@ QDjView::createActions()
   actionNew = makeAction(tr("&New", "File|New"))
     << QKeySequence(tr("Ctrl+N", "File|New"))
     << QIcon(":/images/icon_new.png")
-    << tr("Create a new DjView window.");
+    << tr("Create a new DjView window.")
+    << Trigger(this, SLOT(performNew()));
 
   actionOpen = makeAction(tr("&Open", "File|Open"))
     << QKeySequence(tr("Ctrl+O", "File|Open"))
     << QIcon(":/images/icon_open.png")
-    << tr("Open a DjVu document.");
+    << tr("Open a DjVu document.")
+    << Trigger(this, SLOT(performOpen()));
 
   actionClose = makeAction(tr("&Close", "File|Close"))
     << QKeySequence(tr("Ctrl+W", "File|Close"))
@@ -984,7 +992,7 @@ QDjView::createWhatsThis()
 
 
 // ----------------------------------------
-// CONSTRUCTOR
+// QDJVIEW
 
 
 
@@ -996,7 +1004,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
     pendingPageNo(-1),
     needToUpdateActions(false)
 {
-  // obtain preferences
+  // Obtain preferences
   prefs = QDjViewPrefs::create();
   tools = prefs->tools;
   options = prefs->forStandalone;
@@ -1008,10 +1016,9 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   toolsCached = 0;
   
   // Create dialogs
-  errorDialog = new QDjViewDialogError(this);
+  errorDialog = new QDjViewErrorDialog(this);
   
   // Create widgets
-
   // - djvu widget
   QWidget *central = new QWidget(this);
   widget = new QDjVuWidget(central);
@@ -1036,7 +1043,6 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
           this, SLOT(pointerClick(const Position&,miniexp_t)));
   connect(widget, SIGNAL(pointerSelect(const QPoint&,const QRect&)),
           this, SLOT(pointerSelect(const QPoint&,const QRect&)));
-
   // - splash screen
   splash = new QLabel(central);
   splash->setFrameShape(QFrame::Box);
@@ -1049,22 +1055,18 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 #if QT_VERSION >= 0x040100
   splash->setAutoFillBackground(true);
 #endif
-
   // - central layout
   layout = new QStackedLayout(central);
   layout->addWidget(widget);
   layout->addWidget(splash);
   layout->setCurrentWidget(splash);
   setCentralWidget(central);
-
   // - context menu
   contextMenu = new QMenu(this);
   enableContextMenu(true);
-
   // - menubar
   menuBar = new QMenuBar(this);
   setMenuBar(menuBar);
-
   // - statusbar
   statusBar = new QStatusBar(this);
   QFont font = QApplication::font();
@@ -1085,26 +1087,22 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   mouseLabel->setMinimumWidth(metric.width(" x=888 y=888 "));
   statusBar->addPermanentWidget(mouseLabel);
   setStatusBar(statusBar);
-
   // - toolbar  
   toolBar = new QToolBar(this);
   toolBar->setObjectName("toolbar");
   toolBar->setAllowedAreas(Qt::TopToolBarArea|Qt::BottomToolBarArea);
   addToolBar(toolBar);
-
   // - sidebar  
   sideBar = new QDockWidget(this);  // for now
   sideBar->setObjectName("sidebar");
   sideBar->setAllowedAreas(Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea);
   addDockWidget(Qt::LeftDockWidgetArea, sideBar);
   
-  // Setup main window
+  // Setup 
   setWindowTitle(tr("DjView"));
   setWindowIcon(QIcon(":/images/djvu.png"));
   if (QApplication::windowIcon().isNull())
     QApplication::setWindowIcon(windowIcon());
-
-  // Setup everything else
   createCombos();
   createActions();
   createMenus();
@@ -1115,9 +1113,16 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 
 
 QDjVuWidget *
-QDjView::djvuWidget()
+QDjView::getDjVuWidget()
 {
   return widget;
+}
+
+
+QDjViewErrorDialog *
+QDjView::getErrorDialog()
+{
+  return errorDialog;
 }
 
 
@@ -1170,9 +1175,10 @@ QDjView::open(QString filename)
       return false;
     }
   open(doc);
-  setWindowTitle(tr("Djview - %1[*]").arg(filename));
+  QFileInfo fileinfo(filename);
+  setWindowTitle(tr("Djview - %1[*]").arg(fileinfo.fileName()));
+  documentUrl = QUrl::fromLocalFile(fileinfo.absoluteFilePath());
   documentFileName = filename;
-  documentUrl = QUrl::fromLocalFile(QFileInfo(filename).absoluteFilePath());
   return true;
 }
 
@@ -1289,6 +1295,10 @@ QDjView::execErrorDialog(QMessageBox::Icon icon,
 }
 
 
+// ----------------------------------------
+// QDJVIEW ARGUMENTS
+
+
 bool 
 QDjView::parseArgument(QString keyEqualValue)
 {
@@ -1342,6 +1352,40 @@ QDjView::pageName(int pageno)
 }
 
 
+QDjView*
+QDjView::copyWindow(void)
+{
+  QDjView *other = new QDjView(djvuContext, STANDALONE);
+  QDjVuWidget *otherWidget = other->widget;
+  // copy window geometry
+  other->setAttribute(Qt::WA_DeleteOnClose);
+  other->setWindowTitle(windowTitle());
+  if (!isHidden() && !isFullScreen() 
+      && !isMaximized() && !isMinimized() )
+    {
+      other->resize( size() );
+      other->toolBar->setVisible(!toolBar->isHidden());
+      other->sideBar->setVisible(!sideBar->isHidden());
+      other->statusBar->setVisible(!statusBar->isHidden());
+    }
+  // copy document
+  if (document)
+    {
+      other->open(document);
+      other->documentFileName = documentFileName;
+      other->documentUrl = documentUrl;
+      // copy view-defining properties 
+      otherWidget->setDisplayMode( widget->displayMode() );
+      otherWidget->setContinuous( widget->continuous() );
+      otherWidget->setSideBySide( widget->sideBySide() );
+      otherWidget->setRotation( widget->rotation() );
+      otherWidget->setZoom( widget->zoom() );
+      otherWidget->setPosition( widget->position() );
+      // not sure about this
+      otherWidget->makeDefaults();
+    }
+  return other;
+}
 
 
 // -----------------------------------
@@ -1544,13 +1588,74 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
   if (action == zoom)
     widget->zoomRect(rect);
   else if (action == copyText)
-    QApplication::clipboard()->setText(text);
+    {
+      QApplication::clipboard()->setText(text);
+    }
   else if (action == saveText)
-    { /* TODO */ }
+    {
+      QString caption = tr("Save text", "dialog caption");
+      QString filters = "All files (*)";
+      QString filename = QFileDialog::getSaveFileName(this, caption, "", filters);
+      if (!filename.isNull())
+        {
+          QFile file(filename);
+          if (file.open(QIODevice::WriteOnly|QIODevice::Truncate))
+            {
+              QTextStream(&file) << text;
+            }
+          else
+            {
+              QString message = file.errorString();
+              if (file.error() == QFile::OpenError && errno > 0)
+                message = strerror(errno);
+              QMessageBox::critical(this, tr("Save text"),
+                                    tr("Cannot write this file.\n%1.").arg(message) );
+            }
+        }
+    }
   else if (action == copyImage)
-    QApplication::clipboard()->setImage(widget->getImageForRect(rect));
+    {
+      QApplication::clipboard()->setImage(widget->getImageForRect(rect));
+    }
   else if (action == saveImage)
-    { /* TODO */ }
+    {
+#if 0
+      QString caption = tr("Save image", "dialog caption");
+      QString filter = "All files (*)";
+      QList<QByteArray> formats = QImageWriter::supportedImageFormats();
+      QFileDialog *fd = new QFileDialog(this);
+      fd->setWindowTitle(caption);
+      fd->setAcceptMode(QFileDialog::AcceptSave);
+      fd->setFileMode(QFileDialog::AnyFile);
+      fd->setFilter("All files (*)");
+      fd->setDirectory(QDir::currentPath());
+      fd->setOrientation(Qt::Vertical);
+      QLabel *ext = new QLabel("extension");
+      ext->setFrameShape(QFrame::Box);
+      fd->setExtension(ext);
+      fd->showExtension(true);
+      QByteArray format = "png";
+      QString filename;
+      if (fd->exec())
+        filename = fd->selectedFiles().first();
+      delete fd;
+      if (! filename.isNull())
+        {
+          errno = 0;
+          QImageWriter writer(filename, format);
+          if (! writer.write(widget->getImageForRect(rect)))
+            {
+              QString message = writer.device()->errorString();
+              if (writer.error() == QImageWriter::UnsupportedFormatError)
+                message = "Unsupported image format";
+              else if (errno > 0)
+                message += strerror(errno);
+              QMessageBox::critical(this, tr("Save image"),
+                                    tr("Cannot write this file.\n%2.").arg(message));
+            }
+        }
+#endif
+    }
   
   // Cancel select mode.
   updateActionsLater();
@@ -1632,6 +1737,35 @@ QDjView::pageComboEdited(void)
   goToPage(pageCombo->lineEdit()->text().trimmed());
   updateActionsLater();
   widget->setFocus();
+}
+
+
+
+
+// -----------------------------------
+// SIGNALS IMPLEMENTING ACTIONS
+
+
+void
+QDjView::performNew(void)
+{
+  if (viewerMode != STANDALONE)
+    return;
+  QDjView *other = copyWindow();
+  other->show();
+}
+
+
+void
+QDjView::performOpen(void)
+{
+  if (viewerMode != STANDALONE)
+    return;
+  QString caption = tr("Open", "dialog caption");
+  QString filters = "DjVu files (*.djvu *.djv)";
+  QString filename = QFileDialog::getOpenFileName(this, caption, "", filters);
+  if (! filename.isNull())
+    open(filename);
 }
 
 

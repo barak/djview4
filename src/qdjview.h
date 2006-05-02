@@ -34,19 +34,21 @@
 #include "qdjviewprefs.h"
 
 
-class QLabel;
 class QAction;
 class QActionGroup;
-class QStackedLayout;
-class QDjViewDialogError;
+class QCloseEvent;
+class QComboBox;
+class QDjViewErrorDialog;
+class QDockWidget;
+class QFileDialog;
+class QLabel;
 class QMenu;
 class QMenuBar;
-class QToolBar;
-class QDockWidget;
+class QStackedLayout;
 class QStatusBar;
-class QComboBox;
-class QCloseEvent;
 class QStringList;
+class QToolBar;
+
 
 class QDjView : public QMainWindow
 {
@@ -65,8 +67,9 @@ class QDjView : public QMainWindow
   void open(QDjVuDocument *document);
   bool open(QString filename);
   bool open(QUrl url);
-
-  QDjVuWidget *djvuWidget();
+  
+  QDjVuWidget *getDjVuWidget();
+  QDjViewErrorDialog *getErrorDialog();
   
   bool parseArgument(QString keyEqualValue);
   bool parseArgument(QString key, QString value);
@@ -103,6 +106,8 @@ protected:
   void applyPreferences(void);
   int pageNum(void);
   QString pageName(int pageno);
+  QDjView *copyWindow(void);
+
   virtual bool eventFilter(QObject *watched, QEvent *event);
   virtual void closeEvent(QCloseEvent *event);
 
@@ -123,10 +128,14 @@ protected slots:
   void zoomComboEdited(void);
   void pageComboActivated(int);
   void pageComboEdited(void);
+  
+  void performNew(void);
+  void performOpen(void);
   void performRotation(void);
   void performZoom(void);
   void performSelect(bool);
   void performViewFullScreen(bool);
+  
 
 protected:
 
@@ -140,7 +149,7 @@ protected:
   Tools          toolsCached;
 
   // dialogs
-  QDjViewDialogError *errorDialog;
+  QDjViewErrorDialog *errorDialog;
 
   // widgets
   QLabel             *splash;

@@ -31,19 +31,19 @@
 
 // ----------- QDJVIEWDIALOGERROR
 
-#include "ui_qdjviewdialogerror.h"
+#include "ui_qdjviewerrordialog.h"
 
-struct QDjViewDialogError::Private {
-  Ui::QDjViewDialogError ui;
+struct QDjViewErrorDialog::Private {
+  Ui::QDjViewErrorDialog ui;
   QList<QString> messages;
 };
 
-QDjViewDialogError::~QDjViewDialogError()
+QDjViewErrorDialog::~QDjViewErrorDialog()
 {
   delete d;
 }
 
-QDjViewDialogError::QDjViewDialogError(QWidget *parent)
+QDjViewErrorDialog::QDjViewErrorDialog(QWidget *parent)
   : QDialog(parent), 
     d(new Private)
 {
@@ -54,7 +54,7 @@ QDjViewDialogError::QDjViewDialogError(QWidget *parent)
 }
 
 void 
-QDjViewDialogError::error(QString message, QString, int)
+QDjViewErrorDialog::error(QString message, QString, int)
 {
   // Remove [1-nnnnn] prefix from djvulibre-3.5
   if (message.startsWith("["))
@@ -79,7 +79,7 @@ QDjViewDialogError::error(QString message, QString, int)
 }
 
 void 
-QDjViewDialogError::prepare(QMessageBox::Icon icon, QString caption)
+QDjViewErrorDialog::prepare(QMessageBox::Icon icon, QString caption)
 {
   if (icon != QMessageBox::NoIcon)
     d->ui.iconLabel->setPixmap(QMessageBox::standardIcon(icon));
@@ -88,7 +88,7 @@ QDjViewDialogError::prepare(QMessageBox::Icon icon, QString caption)
 }
 
 void 
-QDjViewDialogError::okay()
+QDjViewErrorDialog::okay()
 {
   d->messages.clear();
   accept();
