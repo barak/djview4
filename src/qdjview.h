@@ -56,9 +56,9 @@ class QDjView : public QMainWindow
 
  public:
   enum ViewerMode {
-    STANDALONE = 0,
-    EMBEDDED_PLUGIN = 1,
-    FULLPAGE_PLUGIN = 2
+    EMBEDDED_PLUGIN = 0,
+    FULLPAGE_PLUGIN = 1,
+    STANDALONE      = 2
   };
 
   QDjView(QDjVuContext &context, ViewerMode mode=STANDALONE, QWidget *parent=0);
@@ -76,6 +76,7 @@ class QDjView : public QMainWindow
 
   int         pageNum(void);
   QString     pageName(int pageno);
+  QString     makeCaption(QString);
   QDjView    *copyWindow(void);
   bool        saveTextFile(QString text, QString filename=QString());
   bool        saveImageFile(QImage image, QString filename=QString());
@@ -89,6 +90,8 @@ public slots:
   void  addToErrorDialog(QString message);
   void  raiseErrorDialog(QMessageBox::Icon icon, QString caption=QString());
   int   execErrorDialog (QMessageBox::Icon icon, QString caption=QString());
+  void  setPageLabelText(QString);
+  void  setMouseLabelText(QString);
   
 signals:
   void  documentClosed();
@@ -98,19 +101,28 @@ protected:
   typedef QDjVuWidget::PageInfo PageInfo;
   typedef QDjViewPrefs::Options Options;
   typedef QDjViewPrefs::Tools Tools;
+  typedef QDjViewPrefs::Saved Saved;
 
   void  open(QDjVuDocument *document);
+
+  void     fillToolBar(QToolBar *toolBar);
+  void     fillZoomCombo(QComboBox *zoomCombo);
+  void     fillModeCombo(QComboBox *modeCombo);
   QAction *makeAction(QString text);
   QAction *makeAction(QString text, bool value);
-  void createToolBar(void);
-  void createCombos(void);
-  void createActions(void);
-  void createMenus(void);
-  void createWhatsThis(void);
-  void enableContextMenu(bool);
-  void enableScrollBars(bool);
-  void applyPreferences(void);
-  QString makeCaption(QString);
+  void     createActions(void);
+  void     createMenus(void);
+  void     createWhatsThis(void);
+
+  Saved   *getSavedPrefs(void);
+  void     enableContextMenu(bool);
+  void     enableScrollBars(bool);
+  void     applyOptions(void);
+  void     updateOptions(void);
+  void     applySaved(Saved *saved);
+  void     updateSaved(Saved *saved);
+  void     applyPreferences(void);
+
   virtual bool eventFilter(QObject *watched, QEvent *event);
   virtual void closeEvent(QCloseEvent *event);
 
@@ -230,8 +242,9 @@ protected:
   QAction *actionLayoutContinuous;
   QAction *actionLayoutSideBySide;
   // fullscreen stuff
-  Options          fsOptions;
-  Qt::WindowStates fsSavedState;
+  Saved fsSavedNormal;
+  Saved fsSavedFullScreen;
+  Qt::WindowStates fsWindowState;
 };
 
 

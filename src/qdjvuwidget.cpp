@@ -1814,12 +1814,11 @@ QDjVuWidget::setDocument(QDjVuDocument *d)
       // update
       priv->visibleRect.setRect(0,0,0,0);
       priv->currentPos = Position();
-      priv->currentPoint = QPoint(0,0);
+      priv->currentPoint = QPoint(priv->borderSize,priv->borderSize);
       priv->cursorPos = Position();
       priv->cursorPoint = QPoint(0,0);
       priv->layoutChange = 0;
       priv->changeLayout(CHANGE_PAGES|UPDATE_ALL);
-      setPage(0);
     }
 }
 

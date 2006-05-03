@@ -45,12 +45,13 @@ qtMessageHandler(QtMsgType type, const char *msg)
 {
   switch (type) 
     {
+    case QtFatalMsg:
+      fprintf(stderr,"Fatal error: %s\n", msg);
+      abort();
+    case QtCriticalMsg:
+      fprintf(stderr,"Critical error: %s\n", msg);
     case QtDebugMsg:
     case QtWarningMsg:
-      break;
-    case QtCriticalMsg:
-    case QtFatalMsg:
-      qtDefaultHandler(type, msg);
       break;
     }
 }
@@ -58,7 +59,7 @@ qtMessageHandler(QtMsgType type, const char *msg)
 int 
 main(int argc, char *argv[])
 {
-  qtDefaultHandler = qInstallMsgHandler(qtMessageHandler);
+  // qtDefaultHandler = qInstallMsgHandler(qtMessageHandler);
   QApplication app(argc, argv);  
   QDjVuContext djvuContext(argv[0]);
   QDjView *main = new QDjView(djvuContext);

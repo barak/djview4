@@ -22,10 +22,18 @@
 #include <Qt>
 #include <QObject>
 #include <QByteArray>
+#include <QSettings>
 #include <QFlags>
 
 #include "qdjvuwidget.h"
 
+
+#ifndef DJVIEW_ORG
+# define DJVIEW_ORG "DjVuLibre"
+#endif
+#ifndef DJVIEW_APP
+# define DJVIEW_APP "DjView"
+#endif
 #ifndef DJVIEW_VERSION
 # define DJVIEW_VERSION 0x40000
 #endif
@@ -34,30 +42,30 @@
 class QDjViewPrefs : public QObject
 {
   Q_OBJECT
+  Q_ENUMS(Option Tool)
 
 public:
 
   enum Option {
-    SHOW_MENUBAR        = 0x0001,
-    SHOW_TOOLBAR        = 0x0002,
-    SHOW_SIDEBAR        = 0x0004,
-    SHOW_STATUSBAR      = 0x0010,
-    SHOW_SCROLLBARS     = 0x0020,
-    SHOW_FRAME          = 0x0040,
-    LAYOUT_CONTINUOUS   = 0x0100,
-    LAYOUT_SIDEBYSIDE   = 0x0200,
-    HANDLE_MOUSE        = 0x1000,
-    HANDLE_KEYBOARD     = 0x2000,
-    HANDLE_LINKS        = 0x4000,
-    HANDLE_CONTEXTMENU  = 0x8000,
-    DEFAULT_OPTIONS = 0xF077,
+    SHOW_MENUBAR        = 0x000001,
+    SHOW_TOOLBAR        = 0x000002,
+    SHOW_SIDEBAR        = 0x000004,
+    SHOW_STATUSBAR      = 0x000010,
+    SHOW_SCROLLBARS     = 0x000020,
+    SHOW_FRAME          = 0x000040,
+    SHOW_MASK           = 0x000FFF, 
+    LAYOUT_CONTINUOUS   = 0x001000,
+    LAYOUT_SIDEBYSIDE   = 0x002000,
+    LAYOUT_MASK         = 0x00F000, 
+    HANDLE_MOUSE        = 0x100000,
+    HANDLE_KEYBOARD     = 0x200000,
+    HANDLE_LINKS        = 0x400000,
+    HANDLE_CONTEXTMENU  = 0x800000,
   };
 
-  Q_DECLARE_FLAGS(Options, Option)
-
   enum Tool {
-    TOOLBAR_TOP       = 0x80000000,
-    TOOLBAR_BOTTOM    = 0x40000000,
+    TOOLBAR_TOP    = 0x80000000,
+    TOOLBAR_BOTTOM = 0x40000000,
     TOOL_MODECOMBO    = 0x00001,
     TOOL_MODEBUTTONS  = 0x00002,
     TOOL_ZOOMCOMBO    = 0x00004,
@@ -75,42 +83,64 @@ public:
     TOOL_LAYOUT       = 0x04000,
     TOOL_ROTATE       = 0x08000,
     TOOL_WHATSTHIS    = 0x10000,
-    DEFAULT_TOOLS = 0xC0016E7C
   };
-  
+
+  Q_DECLARE_FLAGS(Options, Option)
   Q_DECLARE_FLAGS(Tools, Tool)
-    
+  
+  static const Options defaultOptions;
+  static const Tools   defaultTools;
   static QString versionString();
-  static QString modifiersToString(Qt::KeyboardModifiers);
-  static Qt::KeyboardModifiers stringToModifiers(QString);
+  QString modifiersToString(Qt::KeyboardModifiers);
+  Qt::KeyboardModifiers stringToModifiers(QString);
+  QString optionsToString(Options);
+  Options stringToOptions(QString);
+  QString toolsToString(Tools);
+  Tools   stringToTools(QString);
 
-  Options forStandalone;
-  Options forFullScreen;
-  Options forEmbeddedPlugin;
-  Options forFullPagePlugin;
-  Tools   tools;
 
+  struct Saved {
+    Saved();
+    bool       remember;
+    Options    options;
+    int        zoom;
+    QByteArray state;
+  };
+
+  // Preferences remembered between program invocations.
+  Saved      forEmbeddedPlugin;
+  Saved      forFullPagePlugin;
+  Saved      forStandalone;
+  Saved      forFullScreen;
   QSize      windowSize;
-  QByteArray windowState;
 
+  // Preferences saved via the preference dialog.
+  Tools      tools;
+  double     gamma;
+  uint       cacheSize;
+  uint       pixelCacheSize;
+  int        lensSize;
+  int        lensPower;
+  double     printerGamma;  
   Qt::KeyboardModifiers modifiersForLens;
   Qt::KeyboardModifiers modifiersForSelect;
   Qt::KeyboardModifiers modifiersForLinks;
-  int        zoom;
-  double     gamma;
-  double     printerGamma;
-  long       cacheSize;
-  long       pixelCacheSize;
-  int        lensSize;
-  int        lensPower;
+  
+  // Preferences saved via the print dialog.
+  // ...TODO... 
 
+public:
   static QDjViewPrefs *create();
   void load();
-  void save();
-  void saveWindow();
+  void save(bool broadcast=true);
+
+signals:
+  void changed();
 
 private:
   QDjViewPrefs(void);
+  void loadGroup(QSettings &s, QString name, Saved &saved);
+  void saveGroup(QSettings &s, QString name, Saved &saved);
 };
 
 
@@ -122,6 +152,6 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QDjViewPrefs::Tools)
 
 /* -------------------------------------------------------------
    Local Variables:
-   c++-font-lock-extra-types: ( "\\sw+_t" "[A-Z]\\sw*[a-z]\\sw*" )
+   c++-font-lock-extra-types: ( "\\sw+_t" "[A-Z]\\sw*[a-z]\\sw*" "uint" )
    End:
    ------------------------------------------------------------- */

@@ -72,29 +72,25 @@
 
 
 
+// ----------------------------------------
+// USEFUL CONSTANTS
+
+static const Qt::WindowStates 
+unusualWindowStates = (Qt::WindowMinimized |
+                       Qt::WindowMaximized |
+                       Qt::WindowFullScreen );
+
 
 
 
 // ----------------------------------------
-// COMBO BOXES
+// FILL USER INTERFACE COMPONENTS
 
 
 void
-QDjView::createCombos(void)
+QDjView::fillZoomCombo(QComboBox *zoomCombo)
 {
-  // - mode combo box
-  modeCombo = new QComboBox(toolBar);
-  modeCombo->addItem(tr("Color","modeCombo"), QDjVuWidget::DISPLAY_COLOR);
-  modeCombo->addItem(tr("Stencil","modeCombo"), QDjVuWidget::DISPLAY_STENCIL);
-  modeCombo->addItem(tr("Foreground","modeCombo"), QDjVuWidget::DISPLAY_FG);
-  modeCombo->addItem(tr("Background","modeCombo"), QDjVuWidget::DISPLAY_BG );
-  connect(modeCombo, SIGNAL(activated(int)),
-          this, SLOT(modeComboActivated(int)) );
-  connect(modeCombo, SIGNAL(activated(int)),
-          this, SLOT(updateActionsLater()) );
-
-  // - zoom combo box
-  zoomCombo = new QComboBox(toolBar);
+  zoomCombo->clear();
   zoomCombo->addItem(tr("FitWidth","zoomCombo"), QDjVuWidget::ZOOM_FITWIDTH);
   zoomCombo->addItem(tr("FitPage","zoomCombo"), QDjVuWidget::ZOOM_FITPAGE);
   zoomCombo->addItem(tr("Stretch","zoomCombo"), QDjVuWidget::ZOOM_STRETCH);
@@ -105,25 +101,122 @@ QDjView::createCombos(void)
   zoomCombo->addItem(tr("100%","zoomCombo"), 100);
   zoomCombo->addItem(tr("75%","zoomCombo"), 75);
   zoomCombo->addItem(tr("50%","zoomCombo"), 50);
-  connect(zoomCombo, SIGNAL(activated(int)),
-          this, SLOT(zoomComboActivated(int)) );
-  zoomCombo->setEditable(true);
-  zoomCombo->setInsertPolicy(QComboBox::NoInsert);
-  connect(zoomCombo->lineEdit(), SIGNAL(editingFinished()),
-          this, SLOT(zoomComboEdited()) );
-
-  // - page combo box
-  pageCombo = new QComboBox(toolBar);
-  pageCombo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-  pageCombo->setMinimumWidth(80);
-  connect(pageCombo, SIGNAL(activated(int)),
-          this, SLOT(pageComboActivated(int)));
-  pageCombo->setEditable(true);
-  pageCombo->setInsertPolicy(QComboBox::NoInsert);
-  connect(pageCombo->lineEdit(), SIGNAL(editingFinished()),
-          this, SLOT(pageComboEdited()) );
-  
 }
+
+
+void
+QDjView::fillModeCombo(QComboBox *modeCombo)
+{
+  modeCombo->clear();
+  modeCombo->addItem(tr("Color","modeCombo"), QDjVuWidget::DISPLAY_COLOR);
+  modeCombo->addItem(tr("Stencil","modeCombo"), QDjVuWidget::DISPLAY_STENCIL);
+  modeCombo->addItem(tr("Foreground","modeCombo"), QDjVuWidget::DISPLAY_FG);
+  modeCombo->addItem(tr("Background","modeCombo"), QDjVuWidget::DISPLAY_BG );
+}  
+
+
+void
+QDjView::fillToolBar(QToolBar *toolBar)
+{
+  // Hide toolbar
+  bool wasHidden = toolBar->isHidden();
+  toolBar->hide();
+  toolBar->clear();
+  // Hide combo boxes
+  modeCombo->hide();
+  pageCombo->hide();
+  zoomCombo->hide();
+  // Use options to compose toolbar
+  if (viewerMode == STANDALONE) 
+    {
+      if (tools & QDjViewPrefs::TOOL_NEW)
+        toolBar->addAction(actionNew);
+      if (tools & QDjViewPrefs::TOOL_OPEN)
+        toolBar->addAction(actionOpen);
+    }
+  if (tools & QDjViewPrefs::TOOL_SAVE)
+    {
+      toolBar->addAction(actionSave);
+    }
+  if (tools & QDjViewPrefs::TOOL_PRINT)
+    {
+      toolBar->addAction(actionPrint);
+    }
+  if (tools & QDjViewPrefs::TOOL_SEARCH)
+    {
+      toolBar->addAction(actionSearch);
+    }
+  if (tools & QDjViewPrefs::TOOL_SELECT)
+    {
+      toolBar->addAction(actionSelect);
+    }
+  if (tools & QDjViewPrefs::TOOL_LAYOUT)
+    {
+      toolBar->addAction(actionLayoutContinuous);
+      toolBar->addAction(actionLayoutSideBySide);
+    }
+  if ((tools & QDjViewPrefs::TOOL_MODECOMBO) ||
+      (tools & QDjViewPrefs::TOOL_MODEBUTTONS) )
+    {
+      modeCombo->show();
+      toolBar->addWidget(modeCombo);
+    }
+  if (tools & QDjViewPrefs::TOOL_ZOOMCOMBO)
+    {
+      zoomCombo->show();
+      toolBar->addWidget(zoomCombo);
+    }
+  if (tools & QDjViewPrefs::TOOL_ZOOMBUTTONS)
+    {
+      toolBar->addAction(actionZoomIn);
+      toolBar->addAction(actionZoomOut);
+    }
+  if (tools & QDjViewPrefs::TOOL_ROTATE)
+    {
+      toolBar->addAction(actionRotateRight);
+      toolBar->addAction(actionRotateLeft);
+    }
+  if (tools & QDjViewPrefs::TOOL_PAGECOMBO)
+    {
+      pageCombo->show();
+      toolBar->addWidget(pageCombo);
+    }
+  if (tools & QDjViewPrefs::TOOL_FIRSTLAST)
+    {
+      toolBar->addAction(actionNavFirst);
+    }
+  if (tools & QDjViewPrefs::TOOL_PREVNEXT)
+    {
+      toolBar->addAction(actionNavPrev);
+      toolBar->addAction(actionNavNext);
+    }
+  if (tools & QDjViewPrefs::TOOL_FIRSTLAST)
+    {
+      toolBar->addAction(actionNavLast);
+    }
+  if (tools & QDjViewPrefs::TOOL_BACKFORW)
+    {
+      toolBar->addAction(actionBack);
+      toolBar->addAction(actionForw);
+    }
+  if (tools & QDjViewPrefs::TOOL_WHATSTHIS)
+    {
+      toolBar->addAction(actionWhatsThis);
+    }
+  // Allowed areas
+  Qt::ToolBarAreas areas = 0;
+  if (tools & QDjViewPrefs::TOOLBAR_TOP)
+    areas |= Qt::TopToolBarArea;
+  if (tools & QDjViewPrefs::TOOLBAR_BOTTOM)
+    areas |= Qt::BottomToolBarArea;
+  if (areas)
+    toolBar->setAllowedAreas(areas);
+  // Done
+  toolBar->setVisible(!wasHidden);
+  toolsCached = tools;
+}
+
+
 
 
 // ----------------------------------------
@@ -231,7 +324,7 @@ QDjView::createActions()
     << QKeySequence(tr("Ctrl+Q", "File|Quit"))
     << QIcon(":/images/icon_quit.png")
     << tr("Close all windows and quit the application.")
-    << Trigger(QCoreApplication::instance(), SLOT(quit()));
+    << Trigger(QCoreApplication::instance(), SLOT(closeAllWindows()));
 
   actionSave = makeAction(tr("&Save as...", "File|Save"))
     << QKeySequence(tr("Ctrl+S", "File|Save"))
@@ -315,7 +408,7 @@ QDjView::createActions()
     << *zoomActionGroup;
 
   actionZoom50 = makeAction(tr("&50%", "Zoom|50%"), false)
-    << tr("Magnify r0%")
+    << tr("Magnify 0%")
     << QVariant(50)
     << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
@@ -479,110 +572,6 @@ QDjView::createActions()
 
 
 void
-QDjView::updateActions()
-{
-  // Rebuild toolbar if necessary
-  if (tools != toolsCached)
-    createToolBar();
-
-  // Enable all actions
-  foreach(QAction *action, allActions)
-    action->setEnabled(true);
-
-  // Some actions are not yet implemented
-  actionExport->setVisible(false);
-  
-  // Some actions are only available in standalone mode
-  actionNew->setVisible(viewerMode == STANDALONE);
-  actionOpen->setVisible(viewerMode == STANDALONE);
-  actionClose->setVisible(viewerMode == STANDALONE);
-  actionQuit->setVisible(viewerMode == STANDALONE);
-  actionViewFullScreen->setVisible(viewerMode == STANDALONE);
-  
-  // - zoom combo and actions
-  int zoom = widget->zoom();
-  actionZoomIn->setEnabled(zoom < QDjVuWidget::ZOOM_MAX);
-  actionZoomOut->setEnabled(zoom < 0 || zoom > QDjVuWidget::ZOOM_MIN);
-  actionZoomFitPage->setChecked(zoom == QDjVuWidget::ZOOM_FITPAGE);
-  actionZoomFitWidth->setChecked(zoom == QDjVuWidget::ZOOM_FITWIDTH);
-  actionZoomOneToOne->setChecked(zoom == QDjVuWidget::ZOOM_ONE2ONE);
-  actionZoom300->setChecked(zoom == 300);
-  actionZoom200->setChecked(zoom == 200);
-  actionZoom150->setChecked(zoom == 150);
-  actionZoom100->setChecked(zoom == 100);
-  actionZoom75->setChecked(zoom == 75);
-  actionZoom50->setChecked(zoom == 50);
-  zoomCombo->setEnabled(!!document);
-  int zoomIndex = zoomCombo->findData(QVariant(zoom));
-  zoomCombo->clearEditText();
-  zoomCombo->setCurrentIndex(zoomIndex);
-  if (zoomIndex < 0 &&
-      zoom >= QDjVuWidget::ZOOM_MIN && 
-      zoom <= QDjVuWidget::ZOOM_MAX)
-    zoomCombo->setEditText(QString("%1%").arg(zoom));
-  else if (zoomIndex >= 0)
-    zoomCombo->setEditText(zoomCombo->itemText(zoomIndex));
-
-  // - mode combo and actions
-  QDjVuWidget::DisplayMode mode = widget->displayMode();
-  actionDisplayColor->setChecked(mode == QDjVuWidget::DISPLAY_COLOR);
-  actionDisplayBW->setChecked(mode == QDjVuWidget::DISPLAY_STENCIL);
-  actionDisplayBackground->setChecked(mode == QDjVuWidget::DISPLAY_BG);
-  actionDisplayForeground->setChecked(mode == QDjVuWidget::DISPLAY_FG);
-  modeCombo->setCurrentIndex(modeCombo->findData(QVariant(mode)));
-  modeCombo->setEnabled(!!document);
-
-  // - rotations
-  int rotation = widget->rotation();
-  actionRotate0->setChecked(rotation == 0);
-  actionRotate90->setChecked(rotation == 1);
-  actionRotate180->setChecked(rotation == 2);
-  actionRotate270->setChecked(rotation == 3);
-  
-  // - page combo and actions
-  int pagenum = documentPages.size();
-  int pageno = widget->page();
-  pageCombo->clearEditText();
-  pageCombo->setCurrentIndex(pageno);
-  if (pageno >= 0 && pagenum > 0)
-    pageCombo->setEditText(pageName(pageno));
-  pageCombo->setEnabled(pagenum > 0);
-  actionNavFirst->setEnabled(pagenum>0);
-  actionNavPrev->setEnabled(pagenum>0 && pageno>0);
-  actionNavNext->setEnabled(pagenum>0 && pageno<pagenum-1);
-  actionNavLast->setEnabled(pagenum>0);
-
-  // - misc actions
-  actionLayoutContinuous->setChecked(widget->continuous());  
-  actionLayoutSideBySide->setChecked(widget->sideBySide());
-
-  // Disable almost everything when document==0
-  if (! document)
-    {
-      foreach(QAction *action, allActions)
-        if (action != actionNew &&
-            action != actionOpen &&
-            action != actionClose &&
-            action != actionQuit &&
-            action != actionViewToolBar &&
-            action != actionViewStatusBar &&
-            action != actionViewSideBar &&
-            action != actionViewFullScreen &&
-            action != actionWhatsThis &&
-            action != actionAbout )
-          action->setEnabled(false);
-    }
-  
-  // Finished
-  needToUpdateActions = false;
-}
-
-
-
-// ----------------------------------------
-// MENUS
-
-void
 QDjView::createMenus()
 {
   // Layout main menu
@@ -715,181 +704,103 @@ QDjView::createMenus()
 }
 
 
-
-// ----------------------------------------
-// APPLY PREFERENCES
-
-
 void
-QDjView::createToolBar(void)
+QDjView::updateActions()
 {
-  // Hide toolbar
-  bool wasHidden = toolBar->isHidden();
-  toolBar->hide();
-  toolBar->clear();
-  // Hide combo boxes
-  modeCombo->hide();
-  pageCombo->hide();
-  zoomCombo->hide();
-  // Use options to compose toolbar
-  if (viewerMode == STANDALONE) 
-    {
-      if (tools & QDjViewPrefs::TOOL_NEW)
-        toolBar->addAction(actionNew);
-      if (tools & QDjViewPrefs::TOOL_OPEN)
-        toolBar->addAction(actionOpen);
-    }
-  if (tools & QDjViewPrefs::TOOL_SAVE)
-    {
-      toolBar->addAction(actionSave);
-    }
-  if (tools & QDjViewPrefs::TOOL_PRINT)
-    {
-      toolBar->addAction(actionPrint);
-    }
-  if (tools & QDjViewPrefs::TOOL_SEARCH)
-    {
-      toolBar->addAction(actionSearch);
-    }
-  if (tools & QDjViewPrefs::TOOL_SELECT)
-    {
-      toolBar->addAction(actionSelect);
-    }
-  if (tools & QDjViewPrefs::TOOL_LAYOUT)
-    {
-      toolBar->addAction(actionLayoutContinuous);
-      toolBar->addAction(actionLayoutSideBySide);
-    }
-  if ((tools & QDjViewPrefs::TOOL_MODECOMBO) ||
-      (tools & QDjViewPrefs::TOOL_MODEBUTTONS) )
-    {
-      modeCombo->show();
-      toolBar->addWidget(modeCombo);
-    }
-  if (tools & QDjViewPrefs::TOOL_ZOOMCOMBO)
-    {
-      zoomCombo->show();
-      toolBar->addWidget(zoomCombo);
-    }
-  if (tools & QDjViewPrefs::TOOL_ZOOMBUTTONS)
-    {
-      toolBar->addAction(actionZoomIn);
-      toolBar->addAction(actionZoomOut);
-    }
-  if (tools & QDjViewPrefs::TOOL_ROTATE)
-    {
-      toolBar->addAction(actionRotateRight);
-      toolBar->addAction(actionRotateLeft);
-    }
-  if (tools & QDjViewPrefs::TOOL_PAGECOMBO)
-    {
-      pageCombo->show();
-      toolBar->addWidget(pageCombo);
-    }
-  if (tools & QDjViewPrefs::TOOL_FIRSTLAST)
-    {
-      toolBar->addAction(actionNavFirst);
-    }
-  if (tools & QDjViewPrefs::TOOL_PREVNEXT)
-    {
-      toolBar->addAction(actionNavPrev);
-      toolBar->addAction(actionNavNext);
-    }
-  if (tools & QDjViewPrefs::TOOL_FIRSTLAST)
-    {
-      toolBar->addAction(actionNavLast);
-    }
-  if (tools & QDjViewPrefs::TOOL_BACKFORW)
-    {
-      toolBar->addAction(actionBack);
-      toolBar->addAction(actionForw);
-    }
-  if (tools & QDjViewPrefs::TOOL_WHATSTHIS)
-    {
-      toolBar->addAction(actionWhatsThis);
-    }
-  // Allowed areas
-  Qt::ToolBarAreas areas = 0;
-  if (tools & QDjViewPrefs::TOOLBAR_TOP)
-    areas |= Qt::TopToolBarArea;
-  if (tools & QDjViewPrefs::TOOLBAR_BOTTOM)
-    areas |= Qt::BottomToolBarArea;
-  if (areas)
-    toolBar->setAllowedAreas(areas);
-  // Done
-  toolBar->setVisible(!wasHidden);
-  toolsCached = tools;
-}
+  // Rebuild toolbar if necessary
+  if (tools != toolsCached)
+    fillToolBar(toolBar);
+  
+  // Enable all actions
+  foreach(QAction *action, allActions)
+    action->setEnabled(true);
 
+  // Some actions are not yet implemented
+  actionExport->setVisible(false);
+  
+  // Some actions are only available in standalone mode
+  actionNew->setVisible(viewerMode == STANDALONE);
+  actionOpen->setVisible(viewerMode == STANDALONE);
+  actionClose->setVisible(viewerMode == STANDALONE);
+  actionQuit->setVisible(viewerMode == STANDALONE);
+  actionViewFullScreen->setVisible(viewerMode == STANDALONE);
+  
+  // - zoom combo and actions
+  int zoom = widget->zoom();
+  actionZoomIn->setEnabled(zoom < QDjVuWidget::ZOOM_MAX);
+  actionZoomOut->setEnabled(zoom < 0 || zoom > QDjVuWidget::ZOOM_MIN);
+  actionZoomFitPage->setChecked(zoom == QDjVuWidget::ZOOM_FITPAGE);
+  actionZoomFitWidth->setChecked(zoom == QDjVuWidget::ZOOM_FITWIDTH);
+  actionZoomOneToOne->setChecked(zoom == QDjVuWidget::ZOOM_ONE2ONE);
+  actionZoom300->setChecked(zoom == 300);
+  actionZoom200->setChecked(zoom == 200);
+  actionZoom150->setChecked(zoom == 150);
+  actionZoom100->setChecked(zoom == 100);
+  actionZoom75->setChecked(zoom == 75);
+  actionZoom50->setChecked(zoom == 50);
+  zoomCombo->setEnabled(!!document);
+  int zoomIndex = zoomCombo->findData(QVariant(zoom));
+  zoomCombo->clearEditText();
+  zoomCombo->setCurrentIndex(zoomIndex);
+  if (zoomIndex < 0 &&
+      zoom >= QDjVuWidget::ZOOM_MIN && 
+      zoom <= QDjVuWidget::ZOOM_MAX)
+    zoomCombo->setEditText(QString("%1%").arg(zoom));
+  else if (zoomIndex >= 0)
+    zoomCombo->setEditText(zoomCombo->itemText(zoomIndex));
 
-void 
-QDjView::enableContextMenu(bool enable)
-{
-  QMenu *oldContextMenu = widget->contextMenu();
-  if (!enable || oldContextMenu != contextMenu)
+  // - mode combo and actions
+  QDjVuWidget::DisplayMode mode = widget->displayMode();
+  actionDisplayColor->setChecked(mode == QDjVuWidget::DISPLAY_COLOR);
+  actionDisplayBW->setChecked(mode == QDjVuWidget::DISPLAY_STENCIL);
+  actionDisplayBackground->setChecked(mode == QDjVuWidget::DISPLAY_BG);
+  actionDisplayForeground->setChecked(mode == QDjVuWidget::DISPLAY_FG);
+  modeCombo->setCurrentIndex(modeCombo->findData(QVariant(mode)));
+  modeCombo->setEnabled(!!document);
+
+  // - rotations
+  int rotation = widget->rotation();
+  actionRotate0->setChecked(rotation == 0);
+  actionRotate90->setChecked(rotation == 1);
+  actionRotate180->setChecked(rotation == 2);
+  actionRotate270->setChecked(rotation == 3);
+  
+  // - page combo and actions
+  int pagenum = documentPages.size();
+  int pageno = widget->page();
+  pageCombo->clearEditText();
+  pageCombo->setCurrentIndex(pageno);
+  if (pageno >= 0 && pagenum > 0)
+    pageCombo->setEditText(pageName(pageno));
+  pageCombo->setEnabled(pagenum > 0);
+  actionNavFirst->setEnabled(pagenum>0);
+  actionNavPrev->setEnabled(pagenum>0 && pageno>0);
+  actionNavNext->setEnabled(pagenum>0 && pageno<pagenum-1);
+  actionNavLast->setEnabled(pagenum>0);
+
+  // - layout actions
+  actionLayoutContinuous->setChecked(widget->continuous());  
+  actionLayoutSideBySide->setChecked(widget->sideBySide());
+
+  // Disable almost everything when document==0
+  if (! document)
     {
-      if (oldContextMenu)
-        widget->removeAction(oldContextMenu->menuAction());
-      widget->setContextMenu(0);
+      foreach(QAction *action, allActions)
+        if (action != actionNew &&
+            action != actionOpen &&
+            action != actionClose &&
+            action != actionQuit &&
+            action != actionViewToolBar &&
+            action != actionViewStatusBar &&
+            action != actionViewSideBar &&
+            action != actionViewFullScreen &&
+            action != actionWhatsThis &&
+            action != actionAbout )
+          action->setEnabled(false);
     }
-  if (contextMenu && enable && oldContextMenu != contextMenu)
-    {
-      if (contextMenu)
-        widget->addAction(contextMenu->menuAction());
-      widget->setContextMenu(contextMenu);
-    }
-}
-
-
-void 
-QDjView::enableScrollBars(bool enable)
-{
-  Qt::ScrollBarPolicy policy = Qt::ScrollBarAlwaysOff;
-  if (enable) 
-    policy = Qt::ScrollBarAsNeeded;
-  widget->setHorizontalScrollBarPolicy(policy);
-  widget->setVerticalScrollBarPolicy(policy);
-}
-
-
-void
-QDjView::applyPreferences(void)
-{
-  // Window state
-  if (prefs->windowState.size() > 0)
-    restoreState(prefs->windowState);
-  if (prefs->windowSize.isValid())
-    resize(prefs->windowSize);
-
-  // Cache size
-  djvuContext.setCacheSize(prefs->cacheSize);
-
-  // Toolbar visibility
-  menuBar->setVisible(options & QDjViewPrefs::SHOW_MENUBAR);
-  toolBar->setVisible(options & QDjViewPrefs::SHOW_TOOLBAR);
-  sideBar->setVisible(options & QDjViewPrefs::SHOW_SIDEBAR);
-  statusBar->setVisible(options & QDjViewPrefs::SHOW_STATUSBAR);
-
-  // Other QDjVuWidget preferences
-  widget->setZoom(prefs->zoom);
-  widget->setModifiersForLens(prefs->modifiersForLens);
-  widget->setModifiersForSelect(prefs->modifiersForSelect);
-  widget->setModifiersForLinks(prefs->modifiersForLinks);
-  widget->setGamma(prefs->gamma);
-  widget->setPixelCacheSize(prefs->pixelCacheSize);
-  widget->setLensSize(prefs->lensSize);
-  widget->setLensPower(prefs->lensPower);
-  widget->setDisplayFrame(options & QDjViewPrefs::SHOW_FRAME);
-  widget->setContinuous(options & QDjViewPrefs::LAYOUT_CONTINUOUS);
-  widget->setSideBySide(options & QDjViewPrefs::LAYOUT_SIDEBYSIDE);
-  widget->enableKeyboard(options & QDjViewPrefs::HANDLE_KEYBOARD);
-  widget->enableMouse(options & QDjViewPrefs::HANDLE_MOUSE);
-  widget->enableHyperlink(options & QDjViewPrefs::HANDLE_LINKS);
-  enableScrollBars(options & QDjViewPrefs::SHOW_SCROLLBARS);
-  enableContextMenu(options & QDjViewPrefs::HANDLE_CONTEXTMENU);
-
-  // Make everything default actions
-  widget->makeDefaults();
+  
+  // Finished
+  needToUpdateActions = false;
 }
 
 
@@ -910,8 +821,8 @@ void
 QDjView::createWhatsThis()
 {
   QString ms, ml;
-  ms = QDjViewPrefs::modifiersToString(prefs->modifiersForSelect);
-  ml = QDjViewPrefs::modifiersToString(prefs->modifiersForLens);
+  ms = prefs->modifiersToString(prefs->modifiersForSelect);
+  ml = prefs->modifiersToString(prefs->modifiersForLens);
 
   Help(tr("<html><b>Selecting a rectangle...</b><br/> "
           "Once a rectanglular area is selected, a popup menu "
@@ -993,7 +904,163 @@ QDjView::createWhatsThis()
           "</html>"))
             >> splash;
     
-  // TODO...
+}
+
+
+
+// ----------------------------------------
+// APPLY PREFERENCES
+
+
+
+QDjViewPrefs::Saved *
+QDjView::getSavedPrefs(void)
+{
+  if (viewerMode==EMBEDDED_PLUGIN)
+    return &prefs->forEmbeddedPlugin;
+  if (viewerMode==FULLPAGE_PLUGIN)
+    return &prefs->forFullPagePlugin;
+  if (actionViewFullScreen->isChecked())
+    return &prefs->forFullScreen;
+  else
+    return &prefs->forStandalone;
+}
+
+
+void 
+QDjView::enableContextMenu(bool enable)
+{
+  QMenu *oldContextMenu = widget->contextMenu();
+  if (!enable || oldContextMenu != contextMenu)
+    {
+      if (oldContextMenu)
+        widget->removeAction(oldContextMenu->menuAction());
+      widget->setContextMenu(0);
+    }
+  if (enable && oldContextMenu != contextMenu)
+    {
+      if (contextMenu)
+        widget->addAction(contextMenu->menuAction());
+      widget->setContextMenu(contextMenu);
+    }
+}
+
+
+void 
+QDjView::enableScrollBars(bool enable)
+{
+  Qt::ScrollBarPolicy policy = Qt::ScrollBarAlwaysOff;
+  if (enable) 
+    policy = Qt::ScrollBarAsNeeded;
+  widget->setHorizontalScrollBarPolicy(policy);
+  widget->setVerticalScrollBarPolicy(policy);
+}
+
+
+void 
+QDjView::applyOptions(void)
+{
+  menuBar->setVisible(options & QDjViewPrefs::SHOW_MENUBAR);
+  toolBar->setVisible(options & QDjViewPrefs::SHOW_TOOLBAR);
+  sideBar->setVisible(options & QDjViewPrefs::SHOW_SIDEBAR);
+  statusBar->setVisible(options & QDjViewPrefs::SHOW_STATUSBAR);
+  enableScrollBars(options & QDjViewPrefs::SHOW_SCROLLBARS);
+  widget->setDisplayFrame(options & QDjViewPrefs::SHOW_FRAME);
+  widget->setContinuous(options & QDjViewPrefs::LAYOUT_CONTINUOUS);
+  widget->setSideBySide(options & QDjViewPrefs::LAYOUT_SIDEBYSIDE);
+  widget->enableMouse(options & QDjViewPrefs::HANDLE_MOUSE);
+  widget->enableKeyboard(options & QDjViewPrefs::HANDLE_KEYBOARD);
+  widget->enableHyperlink(options & QDjViewPrefs::HANDLE_LINKS);
+  enableContextMenu(options & QDjViewPrefs::HANDLE_CONTEXTMENU);
+}
+
+
+void 
+QDjView::updateOptions(void)
+{
+  options = 0;
+  if (! menuBar->isHidden())
+    options |= QDjViewPrefs::SHOW_MENUBAR;
+  if (! toolBar->isHidden())
+    options |= QDjViewPrefs::SHOW_TOOLBAR;
+  if (! sideBar->isHidden())
+    options |= QDjViewPrefs::SHOW_SIDEBAR;
+  if (! statusBar->isHidden())
+    options |= QDjViewPrefs::SHOW_STATUSBAR;
+  if (widget->verticalScrollBarPolicy() != Qt::ScrollBarAlwaysOff)
+    options |= QDjViewPrefs::SHOW_SCROLLBARS;
+  if (widget->displayFrame())
+    options |= QDjViewPrefs::SHOW_FRAME;
+  if (widget->continuous())
+    options |= QDjViewPrefs::LAYOUT_CONTINUOUS;
+  if (widget->sideBySide())
+    options |= QDjViewPrefs::LAYOUT_SIDEBYSIDE;
+  if (widget->mouseEnabled())
+    options |= QDjViewPrefs::HANDLE_MOUSE;    
+  if (widget->keyboardEnabled())
+    options |= QDjViewPrefs::HANDLE_KEYBOARD;
+  if (widget->hyperlinkEnabled())
+    options |= QDjViewPrefs::HANDLE_LINKS;
+  if (widget->contextMenu())
+    options |= QDjViewPrefs::HANDLE_CONTEXTMENU;
+}
+
+
+
+void
+QDjView::applySaved(Saved *saved)
+{
+  // main saved states
+  options = saved->options;
+  if (saved->state.size() > 0)
+    restoreState(saved->state);
+  applyOptions();
+  widget->setZoom(saved->zoom);
+  // global window size in standalone mode
+  if (saved == &prefs->forStandalone)
+    if (! (prefs->windowSize.isNull()))
+      resize(prefs->windowSize);
+}
+
+
+void
+QDjView::updateSaved(Saved *saved)
+{
+  updateOptions();
+  if (saved->remember)
+    {
+      // main saved states
+      saved->zoom = widget->zoom();
+      saved->state = saveState();
+      saved->options = options;
+      // safety feature
+      saved->options |= QDjViewPrefs::HANDLE_MOUSE;
+      saved->options |= QDjViewPrefs::HANDLE_KEYBOARD;
+      saved->options |= QDjViewPrefs::HANDLE_LINKS;
+      saved->options |= QDjViewPrefs::HANDLE_CONTEXTMENU;
+      // global window size in standalone mode
+      if (saved == &prefs->forStandalone)
+        if (! (windowState() & unusualWindowStates))
+          prefs->windowSize = size();
+    }
+}
+
+
+void
+QDjView::applyPreferences(void)
+{
+  // Saved preferences
+  applySaved(getSavedPrefs());
+  
+  // Other preferences
+  djvuContext.setCacheSize(prefs->cacheSize);
+  widget->setPixelCacheSize(prefs->pixelCacheSize);
+  widget->setModifiersForLens(prefs->modifiersForLens);
+  widget->setModifiersForSelect(prefs->modifiersForSelect);
+  widget->setModifiersForLinks(prefs->modifiersForLinks);
+  widget->setGamma(prefs->gamma);
+  widget->setLensSize(prefs->lensSize);
+  widget->setLensPower(prefs->lensPower);
 }
 
 
@@ -1011,21 +1078,27 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
     pendingPageNo(-1),
     needToUpdateActions(false)
 {
-  // Obtain preferences
+  // Main window setup
+  setWindowTitle(tr("DjView"));
+  setWindowIcon(QIcon(":/images/djvu.png"));
+  if (QApplication::windowIcon().isNull())
+    QApplication::setWindowIcon(windowIcon());
+
+  // Basic preferences
   prefs = QDjViewPrefs::create();
+  options = QDjViewPrefs::defaultOptions;
   tools = prefs->tools;
-  options = prefs->forStandalone;
-  fsOptions = prefs->forFullScreen;
-  if (viewerMode == EMBEDDED_PLUGIN)
-    options = prefs->forEmbeddedPlugin;
-  else if (viewerMode == FULLPAGE_PLUGIN)
-    options = prefs->forFullPagePlugin;
   toolsCached = 0;
+  fsWindowState = 0;
+  fsSavedNormal = prefs->forStandalone;
+  fsSavedFullScreen = prefs->forFullScreen;
   
   // Create dialogs
+
   errorDialog = new QDjViewErrorDialog(this);
   
   // Create widgets
+
   // - djvu widget
   QWidget *central = new QWidget(this);
   widget = new QDjVuWidget(central);
@@ -1050,6 +1123,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
           this, SLOT(pointerClick(const Position&,miniexp_t)));
   connect(widget, SIGNAL(pointerSelect(const QPoint&,const QRect&)),
           this, SLOT(pointerSelect(const QPoint&,const QRect&)));
+
   // - splash screen
   splash = new QLabel(central);
   splash->setFrameShape(QFrame::Box);
@@ -1062,18 +1136,22 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 #if QT_VERSION >= 0x040100
   splash->setAutoFillBackground(true);
 #endif
+
   // - central layout
   layout = new QStackedLayout(central);
   layout->addWidget(widget);
   layout->addWidget(splash);
   layout->setCurrentWidget(splash);
   setCentralWidget(central);
+
   // - context menu
   contextMenu = new QMenu(this);
   enableContextMenu(true);
+
   // - menubar
   menuBar = new QMenuBar(this);
   setMenuBar(menuBar);
+
   // - statusbar
   statusBar = new QStatusBar(this);
   QFont font = QApplication::font();
@@ -1094,28 +1172,58 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   mouseLabel->setMinimumWidth(metric.width(" x=888 y=888 "));
   statusBar->addPermanentWidget(mouseLabel);
   setStatusBar(statusBar);
+
   // - toolbar  
   toolBar = new QToolBar(this);
   toolBar->setObjectName("toolbar");
   toolBar->setAllowedAreas(Qt::TopToolBarArea|Qt::BottomToolBarArea);
   addToolBar(toolBar);
+
+  // - mode combo box
+  modeCombo = new QComboBox(toolBar);
+  fillModeCombo(modeCombo);
+  connect(modeCombo, SIGNAL(activated(int)),
+          this, SLOT(modeComboActivated(int)) );
+  connect(modeCombo, SIGNAL(activated(int)),
+          this, SLOT(updateActionsLater()) );
+
+  // - zoom combo box
+  zoomCombo = new QComboBox(toolBar);
+  zoomCombo->setEditable(true);
+  zoomCombo->setInsertPolicy(QComboBox::NoInsert);
+  fillZoomCombo(zoomCombo);
+  connect(zoomCombo, SIGNAL(activated(int)),
+          this, SLOT(zoomComboActivated(int)) );
+  connect(zoomCombo->lineEdit(), SIGNAL(editingFinished()),
+          this, SLOT(zoomComboEdited()) );
+
+  // - page combo box
+  pageCombo = new QComboBox(toolBar);
+  pageCombo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+  pageCombo->setMinimumWidth(80);
+  pageCombo->setEditable(true);
+  pageCombo->setInsertPolicy(QComboBox::NoInsert);
+  connect(pageCombo, SIGNAL(activated(int)),
+          this, SLOT(pageComboActivated(int)));
+  connect(pageCombo->lineEdit(), SIGNAL(editingFinished()),
+          this, SLOT(pageComboEdited()) );
+  
   // - sidebar  
   sideBar = new QDockWidget(this);  // for now
   sideBar->setObjectName("sidebar");
   sideBar->setAllowedAreas(Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea);
   addDockWidget(Qt::LeftDockWidgetArea, sideBar);
-  
-  // Setup 
-  setWindowTitle(tr("DjView"));
-  setWindowIcon(QIcon(":/images/djvu.png"));
-  if (QApplication::windowIcon().isNull())
-    QApplication::setWindowIcon(windowIcon());
-  createCombos();
+  sideBar->installEventFilter(this);
+
+  // Actions
   createActions();
   createMenus();
   createWhatsThis();
+  
+  // Preferences
   applyPreferences();
   updateActions();
+  widget->makeDefaults();
 }
 
 
@@ -1300,6 +1408,23 @@ QDjView::execErrorDialog(QMessageBox::Icon icon, QString caption)
   return errorDialog->exec();
 }
 
+void  
+QDjView::setPageLabelText(QString s)
+{
+  QLabel *m = pageLabel;
+  m->setText(s);
+  m->setMinimumWidth(qMax(m->minimumWidth(), m->sizeHint().width()));
+}
+
+void  
+QDjView::setMouseLabelText(QString s)
+{
+  QLabel *m = mouseLabel;
+  m->setText(s);
+  m->setMinimumWidth(qMax(m->minimumWidth(), m->sizeHint().width()));
+}
+
+
 
 // ----------------------------------------
 // QDJVIEW ARGUMENTS
@@ -1336,7 +1461,6 @@ QDjView::parseCgiArguments(QUrl url)
 
 // -----------------------------------
 // UTILITIES
-
 
 int 
 QDjView::pageNum(void)
@@ -1495,14 +1619,13 @@ QDjView::saveImageFile(QImage image, QString filename)
 void
 QDjView::closeEvent(QCloseEvent *event)
 {
-  prefs->windowState = saveState();
-  if (isWindow() && !isHidden() && !isFullScreen() &&
-      !isMaximized() && !isMinimized())
-    prefs->windowSize = size();
-  prefs->saveWindow();
+  // save options
+  updateSaved(getSavedPrefs());
+  prefs->save(false);
+  // close document
   closeDocument();
-  // Accept close event
-  QMainWindow::closeEvent(event);
+  // continue closing the window
+  event->accept();
 }
 
 
@@ -1512,7 +1635,7 @@ QDjView::eventFilter(QObject *watched, QEvent *event)
   switch(event->type())
     {
     case QEvent::Leave:
-      if (watched == widget->viewport())
+      if (watched == widget->viewport() || watched == sideBar)
         {
           pageLabel->clear();
           mouseLabel->clear();
@@ -1573,20 +1696,17 @@ void
 QDjView::pointerPosition(const Position &pos, const PageInfo &page)
 {
   // setup page label
-  QLabel *p = pageLabel;
-  p->setText(tr(" P%1 %2x%3 %4dpi ")
-             .arg(pos.pageNo+1)
-             .arg(page.width)
-             .arg(page.height)
-             .arg(page.dpi) );
-  p->setMinimumWidth(qMax(p->minimumWidth(), p->sizeHint().width()));
-  // setup mouse label
-  QLabel *m = mouseLabel;
+  QString p = "";
+  QString m = "";
   if (pos.inPage)
-    m->setText(tr(" x=%1 y=%2 ").arg(pos.posPage.x()).arg(pos.posPage.y()));
-  else
-  m->clear();
-  m->setMinimumWidth(qMax(m->minimumWidth(), m->sizeHint().width()));
+    {
+      p = tr(" P%1 %2x%3 %4dpi ").arg(pos.pageNo+1) 
+             .arg(page.width).arg(page.height).arg(page.dpi);
+      m = tr(" x=%1 y=%2 ").
+             arg(pos.posPage.x()).arg(pos.posPage.y());
+    }
+  setPageLabelText(p);
+  setMouseLabelText(m);
 }
 
 
@@ -1862,92 +1982,50 @@ QDjView::performSelect(bool checked)
 }
 
 
+template<class T> 
+static inline void
+exch(T& a, T& b)
+{
+  T tmp = a; a = b; b = tmp;
+}
+
+
 void 
 QDjView::performViewFullScreen(bool checked)
 {
   if (viewerMode != STANDALONE)
     return;
-  
   if (checked)
     {
-      // Save toolbar visibility
-      options &= ~QDjViewPrefs::SHOW_MENUBAR;
-      options &= ~QDjViewPrefs::SHOW_TOOLBAR;
-      options &= ~QDjViewPrefs::SHOW_STATUSBAR;
-      options &= ~QDjViewPrefs::SHOW_SIDEBAR;
-      options &= ~QDjViewPrefs::SHOW_SCROLLBARS;
-      options &= ~QDjViewPrefs::SHOW_FRAME;
-      if (! menuBar->isHidden())
-        options |= QDjViewPrefs::SHOW_MENUBAR;
-      if (! toolBar->isHidden())
-        options |= QDjViewPrefs::SHOW_TOOLBAR;
-      if (! sideBar->isHidden())
-        options |= QDjViewPrefs::SHOW_SIDEBAR;
-      if (! statusBar->isHidden())
-        options |= QDjViewPrefs::SHOW_STATUSBAR;
-      if (widget->verticalScrollBarPolicy() != Qt::ScrollBarAlwaysOff)
-        options |= QDjViewPrefs::SHOW_SCROLLBARS;
-      if (widget->displayFrame())
-        options |= QDjViewPrefs::SHOW_FRAME;
-      // Apply fullscreen options
-      menuBar->setVisible(fsOptions & QDjViewPrefs::SHOW_MENUBAR);
-      toolBar->setVisible(fsOptions & QDjViewPrefs::SHOW_TOOLBAR);
-      sideBar->setVisible(fsOptions & QDjViewPrefs::SHOW_SIDEBAR);
-      statusBar->setVisible(fsOptions & QDjViewPrefs::SHOW_STATUSBAR);
-      enableScrollBars(fsOptions & QDjViewPrefs::SHOW_SCROLLBARS);
-      widget->setDisplayFrame(fsOptions & QDjViewPrefs::SHOW_FRAME);
+      fsSavedNormal.remember = true;
+      updateSaved(&fsSavedNormal);
+      updateSaved(&prefs->forStandalone);
+      Qt::WindowStates wstate = windowState();
+      fsWindowState = wstate;
+      wstate &= ~unusualWindowStates;
+      wstate |= Qt::WindowFullScreen;
+      setWindowState(wstate);
+      applySaved(&fsSavedFullScreen);
       // Make sure full screen action remains accessible (F11)
       if (! actions().contains(actionViewFullScreen))
         addAction(actionViewFullScreen);
-      // Run fullscreen
-      Qt::WindowStates state = windowState();
-      fsSavedState = state;
-      state &= ~Qt::WindowMinimized;
-      state &= ~Qt::WindowMaximized;
-      state |= Qt::WindowFullScreen;
-      setWindowState(state);
     }
   else
     {
-      fsOptions &= ~QDjViewPrefs::SHOW_MENUBAR;
-      fsOptions &= ~QDjViewPrefs::SHOW_TOOLBAR;
-      fsOptions &= ~QDjViewPrefs::SHOW_STATUSBAR;
-      fsOptions &= ~QDjViewPrefs::SHOW_SIDEBAR;
-      fsOptions &= ~QDjViewPrefs::SHOW_SCROLLBARS;
-      fsOptions &= ~QDjViewPrefs::SHOW_FRAME;
-      if (! menuBar->isHidden())
-        fsOptions |= QDjViewPrefs::SHOW_MENUBAR;
-      if (! toolBar->isHidden())
-        fsOptions |= QDjViewPrefs::SHOW_TOOLBAR;
-      if (! sideBar->isHidden())
-        fsOptions |= QDjViewPrefs::SHOW_SIDEBAR;
-      if (! statusBar->isHidden())
-        fsOptions |= QDjViewPrefs::SHOW_STATUSBAR;
-      if (widget->verticalScrollBarPolicy() != Qt::ScrollBarAlwaysOff)
-        fsOptions |= QDjViewPrefs::SHOW_SCROLLBARS;
-      if (widget->displayFrame())
-        fsOptions |= QDjViewPrefs::SHOW_FRAME;
-      // Restore normal options
-      menuBar->setVisible(options & QDjViewPrefs::SHOW_MENUBAR);
-      toolBar->setVisible(options & QDjViewPrefs::SHOW_TOOLBAR);
-      sideBar->setVisible(options & QDjViewPrefs::SHOW_SIDEBAR);
-      statusBar->setVisible(options & QDjViewPrefs::SHOW_STATUSBAR);
-      enableScrollBars(options & QDjViewPrefs::SHOW_SCROLLBARS);
-      widget->setDisplayFrame(options & QDjViewPrefs::SHOW_FRAME);
-      // Demote full screen action to normal status
+      fsSavedFullScreen.remember = true;
+      updateSaved(&fsSavedFullScreen);
+      updateSaved(&prefs->forFullScreen);
+      Qt::WindowStates wstate = windowState();
+      wstate &= ~unusualWindowStates;
+      wstate |= fsWindowState & unusualWindowStates;
+      wstate &= ~Qt::WindowFullScreen;
+      setWindowState(wstate);
+      applySaved(&fsSavedNormal);
+      // Demote full screen action
       if (actions().contains(actionViewFullScreen))
         removeAction(actionViewFullScreen);
-      // Restore window state
-      Qt::WindowStates state = windowState();
-      state &= ~Qt::WindowFullScreen;
-      state &= ~Qt::WindowMinimized;
-      state &= ~Qt::WindowMaximized;
-      state |= (fsSavedState & Qt::WindowMinimized);
-      state |= (fsSavedState & Qt::WindowMaximized);
-      setWindowState(state);
     }
 }
-
 
 
 
