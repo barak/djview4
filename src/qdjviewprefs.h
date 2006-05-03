@@ -114,7 +114,7 @@ public:
   Saved      forFullScreen;
   QSize      windowSize;
 
-  // Preferences saved via the preference dialog.
+  // Preferences set via the preference dialog.
   Tools      tools;
   double     gamma;
   qlonglong  cacheSize;
@@ -126,16 +126,13 @@ public:
   Qt::KeyboardModifiers modifiersForSelect;
   Qt::KeyboardModifiers modifiersForLinks;
   
-  // Preferences saved via the print dialog.
+  // Preferences set via the print dialog.
   // ...TODO... 
 
 public:
-  static QDjViewPrefs *create();
-  void load();
-  void save(bool broadcast=true);
-
-signals:
-  void changed();
+  static QDjViewPrefs *create(void);
+  void load(void);
+  void save(void);
 
 private:
   QDjViewPrefs(void);

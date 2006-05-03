@@ -248,7 +248,7 @@ QDjViewPrefs::saveGroup(QSettings &s, QString name, Saved &saved)
 
 
 void
-QDjViewPrefs::save(bool broadcast)
+QDjViewPrefs::save(void)
 {
   QSettings s(DJVIEW_ORG, DJVIEW_APP);
   
@@ -270,9 +270,6 @@ QDjViewPrefs::save(bool broadcast)
   s.setValue("modifiersForLens", modifiersToString(modifiersForLens));
   s.setValue("modifiersForSelect", modifiersToString(modifiersForSelect));
   s.setValue("modifiersForLinks", modifiersToString(modifiersForLinks));
- 
-  if (broadcast)
-    emit changed();
 }
 
 

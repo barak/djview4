@@ -828,15 +828,15 @@ QDjView::createWhatsThis()
           "Once a rectanglular area is selected, a popup menu "
           "lets you copy the corresponding text or image. "
           "Instead of using this tool, you can also hold %1 "
-          "and use the left mouse button."
+          "and use the Left Mouse Button."
           "</html>").arg(ms))
             >> actionSelect;
   
   Help(tr("<html><b>Zooming...</b><br/> "
           "Choose a zoom level for viewing the document. "
-          "Zoom level <tt>100%</tt> displays the document suitably for a 100 dpi screen. "
-          "Zoom levels <tt>Fit Page</tt> and <tt>Fit Width</tt> ensure that "
-          "the full page or the page width fit in the window. "
+          "Zoom level 100% displays the document for a 100 dpi screen. "
+          "Zoom levels <tt>Fit Page</tt> and <tt>Fit Width</tt> ensure "
+          "that the full page or the page width fit in the window. "
           "</html>"))
             >> actionZoomIn >> actionZoomOut
             >> actionZoomFitPage >> actionZoomFitWidth
@@ -860,7 +860,9 @@ QDjView::createWhatsThis()
             >> modeCombo;
 
   Help(tr("<html><b>Navigating the document...</b><br/> "
-          "Jump to a specific page of the document. </html>"))
+          "The page selector lets you jump to any page by name. "
+          "The navigation buttons jump to the first page, the previous "
+          "page, the next page, or the last page. </html>"))
             >> actionNavFirst >> actionNavPrev >> actionNavNext >> actionNavLast
             >> pageCombo;
   
@@ -890,11 +892,11 @@ QDjView::createWhatsThis()
           "<li>Arrows and page keys to navigate the document.</li>"
           "<li>Space and BackSpace to read the document.</li>"
           "<li>Keys <tt>+</tt>, <tt>-</tt>, <tt>[</tt>, <tt>]</tt> "
-          "    to zoom and rotate the document.</li>"
-          "<li>Left mouse button for panning and selecting links.</li>"
-          "<li>Right mouse button for displaying the contextual menu.</li>"
-          "<li>%1+Left mouse button for selecting text or images.</li>"
-          "<li>%2 for popping the magnification lens.</li>"
+          "    to zoom or rotate the document.</li>"
+          "<li>Left Mouse Button for panning and selecting links.</li>"
+          "<li>Right Mouse Button for displaying the contextual menu.</li>"
+          "<li><tt>%1</tt> Left Mouse Button for selecting text or images.</li>"
+          "<li><tt>%2</tt> for popping the magnification lens.</li>"
           "</ul></html>").arg(ms).arg(ml))
             >> widget;
   
@@ -1061,6 +1063,10 @@ QDjView::applyPreferences(void)
   widget->setGamma(prefs->gamma);
   widget->setLensSize(prefs->lensSize);
   widget->setLensPower(prefs->lensPower);
+
+  // Preload full screen prefs.
+  fsSavedNormal = prefs->forStandalone;
+  fsSavedFullScreen = prefs->forFullScreen;
 }
 
 
@@ -1090,8 +1096,6 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   tools = prefs->tools;
   toolsCached = 0;
   fsWindowState = 0;
-  fsSavedNormal = prefs->forStandalone;
-  fsSavedFullScreen = prefs->forFullScreen;
   
   // Create dialogs
 
@@ -1223,7 +1227,6 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   // Preferences
   applyPreferences();
   updateActions();
-  widget->makeDefaults();
 }
 
 
@@ -1259,6 +1262,7 @@ void
 QDjView::open(QDjVuDocument *doc)
 {
   closeDocument();
+  widget->makeDefaults();
   document = doc;
   connect(doc,SIGNAL(destroyed(void)), this, SLOT(closeDocument(void)));
   connect(doc,SIGNAL(docinfo(void)), this, SLOT(docinfo(void)));
@@ -1485,34 +1489,36 @@ QDjView::pageName(int pageno)
 QDjView*
 QDjView::copyWindow(void)
 {
+  // update preferences
+  if (viewerMode == STANDALONE)
+    updateSaved(getSavedPrefs());
+  // create new window
   QDjView *other = new QDjView(djvuContext, STANDALONE);
   QDjVuWidget *otherWidget = other->widget;
-  // copy window geometry
   other->setAttribute(Qt::WA_DeleteOnClose);
   other->setWindowTitle(windowTitle());
-  if (!isHidden() && !isFullScreen() 
-      && !isMaximized() && !isMinimized() )
+  // copy window geometry
+  if (! (windowState() & unusualWindowStates))
     {
       other->resize( size() );
       other->toolBar->setVisible(!toolBar->isHidden());
       other->sideBar->setVisible(!sideBar->isHidden());
       other->statusBar->setVisible(!statusBar->isHidden());
     }
+  // copy essential properties 
+  otherWidget->setDisplayMode( widget->displayMode() );
+  otherWidget->setContinuous( widget->continuous() );
+  otherWidget->setSideBySide( widget->sideBySide() );
+  otherWidget->setRotation( widget->rotation() );
+  otherWidget->setZoom( widget->zoom() );
   // copy document
   if (document)
     {
       other->open(document);
       other->documentFileName = documentFileName;
       other->documentUrl = documentUrl;
-      // copy view-defining properties 
-      otherWidget->setDisplayMode( widget->displayMode() );
-      otherWidget->setContinuous( widget->continuous() );
-      otherWidget->setSideBySide( widget->sideBySide() );
-      otherWidget->setRotation( widget->rotation() );
-      otherWidget->setZoom( widget->zoom() );
+      // copy position
       otherWidget->setPosition( widget->position() );
-      // not sure about this
-      otherWidget->makeDefaults();
     }
   return other;
 }
@@ -1619,11 +1625,13 @@ QDjView::saveImageFile(QImage image, QString filename)
 void
 QDjView::closeEvent(QCloseEvent *event)
 {
-  // save options
-  updateSaved(getSavedPrefs());
-  prefs->save(false);
-  // close document
+  // Close document.
   closeDocument();
+  // Save options.
+  //  after closing the document in order to 
+  //  avoid saving document defined settings.
+  updateSaved(getSavedPrefs());
+  prefs->save();
   // continue closing the window
   event->accept();
 }

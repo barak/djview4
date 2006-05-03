@@ -1778,6 +1778,8 @@ QDjVuWidget::setDocument(QDjVuDocument *d)
       // cleanup
       if (priv->doc)
         {
+          priv->adjustSettings(PRIORITY_DOCUMENT, miniexp_nil);
+          priv->adjustSettings(PRIORITY_PAGE, miniexp_nil);
           disconnect(priv->doc, 0, priv, 0);
           priv->doc->deref();
         }

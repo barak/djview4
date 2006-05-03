@@ -78,7 +78,6 @@ main(int argc, char *argv[])
       argc --;
       argv ++;
     }
-  main->getDjVuWidget()->makeDefaults();
   if (argc > 2)
     usage();
   
