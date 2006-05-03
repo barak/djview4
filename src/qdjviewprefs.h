@@ -20,12 +20,12 @@
 #define QDJVIEWPREFS_H
 
 #include <Qt>
-#include <QObject>
 #include <QByteArray>
-#include <QSettings>
 #include <QFlags>
-
-#include "qdjvuwidget.h"
+#include <QObject>
+#include <QSettings>
+#include <QSize>
+#include <QString>
 
 
 #ifndef DJVIEW_ORG

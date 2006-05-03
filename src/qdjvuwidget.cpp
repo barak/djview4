@@ -3141,6 +3141,16 @@ QDjVuWidget::getImageForRect(const QRect &rect)
 }
 
 
+/*! Do not use this. It will disappear soon. */
+
+QDjVuPage *
+QDjVuWidget::getDjVuPage(int pageno)
+{
+  if (pageno>=0 && pageno<priv->pageData.size())
+    return priv->pageData[pageno].page;
+  return 0;
+}
+
 
 // ----------------------------------------
 // SETTINGS FROM ANNOTATIONS

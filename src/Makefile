@@ -27,10 +27,11 @@ top_srcdir=..
 
 QTDEBUG=
 LIBDEBUG=
+FLGDEBUG=
 OPTS = -O2
-PKGS=QtCore${QTDEBUG} QtGui${QTDEBUG} QtNetwork${QTDEBUG} ddjvuapi
-LIBS=$(shell pkg-config --libs ${PKGS})
-FLGS=$(shell pkg-config --cflags ${PKGS})
+PKGS = QtCore${QTDEBUG} QtGui${QTDEBUG} QtNetwork${QTDEBUG} ddjvuapi
+LIBS = ${LIBDEBUG} $(shell pkg-config --libs ${PKGS})
+FLGS = ${FLGDEBUG} $(shell pkg-config --cflags ${PKGS})
 
 CXXFLAGS= -Wall ${FLGS} ${OPTS}
 
@@ -39,22 +40,22 @@ SOURCES=qdjvu.h qdjvu.cpp\
 	qdjvuwidget.h qdjvuwidget.cpp qdjvuwidget.qrc\
 	qdjviewprefs.h qdjviewprefs.cpp \
 	qdjviewdialogs.h qdjviewdialogs.cpp \
-	qdjviewerrordialog.ui \
+	qdjviewerrordialog.ui qdjviewinfodialog.ui \
 	qdjview.h qdjview.cpp qdjview.qrc \
 	djview.cpp
 
 PROGRAM=djview
 
 debug: FORCE
-	${MAKE} all QTDEBUG=_debug "OPTS=-g"
-#	${MAKE} all QTDEBUG=_debug "OPTS=-g -Llib"
+#	${MAKE} all QTDEBUG=_debug OPTS=-g
+	${MAKE} all QTDEBUG=_debug OPTS=-g FLGDEBUG=-I. LIBDEBUG=-Llib
 #	${MAKE} all OPTS=-g 
 
 all: ${PROGRAM}
 
 include Makefile.aux
 
-Makefile.aux: Makefile
+Makefile.aux: Makefile Makefile.dep
 	${top_srcdir}/etc/miniqmake ${SOURCES} > Makefile.aux
 
 ${PROGRAM}: ${OBJS}
@@ -72,6 +73,9 @@ depend: FORCE
 	${CXX} -MM -MG > Makefile.dep \
 	  $(patsubst -I/%,-isystem /%,${CXXFLAGS}) \
 	  $(filter %.cpp,${SOURCES})
+
+Makefile.dep:
+	touch Makefile.dep
 
 FORCE:
 

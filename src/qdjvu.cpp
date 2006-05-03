@@ -25,14 +25,15 @@
 
 #include <QDebug>
 
-#include <QCoreApplication>
-#include <QAtomic>
-#include <QFileInfo>
-#include <QFile>
-#include <QString>
 #include <QByteArray>
-#include <QUrl>
+#include <QCoreApplication>
+#include <QFile>
+#include <QFileInfo>
+#include <QMutex>
+#include <QMutexLocker>
 #include <QSet>
+#include <QString>
+#include <QUrl>
 
 #if DDJVUAPI_VERSION < 17
 # error "DDJVUAPI_VERSION>=17 is required !"
@@ -206,8 +207,9 @@ class QDjVuDocumentPrivate : public QObject
 {
   Q_OBJECT
 public:
+  QMutex mutex;
   bool autoDelete;
-  QAtomic refCount;
+  int refCount;
   QSet<QObject*> running;
   bool docReady;
   QDjVuDocument *docPointer;
@@ -229,7 +231,11 @@ signals:
 };
 
 QDjVuDocumentPrivate::QDjVuDocumentPrivate()
-  : autoDelete(false), docReady(false), docPointer(0)
+  : mutex(QMutex::Recursive),
+    autoDelete(false), 
+    refCount(0),
+    docReady(false), 
+    docPointer(0)
 {
 }
 
@@ -237,15 +243,20 @@ void
 QDjVuDocumentPrivate::add(QObject *p)
 {
   connect(p, SIGNAL(destroyed(QObject*)), this, SLOT(remove(QObject*)));
+  mutex.lock();
   running.insert(p);
+  mutex.unlock();
 }
 
 void
 QDjVuDocumentPrivate::remove(QObject *p)
 {
+  mutex.lock();
   running.remove(p);
+  int size = running.size();
   disconnect(p, 0, this, 0);
-  if (! running.size())
+  mutex.unlock();
+  if (! size)
     emit idle();
 }
 
@@ -271,6 +282,7 @@ QDjVuDocumentPrivate::docinfo()
 {
   if (!docReady && ddjvu_document_decoding_done(*docPointer))
     {
+      QMutexLocker locker(&mutex);
       int pageNum = ddjvu_document_get_pagenum(*docPointer);
       documentOutline = miniexp_dummy;
       documentAnnotations = miniexp_dummy;
@@ -337,7 +349,9 @@ QDjVuDocument::QDjVuDocument(QObject *parent)
 void 
 QDjVuDocument::ref()
 {
-  priv->refCount.ref();
+  priv->mutex.lock();
+  priv->refCount++;
+  priv->mutex.unlock();
 }
 
 /*! Decrements the reference count. 
@@ -348,7 +362,10 @@ QDjVuDocument::ref()
 void 
 QDjVuDocument::deref()
 {
-  if (!priv->refCount.deref() && priv->autoDelete)
+  priv->mutex.lock();
+  bool finished = !(--priv->refCount) && priv->autoDelete;
+  priv->mutex.unlock();
+  if (finished)
     delete this;
 }
 
@@ -360,10 +377,12 @@ QDjVuDocument::deref()
 bool 
 QDjVuDocument::setFileName(QDjVuContext *ctx, QString f, bool cache)
 {
+  QMutexLocker locker(&priv->mutex);  
   if (isValid())
     {
       ddjvu_document_set_user_data(document, 0);
       ddjvu_document_release(document);
+      priv->running.clear();
       document = 0;
     }
   QFileInfo info(f);
@@ -393,11 +412,12 @@ QDjVuDocument::setFileName(QDjVuContext *ctx, QString f, bool cache)
 bool
 QDjVuDocument::setUrl(QDjVuContext *ctx, QUrl url, bool cache)
 {
-
+  QMutexLocker locker(&priv->mutex);  
   if (isValid())
     {
       ddjvu_document_set_user_data(document, 0);
       ddjvu_document_release(document);
+      priv->running.clear();
       document = 0;
     }
   QByteArray b = url.toEncoded();
@@ -438,6 +458,7 @@ void
 QDjVuDocument::streamWrite(int streamid, 
                            const char *data, unsigned long len )
 {
+  QMutexLocker locker(&priv->mutex);  
   if (! isValid())
     qWarning("QDjVuDocument::streamWrite: invalid document");
   else
@@ -452,6 +473,7 @@ QDjVuDocument::streamWrite(int streamid,
 void 
 QDjVuDocument::streamClose(int streamid, bool stop)
 {
+  QMutexLocker locker(&priv->mutex);  
   if (! isValid())
     qWarning("QDjVuDocument::streamClose: invalid document");
   else
@@ -528,6 +550,7 @@ QDjVuDocument::runningProcesses(void)
 miniexp_t 
 QDjVuDocument::getDocumentAnnotations()
 {
+  QMutexLocker locker(&priv->mutex);  
   if (! priv->docReady)
     return miniexp_dummy;
   if (priv->documentAnnotations != miniexp_dummy)
@@ -550,6 +573,7 @@ QDjVuDocument::getDocumentAnnotations()
 miniexp_t 
 QDjVuDocument::getDocumentOutline()
 {
+  QMutexLocker locker(&priv->mutex);  
   if (! priv->docReady)
     return miniexp_dummy;
   if (priv->documentOutline != miniexp_dummy)
@@ -568,6 +592,7 @@ QDjVuDocument::getDocumentOutline()
 miniexp_t 
 QDjVuDocument::getPageAnnotations(int pageno)
 {
+  QMutexLocker locker(&priv->mutex);  
   if (! priv->docReady)
     return miniexp_dummy;
   if (pageno<0 || pageno>=priv->pageAnnotations.size())
@@ -591,6 +616,7 @@ QDjVuDocument::getPageAnnotations(int pageno)
 miniexp_t 
 QDjVuDocument::getPageText(int pageno)
 {
+  QMutexLocker locker(&priv->mutex);  
   if (! priv->docReady)
     return miniexp_dummy;
   if (pageno<0 || pageno>=priv->pageText.size())

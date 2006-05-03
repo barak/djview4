@@ -204,7 +204,7 @@ public:
   QString linkComment(void);
   QString getTextForRect(const QRect &rect);
   QImage  getImageForRect(const QRect &rect);
-
+  QDjVuPage *getDjVuPage(int pageno);
   
 protected:
   virtual bool viewportEvent (QEvent *event);

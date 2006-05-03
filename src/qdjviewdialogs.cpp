@@ -16,17 +16,23 @@
 
 // $Id$
 
-#include "qdjviewdialogs.h"
-
 #include <QDebug>
 
 #include <QObject>
 #include <QApplication>
+#include <QFont>
+#include <QHeaderView>
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QDialog>
 #include <QString>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 #include <QList>
+
+#include "qdjviewdialogs.h"
+#include "qdjvuwidget.h"
+#include "qdjview.h"
 
 
 
@@ -53,7 +59,7 @@ QDjViewErrorDialog::QDjViewErrorDialog(QWidget *parent)
   d->ui.setupUi(this);
   connect(d->ui.okButton, SIGNAL(clicked()), this, SLOT(okay()));
   d->ui.textEdit->viewport()->setBackgroundRole(QPalette::Background);
-  setWindowTitle(tr("DjView Error Message"));
+  setWindowTitle(tr("DjView Error"));
 }
 
 
@@ -100,6 +106,230 @@ QDjViewErrorDialog::okay()
   accept();
   hide();
 }
+
+
+
+
+// ----------- QDJVIEWERRORDIALOG
+
+#include "ui_qdjviewinfodialog.h"
+
+struct QDjViewInfoDialog::Private {
+  Ui::QDjViewInfoDialog ui;
+  QDjView *djview;
+  QDjVuDocument *document;
+  int pageno;
+  bool done;
+
+
+};
+
+
+QDjViewInfoDialog::~QDjViewInfoDialog()
+{
+  delete d;
+}
+
+
+QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
+  : QDialog(parent), d(new Private)
+{
+  d->djview = parent;
+  d->document = 0;
+  d->pageno = -1;
+  d->done = false;
+  d->ui.setupUi(this);
+
+  QFont font = d->ui.textEdit->font();
+  font.setFixedPitch(true);
+  font.setFamily("monospace");
+  font.setPointSize((font.pointSize() * 5 + 5) / 6);
+  d->ui.textEdit->setFont(font);
+  d->ui.textEdit->viewport()->setBackgroundRole(QPalette::Background);
+  QStringList labels = QStringList() << tr("Name") << tr("Value");
+  d->ui.tableWidget->setHorizontalHeaderLabels(labels);
+  d->ui.tableWidget->horizontalHeader()->setStretchLastSection(true);
+
+  connect(d->djview, SIGNAL(documentClosed()), this, SLOT(documentClosed()));
+  connect(d->ui.okButton, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(d->ui.thisPageButton, SIGNAL(clicked()), this, SLOT(toCurrentPage()));
+  connect(d->ui.documentButton, SIGNAL(clicked()), this, SLOT(toDocument()));
+  connect(d->ui.pageCombo, SIGNAL(activated(int)), this, SLOT(toPage(int)));
+}
+
+
+void
+QDjViewInfoDialog::toCurrentPage()
+{
+  if (! d->document)
+    return;
+  d->pageno = d->djview->getDjVuWidget()->page();
+  d->ui.pageCombo->setCurrentIndex(d->ui.pageCombo->findData(d->pageno));
+  d->done = false;
+  refresh();
+}
+
+
+void
+QDjViewInfoDialog::toDocument()
+{
+  if (! d->document)
+    return;
+  d->pageno = -1;
+  d->ui.pageCombo->setCurrentIndex(0);
+  d->done = false;
+  refresh();
+}
+
+
+void
+QDjViewInfoDialog::toPage(int index)
+{
+  if (! d->document)
+    return;
+  d->pageno = d->ui.pageCombo->itemData(index).toInt();
+  d->done = false;
+  refresh();
+}
+
+
+void
+QDjViewInfoDialog::documentClosed()
+{
+  hide();
+  if (! d->document)
+    return;
+  disconnect(d->document, 0, this, 0);
+  d->document = 0;
+}
+
+
+QString 
+QDjViewInfoDialog::pageEncodingMessage(int pageno)
+{
+  char *utf8 = 0;
+  QString message;
+#if DDJVUAPI_VERSION <= 17
+  QDjVuWidget *widget = d->djview->getDjVuWidget();
+  QDjVuPage *page = widget->getDjVuPage(pageno);
+  if (page)
+    utf8 = ddjvu_page_get_long_description(*page);
+  message = tr("DDJVUAPI_VERSION>=18 is required.\n"
+               "Previous version can only give information\n"
+               "for pages currently displayed or cached.");
+#else
+  utf8 = ddjvu_document_get_pagedump(*d->document, pageno);
+  message = tr("Information is not available.");
+#endif
+  if (utf8)
+    message = QString::fromUtf8(utf8);
+  if (utf8)
+      free(utf8);
+  return message;
+}
+  
+
+QString 
+QDjViewInfoDialog::documentEncodingMessage()
+{
+  QDjVuDocument *document = d->document;
+  QString message;
+  // -- document name
+  QString name = d->djview->getShortFileName();
+  if (! name.isEmpty())
+    message += tr("Document name:    %1\n")
+      .arg(d->djview->getShortFileName());
+  // -- document format
+  ddjvu_document_type_t docType = ddjvu_document_get_type(*document);
+  QString format;
+  if (docType == DDJVU_DOCTYPE_SINGLEPAGE)
+    format = tr("SINGLE PAGE");
+  else if (docType == DDJVU_DOCTYPE_BUNDLED)
+    format = tr("BUNDLED");
+  else if (docType == DDJVU_DOCTYPE_INDIRECT)
+    format = tr("INDIRECT");
+  else if (docType == DDJVU_DOCTYPE_OLD_BUNDLED)
+    format = tr("OLD BUNDLED (obsolete format)");
+  else if (docType == DDJVU_DOCTYPE_OLD_BUNDLED)
+    format = tr("OLD BUNDLED (obsolete format)");
+  if (! format.isEmpty())
+    message += tr("Document format:  %1\n")
+      .arg(format);
+  // -- document size etc
+  int size = 0;
+  bool okay = true;
+  int npages = d->djview->pageNum();
+#if DDJVUAPI_VERSION <= 17
+  int nfiles = npages;
+  if (docType == DDJVU_DOCTYPE_BUNDLED ||
+      docType != DDJVU_DOCTYPE_INDIRECT )
+    nfiles = ddjvu_document_get_filenum(*d->document);
+  else
+    okay = false;
+#else
+  int nfiles = ddjvu_document_get_filenum(*d->document);
+#endif
+  for (int i=0; i<nfiles && okay; i++)
+    {
+      ddjvu_fileinfo_t info;
+      if (ddjvu_document_get_fileinfo(*document, i, &info) != DDJVU_JOB_OK ||
+          info.size <= 0)
+        okay = false;
+      size += info.size;
+    }
+  if (okay)
+    {
+      message += tr("Document size:    %1\n").arg(size);
+      message += tr("Number of files:  %1\n").arg(nfiles);
+      message += tr("Number of pages:  %1\n").arg(npages);
+    }
+  // -- finished
+  return message;
+}
+
+
+
+void
+QDjViewInfoDialog::refresh()
+{
+  // Synchronize document
+  if (! d->document && d->djview->documentPages.size())
+    {
+      setWindowTitle(d->djview->makeCaption(tr("DjView Information")));
+      d->document = d->djview->getDocument();
+      connect(d->document, SIGNAL(pageinfo()), this, SLOT(refresh()));
+      d->djview->fillPageCombo(d->ui.pageCombo, tr("page %1"));
+      d->ui.pageCombo->insertItem(0, tr("document"), QVariant(-1));
+      d->ui.pageCombo->setCurrentIndex(0);
+      d->pageno = -1;
+    }
+  if (! d->document || d->done)
+    return;
+
+  // Synchronize displayed contents
+  if (d->pageno < 0)
+    {
+      // ============ Document information
+      d->done = true;
+      d->ui.tabWidget->setTabText(0, tr("Document &Properties"));
+      d->ui.tabWidget->setTabText(1, tr("Document &Encoding"));
+      d->ui.textEdit->setPlainText(documentEncodingMessage());
+
+
+    }
+  else
+    {
+      // ============ Page information
+      d->done = true;
+      d->ui.tabWidget->setTabText(0, tr("Page &Properties"));
+      d->ui.tabWidget->setTabText(1, tr("Page &Encoding"));
+      d->ui.textEdit->setPlainText(pageEncodingMessage(d->pageno));
+      
+      
+      
+    }
+}
+
 
 
 /* -------------------------------------------------------------

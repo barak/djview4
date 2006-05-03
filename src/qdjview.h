@@ -38,7 +38,6 @@ class QAction;
 class QActionGroup;
 class QCloseEvent;
 class QComboBox;
-class QDjViewErrorDialog;
 class QDockWidget;
 class QFileDialog;
 class QLabel;
@@ -48,6 +47,9 @@ class QStackedLayout;
 class QStatusBar;
 class QStringList;
 class QToolBar;
+
+class QDjViewErrorDialog;
+class QDjViewInfoDialog;
 
 
 class QDjView : public QMainWindow
@@ -97,23 +99,24 @@ signals:
   void  documentClosed();
 
 protected:
+  friend class QDjViewInfoDialog;
+
   typedef QDjVuWidget::Position Position;
   typedef QDjVuWidget::PageInfo PageInfo;
   typedef QDjViewPrefs::Options Options;
   typedef QDjViewPrefs::Tools Tools;
   typedef QDjViewPrefs::Saved Saved;
 
-  void  open(QDjVuDocument *document);
-
+  void     open(QDjVuDocument *document);
   void     fillToolBar(QToolBar *toolBar);
   void     fillZoomCombo(QComboBox *zoomCombo);
   void     fillModeCombo(QComboBox *modeCombo);
+  void     fillPageCombo(QComboBox *pageCombo, QString format=QString());
   QAction *makeAction(QString text);
   QAction *makeAction(QString text, bool value);
   void     createActions(void);
   void     createMenus(void);
   void     createWhatsThis(void);
-
   Saved   *getSavedPrefs(void);
   void     enableContextMenu(bool);
   void     enableScrollBars(bool);
@@ -145,6 +148,7 @@ protected slots:
   void performAbout(void);
   void performNew(void);
   void performOpen(void);
+  void performInformation(void);
   void performRotation(void);
   void performZoom(void);
   void performSelect(bool);
@@ -161,6 +165,7 @@ protected:
   Tools          toolsCached;
   // dialogs
   QDjViewErrorDialog *errorDialog;
+  QDjViewInfoDialog  *infoDialog;
   // widgets
   QLabel             *splash;
   QDjVuWidget        *widget;
@@ -226,8 +231,7 @@ protected:
   QAction *actionRotate90;
   QAction *actionRotate180;
   QAction *actionRotate270;
-  QAction *actionPageInfo;
-  QAction *actionDocInfo;
+  QAction *actionInformation;
   QAction *actionAbout;
   QAction *actionWhatsThis;
   QAction *actionDisplayColor;

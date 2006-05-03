@@ -18,16 +18,18 @@
 
 #include <QDebug>
 
-#include <QPointer>
 #include <QCoreApplication>
+#include <QMetaEnum>
+#include <QMetaObject>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QPointer>
 #include <QSettings>
+#include <QStringList>
 #include <QVariant>
-#include <QMetaObject>
-#include <QMetaEnum>
 
 #include "qdjviewprefs.h"
+#include "qdjview.h"
 
 
 const QDjViewPrefs::Tools 

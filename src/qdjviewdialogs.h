@@ -24,6 +24,7 @@
 #include <QLabel>
 #include <QMessageBox>
 
+#include "qdjview.h"
 
 
 // ----------- QDJVIEWERRORDIALOG
@@ -44,6 +45,33 @@ private:
   struct Private;
   Private *d;
 };
+
+
+
+
+// ----------- QDJVIEWINFODIALOG
+
+
+class QDjViewInfoDialog : public QDialog
+{
+  Q_OBJECT
+public:
+  ~QDjViewInfoDialog();
+  QDjViewInfoDialog(QDjView *parent);
+public slots:
+  void refresh();
+  void documentClosed();
+  void toDocument();
+  void toCurrentPage();
+  void toPage(int);
+protected:
+  QString pageEncodingMessage(int pageno);
+  QString documentEncodingMessage();
+private:
+  struct Private;
+  Private *d;
+};
+
 
 
 

@@ -73,8 +73,9 @@
 #if DDJVUAPI_VERSION < 17
 # error "DDJVUAPI_VERSION>=17 is required !"
 #endif
-
-
+#if DDJVUAPI_VERSION < 18
+# define WORKAROUND_FOR_DDJVUAPI_17 1
+#endif
 
 // ----------------------------------------
 // USEFUL CONSTANTS
@@ -89,6 +90,22 @@ unusualWindowStates = (Qt::WindowMinimized |
 
 // ----------------------------------------
 // FILL USER INTERFACE COMPONENTS
+
+
+
+void
+QDjView::fillPageCombo(QComboBox *pageCombo, QString format)
+{
+  pageCombo->clear();
+  int n = documentPages.size();
+  for (int j=0; j<n; j++)
+    {
+      QString name = pageName(j);
+      if (!format.isEmpty())
+        name = format.arg(name);
+      pageCombo->addItem(name, QVariant(j));
+    }
+}
 
 
 void
@@ -330,7 +347,7 @@ QDjView::createActions()
     << tr("Close all windows and quit the application.")
     << Trigger(QCoreApplication::instance(), SLOT(closeAllWindows()));
 
-  actionSave = makeAction(tr("&Save as...", "File|Save"))
+  actionSave = makeAction(tr("Save &as...", "File|Save"))
     << QKeySequence(tr("Ctrl+S", "File|Save"))
     << QIcon(":/images/icon_save.png")
     << tr("Save the DjVu document.");
@@ -484,13 +501,11 @@ QDjView::createActions()
     << QVariant(3)
     << Trigger(this, SLOT(performRotation()))
     << *rotationActionGroup;
-
-  actionPageInfo = makeAction(tr("Page &Information..."))
-    << tr("Show DjVu encoding information for the current page.");
-
-  actionDocInfo = makeAction(tr("Document In&formation..."))
+  
+  actionInformation = makeAction(tr("&Information..."))
     << QKeySequence("Ctrl+I")
-    << tr("Show DjVu encoding information for the document.");
+    << tr("Show the document and page properties.")
+    << Trigger(this, SLOT(performInformation()));
 
   actionWhatsThis = QWhatsThis::createAction(this);
 
@@ -528,7 +543,7 @@ QDjView::createActions()
     << tr("Show the preferences dialog.");
 
   actionViewSideBar = sideBar->toggleViewAction() 
-    << tr("Show s&ide bar")
+    << tr("Show &side bar")
     << QKeySequence("F9")
     << QIcon(":/images/icon_sidebar.png")
     << tr("Show/hide the side bar.")
@@ -540,7 +555,7 @@ QDjView::createActions()
     << tr("Show/hide the standard tool bar.")
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionViewStatusBar = makeAction(tr("Show &status bar"), true)
+  actionViewStatusBar = makeAction(tr("Show stat&us bar"), true)
     << tr("Show/hide the status bar.")
     << Trigger(statusBar,SLOT(setVisible(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
@@ -596,10 +611,10 @@ QDjView::createMenus()
   if (viewerMode == STANDALONE)
     fileMenu->addAction(actionQuit);
   QMenu *editMenu = menuBar->addMenu(tr("&Edit", "Edit|"));
+  editMenu->addAction(actionSelect);
   editMenu->addAction(actionSearch);
   editMenu->addSeparator();
-  editMenu->addAction(actionDocInfo);
-  editMenu->addAction(actionPageInfo);
+  editMenu->addAction(actionInformation);
   QMenu *viewMenu = menuBar->addMenu(tr("&View", "View|"));
   QMenu *zoomMenu = viewMenu->addMenu(tr("&Zoom","View|Zoom"));
   zoomMenu->addAction(actionZoomIn);
@@ -689,9 +704,7 @@ QDjView::createMenus()
   contextMenu->addAction(actionLayoutSideBySide);
   contextMenu->addSeparator();
   contextMenu->addAction(actionSearch);
-  QMenu *infoMenu = contextMenu->addMenu("Infor&mation");
-  infoMenu->addAction(actionPageInfo);
-  infoMenu->addAction(actionDocInfo);
+  contextMenu->addAction(actionInformation);
   contextMenu->addSeparator();
   contextMenu->addAction(actionSave);
   contextMenu->addAction(actionExport);
@@ -773,7 +786,7 @@ QDjView::updateActions()
   int pagenum = documentPages.size();
   int pageno = widget->page();
   pageCombo->clearEditText();
-  pageCombo->setCurrentIndex(pageno);
+  pageCombo->setCurrentIndex(pageCombo->findData(QVariant(pageno)));
   if (pageno >= 0 && pagenum > 0)
     pageCombo->setEditText(pageName(pageno));
   pageCombo->setEnabled(pagenum > 0);
@@ -869,6 +882,12 @@ QDjView::createWhatsThis()
           "page, the next page, or the last page. </html>"))
             >> actionNavFirst >> actionNavPrev >> actionNavNext >> actionNavLast
             >> pageCombo;
+
+  Help(tr("<html><b>Document and page infromation.</b><br> "
+          "Display a dialog window for viewing metadata and "
+          "encoding information pertaining to the document "
+          "or to a specific page."))
+            >> actionInformation;
   
   Help(tr("<html><b>Continuous layout.</b><br/> "
           "Display all the document pages arranged vertically "
@@ -1104,6 +1123,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   // Create dialogs
 
   errorDialog = new QDjViewErrorDialog(this);
+  infoDialog = 0;
   
   // Create widgets
 
@@ -1163,7 +1183,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   // - statusbar
   statusBar = new QStatusBar(this);
   QFont font = QApplication::font();
-  font.setPointSize(font.pointSize() * 3 / 4);
+  font.setPointSize((font.pointSize() * 3 + 3) / 4);
   QFontMetrics metric(font);
   pageLabel = new QLabel(statusBar);
   pageLabel->setFont(font);
@@ -1251,14 +1271,20 @@ QDjView::closeDocument()
   layout->setCurrentWidget(splash);
   QDjVuDocument *doc = document;
   if (doc)
-    disconnect(doc, 0, this, 0);
+    {
+      doc->ref();
+      disconnect(doc, 0, this, 0);
+    }
   widget->setDocument(0);
   documentPages.clear();
   documentFileName.clear();
   documentUrl.clear();
   document = 0;
   if (doc)
-    emit documentClosed();
+    {
+      emit documentClosed();
+      doc->deref();
+    }
 }
 
 
@@ -1381,7 +1407,7 @@ QDjView::goToPage(QString name, int from)
           if (documentPages[i].title &&
               ! strcmp(utf8Name, documentPages[i].title))
             { pageno = i; break; }
-#if NO_WORKAROUND_FOR_DDJVUAPI_17
+#if WORKAROUND_FOR_DDJVUAPI_17
       // Otherwise try a number in range [1..pagenum]
       if (pageno < 0 || pageno >= pagenum)
         pageno = name.toInt() - 1;
@@ -1675,7 +1701,7 @@ QDjView::docinfo()
     {
       // Obtain information about pages.
       int n = ddjvu_document_get_pagenum(*document);
-#if NO_WORKAROUND_FOR_DDJVUAPI_17
+#if WORKAROUND_FOR_DDJVUAPI_17
       ddjvu_document_type_t docType = ddjvu_document_get_type(*document);
       if (docType != DDJVU_DOCTYPE_BUNDLED &&  
           docType != DDJVU_DOCTYPE_INDIRECT )
@@ -1697,18 +1723,17 @@ QDjView::docinfo()
               ddjvu_fileinfo_t info;
               if (ddjvu_document_get_fileinfo(*document, i, &info) != DDJVU_JOB_OK)
                 qWarning("Internal (docinfo): ddjvu_document_get_fileinfo failed.");
-              if (info.type == 'P')
-                documentPages << info;
               if (info.title && info.name && !strcmp(info.title, info.name))
                 info.title = 0;  // clear title if equal to name.
+              if (info.type == 'P')
+                documentPages << info;
             }
         }
       if (documentPages.size() != n)
         qWarning("Internal (docinfo): inconsistent number of pages.");
+
       // Fill page combo
-      pageCombo->clear();
-      for (int j=0; j<n; j++)
-        pageCombo->addItem(pageName(j));
+      fillPageCombo(pageCombo);
       
       // Apply pending changes
       if (! pendingPageName.isNull())
@@ -1887,7 +1912,7 @@ QDjView::updateActionsLater()
 void
 QDjView::modeComboActivated(int index)
 {
-  int mode = modeCombo->itemData(index).toUInt();
+  int mode = modeCombo->itemData(index).toInt();
   widget->setDisplayMode((QDjVuWidget::DisplayMode)mode);
 }
 
@@ -1895,7 +1920,7 @@ QDjView::modeComboActivated(int index)
 void
 QDjView::zoomComboActivated(int index)
 {
-  int zoom = zoomCombo->itemData(index).toUInt();
+  int zoom = zoomCombo->itemData(index).toInt();
   widget->setZoom(zoom);
   widget->setFocus();
 }
@@ -1917,7 +1942,7 @@ QDjView::zoomComboEdited(void)
 void 
 QDjView::pageComboActivated(int index)
 {
-  goToPage(index);
+  goToPage(pageCombo->itemData(index).toInt());
   updateActionsLater();
   widget->setFocus();
 }
@@ -1984,6 +2009,20 @@ QDjView::performOpen(void)
   QString filename = QFileDialog::getOpenFileName(this, caption, "", filters);
   if (! filename.isEmpty())
     open(filename);
+}
+
+
+void 
+QDjView::performInformation(void)
+{
+  if (! documentPages.size())
+    return;
+  if (! infoDialog)
+    infoDialog = new QDjViewInfoDialog(this);
+  infoDialog->setWindowTitle(makeCaption(tr("DjView Information")));
+  infoDialog->refresh();
+  infoDialog->raise();
+  infoDialog->show();
 }
 
 
