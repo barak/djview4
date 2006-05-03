@@ -209,7 +209,7 @@ QDjViewInfoDialog::pageEncodingMessage(int pageno)
 {
   char *utf8 = 0;
   QString message;
-#if DDJVUAPI_VERSION <= 17
+#if DDJVUAPI_VERSION < 18
   QDjVuWidget *widget = d->djview->getDjVuWidget();
   QDjVuPage *page = widget->getDjVuPage(pageno);
   if (page)
@@ -255,11 +255,11 @@ QDjViewInfoDialog::documentEncodingMessage()
   if (! format.isEmpty())
     message += tr("Document format:  %1\n")
       .arg(format);
-  // -- document size etc
+  // -- document number of files and pages
   int size = 0;
   bool okay = true;
   int npages = d->djview->pageNum();
-#if DDJVUAPI_VERSION <= 17
+#if DDJVUAPI_VERSION < 18
   int nfiles = npages;
   if (docType == DDJVU_DOCTYPE_BUNDLED ||
       docType != DDJVU_DOCTYPE_INDIRECT )
@@ -269,20 +269,36 @@ QDjViewInfoDialog::documentEncodingMessage()
 #else
   int nfiles = ddjvu_document_get_filenum(*d->document);
 #endif
+  // -- add size of all files
   for (int i=0; i<nfiles && okay; i++)
     {
       ddjvu_fileinfo_t info;
-      if (ddjvu_document_get_fileinfo(*document, i, &info) != DDJVU_JOB_OK ||
-          info.size <= 0)
+      if (ddjvu_document_get_fileinfo(*document, i, &info) == DDJVU_JOB_OK 
+          && info.size > 0)
+        {
+          size += info.size;
+          if (info.size & 1)
+            size += 1;
+        }
+      else
         okay = false;
-      size += info.size;
     }
-  if (okay)
+#if DDJVUAPI_VERSION >= 18
+  // -- add size of header
+  ddjvu_fileinfo_t info;
+  if (ddjvu_document_get_fileinfo(*document, -1, &info) == DDJVU_JOB_OK)
     {
-      message += tr("Document size:    %1\n").arg(size);
-      message += tr("Number of files:  %1\n").arg(nfiles);
-      message += tr("Number of pages:  %1\n").arg(npages);
+      qDebug() << info.size;
+      size += info.size;
+      if (info.size & 1)
+        size += 1;
     }
+#endif
+  if (okay)
+    message += tr("Document size:    %1\n").arg(size);
+  message += tr("Number of files:  %1\n").arg(nfiles);
+  message += tr("Number of pages:  %1\n").arg(npages);
+
   // -- finished
   return message;
 }
