@@ -70,6 +70,10 @@
 #include "qdjviewprefs.h"
 #include "qdjviewdialogs.h"
 
+#if DDJVUAPI_VERSION < 17
+# error "DDJVUAPI_VERSION>=17 is required !"
+#endif
+
 
 
 // ----------------------------------------
@@ -773,10 +777,10 @@ QDjView::updateActions()
   if (pageno >= 0 && pagenum > 0)
     pageCombo->setEditText(pageName(pageno));
   pageCombo->setEnabled(pagenum > 0);
-  actionNavFirst->setEnabled(pagenum>0);
+  actionNavFirst->setEnabled(pagenum>0 && pageno>0);
   actionNavPrev->setEnabled(pagenum>0 && pageno>0);
   actionNavNext->setEnabled(pagenum>0 && pageno<pagenum-1);
-  actionNavLast->setEnabled(pagenum>0);
+  actionNavLast->setEnabled(pagenum>0 && pageno<pagenum-1);
 
   // - layout actions
   actionLayoutContinuous->setChecked(widget->continuous());  
@@ -1369,15 +1373,19 @@ QDjView::goToPage(QString name, int from)
       QByteArray utf8Name= name.toUtf8();
       if (pageno < 0 || pageno >= pagenum)
         for (int i=from; i<pagenum; i++)
-          if (! strcmp(utf8Name, documentPages[i].title))
+          if (documentPages[i].title && 
+              ! strcmp(utf8Name, documentPages[i].title))
             { pageno = i; break; }
       if (pageno < 0 || pageno >= pagenum)
         for (int i=0; i<from; i++)
-          if (! strcmp(utf8Name, documentPages[i].title))
+          if (documentPages[i].title &&
+              ! strcmp(utf8Name, documentPages[i].title))
             { pageno = i; break; }
+#if NO_WORKAROUND_FOR_DDJVUAPI_17
       // Otherwise try a number in range [1..pagenum]
       if (pageno < 0 || pageno >= pagenum)
         pageno = name.toInt() - 1;
+#endif
       // Otherwise let ddjvuapi do the search
       if (pageno < 0 || pageno >= pagenum)
         pageno = ddjvu_document_search_pageno(*document, utf8Name);
@@ -1477,11 +1485,8 @@ QString
 QDjView::pageName(int pageno)
 {
   if (pageno>=0 && pageno<documentPages.size())
-    {
-      ddjvu_fileinfo_t &info = documentPages[pageno];
-      if (strcmp(info.name, info.title))
-        return QString::fromUtf8(info.title);
-    }
+    if ( documentPages[pageno].title )
+      return QString::fromUtf8(documentPages[pageno].title);
   return QString::number(pageno + 1);
 }
 
@@ -1669,19 +1674,37 @@ QDjView::docinfo()
       ddjvu_document_decoding_status(*document)==DDJVU_JOB_OK)
     {
       // Obtain information about pages.
-      int n = ddjvu_document_get_filenum(*document);
-      for (int i=0; i<n; i++)
+      int n = ddjvu_document_get_pagenum(*document);
+#if NO_WORKAROUND_FOR_DDJVUAPI_17
+      ddjvu_document_type_t docType = ddjvu_document_get_type(*document);
+      if (docType != DDJVU_DOCTYPE_BUNDLED &&  
+          docType != DDJVU_DOCTYPE_INDIRECT )
         {
-          ddjvu_fileinfo_t info;
-          if (ddjvu_document_get_fileinfo(*document, i, &info) != DDJVU_JOB_OK)
-            qWarning("Internal (docinfo): ddjvu_document_get_fileinfo failed.");
-          if (info.type == 'P')
-            documentPages << info;
+          // work around bug in ddjvuapi<=17 */
+          for (int i=0; i<n; i++)
+            {
+              ddjvu_fileinfo_t info; info.type = 'P'; info.pageno = i;
+              info.id = info.name = info.title = 0;
+              documentPages << info;
+            }
         }
-      n = documentPages.size();
-      if (n != ddjvu_document_get_pagenum(*document))
+      else
+#endif
+        {
+          int m = ddjvu_document_get_filenum(*document);
+          for (int i=0; i<m; i++)
+            {
+              ddjvu_fileinfo_t info;
+              if (ddjvu_document_get_fileinfo(*document, i, &info) != DDJVU_JOB_OK)
+                qWarning("Internal (docinfo): ddjvu_document_get_fileinfo failed.");
+              if (info.type == 'P')
+                documentPages << info;
+              if (info.title && info.name && !strcmp(info.title, info.name))
+                info.title = 0;  // clear title if equal to name.
+            }
+        }
+      if (documentPages.size() != n)
         qWarning("Internal (docinfo): inconsistent number of pages.");
-      
       // Fill page combo
       pageCombo->clear();
       for (int j=0; j<n; j++)

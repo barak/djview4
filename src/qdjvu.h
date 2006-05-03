@@ -113,7 +113,13 @@ public:
   void streamClose(int streamid, bool stop = false);
   operator ddjvu_document_t*() { return document; }
   virtual bool isValid() { return document != 0; }
-  int load(void);
+public:
+  int runningProcesses(void);
+  miniexp_t getDocumentAnnotations();
+  miniexp_t getDocumentOutline();
+  miniexp_t getPageAnnotations(int pageno);
+  miniexp_t getPageText(int pageno);
+
 
 signals:
   void error(QString msg, QString filename, int lineno);

@@ -581,9 +581,10 @@ struct Page
   
   void clear() { delete page; page=0; } 
   ~Page()      { clear(); };
-  Page()       : pageno(-1),width(0),height(0),dpi(0),
-                 page(0),annotations(0),hiddenText(0),initialRot(-1),
-                 redisplay(false),dataPresent(false) { clear(); }
+  Page()       : pageno(-1),width(0),height(0),dpi(0),page(0),
+                 annotations(miniexp_dummy),hiddenText(miniexp_dummy),
+                 initialRot(-1),redisplay(false),
+                 dataPresent(false) { clear(); }
 };
 
 struct Cache
@@ -933,19 +934,19 @@ QDjVuPrivate::makeLayout()
                     }
                 }
               // extract annotations and hidden text
-              if (! p->annotations)
+              if (p->annotations == miniexp_dummy)
                 {
-                  p->annotations = ddjvu_document_get_pageanno(*doc, n);
-                  ddjvu_miniexp_release(*doc, p->annotations);
-                  if (!continuous && !sideBySide)
+                  p->annotations = doc->getPageAnnotations(n);
+                  if (p->annotations && !continuous && !sideBySide)
                     adjustSettings(PRIORITY_PAGE, p->annotations);
-                  prepareMapAreas(p);
+                  if (p->annotations)
+                    prepareMapAreas(p);
                 }
-              if (! p->hiddenText)
+              if (p->hiddenText == miniexp_dummy)
                 {
-                  miniexp_t s = ddjvu_document_get_pagetext(*doc, n, 0);
-                  p->hiddenText = flatten_hiddentext(s);
-                  ddjvu_miniexp_release(*doc, s);
+                  miniexp_t expr = doc->getPageText(n);
+                  if (expr != miniexp_dummy)
+                    p->hiddenText = flatten_hiddentext(expr);
                 }
             }
         }
@@ -1340,7 +1341,7 @@ QDjVuPrivate::makePageRequests(void)
     if (!p->page && rv.intersects(p->rect)) 
       found |= requestPage(p);
   // search more if document is idle (prefetch/predecode)
-  if (!found && !doc->load())
+  if (!found && !doc->runningProcesses())
     {
       if (continuous)
         {
@@ -2911,7 +2912,8 @@ QDjVuPrivate::prepareMapAreas(Page *p)
     if (p->mapAreas[j].expr)
       p->mapAreas.removeAt(j);
   // parse annotations.
-  if (p->annotations) 
+  if (p->annotations && 
+      p->annotations != miniexp_dummy) 
     {
       miniexp_t *annos;
       annos = ddjvu_anno_get_hyperlinks(p->annotations);
@@ -3070,7 +3072,8 @@ QDjVuWidget::getTextForRect(const QRect &vtarget)
     {
       // quick check
       miniexp_t q = p->hiddenText;
-      if (p->initialRot < 0 || q==miniexp_nil)
+      if (p->initialRot < 0 || 
+          q == miniexp_nil || q == miniexp_dummy)
         continue;
       QRect pagerect = target.intersect(p->rect);
       if (!p->hiddenText || pagerect.isEmpty())
@@ -3139,7 +3142,6 @@ QDjVuWidget::getImageForRect(const QRect &rect)
 
 
 
-
 // ----------------------------------------
 // SETTINGS FROM ANNOTATIONS
 
@@ -3189,7 +3191,7 @@ QDjVuPrivate::adjustSettings(Priority priority, miniexp_t annotations)
   qBorderSize.unset(priority);
 
   // Analyse annotations
-  if (annotations)
+  if (annotations && annotations != miniexp_dummy)
     {
       const char *xbgcolor = ddjvu_anno_get_bgcolor(annotations);
       const char *xzoom = ddjvu_anno_get_zoom(annotations);

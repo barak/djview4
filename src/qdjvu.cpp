@@ -34,6 +34,9 @@
 #include <QUrl>
 #include <QSet>
 
+#if DDJVUAPI_VERSION < 17
+# error "DDJVUAPI_VERSION>=17 is required !"
+#endif
 
 
 // ----------------------------------------
@@ -206,9 +209,18 @@ public:
   bool autoDelete;
   QAtomic refCount;
   QSet<QObject*> running;
+  bool docReady;
+  QDjVuDocument *docPointer;
+  minivar_t documentOutline;
+  minivar_t documentAnnotations;
+  QVector<minivar_t> pageAnnotations;
+  QVector<minivar_t> pageText;
+  
   QDjVuDocumentPrivate();
   void add(QObject *p);
   void add(QDjVuPage *p);
+public slots:
+  void docinfo();
 protected slots:
   void remove(QObject *p);
   void pageinfo();
@@ -217,7 +229,7 @@ signals:
 };
 
 QDjVuDocumentPrivate::QDjVuDocumentPrivate()
-  : autoDelete(false)
+  : autoDelete(false), docReady(false), docPointer(0)
 {
 }
 
@@ -254,6 +266,25 @@ QDjVuDocumentPrivate::pageinfo()
 }
 
 
+void
+QDjVuDocumentPrivate::docinfo()
+{
+  if (!docReady && ddjvu_document_decoding_done(*docPointer))
+    {
+      int pageNum = ddjvu_document_get_pagenum(*docPointer);
+      documentOutline = miniexp_dummy;
+      documentAnnotations = miniexp_dummy;
+      pageAnnotations.resize(pageNum);
+      pageText.resize(pageNum);
+      for (int i=0; i<pageNum; i++)
+        pageAnnotations[i] = pageText[i] = miniexp_dummy;
+      docReady = true;
+    }
+}
+
+
+
+
 
 // ----------------------------------------
 // QDJVUDOCUMENT
@@ -288,7 +319,9 @@ QDjVuDocument::QDjVuDocument(bool autoDelete, QObject *parent)
   : QObject(parent), document(0), priv(new QDjVuDocumentPrivate)
 {
   priv->autoDelete = autoDelete;
+  priv->docPointer = this;
   connect(priv, SIGNAL(idle()), this, SIGNAL(idle()));
+  connect(this, SIGNAL(docinfo()), priv, SLOT(docinfo()));
 }
 
 /*! \overload */
@@ -346,6 +379,7 @@ QDjVuDocument::setFileName(QDjVuContext *ctx, QString f, bool cache)
       return false;
     }
   ddjvu_document_set_user_data(document, (void*)this);
+  priv->docinfo();
   return true;
 }
 
@@ -379,6 +413,7 @@ QDjVuDocument::setUrl(QDjVuContext *ctx, QUrl url, bool cache)
       return false;
     }
   ddjvu_document_set_user_data(document, (void*)this);
+  priv->docinfo();
   return true;
 }
 
@@ -458,11 +493,15 @@ QDjVuDocument::handle(ddjvu_message_t *msg)
       }
       return true;
     case DDJVU_ERROR:
+      qWarning("DDJVUAPI Error: %s", msg->m_error.message);
+      if (msg->m_error.filename)
+        qWarning("\t%s:%d", msg->m_error.filename, msg->m_error.lineno);
       emit error(QString::fromLocal8Bit(msg->m_error.message),
                  QString::fromLocal8Bit(msg->m_error.filename), 
                  msg->m_error.lineno);
       return true;
     case DDJVU_INFO:
+      qWarning("DDJVUAPI Info: %s", msg->m_info.message);
       emit info(QString::fromLocal8Bit(msg->m_info.message));
       return true;
     default:
@@ -474,10 +513,99 @@ QDjVuDocument::handle(ddjvu_message_t *msg)
 /*! Return number of decoding threads running for this document. */
 
 int 
-QDjVuDocument::load(void)
+QDjVuDocument::runningProcesses(void)
 {
   return priv->running.size();
 }
+
+
+/*! Obtains the cached document annotations.
+  This function returns \a miniexp_dummy if this 
+  information is not yet available.
+  Check again some time after 
+  receiving signal \a docinfo(). */
+
+miniexp_t 
+QDjVuDocument::getDocumentAnnotations()
+{
+  if (! priv->docReady)
+    return miniexp_dummy;
+  if (priv->documentAnnotations != miniexp_dummy)
+    return priv->documentAnnotations;
+#if DDJVUAPI_VERSION <= 17
+  priv->documentAnnotations = miniexp_nil;
+#else
+  priv->documentAnnotations = ddjvu_document_get_anno(document);
+  ddjvu_miniexp_release(document, priv->documentAnnotations);
+#endif
+  return priv->documentAnnotations;
+}
+
+/*! Obtains the cached document outline.
+  This function returns \a miniexp_dummy if this 
+  information is not yet available.
+  Check again some time after 
+  receiving signal \a docinfo(). */
+
+miniexp_t 
+QDjVuDocument::getDocumentOutline()
+{
+  if (! priv->docReady)
+    return miniexp_dummy;
+  if (priv->documentOutline != miniexp_dummy)
+    return priv->documentOutline;
+  priv->documentOutline = ddjvu_document_get_outline(document);
+  ddjvu_miniexp_release(document, priv->documentOutline);
+  return priv->documentOutline;
+}
+
+/*! Obtains the cached annotations for page \a pageno.
+  This function returns \a miniexp_dummy if this 
+  information is not yet available.
+  Check again some time after 
+  receiving signal \a pageinfo(). */
+
+miniexp_t 
+QDjVuDocument::getPageAnnotations(int pageno)
+{
+  if (! priv->docReady)
+    return miniexp_dummy;
+  if (pageno<0 || pageno>=priv->pageAnnotations.size())
+    return miniexp_dummy;
+  minivar_t expr = priv->pageAnnotations[pageno];
+  if (expr != miniexp_dummy)
+    return expr;
+  expr = ddjvu_document_get_pageanno(document, pageno);
+  ddjvu_miniexp_release(document, expr);
+  if (expr != miniexp_dummy)
+    priv->pageAnnotations[pageno] = expr;
+  return expr;
+}
+
+/*! Obtains the cached hidden text for page \a pageno.
+  This function returns \a miniexp_dummy if this 
+  information is not yet available.
+  Check again some time after 
+  receiving signal \a pageinfo(). */
+
+miniexp_t 
+QDjVuDocument::getPageText(int pageno)
+{
+  if (! priv->docReady)
+    return miniexp_dummy;
+  if (pageno<0 || pageno>=priv->pageText.size())
+    return miniexp_dummy;
+  minivar_t expr = priv->pageText[pageno];
+  if (expr != miniexp_dummy)
+    return expr;
+  expr = ddjvu_document_get_pagetext(document, pageno, 0);
+  ddjvu_miniexp_release(document, expr);
+  if (expr != miniexp_dummy)
+    priv->pageText[pageno] = expr;
+  return expr;
+}
+
+
 
 /*! \fn QDjVuDocument::isValid()
     Indicate if this object is associated with a valid

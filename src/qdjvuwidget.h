@@ -205,6 +205,7 @@ public:
   QString getTextForRect(const QRect &rect);
   QImage  getImageForRect(const QRect &rect);
 
+  
 protected:
   virtual bool viewportEvent (QEvent *event);
   virtual void scrollContentsBy(int dx, int dy);

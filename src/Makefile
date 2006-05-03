@@ -26,8 +26,9 @@ srcdir=.
 top_srcdir=..
 
 QTDEBUG=
+LIBDEBUG=
 OPTS = -O2
-PKGS= QtCore${QTDEBUG} QtGui${QTDEBUG} QtNetwork${QTDEBUG} ddjvuapi
+PKGS=QtCore${QTDEBUG} QtGui${QTDEBUG} QtNetwork${QTDEBUG} ddjvuapi
 LIBS=$(shell pkg-config --libs ${PKGS})
 FLGS=$(shell pkg-config --cflags ${PKGS})
 
@@ -45,8 +46,8 @@ SOURCES=qdjvu.h qdjvu.cpp\
 PROGRAM=djview
 
 debug: FORCE
-	${MAKE} all QTDEBUG=_debug OPTS=-g 
-#	${MAKE} all QTDEBUG=_debug OPTS=-g "LIBS=-Llib ${LIBS}"
+	${MAKE} all QTDEBUG=_debug "OPTS=-g"
+#	${MAKE} all QTDEBUG=_debug "OPTS=-g -Llib"
 #	${MAKE} all OPTS=-g 
 
 all: ${PROGRAM}
