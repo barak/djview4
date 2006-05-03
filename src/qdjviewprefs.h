@@ -117,8 +117,8 @@ public:
   // Preferences saved via the preference dialog.
   Tools      tools;
   double     gamma;
-  uint       cacheSize;
-  uint       pixelCacheSize;
+  qlonglong  cacheSize;
+  int        pixelCacheSize;
   int        lensSize;
   int        lensPower;
   double     printerGamma;  
@@ -152,6 +152,6 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QDjViewPrefs::Tools)
 
 /* -------------------------------------------------------------
    Local Variables:
-   c++-font-lock-extra-types: ( "\\sw+_t" "[A-Z]\\sw*[a-z]\\sw*" "uint" )
+   c++-font-lock-extra-types: ( "\\sw+_t" "[A-Z]\\sw*[a-z]\\sw*" "qlonglong" )
    End:
    ------------------------------------------------------------- */

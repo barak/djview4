@@ -213,9 +213,9 @@ QDjViewPrefs::load(void)
   if (s.contains("gamma"))
     gamma = s.value("gamma").toDouble();
   if (s.contains("cacheSize"))
-    cacheSize = s.value("cacheSize").toUInt();
+    cacheSize = s.value("cacheSize").toLongLong();
   if (s.contains("pixelCacheSize"))
-    pixelCacheSize = s.value("pixelCacheSize").toUInt();
+    pixelCacheSize = s.value("pixelCacheSize").toInt();
   if (s.contains("lensSize"))
     lensSize = s.value("lensSize").toInt();
   if (s.contains("lensPower"))
