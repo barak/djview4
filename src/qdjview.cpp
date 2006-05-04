@@ -1163,7 +1163,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   splash->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
   splash->setPixmap(QPixmap(":/images/splash.png"));
   QPalette palette = splash->palette();
-  palette.setColor(QPalette::Window, Qt::white);
+  palette.setColor(QPalette::Background, Qt::white);
   splash->setPalette(palette);
 #if QT_VERSION >= 0x040100
   splash->setAutoFillBackground(true);

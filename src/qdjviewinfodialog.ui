@@ -164,9 +164,6 @@
          <property name="readOnly" >
           <bool>true</bool>
          </property>
-         <property name="acceptRichText" >
-          <bool>false</bool>
-         </property>
         </widget>
        </item>
       </layout>
