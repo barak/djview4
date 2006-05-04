@@ -35,6 +35,7 @@
 #include <QSet>
 #include <QString>
 #include <QUrl>
+#include <QVector>
 
 #if DDJVUAPI_VERSION < 17
 # error "DDJVUAPI_VERSION>=17 is required !"
