@@ -515,15 +515,11 @@ QDjVuDocument::handle(ddjvu_message_t *msg)
       }
       return true;
     case DDJVU_ERROR:
-      qWarning("DDJVUAPI Error: %s", msg->m_error.message);
-      if (msg->m_error.filename)
-        qWarning("\t%s:%d", msg->m_error.filename, msg->m_error.lineno);
       emit error(QString::fromLocal8Bit(msg->m_error.message),
                  QString::fromLocal8Bit(msg->m_error.filename), 
                  msg->m_error.lineno);
       return true;
     case DDJVU_INFO:
-      qWarning("DDJVUAPI Info: %s", msg->m_info.message);
       emit info(QString::fromLocal8Bit(msg->m_info.message));
       return true;
     default:

@@ -899,7 +899,7 @@ QDjVuPrivate::makeLayout()
               pageMap[i] = &pageData[i];
             }
           for(int i=0; i<numPages; i++)
-            if (i<loPage && i>=hiPage)
+            if (i < loPage - 2 && i >= hiPage + 2)
               pageData[i].clear();
           if (continuous || sideBySide)
             adjustSettings(PRIORITY_PAGE, miniexp_nil);
@@ -1134,12 +1134,13 @@ QDjVuPrivate::makeLayout()
             { vw = vh; dw = dh; }
           zoomFactor = vw * 100 / dw;
            // apply zoom
-         int r = rotation;
+          int r = rotation;
           foreach(p, pageLayout)
             {
-              QSize size;
+              QSize size = unknownSize;
               int dpi = p->dpi;
-              size = scale_size(p->width, p->height, vw*100, dw*dpi, r);
+              if (p->dpi>0 && p->width>0 && p->height>0)
+                size = scale_size(p->width, p->height, vw*100, dw*dpi, r);
               p->rect.setSize(size);
             }
           // prepare further adjustments

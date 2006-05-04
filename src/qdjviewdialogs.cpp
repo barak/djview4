@@ -205,6 +205,75 @@ QDjViewInfoDialog::documentClosed()
 
 
 QString 
+QDjViewInfoDialog::documentFormat(void)
+{
+  ddjvu_document_type_t docType = ddjvu_document_get_type(*d->document);
+  QString format;
+  if (docType == DDJVU_DOCTYPE_SINGLEPAGE)
+    format = tr("SINGLE PAGE");
+  else if (docType == DDJVU_DOCTYPE_BUNDLED)
+    format = tr("BUNDLED");
+  else if (docType == DDJVU_DOCTYPE_INDIRECT)
+    format = tr("INDIRECT");
+  else if (docType == DDJVU_DOCTYPE_OLD_BUNDLED)
+    format = tr("OLD BUNDLED (obsolete format)");
+  else if (docType == DDJVU_DOCTYPE_OLD_BUNDLED)
+    format = tr("OLD BUNDLED (obsolete format)");
+  return format;
+}
+
+
+int     
+QDjViewInfoDialog::documentSize(int *nfilesptr, int *npagesptr)
+{
+  // This is a bit hairy because
+  // of the shortcomings of early ddjvuapi.
+  int size = 0;
+  QDjVuDocument *doc = d->document;
+  ddjvu_document_type_t docType = ddjvu_document_get_type(*doc);
+  int npages = d->djview->pageNum();
+#if DDJVUAPI_VERSION >= 18
+  int nfiles = ddjvu_document_get_filenum(*doc);
+#else
+  int nfiles = npages;
+  if (docType == DDJVU_DOCTYPE_BUNDLED ||
+      docType == DDJVU_DOCTYPE_INDIRECT )
+    {
+      nfiles = ddjvu_document_get_filenum(*doc);
+#endif
+      // ddjvuapi>=18 generic code
+      // -- add size of all files
+      for (int i=0; i < nfiles && size >= 0; i++)
+        {
+          ddjvu_fileinfo_t info;
+          if (ddjvu_document_get_fileinfo(*doc, i, &info) != DDJVU_JOB_OK)
+            size = -1;
+          else if (info.size > 0)
+            size += (info.size + 1) & ~1;
+        }
+#if DDJVUAPI_VERSION >= 18
+      // -- add size of header (ddjvuapi>=18)
+      if (size >= 0)
+        {
+          ddjvu_fileinfo_t info;
+          if (ddjvu_document_get_fileinfo(*doc, -1, &info) == DDJVU_JOB_OK)
+            size += (info.size + 1) & ~1;
+        }
+#else
+    }
+#endif
+  // -- return everything
+  if (npagesptr)
+    *npagesptr = npages;
+  if (nfilesptr)
+    *nfilesptr = npages;
+  if (size > 0)
+    return size;
+  return -1;
+}
+
+
+QString 
 QDjViewInfoDialog::pageEncodingMessage(int pageno)
 {
   char *utf8 = 0;
@@ -232,77 +301,30 @@ QDjViewInfoDialog::pageEncodingMessage(int pageno)
 QString 
 QDjViewInfoDialog::documentEncodingMessage()
 {
-  QDjVuDocument *document = d->document;
   QString message;
-  // -- document name
+  // name
   QString name = d->djview->getShortFileName();
   if (! name.isEmpty())
     message += tr("Document name:    %1\n")
       .arg(d->djview->getShortFileName());
-  // -- document format
-  ddjvu_document_type_t docType = ddjvu_document_get_type(*document);
-  QString format;
-  if (docType == DDJVU_DOCTYPE_SINGLEPAGE)
-    format = tr("SINGLE PAGE");
-  else if (docType == DDJVU_DOCTYPE_BUNDLED)
-    format = tr("BUNDLED");
-  else if (docType == DDJVU_DOCTYPE_INDIRECT)
-    format = tr("INDIRECT");
-  else if (docType == DDJVU_DOCTYPE_OLD_BUNDLED)
-    format = tr("OLD BUNDLED (obsolete format)");
-  else if (docType == DDJVU_DOCTYPE_OLD_BUNDLED)
-    format = tr("OLD BUNDLED (obsolete format)");
+  // format
+  QString format = documentFormat();
   if (! format.isEmpty())
     message += tr("Document format:  %1\n")
       .arg(format);
-  // -- document number of files and pages
-  int size = 0;
-  bool okay = true;
-  int npages = d->djview->pageNum();
-#if DDJVUAPI_VERSION < 18
-  int nfiles = npages;
-  if (docType == DDJVU_DOCTYPE_BUNDLED ||
-      docType != DDJVU_DOCTYPE_INDIRECT )
-    nfiles = ddjvu_document_get_filenum(*d->document);
-  else
-    okay = false;
-#else
-  int nfiles = ddjvu_document_get_filenum(*d->document);
-#endif
-  // -- add size of all files
-  for (int i=0; i<nfiles && okay; i++)
-    {
-      ddjvu_fileinfo_t info;
-      if (ddjvu_document_get_fileinfo(*document, i, &info) == DDJVU_JOB_OK 
-          && info.size > 0)
-        {
-          size += info.size;
-          if (info.size & 1)
-            size += 1;
-        }
-      else
-        okay = false;
-    }
-#if DDJVUAPI_VERSION >= 18
-  // -- add size of header
-  ddjvu_fileinfo_t info;
-  if (ddjvu_document_get_fileinfo(*document, -1, &info) == DDJVU_JOB_OK)
-    {
-      qDebug() << info.size;
-      size += info.size;
-      if (info.size & 1)
-        size += 1;
-    }
-#endif
-  if (okay)
+  // sizes
+  int nfiles = 0;
+  int npages = 0;
+  int size = documentSize(&nfiles, &npages);
+  if (size > 0)
     message += tr("Document size:    %1\n").arg(size);
-  message += tr("Number of files:  %1\n").arg(nfiles);
-  message += tr("Number of pages:  %1\n").arg(npages);
-
-  // -- finished
+  if (nfiles > 0)
+    message += tr("Number of files:  %1\n").arg(nfiles);
+  if (npages > 0)
+    message += tr("Number of pages:  %1\n").arg(npages);
+  // return
   return message;
 }
-
 
 
 void

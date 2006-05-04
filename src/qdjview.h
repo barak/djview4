@@ -130,6 +130,8 @@ protected:
   virtual void closeEvent(QCloseEvent *event);
 
 protected slots:
+  void info(QString);
+  void error(QString, QString, int);
   void docinfo();
   void errorCondition(int);
   void pointerPosition(const Position &pos, const PageInfo &page);
@@ -144,7 +146,6 @@ protected slots:
   void zoomComboEdited(void);
   void pageComboActivated(int);
   void pageComboEdited(void);
-  
   void performAbout(void);
   void performNew(void);
   void performOpen(void);

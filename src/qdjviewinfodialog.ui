@@ -68,7 +68,7 @@
         </sizepolicy>
        </property>
        <property name="text" >
-        <string>&amp;Page</string>
+        <string>Current &amp;Page</string>
        </property>
       </widget>
      </item>

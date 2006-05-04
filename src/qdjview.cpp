@@ -1137,6 +1137,10 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
           this, SLOT(errorCondition(int)));
   connect(widget, SIGNAL(error(QString,QString,int)),
           errorDialog, SLOT(error(QString,QString,int)));
+  connect(widget, SIGNAL(error(QString,QString,int)),
+          this, SLOT(error(QString,QString,int)));
+  connect(widget, SIGNAL(info(QString)),
+          this, SLOT(info(QString)));
   connect(widget, SIGNAL(layoutChanged()),
           this, SLOT(updateActionsLater()));
   connect(widget, SIGNAL(pageChanged(int)),
@@ -1691,6 +1695,27 @@ QDjView::eventFilter(QObject *watched, QEvent *event)
 
 // -----------------------------------
 // PROTECTED SIGNALS
+
+
+void 
+QDjView::info(QString message)
+{
+  // just for calling qWarning
+  qWarning("INFO: %s", (const char*)message.toLocal8Bit());
+}
+
+
+void 
+QDjView::error(QString message, QString filename, int lineno)
+{
+  // just for calling qWarning
+  filename = filename.section("/", -1);
+  if (filename.isEmpty())
+    qWarning("ERROR: %s", (const char*)message.toLocal8Bit());
+  else
+    qWarning("ERROR (%s:%d): %s", (const char*)filename.toLocal8Bit(), 
+             lineno, (const char*)message.toLocal8Bit() );
+}
 
 
 void 
