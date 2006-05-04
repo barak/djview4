@@ -18,8 +18,8 @@
 
 #include <stdlib.h>
 #include <errno.h>
-#include <libdjvu/ddjvuapi.h>
 #include <libdjvu/miniexp.h>
+#include <libdjvu/ddjvuapi.h>
 
 #include "qdjvu.h"
 
@@ -29,6 +29,7 @@
 #include <QCoreApplication>
 #include <QFile>
 #include <QFileInfo>
+#include <QList>
 #include <QMutex>
 #include <QMutexLocker>
 #include <QSet>
