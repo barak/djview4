@@ -26,6 +26,8 @@
 #include "qdjvu.h"
 #include "qdjvuwidget.h"
 
+#include <QDebug>
+
 #include <QWidget>
 #include <QMenu>
 #include <QCursor>
@@ -929,6 +931,9 @@ QDjVuPrivate::makeLayout()
                       p->dpi = info.dpi;
                       p->width = info.width;
                       p->height = info.height;
+#if DDJVUAPI_VERSION >= 18
+                      p->initialRot = info.rotation;
+#endif
                       layoutChange |= CHANGE_SCALE;
                       layoutChange |= UPDATE_BORDERS;
                     }
@@ -3403,7 +3408,9 @@ QDjVuPrivate::paintPage(QPainter &paint, Page *p, const QRegion &region)
       QDjVuPage *dp = p->page;
       qrect_to_rect(r, rr);
       qrect_to_rect(p->rect, pr);
+#if DDJVUAPI_VERSION < 18
       p->initialRot = ddjvu_page_get_initial_rotation(*dp);
+#endif
       rot = p->initialRot + rotation;
       ddjvu_page_set_rotation(*dp, (ddjvu_page_rotation_t)(rot & 0x3));
       if (! ddjvu_page_render(*dp, mode, &pr, &rr, renderFormat,

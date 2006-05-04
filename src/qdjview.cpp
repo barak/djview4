@@ -1411,14 +1411,20 @@ QDjView::goToPage(QString name, int from)
           if (documentPages[i].title &&
               ! strcmp(utf8Name, documentPages[i].title))
             { pageno = i; break; }
-#if WORKAROUND_FOR_DDJVUAPI_17
       // Otherwise try a number in range [1..pagenum]
       if (pageno < 0 || pageno >= pagenum)
         pageno = name.toInt() - 1;
-#endif
-      // Otherwise let ddjvuapi do the search
+      // Otherwise search page names and ids
       if (pageno < 0 || pageno >= pagenum)
-        pageno = ddjvu_document_search_pageno(*document, utf8Name);
+        for (int i=0; i<pagenum; i++)
+          if (documentPages[i].name && 
+              !strcmp(utf8Name, documentPages[i].name))
+            { pageno = i; break; }
+      if (pageno < 0 || pageno >= pagenum)
+        for (int i=0; i<pagenum; i++)
+          if (documentPages[i].id && 
+              !strcmp(utf8Name, documentPages[i].id))
+            { pageno = i; break; }
       // Done
       if (pageno >= 0 && pageno < pagenum)
         widget->setPage(pageno);
@@ -1824,7 +1830,7 @@ QDjView::pointerEnter(const Position &pos, miniexp_t maparea)
     message = message + " (in other window.)";
   
   
-  statusBar->showMessage(link+" "+message);
+  statusBar->showMessage(message);
 }
 
 
