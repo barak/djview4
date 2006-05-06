@@ -556,7 +556,7 @@ QDjVuDocument::getDocumentAnnotations()
 #if DDJVUAPI_VERSION <= 17
   priv->documentAnnotations = miniexp_nil;
 #else
-  priv->documentAnnotations = ddjvu_document_get_anno(document);
+  priv->documentAnnotations = ddjvu_document_get_anno(document,1);
   ddjvu_miniexp_release(document, priv->documentAnnotations);
 #endif
   return priv->documentAnnotations;
