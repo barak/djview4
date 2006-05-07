@@ -64,13 +64,15 @@ public slots:
   void setPage(int pageno);
   void setFile(int fileno);
 protected slots:
-  void prevFile();
-  void nextFile();
-  void selectFile();
-  void documentClosed();
+  void prevFile(void);
+  void nextFile(void);
+  void selectFile(int fileno);
+  void jumpToSelectedPage(void);
+  void documentClosed(void);
 private:
   void fillDocLabel();
   void fillDocTable();
+  void fillDocRow(int);
   struct Private;
   Private *d;
 };

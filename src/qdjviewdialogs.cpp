@@ -40,7 +40,11 @@
 
 
 
-// ----------- QDJVIEWERRORDIALOG
+// =======================================
+// QDJVIEWERRORDIALOG
+// =======================================
+
+
 
 #include "ui_qdjviewerrordialog.h"
 
@@ -113,7 +117,10 @@ QDjViewErrorDialog::okay()
 
 
 
-// ----------- QDJVIEWINFODIALOG
+// =======================================
+// QDJVIEWINFODIALOG
+// =======================================
+
 
 #include "ui_qdjviewinfodialog.h"
 
@@ -156,8 +163,10 @@ QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
   d->ui.fileText->viewport()->setBackgroundRole(QPalette::Background);
   
   QStringList labels;
-  d->ui.docTable->setColumnCount(5);
-  labels << tr("") << tr("Name") << tr("Size") << tr("Type") << tr("Title");
+  d->ui.docTable->setColumnCount(6);
+  labels << tr("File #") << tr("File Name") 
+         << tr("File Size") << tr("File Type") 
+         << tr("Page #") << tr("Page Title");
   d->ui.docTable->setHorizontalHeaderLabels(labels);
   d->ui.docTable->horizontalHeader()->setStretchLastSection(true);
   d->ui.docTable->verticalHeader()->hide();
@@ -172,11 +181,27 @@ QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
           this, SLOT(nextFile()) );
   connect(d->ui.prevFileButton, SIGNAL(clicked()), 
           this, SLOT(prevFile()) );
-  connect(d->ui.docTable, SIGNAL(itemSelectionChanged()), 
-          this, SLOT(selectFile()) );
+  connect(d->ui.docTable, SIGNAL(currentCellChanged(int,int,int,int)), 
+          this, SLOT(selectFile(int)) );
+  connect(d->ui.docTable, SIGNAL(itemDoubleClicked(QTableWidgetItem*)),
+          this, SLOT(jumpToSelectedPage()) );
 
-  refreshDocument();
-  refreshFile();
+  // what's this
+  QWidget *wd = d->ui.tabDocument;
+  wd->setWhatsThis(tr("<html><b>Document information</b><br>"
+                      "Display information about the document and "
+                      "its component files. Select a component file "
+                      "to display detailled information in the 'File' "
+                      "tab. Double click a component file to show "
+                      "the corresponding page in the main window."
+                      "</html>"));
+  QWidget *wf = d->ui.tabFile;
+  wf->setWhatsThis(tr("<html><b>File/Page information</b><br>"
+                      "Display the structure of the DjVu data "
+                      "corresponding to the component file or the page "
+                      "selected in the 'Document' tab. The arrow buttons "
+                      "let you navigate to the previous or next "
+                      "component file.</html>"));
 }
 
 void 
@@ -353,7 +378,10 @@ QDjViewInfoDialog::setFile(int fileno)
       d->fileno = qBound(0, fileno, d->files.size()-1);
       d->pageno = d->files[fileno].pageno;
       d->done = false;
-      d->ui.docTable->selectRow(fileno);
+      QTableWidget *table = d->ui.docTable;
+      QTableWidgetSelectionRange all(0,0,table->rowCount()-1, table->columnCount()-1);
+      table->setRangeSelected(all, false);
+      table->selectRow(fileno);
       refreshFile();
     }
   else
@@ -380,13 +408,23 @@ QDjViewInfoDialog::nextFile()
 }
 
 void 
-QDjViewInfoDialog::selectFile()
+QDjViewInfoDialog::selectFile(int fileno)
+{
+  if (d->document && d->files.size())
+    if (fileno >= 0 && fileno < d->files.size())
+      if (fileno != d->fileno)
+        setFile(fileno);
+}
+
+void 
+QDjViewInfoDialog::jumpToSelectedPage(void)
 {
   if (d->document && d->files.size())
     {
       int row = d->ui.docTable->currentRow();
-      if (row >= 0 && row < d->files.size())
-        setFile(row);
+      ddjvu_fileinfo_t &info = d->files[row];
+      if (info.type == 'P')
+        d->djview->goToPage(info.pageno);
     }
 }
 
@@ -420,9 +458,9 @@ QDjViewInfoDialog::fillDocLabel()
           else if (docType == DDJVU_DOCTYPE_INDIRECT)
             msg << tr("DjVu indirect document");
           else if (docType == DDJVU_DOCTYPE_OLD_BUNDLED)
-            msg << tr("Obsolete DjVu bundled document");
+            msg << tr("DjVu obsolete bundled document");
           else if (docType == DDJVU_DOCTYPE_OLD_INDEXED)
-            msg << tr("Obsolete DjVu indexed document");
+            msg << tr("DjVu obsolete indexed document");
           
           int pagenum = ddjvu_document_get_pagenum(*doc);
 #if DDJVUAPI_VERSION < 18
@@ -443,9 +481,65 @@ QDjViewInfoDialog::fillDocLabel()
 void 
 QDjViewInfoDialog::fillDocTable()
 {
+  int filenum = d->files.size();
+  QTableWidget *table = d->ui.docTable;
+  table->setRowCount(filenum);
+  for (int i=0; i<filenum; i++)
+    fillDocRow(i);
+  table->resizeColumnsToContents();
+  table->resizeRowsToContents();
 }
 
+void 
+QDjViewInfoDialog::fillDocRow(int i)
+{
+  ddjvu_fileinfo_t &info = d->files[i];
+  QTableWidget *table = d->ui.docTable;
 
+  QTableWidgetItem *numItem = new QTableWidgetItem();
+  numItem->setText(QString(" %1 ").arg(i+1));
+  numItem->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+  numItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+  table->setItem(i, 0, numItem);
+
+  QTableWidgetItem *nameItem = new QTableWidgetItem();
+  QString name = (info.name) ? QString::fromUtf8(info.name) : tr("n/a");
+  nameItem->setText(QString(" %1 ").arg(name));
+  nameItem->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+  nameItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+  table->setItem(i, 1, nameItem);
+
+  QTableWidgetItem *sizeItem = new QTableWidgetItem();
+  sizeItem->setText((info.size>0) ? QString(" %1 ").arg(info.size) : tr("n/a"));
+  sizeItem->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+  sizeItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+  table->setItem(i, 2, sizeItem);
+
+  QTableWidgetItem *typeItem = new QTableWidgetItem();
+  if (info.type == 'P')
+    typeItem->setText(tr(" Page "));
+  else if (info.type == 'T')
+    typeItem->setText(tr(" Thumbnails "));
+  else
+    typeItem->setText(tr(" Shared "));
+  typeItem->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+  typeItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+  table->setItem(i, 3, typeItem);
+  
+  QTableWidgetItem *pnumItem = new QTableWidgetItem();
+  if (info.type == 'P')
+    pnumItem->setText(QString(" %1 ").arg(info.pageno+1));
+  pnumItem->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+  pnumItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+  table->setItem(i, 4, pnumItem);
+  
+  QTableWidgetItem *titleItem = new QTableWidgetItem();
+  if (info.type == 'P')
+    titleItem->setText(QString(" %1 ").arg(d->djview->pageName(info.pageno)));
+  titleItem->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+  titleItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+  table->setItem(i, 5, titleItem);
+}
 
 
 
