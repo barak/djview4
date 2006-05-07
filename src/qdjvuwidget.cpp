@@ -718,6 +718,8 @@ public:
   // cursors
   QCursor cursHandOpen;
   QCursor cursHandClosed;
+  // optimization
+  QDjVuPage *initialPage;
 
   void changeLayout(int change);
   bool requestPage(Page *p);
@@ -760,6 +762,9 @@ public slots:
 
 QDjVuPrivate::~QDjVuPrivate()
 {
+  if (initialPage)
+    delete initialPage;
+  initialPage = 0;
   if (doc) 
     doc->deref();
   doc = 0;
@@ -838,6 +843,8 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   // cursors
   cursHandOpen = qcursor_by_name(":/images/cursor_hand_open.png");
   cursHandClosed = qcursor_by_name(":/images/cursor_hand_closed.png");
+  // optimization
+  initialPage = 0;
 }
 
 
@@ -1387,7 +1394,17 @@ QDjVuPrivate::requestPage(Page *p)
 {
   if (! p->page) 
     {
-      p->page = new QDjVuPage(doc, p->pageno); 
+      // check that initial page
+      if (initialPage && p->pageno == 0)
+        {
+          p->page = initialPage;
+          initialPage = 0;
+        }
+      delete initialPage;
+      initialPage = 0;
+      // create and connect page
+      if (! p->page)
+        p->page = new QDjVuPage(doc, p->pageno); 
       connect(p->page, SIGNAL(pageinfo()), 
               this, SLOT(pageinfoPage()));
       connect(p->page, SIGNAL(redisplay()),
@@ -1786,6 +1803,8 @@ QDjVuWidget::setDocument(QDjVuDocument *d)
       // cleanup
       if (priv->doc)
         {
+          delete priv->initialPage;
+          priv->initialPage = 0;
           priv->adjustSettings(PRIORITY_DOCUMENT, miniexp_nil);
           priv->adjustSettings(PRIORITY_PAGE, miniexp_nil);
           disconnect(priv->doc, 0, priv, 0);
@@ -1821,6 +1840,9 @@ QDjVuWidget::setDocument(QDjVuDocument *d)
                   priv, SLOT(makePageRequests()));
           priv->docinfo();
         }
+      // optimize
+      if (priv->doc)
+        priv->initialPage = new QDjVuPage(priv->doc, 0);
       // update
       priv->visibleRect.setRect(0,0,0,0);
       priv->currentPos = Position();
