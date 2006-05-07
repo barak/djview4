@@ -1365,7 +1365,7 @@ QDjVuPrivate::makePageRequests(void)
             if (!p->page && brv.intersects(p->rect)) 
               found |= requestPage(p);
         }
-      else
+      else if (pageVisible.size() > 0)
         {
           int pmin = pageVisible[0]->pageno;
           int pmax = pageVisible[0]->pageno;
