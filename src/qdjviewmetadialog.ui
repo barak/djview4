@@ -2,14 +2,14 @@
  <author></author>
  <comment></comment>
  <exportmacro></exportmacro>
- <class>QDjViewInfoDialog</class>
- <widget class="QDialog" name="QDjViewInfoDialog" >
+ <class>QDjViewMetaDialog</class>
+ <widget class="QDialog" name="QDjViewMetaDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>320</height>
+    <width>550</width>
+    <height>350</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -24,9 +24,9 @@
    </property>
    <item>
     <widget class="QTabWidget" name="tabWidget" >
-     <widget class="QWidget" name="tabDocument" >
+     <widget class="QWidget" name="docTab" >
       <attribute name="title" >
-       <string>&amp;Document</string>
+       <string>&amp;Document Metadata</string>
       </attribute>
       <layout class="QVBoxLayout" >
        <property name="margin" >
@@ -36,31 +36,9 @@
         <number>6</number>
        </property>
        <item>
-        <widget class="QLabel" name="docLabel" >
-         <property name="frameShape" >
-          <enum>QFrame::Box</enum>
-         </property>
-         <property name="frameShadow" >
-          <enum>QFrame::Raised</enum>
-         </property>
-         <property name="textFormat" >
-          <enum>Qt::PlainText</enum>
-         </property>
-         <property name="alignment" >
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QTableWidget" name="docTable" >
-         <property name="horizontalScrollBarPolicy" >
-          <enum>Qt::ScrollBarAlwaysOff</enum>
-         </property>
          <property name="editTriggers" >
           <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="selectionBehavior" >
-          <enum>QAbstractItemView::SelectRows</enum>
          </property>
          <property name="sortingEnabled" >
           <bool>true</bool>
@@ -69,9 +47,9 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabFile" >
+     <widget class="QWidget" name="pageTab" >
       <attribute name="title" >
-       <string>&amp;File</string>
+       <string>&amp;Page Metadata</string>
       </attribute>
       <layout class="QVBoxLayout" >
        <property name="margin" >
@@ -89,57 +67,39 @@
           <number>6</number>
          </property>
          <item>
-          <widget class="QPushButton" name="prevFileButton" >
-           <property name="icon" >
-            <iconset>images/icon_prev.png</iconset>
+          <widget class="QLabel" name="label" >
+           <property name="text" >
+            <string>Page:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="fileLabel" >
+          <widget class="QComboBox" name="pageCombo" >
            <property name="sizePolicy" >
             <sizepolicy>
-             <hsizetype>5</hsizetype>
-             <vsizetype>5</vsizetype>
+             <hsizetype>1</hsizetype>
+             <vsizetype>0</vsizetype>
              <horstretch>1</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="frameShape" >
-            <enum>QFrame::Box</enum>
-           </property>
-           <property name="frameShadow" >
-            <enum>QFrame::Raised</enum>
-           </property>
-           <property name="textFormat" >
-            <enum>Qt::PlainText</enum>
-           </property>
-           <property name="alignment" >
-            <set>Qt::AlignCenter</set>
-           </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="nextFileButton" >
-           <property name="icon" >
-            <iconset>images/icon_next.png</iconset>
+          <widget class="QPushButton" name="jumpButton" >
+           <property name="text" >
+            <string>&amp;View Page</string>
            </property>
           </widget>
          </item>
         </layout>
        </item>
        <item>
-        <widget class="QTextEdit" name="fileText" >
-         <property name="frameShape" >
-          <enum>QFrame::Box</enum>
+        <widget class="QTableWidget" name="pageTable" >
+         <property name="editTriggers" >
+          <set>QAbstractItemView::NoEditTriggers</set>
          </property>
-         <property name="frameShadow" >
-          <enum>QFrame::Raised</enum>
-         </property>
-         <property name="lineWrapMode" >
-          <enum>QTextEdit::NoWrap</enum>
-         </property>
-         <property name="readOnly" >
+         <property name="sortingEnabled" >
           <bool>true</bool>
          </property>
         </widget>
@@ -197,14 +157,12 @@
   </layout>
  </widget>
  <pixmapfunction></pixmapfunction>
- <resources>
-  <include location="qdjview.qrc" />
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>okButton</sender>
    <signal>clicked()</signal>
-   <receiver>QDjViewInfoDialog</receiver>
+   <receiver>QDjViewMetaDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel" >

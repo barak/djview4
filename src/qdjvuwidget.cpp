@@ -868,6 +868,7 @@ void
 QDjVuPrivate::makeLayout()
 {
   // save position
+  int oldPage = currentPos.pageNo;
   if (docReady && !(layoutChange & CHANGE_VIEW))
     {
       movePoint = currentPoint;
@@ -1917,12 +1918,15 @@ QDjVuWidget::setPosition(const Position &pos)
 void 
 QDjVuWidget::setPosition(const Position &pos, const QPoint &point)
 {
+  int oldPage = priv->currentPos.pageNo;
   priv->movePoint = priv->currentPoint = point;
   priv->movePos = priv->currentPos = pos;
   if (priv->pageMap.contains(pos.pageNo))
     priv->changeLayout(CHANGE_VIEW|CHANGE_SCROLLBARS);
   else
     priv->changeLayout(CHANGE_PAGES|CHANGE_VIEW|CHANGE_SCROLLBARS);
+  if (oldPage != priv->currentPos.pageNo)
+    emit pageChanged(priv->currentPos.pageNo);
 }
 
 

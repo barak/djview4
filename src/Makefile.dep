@@ -5,7 +5,7 @@ qdjviewprefs.o: qdjviewprefs.cpp qdjviewprefs.h qdjview.h qdjvu.h \
   qdjvuwidget.h
 qdjviewdialogs.o: qdjviewdialogs.cpp qdjviewdialogs.h qdjview.h qdjvu.h \
   qdjvuwidget.h qdjviewprefs.h ui_qdjviewerrordialog.h \
-  ui_qdjviewinfodialog.h
+  ui_qdjviewinfodialog.h ui_qdjviewmetadialog.h
 qdjview.o: qdjview.cpp qdjvu.h qdjvuhttp.h qdjvuwidget.h qdjview.h \
   qdjviewprefs.h qdjviewdialogs.h
 djview.o: djview.cpp qdjvu.h qdjview.h qdjvuwidget.h qdjviewprefs.h

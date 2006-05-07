@@ -50,6 +50,7 @@ class QToolBar;
 
 class QDjViewErrorDialog;
 class QDjViewInfoDialog;
+class QDjViewMetaDialog;
 
 
 class QDjView : public QMainWindow
@@ -97,9 +98,11 @@ public slots:
   
 signals:
   void  documentClosed();
+  void  documentOpened(QDjVuDocument*);
 
 protected:
   friend class QDjViewInfoDialog;
+  friend class QDjViewMetaDialog;
 
   typedef QDjVuWidget::Position Position;
   typedef QDjVuWidget::PageInfo PageInfo;
@@ -150,6 +153,7 @@ protected slots:
   void performNew(void);
   void performOpen(void);
   void performInformation(void);
+  void performMetadata(void);
   void performRotation(void);
   void performZoom(void);
   void performSelect(bool);
@@ -167,6 +171,7 @@ protected:
   // dialogs
   QDjViewErrorDialog *errorDialog;
   QDjViewInfoDialog  *infoDialog;
+  QDjViewMetaDialog  *metaDialog;
   // widgets
   QLabel             *splash;
   QDjVuWidget        *widget;
@@ -233,6 +238,7 @@ protected:
   QAction *actionRotate180;
   QAction *actionRotate270;
   QAction *actionInformation;
+  QAction *actionMetadata;
   QAction *actionAbout;
   QAction *actionWhatsThis;
   QAction *actionDisplayColor;

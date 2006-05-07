@@ -504,8 +504,13 @@ QDjView::createActions()
   
   actionInformation = makeAction(tr("&Information..."))
     << QKeySequence("Ctrl+I")
-    << tr("Show the document and page properties.")
+    << tr("Show information about the document encoding and structure")
     << Trigger(this, SLOT(performInformation()));
+
+  actionMetadata = makeAction(tr("&Metadata..."))
+    << QKeySequence("Ctrl+M")
+    << tr("Show the document and page meta data.")
+    << Trigger(this, SLOT(performMetadata()));
 
   actionWhatsThis = QWhatsThis::createAction(this);
 
@@ -615,6 +620,7 @@ QDjView::createMenus()
   editMenu->addAction(actionSearch);
   editMenu->addSeparator();
   editMenu->addAction(actionInformation);
+  editMenu->addAction(actionMetadata);
   QMenu *viewMenu = menuBar->addMenu(tr("&View", "View|"));
   QMenu *zoomMenu = viewMenu->addMenu(tr("&Zoom","View|Zoom"));
   zoomMenu->addAction(actionZoomIn);
@@ -705,6 +711,7 @@ QDjView::createMenus()
   contextMenu->addSeparator();
   contextMenu->addAction(actionSearch);
   contextMenu->addAction(actionInformation);
+  contextMenu->addAction(actionMetadata);
   contextMenu->addSeparator();
   contextMenu->addAction(actionSave);
   contextMenu->addAction(actionExport);
@@ -884,11 +891,17 @@ QDjView::createWhatsThis()
             >> pageCombo;
 
   Help(tr("<html><b>Document and page infromation.</b><br> "
-          "Display a dialog window for viewing metadata and "
+          "Display a dialog window for viewing "
           "encoding information pertaining to the document "
           "or to a specific page."))
             >> actionInformation;
   
+  Help(tr("<html><b>Document and page infromation.</b><br> "
+          "Display a dialog window for viewing metadata "
+          "pertaining to the document "
+          "or to a specific page."))
+            >> actionMetadata;
+
   Help(tr("<html><b>Continuous layout.</b><br/> "
           "Display all the document pages arranged vertically "
           "inside the scrollable document viewing area.</html>"))
@@ -1124,6 +1137,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 
   errorDialog = new QDjViewErrorDialog(this);
   infoDialog = 0;
+  metaDialog = 0;
   
   // Create widgets
 
@@ -1305,6 +1319,8 @@ QDjView::open(QDjVuDocument *doc)
   layout->setCurrentWidget(widget);
   updateActions();
   docinfo();
+  if (doc)
+    emit documentOpened(doc);
 }
 
 
@@ -2052,9 +2068,24 @@ QDjView::performInformation(void)
     infoDialog = new QDjViewInfoDialog(this);
   infoDialog->setWindowTitle(makeCaption(tr("DjView Information")));
   infoDialog->setPage(widget->page());
-  infoDialog->refreshDocument();
+  infoDialog->refresh();
   infoDialog->raise();
   infoDialog->show();
+}
+
+
+void 
+QDjView::performMetadata(void)
+{
+  if (! documentPages.size())
+    return;
+  if (! metaDialog)
+    metaDialog = new QDjViewMetaDialog(this);
+  metaDialog->setWindowTitle(makeCaption(tr("DjView Metadata")));
+  metaDialog->setPage(widget->page());
+  metaDialog->refresh();
+  metaDialog->raise();
+  metaDialog->show();
 }
 
 

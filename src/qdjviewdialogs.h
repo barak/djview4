@@ -59,8 +59,7 @@ public:
   ~QDjViewInfoDialog();
   QDjViewInfoDialog(QDjView *parent);
 public slots:
-  void refreshDocument();
-  void refreshFile();
+  void refresh();
   void setPage(int pageno);
   void setFile(int fileno);
 protected slots:
@@ -73,6 +72,30 @@ private:
   void fillDocLabel();
   void fillDocTable();
   void fillDocRow(int);
+  struct Private;
+  Private *d;
+};
+
+
+
+
+
+// ----------- QDJVIEWMETADIALOG
+
+
+class QDjViewMetaDialog : public QDialog
+{
+  Q_OBJECT
+public:
+  ~QDjViewMetaDialog();
+  QDjViewMetaDialog(QDjView *parent);
+public slots:
+  void refresh();
+  void setPage(int pageno);
+protected slots:
+  void jumpToSelectedPage(void);
+  void documentClosed(void);
+private:
   struct Private;
   Private *d;
 };

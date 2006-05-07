@@ -23,6 +23,7 @@
 #include <QFont>
 #include <QHeaderView>
 #include <QList>
+#include <QMap>
 #include <QMessageBox>
 #include <QObject>
 #include <QRegExp>
@@ -30,6 +31,7 @@
 #include <QString>
 #include <QTableWidget>
 #include <QTableWidgetItem>
+#include <QtAlgorithms>
 
 #include <libdjvu/miniexp.h>
 #include <libdjvu/ddjvuapi.h>
@@ -168,13 +170,15 @@ QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
          << tr("File Size") << tr("File Type") 
          << tr("Page #") << tr("Page Title");
   d->ui.docTable->setHorizontalHeaderLabels(labels);
-  d->ui.docTable->horizontalHeader()->setStretchLastSection(true);
   d->ui.docTable->verticalHeader()->hide();
-
+  d->ui.docTable->horizontalHeader()->setHighlightSections(false);
+  d->ui.docTable->horizontalHeader()->setStretchLastSection(true);
   d->ui.docLabel->setMinimumHeight(d->ui.fileLabel->height());
 
   connect(d->djview, SIGNAL(documentClosed()), 
           this, SLOT(documentClosed()));
+  connect(d->djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
+          this, SLOT(setPage(int)));
   connect(d->ui.okButton, SIGNAL(clicked()), 
           this, SLOT(accept()) );
   connect(d->ui.nextFileButton, SIGNAL(clicked()), 
@@ -205,9 +209,9 @@ QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
 }
 
 void 
-QDjViewInfoDialog::refreshDocument()
+QDjViewInfoDialog::refresh()
 {
-  // synchronize document
+  // document known
   if (! d->document)
     {
       QDjVuDocument *doc;
@@ -216,11 +220,11 @@ QDjViewInfoDialog::refreshDocument()
         return;
       d->document = doc;
       connect(doc, SIGNAL(docinfo()),
-              this, SLOT(refreshDocument()) );
+              this, SLOT(refresh()) );
       connect(doc, SIGNAL(pageinfo()),
-              this, SLOT(refreshFile()) );
+              this, SLOT(refresh()) );
     }
-  // synchronize file list
+  // document ready
   if (! d->files.size())
     {
       QDjVuDocument *doc = d->document;
@@ -262,90 +266,84 @@ QDjViewInfoDialog::refreshDocument()
       else if (d->fileno >= 0)
         setFile(d->fileno);
       d->done = false;
-      refreshFile();
+      refresh();
     }
-}
-
-void 
-QDjViewInfoDialog::refreshFile()
-{
-  if (d->done)
-    return;
-  
-  d->done = true;
-  if (d->fileno < 0 || d->fileno >= d->files.size())
-    return;
-  
-  QDjVuDocument *doc = d->document;
-  ddjvu_fileinfo_t &info = d->files[d->fileno];
-  QString tab = tr("File #%1").arg(d->fileno+1);
-  QString msg, dump;
-  
-  // prepare message
-  if (info.type == 'P')
+  // file ready
+  if (! d->done)
     {
-      if (info.title && info.name && strcmp(info.title, info.name))
-        msg = tr("Page #%1 named ' %2 '.")
-          .arg(info.pageno + 1)
-          .arg(QString::fromUtf8(info.title));
-      else
-        msg = tr("Page #%1.")
-          .arg(info.pageno + 1);
-    }
-  else if (info.type == 'T')
-    msg = tr("Thumbnails.");
-  else if (info.type == 'S')
-    msg = tr("Shared annotations.");
-  else
-    msg = tr("Shared data.");
+      d->done = true;
+      if (d->fileno < 0 || d->fileno >= d->files.size())
+        return;
   
-  // file dump
-  dump = tr("Waiting for data...");
-#if DDJVUAPI_VERSION >= 18
-  char *s = ddjvu_document_get_filedump(*doc, d->fileno);
-  if (! s)
-    d->done = false;
-  else
-    {
-      dump = QString::fromUtf8(s);
-      free(s);
-    }
-#else
-  if (info.type != 'P')
-    dump = tr("File dumps not available with ddjvuapi<18");
-  else
-    {
-      if (! d->page)
+      QDjVuDocument *doc = d->document;
+      ddjvu_fileinfo_t &info = d->files[d->fileno];
+      QString tab = tr("File #%1").arg(d->fileno+1);
+      QString msg, dump;
+      
+      // prepare message
+      if (info.type == 'P')
         {
-          d->page = new QDjVuPage(doc, info.pageno, this);
-          connect(d->page, SIGNAL(pageinfo()),
-                  this, SLOT(refreshFile()) );
+          if (info.title && info.name && strcmp(info.title, info.name))
+            msg = tr("Page #%1 named ' %2 '.")
+              .arg(info.pageno + 1)
+              .arg(QString::fromUtf8(info.title));
+          else
+            msg = tr("Page #%1.")
+              .arg(info.pageno + 1);
         }
-      if (!ddjvu_page_decoding_done(*d->page))
+      else if (info.type == 'T')
+        msg = tr("Thumbnails.");
+      else if (info.type == 'S')
+        msg = tr("Shared annotations.");
+      else
+        msg = tr("Shared data.");
+      
+      // file dump
+      dump = tr("Waiting for data...");
+#if DDJVUAPI_VERSION >= 18
+      char *s = ddjvu_document_get_filedump(*doc, d->fileno);
+      if (! s)
         d->done = false;
       else
         {
-          char *s = ddjvu_page_get_long_description(*d->page);
-          if (s)
+          dump = QString::fromUtf8(s);
+          free(s);
+        }
+#else
+      if (info.type != 'P')
+        dump = tr("File dumps not available with ddjvuapi<18");
+      else
+        {
+          if (! d->page)
             {
-              QStringList d = QString::fromUtf8(s).split("\n");
-              QStringList f;
-              foreach(QString z, d)
-                if (z.contains(QRegExp("^\\s*[0-9]")))
-                  f << z;
-              dump = f.join("\n");
-              free(s);
+              d->page = new QDjVuPage(doc, info.pageno, this);
+              connect(d->page, SIGNAL(pageinfo()),
+                      this, SLOT(refresh()) );
+            }
+          if (!ddjvu_page_decoding_done(*d->page))
+            d->done = false;
+          else
+            {
+              char *s = ddjvu_page_get_long_description(*d->page);
+              if (s)
+                {
+                  QStringList d = QString::fromUtf8(s).split("\n");
+                  QStringList f;
+                  foreach(QString z, d)
+                    if (z.contains(QRegExp("^\\s*[0-9]")))
+                      f << z;
+                  dump = f.join("\n");
+                  free(s);
+                }
             }
         }
-    }
 #endif
-
-  // fill ui
-  d->ui.tabWidget->setTabText(1, tab);
-  d->ui.fileText->setPlainText(dump);
-  d->ui.fileLabel->setText(msg);
-  d->ui.prevFileButton->setEnabled(d->fileno - 1 >= 0);
-  d->ui.nextFileButton->setEnabled(d->fileno + 1 < d->files.size());
+      d->ui.tabWidget->setTabText(1, tab);
+      d->ui.fileText->setPlainText(dump);
+      d->ui.fileLabel->setText(msg);
+      d->ui.prevFileButton->setEnabled(d->fileno - 1 >= 0);
+      d->ui.nextFileButton->setEnabled(d->fileno + 1 < d->files.size());
+    }
 }
 
 void 
@@ -375,14 +373,14 @@ QDjViewInfoDialog::setFile(int fileno)
     {
       delete d->page;
       d->page = 0;
-      d->fileno = qBound(0, fileno, d->files.size()-1);
+      d->fileno = fileno = qBound(0, fileno, d->files.size()-1);
       d->pageno = d->files[fileno].pageno;
       d->done = false;
       QTableWidget *table = d->ui.docTable;
       QTableWidgetSelectionRange all(0,0,table->rowCount()-1, table->columnCount()-1);
       table->setRangeSelected(all, false);
       table->selectRow(fileno);
-      refreshFile();
+      refresh();
     }
   else
     {
@@ -541,6 +539,221 @@ QDjViewInfoDialog::fillDocRow(int i)
   table->setItem(i, 5, titleItem);
 }
 
+
+
+
+
+// =======================================
+// QDJVIEWMETADIALOG
+// =======================================
+
+
+#include "ui_qdjviewmetadialog.h"
+
+struct QDjViewMetaDialog::Private {
+  Ui::QDjViewMetaDialog ui;
+  QDjView *djview;
+  QDjVuDocument *document;
+  int pageno;
+  minivar_t docAnno;
+  minivar_t pageAnno;
+};
+
+
+QDjViewMetaDialog::~QDjViewMetaDialog()
+{
+  delete d;
+}
+
+
+QDjViewMetaDialog::QDjViewMetaDialog(QDjView *parent)
+  : QDialog(parent), d(new Private)
+{
+  d->djview = parent;
+  d->document = 0;
+  d->pageno = 0;
+  d->docAnno = miniexp_dummy;
+  d->pageAnno = miniexp_dummy;
+
+  d->ui.setupUi(this);
+
+  QStringList labels;
+  labels << tr(" Key ") << tr(" Value ");
+  d->ui.docTable->setColumnCount(2);
+  d->ui.docTable->setHorizontalHeaderLabels(labels);
+  d->ui.docTable->horizontalHeaderItem(1)
+    ->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+  d->ui.docTable->horizontalHeader()->setHighlightSections(false);
+  d->ui.docTable->verticalHeader()->hide();
+  d->ui.pageTable->setColumnCount(2);
+  d->ui.pageTable->setHorizontalHeaderLabels(labels);
+  d->ui.pageTable->horizontalHeaderItem(1)
+    ->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+  d->ui.pageTable->horizontalHeader()->setHighlightSections(false);
+  d->ui.pageTable->verticalHeader()->hide();
+  d->ui.pageCombo->setEnabled(false);
+  d->ui.jumpButton->setEnabled(false);
+
+  connect(d->djview, SIGNAL(documentClosed()),
+          this, SLOT(documentClosed()) );
+  connect(d->djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
+          this, SLOT(setPage(int)) );
+  connect(d->ui.okButton, SIGNAL(clicked()),
+          this, SLOT(accept()) );
+  connect(d->ui.jumpButton, SIGNAL(clicked()),
+          this, SLOT(jumpToSelectedPage()) );
+  connect(d->ui.pageCombo, SIGNAL(activated(int)),
+          this, SLOT(setPage(int)) );
+}
+
+static QMap<QString,QString>
+metadataFromAnnotations(miniexp_t p)
+{
+  QMap<QString,QString> m;
+  miniexp_t s_metadata = miniexp_symbol("metadata");
+  while (miniexp_consp(p))
+    {
+      if (miniexp_caar(p) == s_metadata)
+        {
+          miniexp_t q = miniexp_cdar(p);
+          while (miniexp_consp(q))
+            {
+              miniexp_t a = miniexp_car(q);
+              q = miniexp_cdr(q);
+              if (miniexp_consp(a) && 
+                  miniexp_symbolp(miniexp_car(a)) &&
+                  miniexp_stringp(miniexp_cadr(a)) )
+                {
+                  QString k = QString::fromUtf8(miniexp_to_name(miniexp_car(a)));
+                  m[k] = QString::fromUtf8(miniexp_to_str(miniexp_cadr(a)));
+                }
+            }
+        }
+      p = miniexp_cdr(p);
+    }
+  return m;
+}
+
+static void
+metadataSubtract(QMap<QString,QString> &from, QMap<QString,QString> m)
+{
+  QMap<QString,QString>::const_iterator i = m.constBegin();
+  for( ; i != m.constEnd(); i++)
+    if (from.contains(i.key()) && from[i.key()] == i.value())
+      from.remove(i.key());
+}
+
+static void
+metadataFill(QTableWidget *table, QMap<QString,QString> m)
+{
+  QList<QString> keys;
+  QMap<QString,QString>::const_iterator i = m.constBegin();
+  for( ; i != m.constEnd(); i++)
+    keys << i.key();
+  qSort(keys.begin(), keys.end());
+  int nkeys = keys.size();
+  table->setRowCount(nkeys);
+  for(int j = 0; j < nkeys; j++)
+    {
+      QTableWidgetItem *kitem = new QTableWidgetItem(keys[j]);
+      QTableWidgetItem *vitem = new QTableWidgetItem(m[keys[j]]);
+      kitem->setFlags(Qt::ItemIsEnabled);
+      vitem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+      table->setItem(j, 0, kitem);
+      table->setItem(j, 1, vitem);
+    }
+  table->resizeColumnsToContents();
+  table->resizeRowsToContents();
+}
+
+void 
+QDjViewMetaDialog::refresh()
+{
+  // new document?
+  if (! d->document)
+    {
+      QDjVuDocument *doc;
+      doc = d->djview->getDjVuWidget()->document();
+      if (! doc)
+        return;
+      d->document = doc;
+      connect(doc, SIGNAL(docinfo()),
+              this, SLOT(refresh()) );
+      connect(doc, SIGNAL(pageinfo()),
+              this, SLOT(refresh()) );
+    }
+  // document ready
+  if (! d->ui.pageCombo->count())
+    {
+      if (! d->djview->pageNum())
+        return;
+      d->djview->fillPageCombo(d->ui.pageCombo);
+      d->ui.pageCombo->setEnabled(true);
+      d->ui.jumpButton->setEnabled(true);
+    }
+  // document annotations known
+  if (d->docAnno == miniexp_dummy)
+    {
+      d->docAnno = d->document->getDocumentAnnotations();
+      if (d->docAnno != miniexp_dummy)
+        {
+          QMap<QString,QString> docMeta = metadataFromAnnotations(d->docAnno);
+          metadataFill(d->ui.docTable, docMeta);
+        }
+    }
+  // page annotations
+  if (d->ui.pageCombo->count() > 0)
+    {
+      d->pageno = qBound(0, d->pageno, d->djview->pageNum()-1);
+      d->ui.pageCombo->setCurrentIndex(d->pageno);
+      if (d->document && d->pageAnno == miniexp_dummy)
+        {
+          d->pageAnno = d->document->getPageAnnotations(d->pageno);
+          if (d->pageAnno != miniexp_dummy)
+            {
+              QMap<QString,QString> docMeta = metadataFromAnnotations(d->docAnno);
+              QMap<QString,QString> pageMeta = metadataFromAnnotations(d->pageAnno);
+              metadataSubtract(pageMeta, docMeta);
+              metadataFill(d->ui.pageTable, pageMeta);
+            }
+        }
+    }
+}
+
+void 
+QDjViewMetaDialog::setPage(int pageno)
+{
+  if (d->document && pageno != d->pageno)
+    {
+      d->pageno = pageno;
+      d->pageAnno = miniexp_dummy;
+      d->ui.pageTable->setRowCount(0);
+      refresh();
+    }
+}
+
+void 
+QDjViewMetaDialog::jumpToSelectedPage(void)
+{
+  if (d->document &&
+      d->pageno >= 0 && d->pageno < d->djview->pageNum() )
+    d->djview->goToPage(d->pageno);
+}
+
+void 
+QDjViewMetaDialog::documentClosed(void)
+{
+  hide();
+  d->document = 0;
+  d->pageno = 0;
+  d->docAnno = miniexp_dummy;
+  d->pageAnno = miniexp_dummy;
+  d->ui.pageCombo->clear();
+  d->ui.pageCombo->setEnabled(false);
+  d->ui.docTable->setRowCount(0);
+  d->ui.pageTable->setRowCount(0);
+  d->ui.jumpButton->setEnabled(false);
+}
 
 
 
