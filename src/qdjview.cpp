@@ -2051,7 +2051,8 @@ QDjView::performInformation(void)
   if (! infoDialog)
     infoDialog = new QDjViewInfoDialog(this);
   infoDialog->setWindowTitle(makeCaption(tr("DjView Information")));
-  infoDialog->refresh();
+  infoDialog->setPage(widget->page());
+  infoDialog->refreshDocument();
   infoDialog->raise();
   infoDialog->show();
 }

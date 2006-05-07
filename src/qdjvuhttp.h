@@ -31,10 +31,12 @@ class QDjVuHttpDocument : public QDjVuDocument
   Q_OBJECT
 
 public:
-  QDjVuHttpDocument(int nConnections=4, bool autoDelete=false, QObject *parent=0);
+  QDjVuHttpDocument(int nConnections=4, bool autoDelete=false, 
+                    QObject *parent=0);
   QDjVuHttpDocument(bool autoDelete, QObject *parent=0);
   QDjVuHttpDocument(QObject *parent);
-  void setProxy(QString host, int port=8080, QString user="", QString pass="");
+  void setProxy(QString host, int port=8080, 
+                QString user="", QString pass="");
   bool setUrl(QDjVuContext *ctx, QUrl url, bool cache=true);
   
 protected:
@@ -53,7 +55,7 @@ private:
   
 private slots:
   void response(const QHttpResponseHeader &resp);
-  void read(const QHttpResponseHeader &resp);
+  void read(void);
   void finished(int id, bool error);
 };
 

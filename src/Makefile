@@ -48,7 +48,7 @@ PROGRAM=djview
 
 debug: FORCE
 #	${MAKE} all QTDEBUG=_debug OPTS=-g
-	${MAKE} all QTDEBUG=_debug OPTS=-g FLGDEBUG=-I. LIBDEBUG=-Llib
+	${MAKE} all QTDEBUG=_debug OPTS=-g FLGDEBUG=-Iinclude LIBDEBUG=-Llib
 #	${MAKE} all OPTS=-g 
 
 all: ${PROGRAM}

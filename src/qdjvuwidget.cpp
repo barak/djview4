@@ -19,8 +19,8 @@
 #include "stdlib.h"
 #include "math.h"
 
-#include "libdjvu/ddjvuapi.h"
-#include "libdjvu/miniexp.h"
+#include <libdjvu/ddjvuapi.h>
+#include <libdjvu/miniexp.h>
 
 
 #include "qdjvu.h"
@@ -1590,6 +1590,7 @@ QDjVuPrivate::pageinfoPage()
               p->width = ddjvu_page_get_width(*page);
               p->height = ddjvu_page_get_height(*page);
               p->dpi = ddjvu_page_get_resolution(*page);
+              p->initialRot = rot;
               changeLayout(CHANGE_SCALE|UPDATE_BORDERS);
             }
           break;
@@ -3078,8 +3079,7 @@ QDjVuWidget::getTextForRect(const QRect &vtarget)
     {
       // quick check
       miniexp_t q = p->hiddenText;
-      if (p->initialRot < 0 || 
-          q == miniexp_nil || q == miniexp_dummy)
+      if (p->initialRot < 0 || q == miniexp_nil || q == miniexp_dummy)
         continue;
       QRect pagerect = target.intersect(p->rect);
       if (!p->hiddenText || pagerect.isEmpty())

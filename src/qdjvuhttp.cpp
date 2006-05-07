@@ -41,7 +41,7 @@ QDjVuHttpDocument::init(void)
       connect(http, SIGNAL(responseHeaderReceived(const QHttpResponseHeader&)),
               this, SLOT(response(const QHttpResponseHeader&)) );
       connect(http, SIGNAL(readyRead(const QHttpResponseHeader&)), 
-              this, SLOT(read(const QHttpResponseHeader&)) );
+              this, SLOT(read(void)) );
       connect(http, SIGNAL(requestFinished(int,bool)), 
               this, SLOT(finished(int,bool)) );
     }
@@ -218,14 +218,14 @@ QDjVuHttpDocument::response(const QHttpResponseHeader &resp)
 }
 
 void 
-QDjVuHttpDocument::read(const QHttpResponseHeader& resp)
+QDjVuHttpDocument::read(void)
 {
   for (int c=0; c<connections.size(); c++)
     if ( connections[c].http == sender() )
       {
         Conn& conn = connections[c];
         QByteArray b = conn.http->readAll();
-        if (conn.streamid >= 0)
+        if (conn.streamid >= 0 && b.size() > 0)
           ddjvu_stream_write(*this, conn.streamid, b.data(), b.size());
       }
 }
@@ -233,6 +233,7 @@ QDjVuHttpDocument::read(const QHttpResponseHeader& resp)
 void 
 QDjVuHttpDocument::finished(int id, bool err)
 {
+  read();
   for (int c=0; c<connections.size(); c++)
     if (connections[c].reqid == id)
       {

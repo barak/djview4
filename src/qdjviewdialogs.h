@@ -58,19 +58,19 @@ class QDjViewInfoDialog : public QDialog
 public:
   ~QDjViewInfoDialog();
   QDjViewInfoDialog(QDjView *parent);
-
-  QString documentFormat(void);
-  int     documentSize(int *nfiles=0, int *npages=0);
-  QString pageEncodingMessage(int pageno);
-  QString documentEncodingMessage(void);
 public slots:
-  void refresh();
+  void refreshDocument();
+  void refreshFile();
+  void setPage(int pageno);
+  void setFile(int fileno);
 protected slots:
+  void prevFile();
+  void nextFile();
+  void selectFile();
   void documentClosed();
-  void toDocument();
-  void toCurrentPage();
-  void toPage(int);
 private:
+  void fillDocLabel();
+  void fillDocTable();
   struct Private;
   Private *d;
 };
