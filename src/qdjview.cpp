@@ -1629,18 +1629,14 @@ QDjView::parseArgument(QString key, QString value)
   if (key == "toolbar")
     {
       parseToolBarOption(value, errors);
-      // show/hide toolbar
       toolBar->setVisible(options & QDjViewPrefs::SHOW_TOOLBAR);
-      // enable/disable sensitive actions 
-      actionSave->setEnabled(tools & QDjViewPrefs::TOOL_SAVE);
-      actionExport->setEnabled(tools & QDjViewPrefs::TOOL_SAVE);
-      actionPrint->setEnabled(tools & QDjViewPrefs::TOOL_PRINT);
     }
   // TODO
   else
     {
       errors << tr("Unrecognized option '%1'.").arg(key);
     }
+  updateActionsLater();
   return errors;
 }
 
