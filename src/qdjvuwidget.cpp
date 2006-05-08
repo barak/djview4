@@ -868,7 +868,6 @@ void
 QDjVuPrivate::makeLayout()
 {
   // save position
-  int oldPage = currentPos.pageNo;
   if (docReady && !(layoutChange & CHANGE_VIEW))
     {
       movePoint = currentPoint;

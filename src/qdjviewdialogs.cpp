@@ -19,15 +19,18 @@
 #include <QDebug>
 
 #include <QApplication>
+#include <QClipboard>
 #include <QDialog>
 #include <QFont>
 #include <QHeaderView>
+#include <QKeySequence>
 #include <QList>
 #include <QMap>
 #include <QMessageBox>
 #include <QObject>
 #include <QRegExp>
 #include <QScrollBar>
+#include <QShortcut>
 #include <QString>
 #include <QTableWidget>
 #include <QTableWidgetItem>
@@ -476,6 +479,15 @@ QDjViewInfoDialog::fillDocLabel()
     }
 }
 
+static void
+setTableWhatsThis(QTableWidget *table, QString text)
+{
+  for (int i=0; i<table->rowCount(); i++)
+    for (int j=0; j<table->columnCount(); j++)
+      table->item(i,j)->setWhatsThis(text);
+}
+
+
 void 
 QDjViewInfoDialog::fillDocTable()
 {
@@ -486,6 +498,7 @@ QDjViewInfoDialog::fillDocTable()
     fillDocRow(i);
   table->resizeColumnsToContents();
   table->resizeRowsToContents();
+  setTableWhatsThis(table, d->ui.tabDocument->whatsThis());
 }
 
 void 
@@ -574,9 +587,10 @@ QDjViewMetaDialog::QDjViewMetaDialog(QDjView *parent)
   d->pageno = 0;
   d->docAnno = miniexp_dummy;
   d->pageAnno = miniexp_dummy;
-
   d->ui.setupUi(this);
-
+  // make ctrl+c work
+  new QShortcut(QKeySequence(tr("Ctrl+C","copy")), this, SLOT(copy()));
+  // tweaks
   QStringList labels;
   labels << tr(" Key ") << tr(" Value ");
   d->ui.docTable->setColumnCount(2);
@@ -593,7 +607,7 @@ QDjViewMetaDialog::QDjViewMetaDialog(QDjView *parent)
   d->ui.pageTable->verticalHeader()->hide();
   d->ui.pageCombo->setEnabled(false);
   d->ui.jumpButton->setEnabled(false);
-
+  // connections
   connect(d->djview, SIGNAL(documentClosed()),
           this, SLOT(documentClosed()) );
   connect(d->djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
@@ -604,6 +618,24 @@ QDjViewMetaDialog::QDjViewMetaDialog(QDjView *parent)
           this, SLOT(jumpToSelectedPage()) );
   connect(d->ui.pageCombo, SIGNAL(activated(int)),
           this, SLOT(setPage(int)) );
+  // what's this
+  QWidget *wd = d->ui.docTab;
+  wd->setWhatsThis(tr("<html><b>Document Metadata</b><br>"
+                      "Display metadata pertaining to the document, "
+                      "such as author, title, references, etc. "
+                      "This information can be saved into the document "
+                      "with program <tt>djvused</tt>: use the commands "
+                      "<tt>create-shared-ant</tt> and <tt>set-meta</tt>."
+                      "</html>"));
+  QWidget *wp = d->ui.pageTab;
+  wp->setWhatsThis(tr("<html><b>Page Metadata</b><br>"
+                      "Display metadata pertaining to a specific page. "
+                      "Page specific metadata override document metadata. "
+                      "This information can be saved into the document "
+                      "with program <tt>djvused</tt>: use command "
+                      "<tt>select</tt> to select the page and command "
+                      "<tt>set-meta</tt> to specify the metadata entries."
+                      "</html>"));
 }
 
 static QMap<QString,QString>
@@ -657,7 +689,7 @@ metadataFill(QTableWidget *table, QMap<QString,QString> m)
     {
       QTableWidgetItem *kitem = new QTableWidgetItem(keys[j]);
       QTableWidgetItem *vitem = new QTableWidgetItem(m[keys[j]]);
-      kitem->setFlags(Qt::ItemIsEnabled);
+      kitem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
       vitem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
       table->setItem(j, 0, kitem);
       table->setItem(j, 1, vitem);
@@ -699,6 +731,7 @@ QDjViewMetaDialog::refresh()
         {
           QMap<QString,QString> docMeta = metadataFromAnnotations(d->docAnno);
           metadataFill(d->ui.docTable, docMeta);
+          setTableWhatsThis(d->ui.docTable, d->ui.docTab->whatsThis());
         }
     }
   // page annotations
@@ -715,6 +748,7 @@ QDjViewMetaDialog::refresh()
               QMap<QString,QString> pageMeta = metadataFromAnnotations(d->pageAnno);
               metadataSubtract(pageMeta, docMeta);
               metadataFill(d->ui.pageTable, pageMeta);
+              setTableWhatsThis(d->ui.pageTable, d->ui.pageTab->whatsThis());
             }
         }
     }
@@ -755,6 +789,16 @@ QDjViewMetaDialog::documentClosed(void)
   d->ui.jumpButton->setEnabled(false);
 }
 
+void 
+QDjViewMetaDialog::copy(void)
+{
+  QTableWidget *table = d->ui.pageTable;
+  if (d->ui.tabWidget->currentWidget() == d->ui.docTab)
+    table = d->ui.docTable;
+  QList<QTableWidgetItem*> selected = table->selectedItems();
+  if (selected.size() == 1)
+    QApplication::clipboard()->setText(selected[0]->text());
+}
 
 
 /* -------------------------------------------------------------

@@ -95,6 +95,7 @@ public slots:
 protected slots:
   void jumpToSelectedPage(void);
   void documentClosed(void);
+  void copy(void);
 private:
   struct Private;
   Private *d;
