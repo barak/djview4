@@ -64,8 +64,9 @@ public:
   };
 
   enum Tool {
-    TOOLBAR_TOP    = 0x80000000,
-    TOOLBAR_BOTTOM = 0x40000000,
+    TOOLBAR_TOP      = 0x80000000,
+    TOOLBAR_BOTTOM   = 0x40000000,
+    TOOLBAR_AUTOHIDE = 0x10000000,
     TOOL_MODECOMBO    = 0x00001,
     TOOL_MODEBUTTONS  = 0x00002,
     TOOL_ZOOMCOMBO    = 0x00004,
@@ -90,6 +91,7 @@ public:
   
   static const Options defaultOptions;
   static const Tools   defaultTools;
+
   static QString versionString();
   QString modifiersToString(Qt::KeyboardModifiers);
   Qt::KeyboardModifiers stringToModifiers(QString);

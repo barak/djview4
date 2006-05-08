@@ -49,6 +49,7 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QObject>
+#include <QPair>
 #include <QPalette>
 #include <QRegExp>
 #include <QRegExp>
@@ -230,8 +231,17 @@ QDjView::fillToolBar(QToolBar *toolBar)
     areas |= Qt::TopToolBarArea;
   if (tools & QDjViewPrefs::TOOLBAR_BOTTOM)
     areas |= Qt::BottomToolBarArea;
-  if (areas)
-    toolBar->setAllowedAreas(areas);
+  if (!areas)
+    areas = Qt::TopToolBarArea | Qt::BottomToolBarArea;
+  toolBar->setAllowedAreas(areas);
+  if (! (toolBarArea(toolBar) & areas))
+    {
+      removeToolBar(toolBar);
+      if (areas & Qt::TopToolBarArea)
+        addToolBar(Qt::TopToolBarArea, toolBar);
+      else
+        addToolBar(Qt::BottomToolBarArea, toolBar);
+    }
   // Done
   toolBar->setVisible(!wasHidden);
   toolsCached = tools;
@@ -1494,30 +1504,177 @@ QDjView::setMouseLabelText(QString s)
 // QDJVIEW ARGUMENTS
 
 
-bool 
+template<class T> static inline void
+set_reset(QFlags<T> &x, bool plus, bool minus, T y)
+{
+  if (plus)
+    x |= y;
+  else if (minus)
+    x &= ~y;
+}
+
+void
+QDjView::parseToolBarOption(QString option, QStringList &errors)
+{
+  QString str = option.toLower();
+  int len = str.size();
+  bool wantselect = false;
+  bool wantmode = false;
+  bool toolbar = true;
+  bool minus = false;
+  bool plus = false;
+  int npos = 0;
+  while (npos < len)
+    {
+      int pos = npos;
+      npos = str.indexOf(QRegExp("[-+,]"), pos);
+      if (npos < 0) 
+        npos = len;
+      QString key = str.mid(pos, npos-pos).trimmed();
+      if (key=="no" && !plus && !minus)
+        toolbar = false;
+      else if (key=="false" && !plus && !minus)
+        toolbar = false;
+      else if (key=="yes" && !plus && !minus)
+        toolbar = true;
+      else if (key=="true" && !plus && !minus)
+        toolbar = true;
+      else if (key=="bottom" && !plus && !minus)
+        tools &= ~QDjViewPrefs::TOOLBAR_TOP;
+      else if (key=="top" && !plus && !minus)
+        tools &= ~QDjViewPrefs::TOOLBAR_BOTTOM;
+      else if (key=="auto" && !plus && !minus)
+        tools |= QDjViewPrefs::TOOLBAR_AUTOHIDE;
+      else if (key=="fixed" && !plus && !minus)
+        tools &= ~QDjViewPrefs::TOOLBAR_AUTOHIDE;
+      else if (key=="always" && !plus && !minus) {
+        toolbar = true;
+        tools &= ~QDjViewPrefs::TOOLBAR_AUTOHIDE;
+      } else if (key=="fore" || key=="back" || 
+                 key=="color" || key=="bw" ||
+                 key=="fore_button" || key=="back_button" || 
+                 key=="color_button" || key=="bw_button")
+        wantmode |= plus;
+      else if (key=="pan" || key=="zoomsel" || key=="textsel")
+        wantselect |= plus;
+      else if (key=="modecombo")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_MODECOMBO);
+      else if (key=="rescombo" || key=="zoomcombo")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_ZOOMCOMBO);
+      else if (key=="zoom")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_ZOOMBUTTONS);
+      else if (key=="rotate")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_ROTATE);
+      else if (key=="search")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_SEARCH);
+      else if (key=="print")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_PRINT);
+      else if (key=="save")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_SAVE);
+      else if (key=="pagecombo")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_PAGECOMBO);
+      else if (key=="backforw")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_BACKFORW);
+      else if (key=="prevnext" || key=="prevnextpage")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_PREVNEXT);
+      else if (key=="firstlast" || key=="firstlastpage")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_FIRSTLAST);
+      else if (key=="select")   // new for djview4
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_SELECT);
+      else if (key=="new")      // new for djview4
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_NEW);
+      else if (key=="open")     // new for djview4
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_OPEN);
+      else if (key=="layout")   // new for djview4
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_LAYOUT);
+      else if (key=="help")     // new for djview4
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_WHATSTHIS);
+      else if (key!="")
+        errors << tr("Toolbar option '%1' is not recognized").arg(key);
+      // handle + or -
+      if (npos < len)
+        {
+          if (str[npos] == '-')
+            {
+              plus = false;
+              minus = true;
+            }
+          else if (str[npos] == '+')
+            {
+              if (!minus && !plus)
+                tools &= (QDjViewPrefs::TOOLBAR_TOP |
+                          QDjViewPrefs::TOOLBAR_BOTTOM |
+                          QDjViewPrefs::TOOLBAR_AUTOHIDE );
+              minus = false;
+              plus = true;
+            }
+          npos += 1;
+        }
+    }
+  if (wantmode)
+    tools |= QDjViewPrefs::TOOL_MODECOMBO;
+  if (wantselect)
+    tools |= QDjViewPrefs::TOOL_SELECT;
+  // toolbar visibility
+  set_reset(options, toolbar, !toolbar, QDjViewPrefs::SHOW_TOOLBAR);
+}
+
+
+QStringList
+QDjView::parseArgument(QString key, QString value)
+{
+  QStringList errors;
+  key = key.toLower();
+
+  if (key == "toolbar")
+    {
+      parseToolBarOption(value, errors);
+      // show/hide toolbar
+      toolBar->setVisible(options & QDjViewPrefs::SHOW_TOOLBAR);
+      // enable/disable sensitive actions 
+      actionSave->setEnabled(tools & QDjViewPrefs::TOOL_SAVE);
+      actionExport->setEnabled(tools & QDjViewPrefs::TOOL_SAVE);
+      actionPrint->setEnabled(tools & QDjViewPrefs::TOOL_PRINT);
+    }
+  // TODO
+  else
+    {
+      errors << tr("Unrecognized option '%1'.").arg(key);
+    }
+  return errors;
+}
+
+
+QStringList
 QDjView::parseArgument(QString keyEqualValue)
 {
   int n = keyEqualValue.indexOf("=");
   if (n < 0)
-    return parseArgument(keyEqualValue, "yes");
+    return parseArgument(keyEqualValue, QString());
   else
     return parseArgument(keyEqualValue.left(n),
                          keyEqualValue.mid(n+1));
 }
 
 
-bool 
-QDjView::parseArgument(QString key, QString value)
-{
-  // TODO
-  return false;
-}
-
-
 void 
 QDjView::parseCgiArguments(QUrl url)
 {
-  // TODO
+  QStringList errors;
+  // parse
+  bool djvuopts = false;
+  QPair<QString,QString> pair;
+  foreach(pair, url.queryItems())
+    {
+      if (pair.first.toLower() == "djvuopts")
+        djvuopts = true;
+      else if (djvuopts)
+        errors << parseArgument(pair.first, pair.second);
+    }
+  // warning for errors
+  if (djvuopts && errors.size() > 0)
+    foreach(QString error, errors)
+      qWarning((const char*)error.toLocal8Bit());
 }
 
 

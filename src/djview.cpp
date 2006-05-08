@@ -27,17 +27,14 @@
 
 #include <QtGlobal>
 #include <QApplication>
+#include <QByteArray>
 #include <QRegExp>
+#include <QString>
+#include <QStringList>
 
 
-static void 
-usage()
-{
-  fprintf(stderr,"usage: djview [options] [filename-or-http-url]\n");
-  exit(10);
-}
 
-
+static bool verbose = true;
 static QtMsgHandler qtDefaultHandler;
 
 void 
@@ -46,20 +43,54 @@ qtMessageHandler(QtMsgType type, const char *msg)
   switch (type) 
     {
     case QtFatalMsg:
-      fprintf(stderr,"Fatal error: %s\n", msg);
+      fprintf(stderr,"djview fatal error: %s\n", msg);
       abort();
     case QtCriticalMsg:
-      fprintf(stderr,"Critical error: %s\n", msg);
-    case QtDebugMsg:
+      fprintf(stderr,"djview critical error: %s\n", msg);
+      break;
     case QtWarningMsg:
+      if (verbose)
+        fprintf(stderr,"djview: %s\n", msg);
+      break;
+    default:
+      if (verbose)
+        fprintf(stderr,"%s\n", msg);
       break;
     }
+}
+
+static void
+message(QString string, bool prefix=true)
+{
+  QByteArray m = string.toLocal8Bit();
+  if (prefix)
+    fprintf(stderr, "djview: ");
+  fprintf(stderr, "%s\n", (const char*) m);
+}
+
+static void
+message(QStringList sl)
+{
+  foreach (QString s, sl)
+    message(s);
+}
+
+static void 
+usage()
+{
+  message(QApplication::tr(
+           "usage: djview [options] [filename-or-http-url]\n\n"
+           "Options:\n"
+           " -help               Prints this message.\n"
+           " -verbose            Prints all warning messages.\n"
+           "\n"), false );
+  exit(10);
 }
 
 int 
 main(int argc, char *argv[])
 {
-  // qtDefaultHandler = qInstallMsgHandler(qtMessageHandler);
+  qtDefaultHandler = qInstallMsgHandler(qtMessageHandler);
   QApplication app(argc, argv);  
   QDjVuContext djvuContext(argv[0]);
   QDjView *main = new QDjView(djvuContext);
@@ -68,13 +99,13 @@ main(int argc, char *argv[])
   // Process command line
   while (argc > 1 && argv[1][0] == '-')
     {
-      QString arg = QString::fromLocal8Bit(argv[1]).replace(QRegExp("-+"),"");
+      QString arg = QString::fromLocal8Bit(argv[1]).replace(QRegExp("^-+"),"");
       if (arg == "help")
         usage();
       else if (arg == "verbose")
-        qInstallMsgHandler(qtDefaultHandler);
-      else if (! main->parseArgument(arg))
-        fprintf(stderr,"djview: unrecognized option '%s'\n", argv[1]);
+        verbose = true;
+      else 
+        message(main->parseArgument(arg));
       argc --;
       argv ++;
     }
@@ -92,7 +123,7 @@ main(int argc, char *argv[])
         okay = main->open(name);
       if (! okay)
         {
-          fprintf(stderr,"djview: cannot open '%s'.\n", argv[1]);
+          message(QApplication::tr("cannot open '%1'.").arg(argv[1]));
           exit(10);
         }
     }

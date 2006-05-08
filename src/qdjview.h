@@ -73,9 +73,9 @@ class QDjView : public QMainWindow
   QUrl                getDocumentUrl()      { return documentUrl; }
   QString             getShortFileName();
 
-  bool  parseArgument(QString keyEqualValue);
-  bool  parseArgument(QString key, QString value);
-  void  parseCgiArguments(QUrl url);
+  QStringList  parseArgument(QString keyEqualValue);
+  QStringList  parseArgument(QString key, QString value);
+  void         parseCgiArguments(QUrl url);
 
   int         pageNum(void);
   QString     pageName(int pageno);
@@ -128,6 +128,7 @@ protected:
   void     applySaved(Saved *saved);
   void     updateSaved(Saved *saved);
   void     applyPreferences(void);
+  void     parseToolBarOption(QString option, QStringList &errors);
 
   virtual bool eventFilter(QObject *watched, QEvent *event);
   virtual void closeEvent(QCloseEvent *event);
