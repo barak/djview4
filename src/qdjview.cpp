@@ -1531,12 +1531,10 @@ QDjView::parseToolBarOption(QString option, QStringList &errors)
       if (npos < 0) 
         npos = len;
       QString key = str.mid(pos, npos-pos).trimmed();
-      if (key=="no" && !plus && !minus)
-        toolbar = false;
-      else if (key=="false" && !plus && !minus)
-        toolbar = false;
-      else if (key=="yes" && !plus && !minus)
-        toolbar = true;
+      if ((key=="no" || key=="false") && !plus && !minus)
+        set_reset(options, false, true, QDjViewPrefs::SHOW_TOOLBAR);
+      else if ((key=="yes" || key=="true") && !plus && !minus)
+        set_reset(options, true, false, QDjViewPrefs::SHOW_TOOLBAR);
       else if (key=="true" && !plus && !minus)
         toolbar = true;
       else if (key=="bottom" && !plus && !minus)
@@ -1548,12 +1546,9 @@ QDjView::parseToolBarOption(QString option, QStringList &errors)
       else if (key=="fixed" && !plus && !minus)
         tools &= ~QDjViewPrefs::TOOLBAR_AUTOHIDE;
       else if (key=="always" && !plus && !minus) {
-        toolbar = true;
+        set_reset(options, true, false, QDjViewPrefs::SHOW_TOOLBAR);
         tools &= ~QDjViewPrefs::TOOLBAR_AUTOHIDE;
-      } else if (key=="fore" || key=="back" || 
-                 key=="color" || key=="bw" ||
-                 key=="fore_button" || key=="back_button" || 
-                 key=="color_button" || key=="bw_button")
+      } else if (key.contains(QRegExp("^(fore|back|color|bw)(_button)?$")))
         wantmode |= plus;
       else if (key=="pan" || key=="zoomsel" || key=="textsel")
         wantselect |= plus;
@@ -1615,8 +1610,6 @@ QDjView::parseToolBarOption(QString option, QStringList &errors)
     tools |= QDjViewPrefs::TOOL_MODECOMBO;
   if (wantselect)
     tools |= QDjViewPrefs::TOOL_SELECT;
-  // toolbar visibility
-  set_reset(options, toolbar, !toolbar, QDjViewPrefs::SHOW_TOOLBAR);
 }
 
 
