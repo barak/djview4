@@ -74,30 +74,6 @@
 # error "DDJVUAPI_VERSION>=17 is required !"
 #endif
 
-// ----------------------------------------
-// CONSTANTS AND UTILIES
-
-static const Qt::WindowStates 
-unusualWindowStates = (Qt::WindowMinimized |
-                       Qt::WindowMaximized |
-                       Qt::WindowFullScreen );
-
-
-static bool
-string_is_on(QString val)
-{
-  QString v = val.toLower();
-  return v == "yes" || v == "on" || v == "true";
-}
-
-static bool
-string_is_off(QString val)
-{
-  QString v = val.toLower();
-  return v == "no" || v == "off" || v == "false";
-}
-
-
 
 
 
@@ -761,6 +737,13 @@ QDjView::updateActions()
 
   // Some actions are not yet implemented
   actionExport->setVisible(false);
+  actionBack->setVisible(false);
+  actionForw->setVisible(false);
+  
+  // Some actions are explicitly disabled
+  actionSave->setEnabled(savingAllowed);
+  actionExport->setEnabled(savingAllowed);
+  actionPrint->setEnabled(printingAllowed);
   
   // Some actions are only available in standalone mode
   actionNew->setVisible(viewerMode == STANDALONE);
@@ -769,7 +752,8 @@ QDjView::updateActions()
   actionQuit->setVisible(viewerMode == STANDALONE);
   actionViewFullScreen->setVisible(viewerMode == STANDALONE);
   
-  // - zoom combo and actions
+
+  // Zoom combo and actions
   int zoom = widget->zoom();
   actionZoomIn->setEnabled(zoom < QDjVuWidget::ZOOM_MAX);
   actionZoomOut->setEnabled(zoom < 0 || zoom > QDjVuWidget::ZOOM_MIN);
@@ -793,7 +777,7 @@ QDjView::updateActions()
   else if (zoomIndex >= 0)
     zoomCombo->setEditText(zoomCombo->itemText(zoomIndex));
 
-  // - mode combo and actions
+  // Mode combo and actions
   QDjVuWidget::DisplayMode mode = widget->displayMode();
   actionDisplayColor->setChecked(mode == QDjVuWidget::DISPLAY_COLOR);
   actionDisplayBW->setChecked(mode == QDjVuWidget::DISPLAY_STENCIL);
@@ -802,14 +786,14 @@ QDjView::updateActions()
   modeCombo->setCurrentIndex(modeCombo->findData(QVariant(mode)));
   modeCombo->setEnabled(!!document);
 
-  // - rotations
+  // Rotations
   int rotation = widget->rotation();
   actionRotate0->setChecked(rotation == 0);
   actionRotate90->setChecked(rotation == 1);
   actionRotate180->setChecked(rotation == 2);
   actionRotate270->setChecked(rotation == 3);
   
-  // - page combo and actions
+  // Page combo and actions
   int pagenum = documentPages.size();
   int pageno = widget->page();
   pageCombo->clearEditText();
@@ -822,7 +806,7 @@ QDjView::updateActions()
   actionNavNext->setEnabled(pagenum>0 && pageno<pagenum-1);
   actionNavLast->setEnabled(pagenum>0 && pageno<pagenum-1);
 
-  // - layout actions
+  // Layout actions
   actionLayoutContinuous->setChecked(widget->continuous());  
   actionLayoutSideBySide->setChecked(widget->sideBySide());
 
@@ -1081,6 +1065,12 @@ QDjView::applySaved(Saved *saved)
 }
 
 
+static const Qt::WindowStates 
+unusualWindowStates = (Qt::WindowMinimized |
+                       Qt::WindowMaximized |
+                       Qt::WindowFullScreen );
+
+
 void
 QDjView::updateSaved(Saved *saved)
 {
@@ -1091,12 +1081,17 @@ QDjView::updateSaved(Saved *saved)
       saved->zoom = widget->zoom();
       saved->state = saveState();
       saved->options = options;
-      // safety feature
-      saved->options |= QDjViewPrefs::HANDLE_MOUSE;
-      saved->options |= QDjViewPrefs::HANDLE_KEYBOARD;
-      saved->options |= QDjViewPrefs::HANDLE_LINKS;
-      saved->options |= QDjViewPrefs::HANDLE_CONTEXTMENU;
-      // global window size in standalone mode
+      // options we always want
+      saved->options |= (QDjViewPrefs::HANDLE_MOUSE |
+                         QDjViewPrefs::HANDLE_KEYBOARD |
+                         QDjViewPrefs::HANDLE_LINKS |
+                         QDjViewPrefs::HANDLE_CONTEXTMENU );
+      // confusing options in standalone mode
+      if (saved == &prefs->forStandalone)
+        saved->options |= (QDjViewPrefs::SHOW_MENUBAR |
+                           QDjViewPrefs::SHOW_SCROLLBARS |
+                           QDjViewPrefs::SHOW_FRAME);
+      // main window size in standalone modea
       if (saved == &prefs->forStandalone)
         if (! (windowState() & unusualWindowStates))
           prefs->windowSize = size();
@@ -1128,6 +1123,464 @@ QDjView::applyPreferences(void)
 
 
 // ----------------------------------------
+// QDJVIEW ARGUMENTS
+
+
+static bool
+string_is_on(QString val)
+{
+  QString v = val.toLower();
+  return v == "yes" || v == "on" || v == "true";
+}
+
+static bool
+string_is_off(QString val)
+{
+  QString v = val.toLower();
+  return v == "no" || v == "off" || v == "false";
+}
+
+static bool
+parse_boolean(QString key, QString val, QList<QString> &errors, bool &answer)
+{
+  answer = false;
+  if (string_is_off(val))
+    return true;
+  answer = true;
+  if (string_is_on(val) || val.isNull())
+    return true;
+  errors << QDjView::tr("Option '%1' requires boolean argument").arg(val);
+  return false;
+}
+
+static void
+illegal_value(QString key, QString value, QList<QString> &errors)
+{
+  errors << QDjView::tr("Illegal value '%2' for option '%1'")
+    .arg(key).arg(value);
+}
+
+static bool 
+parse_highlight(QString value, 
+                int &x, int &y, int &w, int &h, 
+                QColor &color)
+{
+  bool okay0, okay1, okay2, okay3;
+  QStringList val = value.split(",");
+  if (val.size() < 4)
+    return false;
+  x = val[0].toInt(&okay0);
+  y = val[1].toInt(&okay1);
+  w = val[2].toInt(&okay2);
+  h = val[3].toInt(&okay3);
+  if (! (okay0 && okay1 && okay2 && okay3))
+    return false;
+  if (val.size() < 5)
+    return true;
+  QString c = val[4];
+  if (c[0] != '#')
+    c = "#" + c;
+  color.setNamedColor(c);
+  if (! color.isValid())
+    return false;
+  if (val.size() <= 5)
+    return true;
+  return false;
+}
+
+
+template<class T> static inline void
+set_reset(QFlags<T> &x, bool plus, bool minus, T y)
+{
+  if (plus)
+    x |= y;
+  else if (minus)
+    x &= ~y;
+}
+
+
+void
+QDjView::parseToolBarOption(QString option, QStringList &errors)
+{
+  QString str = option.toLower();
+  int len = str.size();
+  bool wantselect = false;
+  bool wantmode = false;
+  bool toolbar = true;
+  bool minus = false;
+  bool plus = false;
+  int npos = 0;
+  while (npos < len)
+    {
+      int pos = npos;
+      npos = str.indexOf(QRegExp("[-+,]"), pos);
+      if (npos < 0) 
+        npos = len;
+      QString key = str.mid(pos, npos-pos).trimmed();
+      if ((key=="no" || key=="false") && !plus && !minus)
+        set_reset(options, false, true, QDjViewPrefs::SHOW_TOOLBAR);
+      else if ((key=="yes" || key=="true") && !plus && !minus)
+        set_reset(options, true, false, QDjViewPrefs::SHOW_TOOLBAR);
+      else if (key=="true" && !plus && !minus)
+        toolbar = true;
+      else if (key=="bottom" && !plus && !minus)
+        tools &= ~QDjViewPrefs::TOOLBAR_TOP;
+      else if (key=="top" && !plus && !minus)
+        tools &= ~QDjViewPrefs::TOOLBAR_BOTTOM;
+      else if (key=="auto" && !plus && !minus)
+        tools |= QDjViewPrefs::TOOLBAR_AUTOHIDE;
+      else if (key=="fixed" && !plus && !minus)
+        tools &= ~QDjViewPrefs::TOOLBAR_AUTOHIDE;
+      else if (key=="always" && !plus && !minus) {
+        set_reset(options, true, false, QDjViewPrefs::SHOW_TOOLBAR);
+        tools &= ~QDjViewPrefs::TOOLBAR_AUTOHIDE;
+      } else if (key.contains(QRegExp("^(fore|back|color|bw)(_button)?$")))
+        wantmode |= plus;
+      else if (key=="pan" || key=="zoomsel" || key=="textsel")
+        wantselect |= plus;
+      else if (key=="modecombo")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_MODECOMBO);
+      else if (key=="rescombo" || key=="zoomcombo")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_ZOOMCOMBO);
+      else if (key=="zoom")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_ZOOMBUTTONS);
+      else if (key=="rotate")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_ROTATE);
+      else if (key=="search")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_SEARCH);
+      else if (key=="print")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_PRINT);
+      else if (key=="save")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_SAVE);
+      else if (key=="pagecombo")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_PAGECOMBO);
+      else if (key=="backforw")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_BACKFORW);
+      else if (key=="prevnext" || key=="prevnextpage")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_PREVNEXT);
+      else if (key=="firstlast" || key=="firstlastpage")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_FIRSTLAST);
+      else if (key=="select")   // new for djview4
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_SELECT);
+      else if (key=="new")      // new for djview4
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_NEW);
+      else if (key=="open")     // new for djview4
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_OPEN);
+      else if (key=="layout")   // new for djview4
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_LAYOUT);
+      else if (key=="help")     // new for djview4
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_WHATSTHIS);
+      else if (key!="")
+        errors << tr("Toolbar option '%1' is not recognized").arg(key);
+      // handle + or -
+      if (npos < len)
+        {
+          if (str[npos] == '-')
+            {
+              plus = false;
+              minus = true;
+            }
+          else if (str[npos] == '+')
+            {
+              if (!minus && !plus)
+                tools &= (QDjViewPrefs::TOOLBAR_TOP |
+                          QDjViewPrefs::TOOLBAR_BOTTOM |
+                          QDjViewPrefs::TOOLBAR_AUTOHIDE );
+              minus = false;
+              plus = true;
+            }
+          npos += 1;
+        }
+    }
+  if (wantmode)
+    tools |= QDjViewPrefs::TOOL_MODECOMBO;
+  if (wantselect)
+    tools |= QDjViewPrefs::TOOL_SELECT;
+}
+
+
+QStringList
+QDjView::parseArgument(QString key, QString value)
+{
+  bool okay;
+  QStringList errors;
+  key = key.toLower();
+  
+  if (key == "fullscreen" || key == "fs")
+    {
+      if (viewerMode != STANDALONE)
+        errors << tr("Option '%1' only works for a standalone viewer.").arg(key);
+      if (parse_boolean(key, value, errors, okay))
+        if (actionViewFullScreen->isChecked() != okay)
+          actionViewFullScreen->activate(QAction::Trigger);
+    }
+  else if (key == "toolbar")
+    {
+      parseToolBarOption(value, errors);
+      toolBar->setVisible(options & QDjViewPrefs::SHOW_TOOLBAR);
+    }
+  else if (key == "page")
+    {
+      goToPage(value);
+    }
+  else if (key == "cache")
+    {
+      // see QDjView::open(QUrl)
+      parse_boolean(key, value, errors, okay);
+    }
+  else if (key == "passive" || key == "passivestretch")
+    {
+      if (parse_boolean(key, value, errors, okay) && okay)
+        {
+          enableScrollBars(false);
+          enableContextMenu(false);
+          menuBar->setVisible(false);
+          statusBar->setVisible(false);
+          sideBar->setVisible(false);
+          toolBar->setVisible(false);
+          if (key == "passive")
+            widget->setZoom(QDjVuWidget::ZOOM_FITPAGE);
+          else
+            widget->setZoom(QDjVuWidget::ZOOM_STRETCH);
+          widget->setContinuous(false);
+          widget->setSideBySide(false);
+          widget->enableKeyboard(false);
+          widget->enableMouse(false);
+        }
+    }
+  else if (key == "scrollbars")
+    {
+      if (parse_boolean(key, value, errors, okay))
+        enableScrollBars(okay);
+    }
+  else if (key == "menubar")    // new for djview4
+    {
+      if (parse_boolean(key, value, errors, okay))
+        menuBar->setVisible(okay);
+    }
+  else if (key == "sidebar")    // new for djview4
+    {
+      if (! showSideBar(value))
+        illegal_value(key, value, errors);
+    }
+  else if (key == "statusbar")  // new for djview4
+    {
+      if (parse_boolean(key, value, errors, okay))
+        statusBar->setVisible(okay);
+    }
+  else if (key == "continuous") // new for djview4
+    {
+      if (parse_boolean(key, value, errors, okay))
+        widget->setContinuous(okay);
+    }
+  else if (key == "side_by_side" ||
+           key == "sidebyside") // new for djview4
+    {
+      if (parse_boolean(key, value, errors, okay))
+        widget->setSideBySide(okay);
+    }
+  else if (key == "frame")
+    {
+      if (parse_boolean(key, value, errors, okay))
+        widget->setDisplayFrame(okay);
+    }
+  else if (key == "scrollbars")
+    {
+      if (parse_boolean(key, value, errors, okay))
+        enableScrollBars(okay);
+    }
+  else if (key == "menu")
+    {
+      if (parse_boolean(key, value, errors, okay))
+        enableContextMenu(okay);
+    }
+  else if (key == "keyboard")
+    {
+      if (parse_boolean(key, value, errors, okay))
+        widget->enableKeyboard(okay);
+    }
+  else if (key == "frame")
+    {
+      if (parse_boolean(key, value, errors, okay))
+        widget->setDisplayFrame(okay);
+    }
+  else if (key == "links")
+    {
+      if (parse_boolean(key, value, errors, okay))
+        widget->enableHyperlink(okay);
+    }
+  else if (key == "zoom")
+    {
+      int z = value.toInt(&okay);
+      QString val = value.toLower();
+      if (val == "one2one")
+        widget->setZoom(QDjVuWidget::ZOOM_ONE2ONE);
+      else if (val == "width" || val == "fitwidth")
+        widget->setZoom(QDjVuWidget::ZOOM_FITWIDTH);
+      else if (val == "page" || val == "fitpage")
+        widget->setZoom(QDjVuWidget::ZOOM_FITPAGE);
+      else if (val == "stretch")
+        widget->setZoom(QDjVuWidget::ZOOM_STRETCH);
+      else if (okay && z >= QDjVuWidget::ZOOM_MIN && z <= QDjVuWidget::ZOOM_MAX)
+        widget->setZoom(z);
+      else
+        illegal_value(key, value, errors);
+    }
+  else if (key == "mode")
+    {
+      QString val = value.toLower();
+      if (val == "color")
+        widget->setDisplayMode(QDjVuWidget::DISPLAY_COLOR);
+      else if (val == "bw" || val == "mask" || val == "stencil")
+        widget->setDisplayMode(QDjVuWidget::DISPLAY_STENCIL);
+      else if (val == "fore" || val == "foreground" || val == "fg")
+        widget->setDisplayMode(QDjVuWidget::DISPLAY_FG);
+      else if (val == "back" || val == "background" || val == "bg")
+        widget->setDisplayMode(QDjVuWidget::DISPLAY_BG);
+      else
+        illegal_value(key, value, errors);
+    }
+  else if (key == "hor_align" || key == "halign")
+    {
+      QString val = value.toLower();
+      if (val == "left")
+        widget->setHorizAlign(QDjVuWidget::ALIGN_LEFT);
+      else if (val == "center")
+        widget->setHorizAlign(QDjVuWidget::ALIGN_CENTER);
+      else if (val == "right")
+        widget->setHorizAlign(QDjVuWidget::ALIGN_RIGHT);
+      else
+        illegal_value(key, value, errors);
+    }
+  else if (key == "ver_align" || key == "valign")
+    {
+      QString val = value.toLower();
+      if (val == "top")
+        widget->setVertAlign(QDjVuWidget::ALIGN_TOP);
+      else if (val == "center")
+        widget->setVertAlign(QDjVuWidget::ALIGN_CENTER);
+      else if (val == "bottom")
+        widget->setVertAlign(QDjVuWidget::ALIGN_BOTTOM);
+      else
+        illegal_value(key, value, errors);
+    }
+  else if (key == "highlight")
+    {                           
+      int x,y,w,h;
+      QColor color;
+      if (! parse_highlight(value, x, y, w, h, color))
+        illegal_value(key, value, errors);
+      pendingHilite << StringPair(pendingPage, value);
+      performPendingLater();
+    }
+  else if (key == "search")       // new for djview4
+    {
+      pendingSearch << StringPair(pendingPage, value);
+      performPendingLater();
+    }
+  else if (key == "rotate")
+    {
+      if (value == "0")
+        widget->setRotation(0);
+      else if (value == "90")
+        widget->setRotation(1);
+      else if (value == "180")
+        widget->setRotation(2);
+      else if (value == "270")
+        widget->setRotation(3);
+      else
+        illegal_value(key, value, errors);
+    }
+  else if (key == "print")
+    {
+      if (parse_boolean(key, value, errors, okay))
+        printingAllowed = okay;
+    }
+  else if (key == "save")
+    {
+      if (parse_boolean(key, value, errors, okay))
+        savingAllowed = okay;
+    }
+  else if (key == "notoolbar" || 
+           key == "noscrollbars" ||
+           key == "nomenu" )
+    {
+      qWarning("Deprecated option '%s'", (const char*)key.toLocal8Bit());
+      if (key == "notoolbar" && value.isNull())
+        toolBar->setVisible(false);
+      else if (key == "noscrollbars" && value.isNull())
+        enableScrollBars(false);
+      else if (key == "nomenu" && value.isNull())
+        enableContextMenu(false);
+    }
+  else if (key == "thumbnails")
+    {
+      if (! showSideBar(value, 0))
+        illegal_value(key, value, errors);
+    }
+  else if (key == "outline")
+    {
+      if (! showSideBar(value, 1))
+        illegal_value(key, value, errors);
+    }
+  else if (key == "url")
+    {
+      if (viewerMode != STANDALONE)
+        qWarning("Option 'url' applies to plugins only");
+      else
+        // TODO...
+        qWarning("Option 'url' is not yet implemented");
+    }
+  else if (key == "logo")
+    {
+      QString msg = tr("Ignoring deprecated option '%1'.").arg(key);
+      qWarning((const char*) msg.toLocal8Bit());
+    }
+  else
+    {
+      errors << tr("Option '%1' is not recognized.").arg(key);
+    }
+  updateActionsLater();
+  return errors;
+}
+
+
+QStringList
+QDjView::parseArgument(QString keyEqualValue)
+{
+  int n = keyEqualValue.indexOf("=");
+  if (n < 0)
+    return parseArgument(keyEqualValue, QString());
+  else
+    return parseArgument(keyEqualValue.left(n),
+                         keyEqualValue.mid(n+1));
+}
+
+
+void 
+QDjView::parseCgiArguments(QUrl url)
+{
+  QStringList errors;
+  // parse
+  bool djvuopts = false;
+  QPair<QString,QString> pair;
+  foreach(pair, url.queryItems())
+    {
+      if (pair.first.toLower() == "djvuopts")
+        djvuopts = true;
+      else if (djvuopts)
+        errors << parseArgument(pair.first, pair.second);
+    }
+  // warning for errors
+  if (djvuopts && errors.size() > 0)
+    foreach(QString error, errors)
+      qWarning((const char*)error.toLocal8Bit());
+}
+
+
+
+
+// ----------------------------------------
 // QDJVIEW
 
 
@@ -1139,7 +1592,9 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
     document(0),
     documentTitleNumerical(true),
     updateActionsScheduled(false),
-    performPendingScheduled(false)
+    performPendingScheduled(false),
+    printingAllowed(true),
+    savingAllowed(true)
 {
   // Main window setup
   setWindowTitle(tr("DjView"));
@@ -1278,7 +1733,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   // - sidebar  
   sideBar = new QDockWidget(this);  // for now
   sideBar->setObjectName("sidebar");
-  sideBar->setAllowedAreas(Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea);
+  sideBar->setAllowedAreas(Qt::AllDockWidgetAreas);
   addDockWidget(Qt::LeftDockWidgetArea, sideBar);
   sideBar->installEventFilter(this);
 
@@ -1313,6 +1768,8 @@ QDjView::closeDocument()
     {
       doc->ref();
       disconnect(doc, 0, this, 0);
+      printingAllowed = true;
+      savingAllowed = true;
     }
   widget->setDocument(0);
   documentPages.clear();
@@ -1418,7 +1875,7 @@ QDjView::goToPage(int pageno)
   int pagenum = documentPages.size();
   if (!pagenum || !document)
     {
-      pendingPageName = QString("#%1").arg(pageno+1);
+      pendingPage = QString("#%1").arg(pageno+1);
     }
   else
     {
@@ -1437,7 +1894,7 @@ QDjView::goToPage(QString name, int from)
   int pagenum = documentPages.size();
   if (!pagenum || !document)
     {
-      pendingPageName = name;
+      pendingPage = name;
     }
   else
     {
@@ -1493,195 +1950,53 @@ QDjView::setMouseLabelText(QString s)
 }
 
 
-
-// ----------------------------------------
-// QDJVIEW ARGUMENTS
-
-
-template<class T> static inline void
-set_reset(QFlags<T> &x, bool plus, bool minus, T y)
+bool  
+QDjView::showSideBar(Qt::DockWidgetArea areas, int tab)
 {
-  if (plus)
-    x |= y;
-  else if (minus)
-    x &= ~y;
+  // Position
+  if (areas && !(dockWidgetArea(sideBar) & areas))
+    {
+      removeDockWidget(sideBar);
+      if (areas & Qt::LeftDockWidgetArea)
+        addDockWidget(Qt::LeftDockWidgetArea, sideBar);
+      else if (areas & Qt::RightDockWidgetArea)
+        addDockWidget(Qt::RightDockWidgetArea, sideBar);
+      else if (areas & Qt::TopDockWidgetArea)
+        addDockWidget(Qt::TopDockWidgetArea, sideBar);
+      else if (areas & Qt::BottomDockWidgetArea)
+        addDockWidget(Qt::BottomDockWidgetArea, sideBar);
+      else
+        addDockWidget(Qt::LeftDockWidgetArea, sideBar);
+    }
+  sideBar->setVisible(areas != 0);
+  // Tab
+  if (tab >= 0)
+    {
+      // TODO
+    }
+  // Okay
+  return true;
 }
 
 
-void
-QDjView::parseToolBarOption(QString option, QStringList &errors)
+bool
+QDjView::showSideBar(QString area, int tab)
 {
-  QString str = option.toLower();
-  int len = str.size();
-  bool wantselect = false;
-  bool wantmode = false;
-  bool toolbar = true;
-  bool minus = false;
-  bool plus = false;
-  int npos = 0;
-  while (npos < len)
-    {
-      int pos = npos;
-      npos = str.indexOf(QRegExp("[-+,]"), pos);
-      if (npos < 0) 
-        npos = len;
-      QString key = str.mid(pos, npos-pos).trimmed();
-      if ((key=="no" || key=="false") && !plus && !minus)
-        set_reset(options, false, true, QDjViewPrefs::SHOW_TOOLBAR);
-      else if ((key=="yes" || key=="true") && !plus && !minus)
-        set_reset(options, true, false, QDjViewPrefs::SHOW_TOOLBAR);
-      else if (key=="true" && !plus && !minus)
-        toolbar = true;
-      else if (key=="bottom" && !plus && !minus)
-        tools &= ~QDjViewPrefs::TOOLBAR_TOP;
-      else if (key=="top" && !plus && !minus)
-        tools &= ~QDjViewPrefs::TOOLBAR_BOTTOM;
-      else if (key=="auto" && !plus && !minus)
-        tools |= QDjViewPrefs::TOOLBAR_AUTOHIDE;
-      else if (key=="fixed" && !plus && !minus)
-        tools &= ~QDjViewPrefs::TOOLBAR_AUTOHIDE;
-      else if (key=="always" && !plus && !minus) {
-        set_reset(options, true, false, QDjViewPrefs::SHOW_TOOLBAR);
-        tools &= ~QDjViewPrefs::TOOLBAR_AUTOHIDE;
-      } else if (key.contains(QRegExp("^(fore|back|color|bw)(_button)?$")))
-        wantmode |= plus;
-      else if (key=="pan" || key=="zoomsel" || key=="textsel")
-        wantselect |= plus;
-      else if (key=="modecombo")
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_MODECOMBO);
-      else if (key=="rescombo" || key=="zoomcombo")
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_ZOOMCOMBO);
-      else if (key=="zoom")
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_ZOOMBUTTONS);
-      else if (key=="rotate")
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_ROTATE);
-      else if (key=="search")
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_SEARCH);
-      else if (key=="print")
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_PRINT);
-      else if (key=="save")
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_SAVE);
-      else if (key=="pagecombo")
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_PAGECOMBO);
-      else if (key=="backforw")
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_BACKFORW);
-      else if (key=="prevnext" || key=="prevnextpage")
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_PREVNEXT);
-      else if (key=="firstlast" || key=="firstlastpage")
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_FIRSTLAST);
-      else if (key=="select")   // new for djview4
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_SELECT);
-      else if (key=="new")      // new for djview4
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_NEW);
-      else if (key=="open")     // new for djview4
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_OPEN);
-      else if (key=="layout")   // new for djview4
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_LAYOUT);
-      else if (key=="help")     // new for djview4
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_WHATSTHIS);
-      else if (key!="")
-        errors << tr("Toolbar option '%1' is not recognized").arg(key);
-      // handle + or -
-      if (npos < len)
-        {
-          if (str[npos] == '-')
-            {
-              plus = false;
-              minus = true;
-            }
-          else if (str[npos] == '+')
-            {
-              if (!minus && !plus)
-                tools &= (QDjViewPrefs::TOOLBAR_TOP |
-                          QDjViewPrefs::TOOLBAR_BOTTOM |
-                          QDjViewPrefs::TOOLBAR_AUTOHIDE );
-              minus = false;
-              plus = true;
-            }
-          npos += 1;
-        }
-    }
-  if (wantmode)
-    tools |= QDjViewPrefs::TOOL_MODECOMBO;
-  if (wantselect)
-    tools |= QDjViewPrefs::TOOL_SELECT;
+  area = area.toLower();
+  if (area == "left")
+    return showSideBar(Qt::LeftDockWidgetArea, tab);
+  else if (area == "right")
+    return showSideBar(Qt::RightDockWidgetArea, tab);
+  else if (area == "top")
+    return showSideBar(Qt::TopDockWidgetArea, tab);
+  else if (area == "bottom")
+    return showSideBar(Qt::BottomDockWidgetArea, tab);
+  else if (string_is_on(area) || area.isNull())
+    return showSideBar(Qt::AllDockWidgetAreas, tab);
+  else if (string_is_off(area))
+    return showSideBar(0, tab);
+  return false;
 }
-
-
-QStringList
-QDjView::parseArgument(QString key, QString value)
-{
-  QStringList errors;
-  key = key.toLower();
-  
-  if (key == "fullscreen" || key == "fs")
-    {
-      if (viewerMode != STANDALONE)
-        errors << tr("Option '%1' only works for a standalone viewer.").arg(key);
-      if (actionViewFullScreen->isChecked() == string_is_off(value))
-        actionViewFullScreen->activate(QAction::Trigger);
-    }
-  else if (key == "toolbar")
-    {
-      parseToolBarOption(value, errors);
-      toolBar->setVisible(options & QDjViewPrefs::SHOW_TOOLBAR);
-    }
-  else if (key == "page")
-    {
-      goToPage(value);
-    }
-  else if (key == "cache")
-    {
-      // Actually implemented in open(...QUrl..)
-      if (! (string_is_on(value) || string_is_off(value)))
-        errors << tr("Option '%1' requires a boolean argument.").arg(key);
-    }
-  else if (key == "logo")
-    {
-      errors << tr("Option '%1' is deprecated.").arg(key);
-    }
-  else
-    {
-      errors << tr("Option '%1' is not recognized.").arg(key);
-    }
-  updateActionsLater();
-  return errors;
-}
-
-
-QStringList
-QDjView::parseArgument(QString keyEqualValue)
-{
-  int n = keyEqualValue.indexOf("=");
-  if (n < 0)
-    return parseArgument(keyEqualValue, QString());
-  else
-    return parseArgument(keyEqualValue.left(n),
-                         keyEqualValue.mid(n+1));
-}
-
-
-void 
-QDjView::parseCgiArguments(QUrl url)
-{
-  QStringList errors;
-  // parse
-  bool djvuopts = false;
-  QPair<QString,QString> pair;
-  foreach(pair, url.queryItems())
-    {
-      if (pair.first.toLower() == "djvuopts")
-        djvuopts = true;
-      else if (djvuopts)
-        errors << parseArgument(pair.first, pair.second);
-    }
-  // warning for errors
-  if (djvuopts && errors.size() > 0)
-    foreach(QString error, errors)
-      qWarning((const char*)error.toLocal8Bit());
-}
-
-
 
 
 // -----------------------------------
@@ -2028,12 +2343,12 @@ QDjView::performPending()
 {
   if (documentPages.isEmpty())
     return;
-  if (! pendingPageName.isNull())
-    goToPage(pendingPageName);
+  if (! pendingPage.isNull())
+    goToPage(pendingPage);
   
   // TODO hilite, searches
-  
   performPendingScheduled = false;
+  
 }
 
 

@@ -19,6 +19,7 @@
 #ifndef QDJVIEW_H
 #define QDJVIEW_H
 
+#include <Qt>
 #include <QObject>
 #include <QMainWindow>
 #include <QMessageBox>
@@ -97,6 +98,8 @@ public slots:
   int   execErrorDialog (QMessageBox::Icon icon, QString caption=QString());
   void  setPageLabelText(QString);
   void  setMouseLabelText(QString);
+  bool  showSideBar(Qt::DockWidgetArea areas, int tab=-1);
+  bool  showSideBar(QString area, int tab=-1);
   
 signals:
   void  documentClosed();
@@ -200,7 +203,7 @@ protected:
   bool                    documentTitleNumerical;
   // delayed settings
   typedef QPair<QString,QString> StringPair;
-  QString           pendingPageName;
+  QString           pendingPage;
   QList<StringPair> pendingHilite;
   QList<StringPair> pendingSearch;
   // delayed updates
@@ -259,6 +262,9 @@ protected:
   QAction *actionViewFullScreen;
   QAction *actionLayoutContinuous;
   QAction *actionLayoutSideBySide;
+  // permission
+  bool printingAllowed;
+  bool savingAllowed;
   // fullscreen stuff
   Saved fsSavedNormal;
   Saved fsSavedFullScreen;

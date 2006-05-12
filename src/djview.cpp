@@ -90,6 +90,9 @@ usage()
            " -style <qtstyle>  Select the QT user interface style.\n"
            " -fullscreen, -fs  Start djview in full screen mode.\n"
            " -page=<page>      Jump to page <pagename>.\n"
+           " -zoom=<zoom>      Set zoom factor.\n"
+           " -continuous=<yn>  Set continuous layout.\n"
+           " -sidebyside=<yn>  Set side-by-side layout.\n"
            "\n"), false );
   exit(10);
 }
