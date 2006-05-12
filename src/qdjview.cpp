@@ -32,7 +32,6 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QDockWidget>
-#include <QDockWidget>
 #include <QEvent>
 #include <QFile>
 #include <QFileDialog>
@@ -73,9 +72,6 @@
 
 #if DDJVUAPI_VERSION < 17
 # error "DDJVUAPI_VERSION>=17 is required !"
-#endif
-#if DDJVUAPI_VERSION < 18
-# define WORKAROUND_FOR_DDJVUAPI_17 1
 #endif
 
 // ----------------------------------------
@@ -1978,7 +1974,7 @@ QDjView::docinfo()
     {
       // Obtain information about pages.
       int n = ddjvu_document_get_pagenum(*document);
-#if WORKAROUND_FOR_DDJVUAPI_17
+#if DDJVUAPI_VERSION < 18
       ddjvu_document_type_t docType = ddjvu_document_get_type(*document);
       if (docType != DDJVU_DOCTYPE_BUNDLED &&  
           docType != DDJVU_DOCTYPE_INDIRECT )
