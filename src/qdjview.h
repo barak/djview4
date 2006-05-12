@@ -203,6 +203,7 @@ protected:
   bool                    documentTitleNumerical;
   // delayed settings
   typedef QPair<QString,QString> StringPair;
+  QString           pendingUrl;
   QString           pendingPage;
   QList<StringPair> pendingHilite;
   QList<StringPair> pendingSearch;

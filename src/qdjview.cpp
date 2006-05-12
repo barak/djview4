@@ -1528,8 +1528,9 @@ QDjView::parseArgument(QString key, QString value)
       if (viewerMode != STANDALONE)
         qWarning("Option 'url' applies to plugins only");
       else
-        // TODO...
-        qWarning("Option 'url' is not yet implemented");
+        pendingUrl = value;        
+      if (! pendingUrl.isEmpty())
+        performPendingLater();
     }
   else if (key == "logo")
     {
@@ -2341,14 +2342,34 @@ QDjView::docinfo()
 void
 QDjView::performPending()
 {
-  if (documentPages.isEmpty())
-    return;
-  if (! pendingPage.isNull())
-    goToPage(pendingPage);
-  
-  // TODO hilite, searches
+  if (! pendingUrl.isEmpty())
+    {
+      QUrl url = pendingUrl;
+      pendingUrl.clear();
+      pendingPage.clear();
+      pendingHilite.clear();
+      pendingSearch.clear();
+      open(url);
+    }
+  else if (! documentPages.isEmpty())
+    {
+      if (! pendingPage.isNull())
+        {
+          goToPage(pendingPage);
+          pendingPage.clear();
+        }
+      if (pendingHilite.size() > 0)
+        {
+          // TODO
+          pendingHilite.clear();
+        }
+      if (pendingSearch.size() > 0)
+        {
+          // TODO
+          pendingSearch.clear();
+        }
+    }
   performPendingScheduled = false;
-  
 }
 
 
