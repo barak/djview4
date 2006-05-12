@@ -79,12 +79,28 @@
 #endif
 
 // ----------------------------------------
-// USEFUL CONSTANTS
+// CONSTANTS AND UTILIES
 
 static const Qt::WindowStates 
 unusualWindowStates = (Qt::WindowMinimized |
                        Qt::WindowMaximized |
                        Qt::WindowFullScreen );
+
+
+static bool
+string_is_on(QString val)
+{
+  QString v = val.toLower();
+  return v == "yes" || v == "on" || v == "true";
+}
+
+static bool
+string_is_off(QString val)
+{
+  QString v = val.toLower();
+  return v == "no" || v == "off" || v == "false";
+}
+
 
 
 
@@ -1362,10 +1378,29 @@ bool
 QDjView::open(QUrl url)
 {
   closeDocument();
+  
+  // Are we using the cache
+  bool cache = true;
+  if (QFileInfo(url.path()).suffix().isEmpty())
+    cache = false;
+  bool djvuopts = false;
+  QPair<QString,QString> pair;
+  foreach(pair, url.queryItems())
+    {
+      if (pair.first.toLower() == "djvuopts")
+        djvuopts = true;
+      else if (!djvuopts || pair.first.toLower() != "cache")
+        continue;
+      else if (string_is_on(pair.second))
+        cache = true;
+      else if (string_is_off(pair.second))
+        cache = false;
+    }
+  // proceed
   QDjVuHttpDocument *doc = new QDjVuHttpDocument(true);
   connect(doc, SIGNAL(error(QString,QString,int)),
           errorDialog, SLOT(error(QString,QString,int)));
-  doc->setUrl(&djvuContext, url);
+  doc->setUrl(&djvuContext, url, cache);
   if (!doc->isValid())
     {
       delete doc;
@@ -1391,7 +1426,10 @@ QDjView::goToPage(int pageno)
     }
   else
     {
-      widget->setPage(pageno);
+      if (pageno>=0 && pageno<pagenum)
+        widget->setPage(pageno);
+      else
+        qWarning("Cannot find page numbered: %d", pageno+1);
       updateActionsLater();
     }
 }
@@ -1410,6 +1448,10 @@ QDjView::goToPage(QString name, int from)
       int pageno = pageNumber(name, from);
       if (pageno >= 0 && pageno < pagenum)
         widget->setPage(pageno);
+      else
+        qWarning("Cannot find page named: %s", 
+                 (const char*)name.toLocal8Bit());
+      updateActionsLater();
     }
 }
 
@@ -1468,6 +1510,7 @@ set_reset(QFlags<T> &x, bool plus, bool minus, T y)
   else if (minus)
     x &= ~y;
 }
+
 
 void
 QDjView::parseToolBarOption(QString option, QStringList &errors)
@@ -1574,16 +1617,36 @@ QDjView::parseArgument(QString key, QString value)
 {
   QStringList errors;
   key = key.toLower();
-
-  if (key == "toolbar")
+  
+  if (key == "fullscreen" || key == "fs")
+    {
+      if (viewerMode != STANDALONE)
+        errors << tr("Option '%1' only works for a standalone viewer.").arg(key);
+      if (actionViewFullScreen->isChecked() == string_is_off(value))
+        actionViewFullScreen->activate(QAction::Trigger);
+    }
+  else if (key == "toolbar")
     {
       parseToolBarOption(value, errors);
       toolBar->setVisible(options & QDjViewPrefs::SHOW_TOOLBAR);
     }
-  // TODO
+  else if (key == "page")
+    {
+      goToPage(value);
+    }
+  else if (key == "cache")
+    {
+      // Actually implemented in open(...QUrl..)
+      if (! (string_is_on(value) || string_is_off(value)))
+        errors << tr("Option '%1' requires a boolean argument.").arg(key);
+    }
+  else if (key == "logo")
+    {
+      errors << tr("Option '%1' is deprecated.").arg(key);
+    }
   else
     {
-      errors << tr("Unrecognized option '%1'.").arg(key);
+      errors << tr("Option '%1' is not recognized.").arg(key);
     }
   updateActionsLater();
   return errors;
@@ -2064,11 +2127,10 @@ QDjView::pointerClick(const Position &pos, miniexp_t maparea)
   // Execute link
   if (link.startsWith("#"))
     {
-      // Same document
-      if (target.isEmpty())
-        goToPage(link, pos.pageNo);
-      else
-        qWarning("TODO: same document, different window");
+      QDjView *w = this;
+      if (! target.isEmpty()) 
+        w = this->copyWindow();
+      w->goToPage(link, pos.pageNo);
     }
   else if (viewerMode == STANDALONE)
     {

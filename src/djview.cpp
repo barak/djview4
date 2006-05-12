@@ -79,10 +79,17 @@ static void
 usage()
 {
   message(QApplication::tr(
-           "usage: djview [options] [filename-or-http-url]\n\n"
-           "Options:\n"
-           " -help               Prints this message.\n"
-           " -verbose            Prints all warning messages.\n"
+           "Usage: djview [options] [filename-or-http-url]\n\n"
+           "Common options include:\n"
+           " -help             Prints this message.\n"
+           " -verbose          Prints all warning messages.\n"
+           " -display <xdpy>   Select the X11 display <xdpy>.\n"
+           " -geometry <xgeom> Select the initial window geometry.\n"
+           " -font <xlfd>      Select the X11 name of the main font.\n"
+           " -name <xname>     Select the X11 application class name.\n"
+           " -style <qtstyle>  Select the QT user interface style.\n"
+           " -fullscreen, -fs  Start djview in full screen mode.\n"
+           " -page=<page>      Jump to page <pagename>.\n"
            "\n"), false );
   exit(10);
 }
@@ -104,6 +111,8 @@ main(int argc, char *argv[])
         usage();
       else if (arg == "verbose")
         verbose = true;
+      else if (arg == "fix")
+        message(QDjView::tr("Options 'fix' is deprecated"));
       else 
         message(main->parseArgument(arg));
       argc --;
@@ -123,7 +132,7 @@ main(int argc, char *argv[])
         okay = main->open(name);
       if (! okay)
         {
-          message(QApplication::tr("cannot open '%1'.").arg(argv[1]));
+          message(QDjView::tr("cannot open '%1'.").arg(argv[1]));
           exit(10);
         }
     }

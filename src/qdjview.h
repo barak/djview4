@@ -74,10 +74,10 @@ class QDjView : public QMainWindow
   QUrl                getDocumentUrl()      { return documentUrl; }
   QString             getShortFileName();
 
-  QStringList  parseArgument(QString keyEqualValue);
   QStringList  parseArgument(QString key, QString value);
+  QStringList  parseArgument(QString keyEqualValue);
   void         parseCgiArguments(QUrl url);
-
+  
   int         pageNum(void);
   QString     pageName(int pageno);
   int         pageNumber(QString name, int from = -1);
