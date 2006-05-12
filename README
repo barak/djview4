@@ -6,13 +6,5 @@ Go into directory src.
 Check the qt4 program names in Makefile.
 Compile and run.
 
-At this point:
-
-- Key F1 toggles side-by-side display
-- Key F2 toggles continuous display
-- Keys + and - change the zoom factor
-- Keys [ and ] rotate the pages
-- Keys < and > go one page backward or forward
-
-and a few others for you to discover.
+Many features are still missing....
 
