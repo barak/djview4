@@ -1377,7 +1377,7 @@ QDjView::open(QUrl url)
   
   // Are we using the cache
   bool cache = true;
-  if (QFileInfo(url.path()).suffix().isEmpty())
+  if (url.path().section('/', -1).indexOf('.') < 0)
     cache = false;
   bool djvuopts = false;
   QPair<QString,QString> pair;
