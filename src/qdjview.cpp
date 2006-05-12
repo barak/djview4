@@ -95,15 +95,13 @@ unusualWindowStates = (Qt::WindowMinimized |
 
 
 void
-QDjView::fillPageCombo(QComboBox *pageCombo, QString format)
+QDjView::fillPageCombo(QComboBox *pageCombo)
 {
   pageCombo->clear();
   int n = documentPages.size();
   for (int j=0; j<n; j++)
     {
       QString name = pageName(j);
-      if (!format.isEmpty())
-        name = format.arg(name);
       pageCombo->addItem(name, QVariant(j));
     }
 }
@@ -834,7 +832,7 @@ QDjView::updateActions()
     }
   
   // Finished
-  needToUpdateActions = false;
+  updateActionsScheduled = false;
 }
 
 
@@ -1127,8 +1125,9 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
     viewerMode(mode),
     djvuContext(context),
     document(0),
-    pendingPageNo(-1),
-    needToUpdateActions(false)
+    documentTitleNumerical(true),
+    updateActionsScheduled(false),
+    performPendingScheduled(false)
 {
   // Main window setup
   setWindowTitle(tr("DjView"));
@@ -1306,6 +1305,7 @@ QDjView::closeDocument()
   widget->setDocument(0);
   documentPages.clear();
   documentFileName.clear();
+  documentTitleNumerical = true;
   documentUrl.clear();
   document = 0;
   if (doc)
@@ -1387,8 +1387,7 @@ QDjView::goToPage(int pageno)
   int pagenum = documentPages.size();
   if (!pagenum || !document)
     {
-      pendingPageNo = pageno;
-      pendingPageName.clear();
+      pendingPageName = QString("#%1").arg(pageno+1);
     }
   else
     {
@@ -1404,54 +1403,11 @@ QDjView::goToPage(QString name, int from)
   int pagenum = documentPages.size();
   if (!pagenum || !document)
     {
-      pendingPageNo = -1;
       pendingPageName = name;
     }
   else
     {
-      int pageno = -1;
-      if (from < 0)
-        from = widget->page();
-      // Handle names starting with hash mark
-      if (name.startsWith("#") &&
-          name.contains(QRegExp("^#[-+]?\\d+$")))
-        {
-          if (name[1]=='+')
-            pageno = qMin(from + name.mid(2).toInt(), pagenum-1);
-          else if (name[1]=='-')
-            pageno = qMax(from - name.mid(2).toInt(), 0);
-          else
-            pageno = qBound(1, name.mid(1).toInt(), pagenum) - 1;
-        }
-      else if (name.startsWith("#="))
-        name = name.mid(2);
-      // Search exact name starting from current page
-      QByteArray utf8Name= name.toUtf8();
-      if (pageno < 0 || pageno >= pagenum)
-        for (int i=from; i<pagenum; i++)
-          if (documentPages[i].title && 
-              ! strcmp(utf8Name, documentPages[i].title))
-            { pageno = i; break; }
-      if (pageno < 0 || pageno >= pagenum)
-        for (int i=0; i<from; i++)
-          if (documentPages[i].title &&
-              ! strcmp(utf8Name, documentPages[i].title))
-            { pageno = i; break; }
-      // Otherwise try a number in range [1..pagenum]
-      if (pageno < 0 || pageno >= pagenum)
-        pageno = name.toInt() - 1;
-      // Otherwise search page names and ids
-      if (pageno < 0 || pageno >= pagenum)
-        for (int i=0; i<pagenum; i++)
-          if (documentPages[i].name && 
-              !strcmp(utf8Name, documentPages[i].name))
-            { pageno = i; break; }
-      if (pageno < 0 || pageno >= pagenum)
-        for (int i=0; i<pagenum; i++)
-          if (documentPages[i].id && 
-              !strcmp(utf8Name, documentPages[i].id))
-            { pageno = i; break; }
-      // Done
+      int pageno = pageNumber(name, from);
       if (pageno >= 0 && pageno < pagenum)
         widget->setPage(pageno);
     }
@@ -1685,7 +1641,59 @@ QDjView::pageName(int pageno)
   if (pageno>=0 && pageno<documentPages.size())
     if ( documentPages[pageno].title )
       return QString::fromUtf8(documentPages[pageno].title);
-  return QString::number(pageno + 1);
+  if (documentTitleNumerical)
+    return QString("#%1").arg(pageno + 1);
+  return QString("%1").arg(pageno + 1);
+}
+
+
+int
+QDjView::pageNumber(QString name, int from)
+{
+  int pagenum = documentPages.size();
+  if (pagenum <= 0)
+    return -1;
+  if (from < 0)
+    from = widget->page();
+  // Handle names starting with hash mark
+  if (name.startsWith("#") &&
+      name.contains(QRegExp("^#[-+]?\\d+$")))
+    {
+      if (name[1]=='+')
+        return qMin(from + name.mid(2).toInt(), pagenum-1);
+      else if (name[1]=='-')
+        return qMax(from - name.mid(2).toInt(), 0);
+      else
+        return qBound(1, name.mid(1).toInt(), pagenum) - 1;
+    }
+  else if (name.startsWith("#="))
+    name = name.mid(2);
+  // Search exact name starting from current page
+  QByteArray utf8Name= name.toUtf8();
+  for (int i=from; i<pagenum; i++)
+    if (documentPages[i].title && 
+        ! strcmp(utf8Name, documentPages[i].title))
+      return i;
+  for (int i=0; i<from; i++)
+    if (documentPages[i].title &&
+        ! strcmp(utf8Name, documentPages[i].title))
+      return i;
+  // Otherwise try a number in range [1..pagenum]
+  int pageno = name.toInt() - 1;
+  if (pageno >= 0 && pageno < pagenum)
+    return pageno;
+  // Otherwise search page names and ids
+  for (int i=0; i<pagenum; i++)
+    if (documentPages[i].name && 
+        !strcmp(utf8Name, documentPages[i].name))
+      return i;
+  if (pageno < 0 || pageno >= pagenum)
+    for (int i=0; i<pagenum; i++)
+      if (documentPages[i].id && 
+          !strcmp(utf8Name, documentPages[i].id))
+        return i;
+  // Failed
+  return -1;
 }
 
 
@@ -1887,6 +1895,19 @@ QDjView::error(QString message, QString filename, int lineno)
 
 
 void 
+QDjView::errorCondition(int pageno)
+{
+  QString message;
+  if (pageno >= 0)
+    message = tr("Cannot decode page %1.").arg(pageno);
+  else
+    message = tr("Cannot decode document.");
+  addToErrorDialog(message);
+  raiseErrorDialog(QMessageBox::Warning, tr("Decoding DjVu document..."));
+}
+
+
+void 
 QDjView::docinfo()
 {
   if (document && documentPages.size()==0 &&
@@ -1928,15 +1949,42 @@ QDjView::docinfo()
       // Fill page combo
       fillPageCombo(pageCombo);
       
-      // Apply pending changes
-      if (! pendingPageName.isNull())
-        goToPage(pendingPageName);
-      else if (pendingPageNo >= 0)
-        goToPage(pendingPageNo);
-      // ... TODO ...
+      // Check for numerical title
+      documentTitleNumerical = false;
+      QRegExp allNumbers("\\d+");
+      for (int i=0; i<n; i++)
+        if (documentPages[i].title &&
+            allNumbers.exactMatch(QString::fromUtf8(documentPages[i].title)) )
+          documentTitleNumerical = true;
       
       // Update actions
+      performPendingLater();
       updateActionsLater();
+    }
+}
+
+
+void
+QDjView::performPending()
+{
+  if (documentPages.isEmpty())
+    return;
+  if (! pendingPageName.isNull())
+    goToPage(pendingPageName);
+  
+  // TODO hilite, searches
+  
+  performPendingScheduled = false;
+}
+
+
+void
+QDjView::performPendingLater()
+{
+  if (! performPendingScheduled)
+    {
+      performPendingScheduled = true;
+      QTimer::singleShot(0, this, SLOT(performPending()));
     }
 }
 
@@ -2050,7 +2098,8 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
   copyText->setEnabled(l>0);
   saveText->setEnabled(l>0);
   menu->addSeparator();
-  QAction *copyImage = menu->addAction(tr("Copy image (%1x%2 pixels)").arg(w).arg(h));
+  QString copyImageString = tr("Copy image (%1x%2 pixels)").arg(w).arg(h);
+  QAction *copyImage = menu->addAction(copyImageString);
   QAction *saveImage = menu->addAction(tr("Save image as..."));
   menu->addSeparator();
   QAction *zoom = menu->addAction(tr("Zoom to rectangle"));
@@ -2078,25 +2127,12 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
 }
 
 
-void 
-QDjView::errorCondition(int pageno)
-{
-  QString message;
-  if (pageno >= 0)
-    message = tr("Cannot decode page %1.").arg(pageno);
-  else
-    message = tr("Cannot decode document.");
-  addToErrorDialog(message);
-  raiseErrorDialog(QMessageBox::Warning, tr("Decoding DjVu document..."));
-}
-
-
 void
 QDjView::updateActionsLater()
 {
-  if (! needToUpdateActions)
+  if (! updateActionsScheduled)
     {
-      needToUpdateActions = true;
+      updateActionsScheduled = true;
       QTimer::singleShot(0, this, SLOT(updateActions()));
     }
 }

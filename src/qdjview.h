@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QPair>
 #include <QString>
 #include <QList>
 #include <QUrl>
@@ -79,6 +80,7 @@ class QDjView : public QMainWindow
 
   int         pageNum(void);
   QString     pageName(int pageno);
+  int         pageNumber(QString name, int from = -1);
   QString     makeCaption(QString);
   QDjView    *copyWindow(void);
   bool        saveTextFile(QString text, QString filename=QString());
@@ -114,7 +116,7 @@ protected:
   void     fillToolBar(QToolBar *toolBar);
   void     fillZoomCombo(QComboBox *zoomCombo);
   void     fillModeCombo(QComboBox *modeCombo);
-  void     fillPageCombo(QComboBox *pageCombo, QString format=QString());
+  void     fillPageCombo(QComboBox *pageCombo);
   QAction *makeAction(QString text);
   QAction *makeAction(QString text, bool value);
   void     createActions(void);
@@ -136,8 +138,10 @@ protected:
 protected slots:
   void info(QString);
   void error(QString, QString, int);
-  void docinfo();
   void errorCondition(int);
+  void docinfo();
+  void performPending();
+  void performPendingLater();
   void pointerPosition(const Position &pos, const PageInfo &page);
   void pointerEnter(const Position &pos, miniexp_t maparea);
   void pointerLeave(const Position &pos, miniexp_t maparea);
@@ -193,13 +197,15 @@ protected:
   QString                 documentFileName;
   QUrl                    documentUrl;
   QList<ddjvu_fileinfo_t> documentPages;
+  bool                    documentTitleNumerical;
   // delayed settings
-  int     pendingPageNo;
-  QString pendingPageName;
-  QRect   pendingHilite;
-  QString pendingSearch;
+  typedef QPair<QString,QString> StringPair;
+  QString           pendingPageName;
+  QList<StringPair> pendingHilite;
+  QList<StringPair> pendingSearch;
   // delayed updates
-  bool  needToUpdateActions;
+  bool  updateActionsScheduled;
+  bool  performPendingScheduled;
   // action lists
   QList<QAction*> allActions;
   QActionGroup *zoomActionGroup;

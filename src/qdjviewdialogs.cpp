@@ -280,26 +280,26 @@ QDjViewInfoDialog::refresh()
   
       QDjVuDocument *doc = d->document;
       ddjvu_fileinfo_t &info = d->files[d->fileno];
-      QString tab = tr("File #%1").arg(d->fileno+1);
+      QString tab = tr(" File #%1 ").arg(d->fileno+1);
       QString msg, dump;
       
       // prepare message
       if (info.type == 'P')
         {
           if (info.title && info.name && strcmp(info.title, info.name))
-            msg = tr("Page #%1 named ' %2 '.")
+            msg = tr("Page #%1 named \253 %2 \273") // << .. >>
               .arg(info.pageno + 1)
               .arg(QString::fromUtf8(info.title));
           else
-            msg = tr("Page #%1.")
+            msg = tr("Page #%1")
               .arg(info.pageno + 1);
         }
       else if (info.type == 'T')
-        msg = tr("Thumbnails.");
+        msg = tr("Thumbnails");
       else if (info.type == 'S')
-        msg = tr("Shared annotations.");
+        msg = tr("Shared annotations");
       else
-        msg = tr("Shared data.");
+        msg = tr("Shared data");
       
       // file dump
       dump = tr("Waiting for data...");
@@ -595,15 +595,13 @@ QDjViewMetaDialog::QDjViewMetaDialog(QDjView *parent)
   labels << tr(" Key ") << tr(" Value ");
   d->ui.docTable->setColumnCount(2);
   d->ui.docTable->setHorizontalHeaderLabels(labels);
-  d->ui.docTable->horizontalHeaderItem(1)
-    ->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
   d->ui.docTable->horizontalHeader()->setHighlightSections(false);
+  d->ui.docTable->horizontalHeader()->setStretchLastSection(true);
   d->ui.docTable->verticalHeader()->hide();
   d->ui.pageTable->setColumnCount(2);
   d->ui.pageTable->setHorizontalHeaderLabels(labels);
-  d->ui.pageTable->horizontalHeaderItem(1)
-    ->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
   d->ui.pageTable->horizontalHeader()->setHighlightSections(false);
+  d->ui.pageTable->horizontalHeader()->setStretchLastSection(true);
   d->ui.pageTable->verticalHeader()->hide();
   d->ui.pageCombo->setEnabled(false);
   d->ui.jumpButton->setEnabled(false);

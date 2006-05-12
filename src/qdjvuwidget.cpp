@@ -2771,7 +2771,8 @@ MapArea::update(QWidget *w, QRectMapper &m, QPoint offset)
   Keywords &k = *keywords();
   int bw = borderWidth;
   QRect rect = m.mapped(areaRect).translated(-offset);
-  if (! rect.intersects(w->rect())) return;
+  if (! rect.intersects(w->rect())) 
+    return;
   if (areaType == k.oval || areaType == k.poly)
     {
       int bw2 = (bw / 2) + 1;
@@ -3004,6 +3005,8 @@ QDjVuPrivate::checkCurrentMapArea(bool forceno)
   // change map area
   if (savedMapArea != newMapArea)
     {
+      currentMapArea = 0;
+      currentMapAreaPage = 0;
       if (savedMapArea)
         {
           if (savedMapArea->hasTransient())
@@ -3013,8 +3016,6 @@ QDjVuPrivate::checkCurrentMapArea(bool forceno)
                                    visibleRect.topLeft());
           emit widget->pointerLeave(pos, savedMapArea->expr);
         }
-      currentMapArea = 0;
-      currentMapAreaPage = 0;
       currentUrl = QString();
       currentTarget = QString();
       currentComment = QString();
