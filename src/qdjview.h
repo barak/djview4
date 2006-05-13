@@ -60,13 +60,15 @@ class QDjView : public QMainWindow
   Q_OBJECT
 
  public:
+
   enum ViewerMode {
     EMBEDDED_PLUGIN = 0,
     FULLPAGE_PLUGIN = 1,
     STANDALONE      = 2
   };
 
-  QDjView(QDjVuContext &context, ViewerMode mode=STANDALONE, QWidget *parent=0);
+  QDjView(QDjVuContext &context, 
+          ViewerMode mode=STANDALONE, QWidget *parent=0);
   
   QDjVuWidget        *getDjVuWidget()       { return widget; }
   QDjViewErrorDialog *getErrorDialog()      { return errorDialog; }
@@ -90,6 +92,7 @@ class QDjView : public QMainWindow
 public slots:
   bool  open(QString filename);
   bool  open(QUrl url);
+  void  open(QDjVuDocument *document);
   void  closeDocument();
   void  goToPage(int pageno);
   void  goToPage(QString name, int from=-1);
@@ -115,7 +118,6 @@ protected:
   typedef QDjViewPrefs::Tools Tools;
   typedef QDjViewPrefs::Saved Saved;
 
-  void     open(QDjVuDocument *document);
   void     fillToolBar(QToolBar *toolBar);
   void     fillZoomCombo(QComboBox *zoomCombo);
   void     fillModeCombo(QComboBox *modeCombo);

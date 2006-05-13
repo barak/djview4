@@ -103,30 +103,31 @@ public:
 
   struct Saved {
     Saved();
-    bool       remember;
-    Options    options;
-    int        zoom;
-    QByteArray state;
+    bool       remember;        //!< Save before closing.
+    Options    options;         //!< Miscellaneous flags.
+    int        zoom;            //!< Zoom factor.
+    QByteArray state;           //!< Toolbar and sidebar geometry.
   };
 
   // Preferences remembered between program invocations.
-  Saved      forEmbeddedPlugin;
-  Saved      forFullPagePlugin;
-  Saved      forStandalone;
-  Saved      forFullScreen;
-  QSize      windowSize;
+  Saved      forEmbeddedPlugin; //!< Prefs for the embedded plugin mode.
+  Saved      forFullPagePlugin; //!< Prefs for the full page plugin mode.
+  Saved      forStandalone;     //!< Prefs for the standalone viewer mode.
+  Saved      forFullScreen;     //!< Prefs for the full screen mode.
+  QSize      windowSize;        //!< Size of the standalone window.
 
   // Preferences set via the preference dialog.
-  Tools      tools;
-  double     gamma;
-  qlonglong  cacheSize;
-  int        pixelCacheSize;
-  int        lensSize;
-  int        lensPower;
-  double     printerGamma;  
-  Qt::KeyboardModifiers modifiersForLens;
-  Qt::KeyboardModifiers modifiersForSelect;
-  Qt::KeyboardModifiers modifiersForLinks;
+  Tools      tools;             //!< Toolbar composition.
+  double     gamma;             //!< Gamma value of the target screen.
+  qlonglong  cacheSize;         //!< Size of the decoded page cache.
+  int        pixelCacheSize;    //!< Size of the pixel cache.
+  int        lensSize;          //!< Size of the magnification lens.
+  int        lensPower;         //!< Power of the magnification lens.
+  double     printerGamma;      //!< Gamma value for the printer.
+
+  Qt::KeyboardModifiers modifiersForLens;   //!< Keys for the lens. 
+  Qt::KeyboardModifiers modifiersForSelect; //!< Keys for selecting.
+  Qt::KeyboardModifiers modifiersForLinks;  //!< Keys for showing the links.
   
   // Preferences set via the print dialog.
   // ...TODO... 

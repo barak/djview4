@@ -76,10 +76,17 @@
 
 
 
+/*! \class QDjView
+  \brief The main viewer interface.
+
+  Class \a QDjView defines the djvu viewer graphical user interface. It is
+  composed of a main window with menubar, toolbar, statusbar and a dockable
+  sidebar.  The center is occupied by a \a QDjVuWidget. */
+
+
 
 // ----------------------------------------
 // FILL USER INTERFACE COMPONENTS
-
 
 
 void
@@ -318,7 +325,7 @@ QDjView::createActions()
   modeActionGroup = new QActionGroup(this);
   rotationActionGroup  = new QActionGroup(this);
   
-  // Create actions
+  // Create all actions
   actionNew = makeAction(tr("&New", "File|New"))
     << QKeySequence(tr("Ctrl+N", "File|New"))
     << QIcon(":/images/icon_new.png")
@@ -723,6 +730,11 @@ QDjView::createMenus()
   contextMenu->addAction(actionAbout);
 }
 
+
+/*! Update graphical interface components.
+  This is called whenever something changes
+  using function \a QDjView::updateActionsLater().
+  It updates the all gui compnents. */
 
 void
 QDjView::updateActions()
@@ -1299,6 +1311,11 @@ QDjView::parseToolBarOption(QString option, QStringList &errors)
 }
 
 
+/*! Parse a qdjview option described by a pair \a key, \a value.
+  Such options can be provided on the command line 
+  or passed with the document URL as pseudo-CGI arguments.
+  Return a list of error strings. */
+
 QStringList
 QDjView::parseArgument(QString key, QString value)
 {
@@ -1546,6 +1563,9 @@ QDjView::parseArgument(QString key, QString value)
 }
 
 
+/*! Parse a \a QDjView option expressed a a string \a key=value.
+  This is very useful for processing command line options. */
+
 QStringList
 QDjView::parseArgument(QString keyEqualValue)
 {
@@ -1557,6 +1577,10 @@ QDjView::parseArgument(QString keyEqualValue)
                          keyEqualValue.mid(n+1));
 }
 
+
+/*! Parse the \a QDjView options passed via 
+  the CGI query arguments of \a url. 
+  This is called by \a QDjView::open(QUrl). */
 
 void 
 QDjView::parseCgiArguments(QUrl url)
@@ -1585,6 +1609,15 @@ QDjView::parseCgiArguments(QUrl url)
 // QDJVIEW
 
 
+/*! \enum QDjView::ViewerMode
+  The viewer mode is selected at creation time.
+  Mode \a STANDALONE corresponds to a standalone program.
+  Modes \a FULLPAGE_PLUGIN and \a EMBEDDED_PLUGIN
+  correspond to a netscape plugin. */
+
+
+/*! Construct a \a QDjView object using
+  the specified djvu context and viewer mode. */
 
 QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   : QMainWindow(parent),
@@ -1598,12 +1631,14 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
     savingAllowed(true)
 {
   // Main window setup
+
   setWindowTitle(tr("DjView"));
   setWindowIcon(QIcon(":/images/djvu.png"));
   if (QApplication::windowIcon().isNull())
     QApplication::setWindowIcon(windowIcon());
 
   // Basic preferences
+
   prefs = QDjViewPrefs::create();
   options = QDjViewPrefs::defaultOptions;
   tools = prefs->tools;
@@ -1749,6 +1784,8 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 }
 
 
+/*! Return the base name of the current file. */
+
 QString
 QDjView::getShortFileName()
 {
@@ -1786,6 +1823,8 @@ QDjView::closeDocument()
 }
 
 
+/*! Open a document represented by a \a QDjVuDocument object. */
+
 void 
 QDjView::open(QDjVuDocument *doc)
 {
@@ -1803,6 +1842,8 @@ QDjView::open(QDjVuDocument *doc)
     emit documentOpened(doc);
 }
 
+
+/*! Open the djvu document stored in file \a filename. */
 
 bool
 QDjView::open(QString filename)
@@ -1827,6 +1868,9 @@ QDjView::open(QString filename)
   return true;
 }
 
+
+/*! Open the djvu document available at url \a url.
+  Only the \a http: and \a file: protocols are supported. */
 
 bool
 QDjView::open(QUrl url)
@@ -1870,6 +1914,8 @@ QDjView::open(QUrl url)
 }
 
 
+/*! Jump to the page numbered \a pageno. */
+
 void 
 QDjView::goToPage(int pageno)
 {
@@ -1888,6 +1934,13 @@ QDjView::goToPage(int pageno)
     }
 }
 
+
+/*! Jump to the page named \a name. 
+  Names starting with the "#" character are interpreted
+  using the same rules as hyperlinks. In particular,
+  names of the form \a "#+n" and \a "#-n" express
+  relative displacement from the current page
+  or the page specified by argument \a from. */
 
 void 
 QDjView::goToPage(QString name, int from)
@@ -1910,12 +1963,16 @@ QDjView::goToPage(QString name, int from)
 }
 
 
+/*! Add a message to the error dialog. */
+
 void
 QDjView::addToErrorDialog(QString message)
 {
   errorDialog->error(message, __FILE__, __LINE__);
 }
 
+
+/*! Show the error dialog. */
 
 void
 QDjView::raiseErrorDialog(QMessageBox::Icon icon, QString caption)
@@ -1927,12 +1984,17 @@ QDjView::raiseErrorDialog(QMessageBox::Icon icon, QString caption)
 }
 
 
+/*! Show the error dialog and wait until the user clicks "OK". */
+
 int
 QDjView::execErrorDialog(QMessageBox::Icon icon, QString caption)
 {
   errorDialog->prepare(icon, makeCaption(caption));
   return errorDialog->exec();
 }
+
+
+/*! Set the content of the page box in the status bar. */
 
 void  
 QDjView::setPageLabelText(QString s)
@@ -1942,6 +2004,9 @@ QDjView::setPageLabelText(QString s)
   m->setMinimumWidth(qMax(m->minimumWidth(), m->sizeHint().width()));
 }
 
+
+/*! Set the content of the mouse box in the status bar. */
+
 void  
 QDjView::setMouseLabelText(QString s)
 {
@@ -1950,6 +2015,8 @@ QDjView::setMouseLabelText(QString s)
   m->setMinimumWidth(qMax(m->minimumWidth(), m->sizeHint().width()));
 }
 
+
+/*! Change the position and composition of the sidebar. */
 
 bool  
 QDjView::showSideBar(Qt::DockWidgetArea areas, int tab)
@@ -1980,6 +2047,10 @@ QDjView::showSideBar(Qt::DockWidgetArea areas, int tab)
 }
 
 
+/*! Change the position and composition of the sidebar.
+  String \a area can be "left", "right", "top", "bottom",
+  "yes", or "no". */
+
 bool
 QDjView::showSideBar(QString area, int tab)
 {
@@ -2003,12 +2074,35 @@ QDjView::showSideBar(QString area, int tab)
 // -----------------------------------
 // UTILITIES
 
+
+/*! \fn QDjView::getDjVuWidget()
+  Return the \a QDjVuWidget object managed by this window. */
+
+/*! \fn QDjView::getErrorDialog()
+  Return the error dialog for this window. */
+
+/*! \fn QDjView::getDocument()
+  Return the currently displayed \a QDjVuDocument. */
+
+/*! \fn QDjView::getDocumentFileName()
+  Return the filename of the currently displayed \a QDjVuDocument. */
+
+/*! \fn QDjView::getDocumentUrl()
+  Return the url of the currently displayed \a QDjVuDocument. */
+
+
+/*! Return the number of pages in the document.
+  This function returns zero when called before
+  fully decoding the document header. */
+
 int 
 QDjView::pageNum(void)
 {
   return documentPages.size();
 }
 
+
+/*! Return a name for page \a pageno. */
 
 QString 
 QDjView::pageName(int pageno)
@@ -2021,6 +2115,13 @@ QDjView::pageName(int pageno)
   return QString("%1").arg(pageno + 1);
 }
 
+
+/*! Return a page number for the page named \a name.
+  Names starting with the "#" character are interpreted
+  using the same rules as hyperlinks. In particular,
+  names of the form \a "#+n" and \a "#-n" express
+  relative displacement from the current page
+  or the page specified by argument \a from. */
 
 int
 QDjView::pageNumber(QString name, int from)
@@ -2072,6 +2173,9 @@ QDjView::pageNumber(QString name, int from)
 }
 
 
+/*! Create another main window with the same
+  contents, zoom and position as the current one. */
+
 QDjView*
 QDjView::copyWindow(void)
 {
@@ -2110,6 +2214,9 @@ QDjView::copyWindow(void)
 }
 
 
+/*! Compute a suitable caption for the titles
+  of ancillary windows. */
+
 QString 
 QDjView::makeCaption(QString caption)
 {
@@ -2119,6 +2226,10 @@ QDjView::makeCaption(QString caption)
   return caption;
 }
 
+
+/*! Save \a text info the specified file.
+  When argument \a filename is omitted, 
+  a file dialog is presented to the user. */
 
 bool 
 QDjView::saveTextFile(QString text, QString filename)
@@ -2152,6 +2263,11 @@ QDjView::saveTextFile(QString text, QString filename)
   return true;
 }
 
+
+/*! Save \a image info the specified file
+  using a format derived from the filename suffix.
+  When argument \a filename is omitted, 
+  a file dialog is presented to the user. */
 
 bool 
 QDjView::saveImageFile(QImage image, QString filename)
@@ -2201,6 +2317,12 @@ QDjView::saveImageFile(QImage image, QString filename)
 }
 
 
+/*! \fn QDjView::documentClosed()
+  This signal is emitted when clearing the current document. */
+
+/*! \fn QDjView::documentOpened(QDjVuDocument*)
+  This signal is emitted when opening a new document. */
+  
 
 
 
@@ -2339,6 +2461,14 @@ QDjView::docinfo()
 }
 
 
+/*! Set options that could not be set before fully decoding
+  the document header. For instance, calling \a QDjView::goToPage
+  before decoding the djvu document header simply stores
+  the page number in a well known variable. Function \a performPending
+  peforms the page change as soon as the document information
+  is available. */
+
+
 void
 QDjView::performPending()
 {
@@ -2372,6 +2502,8 @@ QDjView::performPending()
   performPendingScheduled = false;
 }
 
+
+/*! Schedule a call to \a QDjView::performPending(). */
 
 void
 QDjView::performPendingLater()
@@ -2520,6 +2652,8 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
     }
 }
 
+
+/*! Schedule a call to \a QDjView::updateActions(). */
 
 void
 QDjView::updateActionsLater()

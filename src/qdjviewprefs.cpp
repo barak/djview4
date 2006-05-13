@@ -32,6 +32,33 @@
 #include "qdjview.h"
 
 
+
+/*! \class QDjViewPrefs
+   \brief Holds the preferences for the \a QDjView instances. */
+
+/*! \enum QDjViewPrefs::Option
+   \brief Miscellanenous flags.
+   This enumeration defines flags describing 
+   (i) the visibility of the menubar, toolbar, etc.
+   (ii) the page layout flags continuous and side by side.
+   (iii) the interactive capabilities of the djvu widget. */
+
+/*! \enum QDjViewPrefs::Tool
+   \brief Toolbar flags.
+   This enumeration defines flags describing
+   the composition of the toolbar. */
+
+/*! \class QDjViewPrefs::Saved
+   \brief Mode dependent preferences.
+   This structure holds the preferences that are 
+   saved separately for each viewer mode.
+   There are four copies of this structure,
+   for the standalone viewer mode, for the full screen mode,
+   for the full page plugin mode, and for the embedded plugin mode. */
+
+
+/*! The default toolbar composition. */
+
 const QDjViewPrefs::Tools 
 QDjViewPrefs::defaultTools 
 = TOOLBAR_TOP | TOOLBAR_BOTTOM
@@ -42,6 +69,8 @@ QDjViewPrefs::defaultTools
 | TOOL_WHATSTHIS;
 
 
+/*! The default set of miscellaneous flags. */
+
 const QDjViewPrefs::Options
 QDjViewPrefs::defaultOptions 
 = SHOW_MENUBAR | SHOW_TOOLBAR | SHOW_SIDEBAR 
@@ -51,6 +80,8 @@ QDjViewPrefs::defaultOptions
 
 
 static QPointer<QDjViewPrefs> preferences;
+
+/*! Create the single preference object. */
 
 QDjViewPrefs *
 QDjViewPrefs::create(void)
@@ -95,6 +126,8 @@ QDjViewPrefs::QDjViewPrefs(void)
 }
 
 
+/*! Return a string with the djview version. */
+
 QString 
 QDjViewPrefs::versionString()
 {
@@ -106,6 +139,8 @@ QDjViewPrefs::versionString()
   return version;
 }
 
+
+/*! Return a string describing a set of modifier keys. */
 
 QString 
 QDjViewPrefs::modifiersToString(Qt::KeyboardModifiers m)
@@ -122,6 +157,7 @@ QDjViewPrefs::modifiersToString(Qt::KeyboardModifiers m)
   return l.join("+");
 }
 
+/*! Return the modifiers described in string \a s. */
 
 Qt::KeyboardModifiers 
 QDjViewPrefs::stringToModifiers(QString s)
@@ -143,6 +179,8 @@ QDjViewPrefs::stringToModifiers(QString s)
 }
 
 
+/*! Return a string describing a set of option flags. */
+
 QString 
 QDjViewPrefs::optionsToString(Options options)
 {
@@ -151,6 +189,7 @@ QDjViewPrefs::optionsToString(Options options)
   return me.valueToKeys(static_cast<int>(options));
 }
 
+/*! Return the option flags described by a string. */
 
 QDjViewPrefs::Options 
 QDjViewPrefs::stringToOptions(QString s)
@@ -162,6 +201,8 @@ QDjViewPrefs::stringToOptions(QString s)
 }
 
 
+/*! Return a string describing a set of toolbar flags. */
+
 QString 
 QDjViewPrefs::toolsToString(Tools tools)
 {
@@ -170,6 +211,8 @@ QDjViewPrefs::toolsToString(Tools tools)
   return me.valueToKeys(tools);
 }
 
+
+/*! Return the toolbar flags described by a string. */
 
 QDjViewPrefs::Tools   
 QDjViewPrefs::stringToTools(QString s)
@@ -197,6 +240,8 @@ QDjViewPrefs::loadGroup(QSettings &s, QString name, Saved &saved)
   s.endGroup();
 }
 
+
+/*! Load saved preferences and set all member variables. */
 
 void
 QDjViewPrefs::load(void)
@@ -248,6 +293,8 @@ QDjViewPrefs::saveGroup(QSettings &s, QString name, Saved &saved)
   s.endGroup();
 }
 
+
+/*! Save all member variables for later use. */
 
 void
 QDjViewPrefs::save(void)
