@@ -278,7 +278,8 @@ QDjViewPrefs::load(void)
   if (s.contains("modifiersForLinks"))
     modifiersForLinks 
       = stringToModifiers(s.value("modifiersForLinks").toString());
-
+  if (s.contains("browserProgram"))
+    browserProgram = s.value("browserProgram").toString();
 }
 
 
@@ -319,6 +320,7 @@ QDjViewPrefs::save(void)
   s.setValue("modifiersForLens", modifiersToString(modifiersForLens));
   s.setValue("modifiersForSelect", modifiersToString(modifiersForSelect));
   s.setValue("modifiersForLinks", modifiersToString(modifiersForLinks));
+  s.setValue("browserProgram", browserProgram);
 }
 
 

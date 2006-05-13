@@ -92,21 +92,24 @@ class QDjView : public QMainWindow
 public slots:
   bool  open(QString filename);
   bool  open(QUrl url);
-  void  open(QDjVuDocument *document);
+  void  open(QDjVuDocument *document, QUrl url = QUrl());
   void  closeDocument();
   void  goToPage(int pageno);
   void  goToPage(QString name, int from=-1);
   void  addToErrorDialog(QString message);
   void  raiseErrorDialog(QMessageBox::Icon icon, QString caption=QString());
   int   execErrorDialog (QMessageBox::Icon icon, QString caption=QString());
-  void  setPageLabelText(QString);
-  void  setMouseLabelText(QString);
+  void  setPageLabelText(QString s = QString());
+  void  setMouseLabelText(QString s = QString());
+  void  statusMessage(QString s = QString());
   bool  showSideBar(Qt::DockWidgetArea areas, int tab=-1);
   bool  showSideBar(QString area, int tab=-1);
   
-signals:
+  signals:
   void  documentClosed();
-  void  documentOpened(QDjVuDocument*);
+  void  documentOpened(QDjVuDocument *doc);
+  void  pluginStatusMessage(QString message = QString());
+  void  pluginGetUrl(QUrl url, QString target);
 
 protected:
   friend class QDjViewInfoDialog;

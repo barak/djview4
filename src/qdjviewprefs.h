@@ -124,6 +124,7 @@ public:
   int        lensSize;          //!< Size of the magnification lens.
   int        lensPower;         //!< Power of the magnification lens.
   double     printerGamma;      //!< Gamma value for the printer.
+  QString    browserProgram;    //!< Preferred web browser.
 
   Qt::KeyboardModifiers modifiersForLens;   //!< Keys for the lens. 
   Qt::KeyboardModifiers modifiersForSelect; //!< Keys for selecting.

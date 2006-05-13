@@ -50,6 +50,7 @@
 #include <QObject>
 #include <QPair>
 #include <QPalette>
+#include <QProcess>
 #include <QRegExp>
 #include <QRegExp>
 #include <QRegExpValidator>
@@ -1826,11 +1827,13 @@ QDjView::closeDocument()
 /*! Open a document represented by a \a QDjVuDocument object. */
 
 void 
-QDjView::open(QDjVuDocument *doc)
+QDjView::open(QDjVuDocument *doc, QUrl url)
 {
   closeDocument();
   widget->makeDefaults();
   document = doc;
+  if (url.isValid())
+    documentUrl = url;
   connect(doc,SIGNAL(destroyed(void)), this, SLOT(closeDocument(void)));
   connect(doc,SIGNAL(docinfo(void)), this, SLOT(docinfo(void)));
   widget->setDocument(document);
@@ -2016,6 +2019,18 @@ QDjView::setMouseLabelText(QString s)
 }
 
 
+/*! Display transient message in the status bar.
+  This also emits signal \a pluginStatusMessage
+  to mirror the message in the browser status bar. */
+
+void  
+QDjView::statusMessage(QString message)
+{
+  statusBar->showMessage(message);
+  emit pluginStatusMessage(message);
+}
+
+
 /*! Change the position and composition of the sidebar. */
 
 bool  
@@ -2169,6 +2184,7 @@ QDjView::pageNumber(QString name, int from)
           !strcmp(utf8Name, documentPages[i].id))
         return i;
   // Failed
+  qWarning("Cannot find page '%s'", (const char*)name.toLocal8Bit());
   return -1;
 }
 
@@ -2355,7 +2371,7 @@ QDjView::eventFilter(QObject *watched, QEvent *event)
         {
           pageLabel->clear();
           mouseLabel->clear();
-          statusBar->clearMessage();
+          statusMessage();
           return false;
         }
       break;
@@ -2566,15 +2582,14 @@ QDjView::pointerEnter(const Position &pos, miniexp_t maparea)
   if (!target.isEmpty())
     message = message + " (in other window.)";
   
-  
-  statusBar->showMessage(message);
+  statusMessage(message);
 }
 
 
 void 
 QDjView::pointerLeave(const Position &pos, miniexp_t maparea)
 {
-  statusBar->clearMessage();
+  statusMessage();
 }
 
 
@@ -2583,27 +2598,72 @@ QDjView::pointerClick(const Position &pos, miniexp_t maparea)
 {
   // Obtain link information
   QString link = widget->linkUrl();
-  if (link.isEmpty())
-    return;
   QString target = widget->linkTarget();
-  if (target=="_self" || target=="_page")
-    target.clear();
-  // Execute link
+  bool inPlace = target.isEmpty() || target=="_self" || target!="_page";
+  QList<QPair<QString, QString> > empty;
+  QUrl url = documentUrl;
+  url.setQueryItems(empty);
+  // Internal link
   if (link.startsWith("#"))
     {
-      QDjView *w = this;
-      if (! target.isEmpty()) 
-        w = this->copyWindow();
-      w->goToPage(link, pos.pageNo);
-    }
-  else if (viewerMode == STANDALONE)
-    {
-      qWarning("TODO: other document, standalone");
+      if (inPlace)
+        {
+          goToPage(link, pos.pageNo);
+          return;
+        }
+      if (viewerMode == STANDALONE)
+        {
+          copyWindow()->goToPage(link, pos.pageNo);
+          return;
+        }
+      // Construct url.
+      url.addQueryItem("page", QString("#%1").arg(pageNumber(link)+1));
     }
   else
     {
-      qWarning("TODO: other document, plugin");
+      // Resolve url
+      url = url.resolved(QUrl(link));
     }
+  // Check url
+  if (! url.isValid() || url.isRelative())
+    {
+      qWarning("Cannot resolve link '%s'", (const char*) link.toLocal8Bit());
+      return;
+    }
+  // Signal browser
+  if (viewerMode != STANDALONE)
+    {
+      emit pluginGetUrl(url, target);
+      return;
+    }
+  // Standalone can open djvu documents
+  QFileInfo file = url.toLocalFile();
+  QString suffix = file.suffix().toLower();
+  if (file.exists() && (suffix=="djvu" || suffix=="djv"))
+    {
+      QDjView *w = this;
+      if (inPlace)
+        w = new QDjView(djvuContext, STANDALONE);
+      w->open(file.filePath());
+      return;
+    }
+  // Otherwise spawn a browser
+  QStringList args;
+  args << QString::fromLatin1(url.toEncoded());
+  QStringList browsers;
+  browsers << "x-www-browser" 
+           << "firefox" << "konqueror" << "mozilla"
+           << "iexplore";
+  const char *var = getenv("BROWSER");
+  if (var && var[0])
+    browsers.prepend(QString::fromLocal8Bit(var));
+  if (! prefs->browserProgram.isEmpty())
+    browsers = QStringList(prefs->browserProgram);
+  foreach (QString browser, browsers)
+    if (QProcess::startDetached(browser, args))
+      return;
+  qWarning("Cannot spawn a browser for url '%s'",
+           (const char*) link.toLocal8Bit() );
 }
 
 
