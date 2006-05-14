@@ -34,6 +34,7 @@
 #include <QMutexLocker>
 #include <QSet>
 #include <QString>
+#include <QTimer>
 #include <QUrl>
 #include <QVector>
 
@@ -228,6 +229,7 @@ public slots:
 protected slots:
   void remove(QObject *p);
   void pageinfo();
+  void emitidle();
 signals:
   void idle();
 };
@@ -251,6 +253,12 @@ QDjVuDocumentPrivate::add(QObject *p)
 }
 
 void
+QDjVuDocumentPrivate::emitidle()
+{
+  emit idle();
+}
+
+void
 QDjVuDocumentPrivate::remove(QObject *p)
 {
   mutex.lock();
@@ -259,7 +267,7 @@ QDjVuDocumentPrivate::remove(QObject *p)
   disconnect(p, 0, this, 0);
   mutex.unlock();
   if (! size)
-    emit idle();
+    QTimer::singleShot(0, this, SLOT(emitidle()));
 }
 
 void
