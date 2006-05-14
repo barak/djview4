@@ -498,6 +498,7 @@ QDjViewInfoDialog::fillDocTable()
     fillDocRow(i);
   table->resizeColumnsToContents();
   table->resizeRowsToContents();
+  table->horizontalHeader()->setStretchLastSection(true);
   setTableWhatsThis(table, d->ui.tabDocument->whatsThis());
 }
 
@@ -694,6 +695,7 @@ metadataFill(QTableWidget *table, QMap<QString,QString> m)
     }
   table->resizeColumnsToContents();
   table->resizeRowsToContents();
+  table->horizontalHeader()->setStretchLastSection(true);
 }
 
 void 
