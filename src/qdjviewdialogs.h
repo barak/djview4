@@ -65,10 +65,10 @@ public slots:
 protected slots:
   void prevFile(void);
   void nextFile(void);
-  void selectFile(int fileno);
   void jumpToSelectedPage(void);
   void documentClosed(void);
 private:
+  void fillFileCombo();
   void fillDocLabel();
   void fillDocTable();
   void fillDocRow(int);
@@ -91,6 +91,8 @@ public:
   QDjViewMetaDialog(QDjView *parent);
 public slots:
   void refresh();
+  void prevPage(void);
+  void nextPage(void);
   void setPage(int pageno);
 protected slots:
   void jumpToSelectedPage(void);

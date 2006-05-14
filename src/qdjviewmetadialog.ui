@@ -77,6 +77,13 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="prevButton" >
+           <property name="icon" >
+            <iconset resource="qdjview.qrc" >:/images/icon_prev.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QComboBox" name="pageCombo" >
            <property name="sizePolicy" >
             <sizepolicy>
@@ -87,6 +94,26 @@
             </sizepolicy>
            </property>
           </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="nextButton" >
+           <property name="icon" >
+            <iconset resource="qdjview.qrc" >:/images/icon_next.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
          <item>
           <widget class="QPushButton" name="jumpButton" >
@@ -163,7 +190,9 @@
   </layout>
  </widget>
  <pixmapfunction></pixmapfunction>
- <resources/>
+ <resources>
+  <include location="qdjview.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>okButton</sender>

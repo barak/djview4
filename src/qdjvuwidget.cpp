@@ -608,6 +608,7 @@ enum {
   UPDATE_BORDERS      = 0x100,  // redisplay the visible desk surface
   UPDATE_PAGES        = 0x200,  // redisplay, possibly by scrolling smartly
   UPDATE_ALL          = 0x400,  // redisplay everything
+  REFRESH_PAGES       = 0x800,  // redraw pages with new pixels
   SCHEDULED           = 0x8000  // internal: change scheduled
 };
 
@@ -672,10 +673,8 @@ public:
   int  pageRequestDelay;        // time before requesting pages
   bool pageRequestScheduled;    // page requests have been scheduled
   // painting
-  int    redisplayDelay;        // time before redisplay
-  bool   redisplayScheduled;    // redisplay has been scheduled
-  int    pixelCacheSize;        // size of pixel cache
-  QRect  selectedRect;          // selection rectangle (viewport coord)
+  int         pixelCacheSize;   // size of pixel cache
+  QRect       selectedRect;     // selection rectangle (viewport coord)
   double          gamma;        // display gamma
   ddjvu_format_t *renderFormat; // ddjvu format
   QList<Cache>    pixelCache;   // pixel cache
@@ -718,8 +717,6 @@ public:
   // cursors
   QCursor cursHandOpen;
   QCursor cursHandClosed;
-  // optimization
-  QDjVuPage *initialPage;
 
   void changeLayout(int change);
   bool requestPage(Page *p);
@@ -750,7 +747,6 @@ public:
 
 public slots:
   void makeLayout();
-  void makeRedisplay();
   void makePageRequests();
   void docinfo();
   void pageinfo();
@@ -762,9 +758,6 @@ public slots:
 
 QDjVuPrivate::~QDjVuPrivate()
 {
-  if (initialPage)
-    delete initialPage;
-  initialPage = 0;
   if (doc) 
     doc->deref();
   doc = 0;
@@ -820,9 +813,7 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   lensSize = 300;
   // scheduled changes
   layoutChange = 0;
-  redisplayDelay = 150;
-  redisplayScheduled = false;
-  pageRequestDelay = 100;
+  pageRequestDelay = 150;
   pageRequestScheduled = false;
   // render format
   gamma = 2.2;
@@ -843,8 +834,6 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   // cursors
   cursHandOpen = qcursor_by_name(":/images/cursor_hand_open.png");
   cursHandClosed = qcursor_by_name(":/images/cursor_hand_closed.png");
-  // optimization
-  initialPage = 0;
 }
 
 
@@ -1330,6 +1319,16 @@ QDjVuPrivate::makeLayout()
           widget->viewport()->update(region);
           emit widget->layoutChanged();
         }
+      else if (layoutChange & REFRESH_PAGES)
+        {
+          Page *p;
+          foreach(p, pageLayout)
+            if (p->redisplay)
+              if (visibleRect.intersects(p->rect))
+                widget->viewport()->update(p->viewRect);
+          pixelCache.clear();
+          layoutChange &= ~REFRESH_PAGES;
+        }
       else
         {
           // deschedule
@@ -1394,14 +1393,6 @@ QDjVuPrivate::requestPage(Page *p)
 {
   if (! p->page) 
     {
-      // check that initial page
-      if (initialPage && p->pageno == 0)
-        {
-          p->page = initialPage;
-          initialPage = 0;
-        }
-      delete initialPage;
-      initialPage = 0;
       // create and connect page
       if (! p->page)
         p->page = new QDjVuPage(doc, p->pageno); 
@@ -1413,8 +1404,8 @@ QDjVuPrivate::requestPage(Page *p)
               this, SLOT(error(QString,QString,int)) );
       connect(p->page, SIGNAL(info(QString)), 
               this, SLOT(info(QString)) );
-      if (visibleRect.intersects(p->rect))
-        widget->viewport()->update(p->viewRect);
+      p->redisplay = true;
+      changeLayout(REFRESH_PAGES);
       return true;
     }
   return false;
@@ -1553,6 +1544,7 @@ QDjVuPrivate::updateCurrentPoint(const Position &pos)
 void 
 QDjVuPrivate::docinfo()
 {
+ qDebug() << __func__ ;
   ddjvu_status_t status;
   status = ddjvu_document_decoding_status(*doc);
   if (status == DDJVU_JOB_OK && !docReady)
@@ -1582,6 +1574,7 @@ QDjVuPrivate::docinfo()
 void 
 QDjVuPrivate::pageinfo()
 {
+ qDebug() << __func__ ;
   changeLayout(CHANGE_SIZE);
 }
 
@@ -1594,6 +1587,7 @@ QDjVuPrivate::pageinfoPage()
     {
       Page *p = 0;
       int pageno = page->pageNo();
+ qDebug() << __func__ << pageno;
       switch(ddjvu_page_decoding_status(*page))
         {
         case DDJVU_JOB_STARTED:
@@ -1625,22 +1619,6 @@ QDjVuPrivate::pageinfoPage()
 }
 
 void 
-QDjVuPrivate::makeRedisplay()
-{
-  makeLayout();
-  pixelCache.clear();
-  redisplayScheduled = false;
-  Page *p;
-  foreach(p, pageLayout)
-    {
-      if (p->redisplay)
-        if (visibleRect.intersects(p->rect))
-          widget->viewport()->update(p->viewRect);
-      p->redisplay = false;
-    }
-}
-
-void 
 QDjVuPrivate::redisplayPage()
 {
   QObject *send = sender();
@@ -1648,12 +1626,15 @@ QDjVuPrivate::redisplayPage()
   if (page) 
     {
       int pageno = page->pageNo();
+ qDebug() << __func__ << pageno;
       if (pageMap.contains(pageno)) 
         {
           Page *p = pageMap[pageno];
-          if (p) p->redisplay = true;
-          if (! redisplayScheduled)
-            QTimer::singleShot(redisplayDelay, this, SLOT(makeRedisplay()));
+          if (p) 
+            {
+              p->redisplay = true;
+              changeLayout(REFRESH_PAGES);
+            }
         }
     }
 }
@@ -1803,8 +1784,6 @@ QDjVuWidget::setDocument(QDjVuDocument *d)
       // cleanup
       if (priv->doc)
         {
-          delete priv->initialPage;
-          priv->initialPage = 0;
           priv->adjustSettings(PRIORITY_DOCUMENT, miniexp_nil);
           priv->adjustSettings(PRIORITY_PAGE, miniexp_nil);
           disconnect(priv->doc, 0, priv, 0);
@@ -1817,7 +1796,6 @@ QDjVuWidget::setDocument(QDjVuDocument *d)
       priv->pageVisible.clear();
       priv->currentMapAreaPage = 0;
       priv->currentMapArea = 0;
-      priv->initialPage = 0;
       priv->dragMode = DRAG_NONE;
       delete priv->lens;
       priv->lens = 0;
@@ -1846,9 +1824,6 @@ QDjVuWidget::setDocument(QDjVuDocument *d)
                   priv, SLOT(makePageRequests()));
           priv->docinfo();
         }
-      // optimize
-      if (priv->doc)
-        priv->initialPage = new QDjVuPage(priv->doc, 0);
       // update
       priv->visibleRect.setRect(0,0,0,0);
       priv->currentPos = Position();

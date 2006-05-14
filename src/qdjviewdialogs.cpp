@@ -176,7 +176,6 @@ QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
   d->ui.docTable->verticalHeader()->hide();
   d->ui.docTable->horizontalHeader()->setHighlightSections(false);
   d->ui.docTable->horizontalHeader()->setStretchLastSection(true);
-  d->ui.docLabel->setMinimumHeight(d->ui.fileLabel->height());
 
   connect(d->djview, SIGNAL(documentClosed()), 
           this, SLOT(documentClosed()));
@@ -184,14 +183,23 @@ QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
           this, SLOT(setPage(int)));
   connect(d->ui.okButton, SIGNAL(clicked()), 
           this, SLOT(accept()) );
-  connect(d->ui.nextFileButton, SIGNAL(clicked()), 
+  connect(d->ui.nextButton, SIGNAL(clicked()), 
           this, SLOT(nextFile()) );
-  connect(d->ui.prevFileButton, SIGNAL(clicked()), 
+  connect(d->ui.jumpButton, SIGNAL(clicked()), 
+          this, SLOT(jumpToSelectedPage()) );
+  connect(d->ui.fileCombo, SIGNAL(activated(int)), 
+          this, SLOT(setFile(int)) );
+  connect(d->ui.prevButton, SIGNAL(clicked()), 
           this, SLOT(prevFile()) );
   connect(d->ui.docTable, SIGNAL(currentCellChanged(int,int,int,int)), 
-          this, SLOT(selectFile(int)) );
+          this, SLOT(setFile(int)) );
   connect(d->ui.docTable, SIGNAL(itemDoubleClicked(QTableWidgetItem*)),
           this, SLOT(jumpToSelectedPage()) );
+  
+  d->ui.fileCombo->setEnabled(false);
+  d->ui.jumpButton->setEnabled(false);
+  d->ui.prevButton->setEnabled(false);
+  d->ui.nextButton->setEnabled(false);
 
   // what's this
   QWidget *wd = d->ui.tabDocument;
@@ -262,47 +270,26 @@ QDjViewInfoDialog::refresh()
           d->files << info;
         }
 #endif
+      fillFileCombo();
       fillDocLabel();
       fillDocTable();
       if (d->pageno >= 0)
         setPage(d->pageno);
       else if (d->fileno >= 0)
         setFile(d->fileno);
+      d->ui.fileCombo->setEnabled(true);
       d->done = false;
-      refresh();
     }
+  
   // file ready
   if (! d->done)
     {
-      d->done = true;
-      if (d->fileno < 0 || d->fileno >= d->files.size())
-        return;
-  
       QDjVuDocument *doc = d->document;
       ddjvu_fileinfo_t &info = d->files[d->fileno];
-      QString tab = tr(" File #%1 ").arg(d->fileno+1);
-      QString msg, dump;
-      
-      // prepare message
-      if (info.type == 'P')
-        {
-          if (info.title && info.name && strcmp(info.title, info.name))
-            msg = tr("Page #%1 named \253 %2 \273") // << .. >>
-              .arg(info.pageno + 1)
-              .arg(QString::fromUtf8(info.title));
-          else
-            msg = tr("Page #%1")
-              .arg(info.pageno + 1);
-        }
-      else if (info.type == 'T')
-        msg = tr("Thumbnails");
-      else if (info.type == 'S')
-        msg = tr("Shared annotations");
-      else
-        msg = tr("Shared data");
-      
+      d->done = true;
+
       // file dump
-      dump = tr("Waiting for data...");
+      QString dump = tr("Waiting for data...");
 #if DDJVUAPI_VERSION >= 18
       char *s = ddjvu_document_get_filedump(*doc, d->fileno);
       if (! s)
@@ -341,11 +328,17 @@ QDjViewInfoDialog::refresh()
             }
         }
 #endif
-      d->ui.tabWidget->setTabText(1, tab);
       d->ui.fileText->setPlainText(dump);
-      d->ui.fileLabel->setText(msg);
-      d->ui.prevFileButton->setEnabled(d->fileno - 1 >= 0);
-      d->ui.nextFileButton->setEnabled(d->fileno + 1 < d->files.size());
+      d->ui.prevButton->setEnabled(d->fileno - 1 >= 0);
+      d->ui.nextButton->setEnabled(d->fileno + 1 < d->files.size());
+      d->ui.jumpButton->setEnabled(info.type == 'P');
+      d->ui.fileCombo->setCurrentIndex(d->fileno);
+      QTableWidget *table = d->ui.docTable;
+      int rows = table->rowCount();
+      int cols = table->columnCount();
+      QTableWidgetSelectionRange all(0,0,rows-1,cols-1);
+      table->setRangeSelected(all, false);
+      table->selectRow(d->fileno);
     }
 }
 
@@ -374,16 +367,17 @@ QDjViewInfoDialog::setFile(int fileno)
 {
   if (d->document && d->files.size())
     {
-      delete d->page;
-      d->page = 0;
-      d->fileno = fileno = qBound(0, fileno, d->files.size()-1);
-      d->pageno = d->files[fileno].pageno;
-      d->done = false;
-      QTableWidget *table = d->ui.docTable;
-      QTableWidgetSelectionRange all(0,0,table->rowCount()-1, table->columnCount()-1);
-      table->setRangeSelected(all, false);
-      table->selectRow(fileno);
-      refresh();
+      if (fileno >= 0 && 
+          fileno < d->files.size() &&
+          fileno != d->fileno )
+        {
+          delete d->page;
+          d->page = 0;
+          d->fileno = fileno;
+          d->pageno = d->files[fileno].pageno;
+          d->done = false;
+          refresh();
+        }
     }
   else
     {
@@ -409,21 +403,11 @@ QDjViewInfoDialog::nextFile()
 }
 
 void 
-QDjViewInfoDialog::selectFile(int fileno)
-{
-  if (d->document && d->files.size())
-    if (fileno >= 0 && fileno < d->files.size())
-      if (fileno != d->fileno)
-        setFile(fileno);
-}
-
-void 
 QDjViewInfoDialog::jumpToSelectedPage(void)
 {
   if (d->document && d->files.size())
     {
-      int row = d->ui.docTable->currentRow();
-      ddjvu_fileinfo_t &info = d->files[row];
+      ddjvu_fileinfo_t &info = d->files[d->fileno];
       if (info.type == 'P')
         d->djview->goToPage(info.pageno);
     }
@@ -443,6 +427,33 @@ QDjViewInfoDialog::documentClosed()
 }
 
 void 
+QDjViewInfoDialog::fillFileCombo()
+{
+  QComboBox *fileCombo = d->ui.fileCombo;
+  fileCombo->clear();
+  for (int fileno=0; fileno<d->files.size(); fileno++)
+    {
+      ddjvu_fileinfo_t &info = d->files[fileno];
+      QString msg;
+      if (info.type == 'P')
+        {
+          if (info.title && info.name && strcmp(info.title, info.name))
+            msg = tr("Page #%1 - \253 %2 \273") // << .. >>
+              .arg(info.pageno + 1).arg(QString::fromUtf8(info.title));
+          else
+            msg = tr("Page #%1").arg(info.pageno + 1);
+        }
+      else if (info.type == 'T')
+        msg = tr("Thumbnails");
+      else if (info.type == 'S')
+        msg = tr("Shared annotations");
+      else
+        msg = tr("Shared data");
+      fileCombo->addItem(tr("File #%1 - ").arg(fileno+1) + msg);
+    }
+}
+
+void 
 QDjViewInfoDialog::fillDocLabel()
 {
   if (d->document && d->files.size())
@@ -451,17 +462,17 @@ QDjViewInfoDialog::fillDocLabel()
       QDjVuDocument *doc = d->document;
       ddjvu_document_type_t docType = ddjvu_document_get_type(*doc);
       if (docType == DDJVU_DOCTYPE_SINGLEPAGE)
-        msg << tr("DjVu single page");
+        msg << tr("Single DjVu page");
       else 
         {
           if (docType == DDJVU_DOCTYPE_BUNDLED)
-            msg << tr("DjVu bundled document");
+            msg << tr("Bundled DjVu document");
           else if (docType == DDJVU_DOCTYPE_INDIRECT)
-            msg << tr("DjVu indirect document");
+            msg << tr("Indirect DjVu document");
           else if (docType == DDJVU_DOCTYPE_OLD_BUNDLED)
-            msg << tr("DjVu obsolete bundled document");
+            msg << tr("Obsolete bundled DjVu document");
           else if (docType == DDJVU_DOCTYPE_OLD_INDEXED)
-            msg << tr("DjVu obsolete indexed document");
+            msg << tr("Obsolete indexed DjVu document");
           
           int pagenum = ddjvu_document_get_pagenum(*doc);
 #if DDJVUAPI_VERSION < 18
@@ -475,7 +486,7 @@ QDjViewInfoDialog::fillDocLabel()
           msg << tr("%1 files").arg(filenum);
           msg << tr("%1 pages").arg(pagenum);
         }
-      d->ui.docLabel->setText(msg.join(", ") + ".");
+      d->ui.docLabel->setText(msg.join(" - "));
     }
 }
 
@@ -606,6 +617,8 @@ QDjViewMetaDialog::QDjViewMetaDialog(QDjView *parent)
   d->ui.pageTable->verticalHeader()->hide();
   d->ui.pageCombo->setEnabled(false);
   d->ui.jumpButton->setEnabled(false);
+  d->ui.prevButton->setEnabled(false);
+  d->ui.nextButton->setEnabled(false);
   // connections
   connect(d->djview, SIGNAL(documentClosed()),
           this, SLOT(documentClosed()) );
@@ -615,6 +628,12 @@ QDjViewMetaDialog::QDjViewMetaDialog(QDjView *parent)
           this, SLOT(accept()) );
   connect(d->ui.jumpButton, SIGNAL(clicked()),
           this, SLOT(jumpToSelectedPage()) );
+  connect(d->ui.pageCombo, SIGNAL(activated(int)),
+          this, SLOT(setPage(int)) );
+  connect(d->ui.prevButton, SIGNAL(clicked()),
+          this, SLOT(prevPage()) );
+  connect(d->ui.nextButton, SIGNAL(clicked()),
+          this, SLOT(nextPage()) );
   connect(d->ui.pageCombo, SIGNAL(activated(int)),
           this, SLOT(setPage(int)) );
   // what's this
@@ -738,20 +757,36 @@ QDjViewMetaDialog::refresh()
   if (d->ui.pageCombo->count() > 0)
     {
       d->pageno = qBound(0, d->pageno, d->djview->pageNum()-1);
+      d->ui.prevButton->setEnabled(d->pageno-1 >= 0);
+      d->ui.nextButton->setEnabled(d->pageno+1 < d->djview->pageNum());
       d->ui.pageCombo->setCurrentIndex(d->pageno);
       if (d->document && d->pageAnno == miniexp_dummy)
         {
           d->pageAnno = d->document->getPageAnnotations(d->pageno);
           if (d->pageAnno != miniexp_dummy)
             {
-              QMap<QString,QString> docMeta = metadataFromAnnotations(d->docAnno);
-              QMap<QString,QString> pageMeta = metadataFromAnnotations(d->pageAnno);
+              QMap<QString,QString> docMeta 
+                = metadataFromAnnotations(d->docAnno);
+              QMap<QString,QString> pageMeta 
+                = metadataFromAnnotations(d->pageAnno);
               metadataSubtract(pageMeta, docMeta);
               metadataFill(d->ui.pageTable, pageMeta);
               setTableWhatsThis(d->ui.pageTable, d->ui.pageTab->whatsThis());
             }
         }
     }
+}
+
+void 
+QDjViewMetaDialog::prevPage()
+{
+  setPage(qMax(d->pageno - 1, 0));
+}
+
+void 
+QDjViewMetaDialog::nextPage()
+{
+  setPage(qMin(d->pageno + 1, d->djview->pageNum() - 1));
 }
 
 void 
