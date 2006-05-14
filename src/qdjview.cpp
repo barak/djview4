@@ -1807,6 +1807,7 @@ QDjView::closeDocument()
     {
       doc->ref();
       disconnect(doc, 0, this, 0);
+      disconnect(doc, 0, errorDialog, 0);
       printingAllowed = true;
       savingAllowed = true;
     }
@@ -2333,12 +2334,67 @@ QDjView::saveImageFile(QImage image, QString filename)
 }
 
 
+/*! Start the preferred browser on \a url. */
+
+bool
+QDjView::startBrowser(QUrl url)
+{
+  // Determine browsers to try
+  QStringList browsers;
+#ifdef Q_OS_WIN32
+  browsers << "iexplore.exe";
+#endif
+#ifdef Q_WS_MAC
+  browsers << "open";
+#endif
+#ifdef Q_OS_UNIX
+  const char *varBrowser = ::getenv("BROWSER");
+  const char *varPath = ::getenv("PATH");
+  browsers << "x-www-browser" << "firefox" << "konqueror";
+  if (varBrowser && varBrowser[0])
+    browsers.prepend(QFile::decodeName(varBrowser));
+  QStringList path;
+  if (varPath && varPath[0])
+    path = QFile::decodeName(varPath).split(":");
+  path << ".";
+#endif
+  if (! prefs->browserProgram.isEmpty())
+    browsers.prepend(prefs->browserProgram);
+  // Try them
+  QStringList args(url.toEncoded());
+  foreach (QString browser, browsers)
+    {
+#ifdef Q_OS_UNIX
+      int i;
+      for (i=0; i<path.size(); i++)
+        if (QFileInfo(QDir(path[i]), browser).exists())
+          break;
+      if (i >= path.size())
+        continue;
+#endif
+      if (QProcess::startDetached(browser, args))
+        return true;
+    }
+  return false;
+}
+
+
+
 /*! \fn QDjView::documentClosed()
   This signal is emitted when clearing the current document. */
 
 /*! \fn QDjView::documentOpened(QDjVuDocument*)
   This signal is emitted when opening a new document. */
   
+
+/*! \fn QDjView::pluginStatusMessage(QString message = QString())
+  This signal is emitted when a message is displayed
+  in the status bar. This is useful for plugins because
+  the message must be replicated in the browser status bar. */
+
+/*! \fn QDjView::pluginGetUrl(QUrl url, QString target)
+  This signal is emitted when the user clicks an external
+  hyperlink while the viewer is in plugin mode. */
 
 
 
@@ -2599,10 +2655,9 @@ QDjView::pointerClick(const Position &pos, miniexp_t maparea)
   // Obtain link information
   QString link = widget->linkUrl();
   QString target = widget->linkTarget();
-  bool inPlace = target.isEmpty() || target=="_self" || target!="_page";
+  bool inPlace = target.isEmpty() || target=="_self" || target=="_page";
   QList<QPair<QString, QString> > empty;
   QUrl url = documentUrl;
-  url.setQueryItems(empty);
   // Internal link
   if (link.startsWith("#"))
     {
@@ -2613,16 +2668,22 @@ QDjView::pointerClick(const Position &pos, miniexp_t maparea)
         }
       if (viewerMode == STANDALONE)
         {
-          copyWindow()->goToPage(link, pos.pageNo);
+          QDjView *other = copyWindow();
+          other->goToPage(link, pos.pageNo);
+          other->show();
           return;
         }
       // Construct url.
+      url.setQueryItems(empty);
       url.addQueryItem("page", QString("#%1").arg(pageNumber(link)+1));
     }
   else
     {
       // Resolve url
-      url = url.resolved(QUrl(link));
+      QUrl linkUrl(link);
+      url.setQueryItems(empty);
+      url = url.resolved(linkUrl);
+      url.setQueryItems(linkUrl.queryItems());
     }
   // Check url
   if (! url.isValid() || url.isRelative())
@@ -2641,32 +2702,23 @@ QDjView::pointerClick(const Position &pos, miniexp_t maparea)
   QString suffix = file.suffix().toLower();
   if (file.exists() && (suffix=="djvu" || suffix=="djv"))
     {
-      QDjView *w = this;
       if (inPlace)
-        w = new QDjView(djvuContext, STANDALONE);
-      w->open(file.filePath());
+        open(url);
+      else
+        {
+          QDjView *other = copyWindow();
+          other->open(url);
+          other->show();
+        }
       return;
     }
-  // Otherwise spawn a browser
-  QStringList args;
-  args << QString::fromLatin1(url.toEncoded());
-  QStringList browsers;
-  browsers << "x-www-browser" 
-           << "firefox" << "konqueror" << "mozilla"
-           << "iexplore";
-  const char *var = getenv("BROWSER");
-  if (var && var[0])
-    browsers.prepend(QString::fromLocal8Bit(var));
-  if (! prefs->browserProgram.isEmpty())
-    browsers = QStringList(prefs->browserProgram);
-  foreach (QString browser, browsers)
-    if (QProcess::startDetached(browser, args))
-      return;
-  qWarning("Cannot spawn a browser for url '%s'",
-           (const char*) link.toLocal8Bit() );
+  // Open a browser
+  if (! startBrowser(url))
+    qWarning("Cannot spawn a browser for url '%s'",
+             (const char*) link.toLocal8Bit() );
 }
 
-
+  
 void 
 QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
 {

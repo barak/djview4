@@ -1815,6 +1815,12 @@ QDjVuWidget::setDocument(QDjVuDocument *d)
       priv->pageLayout.clear();
       priv->pageMap.clear();
       priv->pageVisible.clear();
+      priv->currentMapAreaPage = 0;
+      priv->currentMapArea = 0;
+      priv->initialPage = 0;
+      priv->dragMode = DRAG_NONE;
+      delete priv->lens;
+      priv->lens = 0;
       // setup
       if (d)
         d->ref();

@@ -88,6 +88,7 @@ class QDjView : public QMainWindow
   QDjView    *copyWindow(void);
   bool        saveTextFile(QString text, QString filename=QString());
   bool        saveImageFile(QImage image, QString filename=QString());
+  bool        startBrowser(QUrl url);
 
 public slots:
   bool  open(QString filename);
