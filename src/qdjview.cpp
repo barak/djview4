@@ -2515,9 +2515,6 @@ QDjView::docinfo()
       if (documentPages.size() != n)
         qWarning("Internal (docinfo): inconsistent number of pages.");
 
-      // Fill page combo
-      fillPageCombo(pageCombo);
-      
       // Check for numerical title
       documentTitleNumerical = false;
       QRegExp allNumbers("\\d+");
@@ -2525,6 +2522,9 @@ QDjView::docinfo()
         if (documentPages[i].title &&
             allNumbers.exactMatch(QString::fromUtf8(documentPages[i].title)) )
           documentTitleNumerical = true;
+      
+      // Fill page combo
+      fillPageCombo(pageCombo);
       
       // Update actions
       performPendingLater();
