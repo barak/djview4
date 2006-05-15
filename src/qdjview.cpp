@@ -26,6 +26,7 @@
 #include <QAction>
 #include <QActionGroup>
 #include <QApplication>
+#include <QBoxLayout>
 #include <QClipboard>
 #include <QCloseEvent>
 #include <QComboBox>
@@ -36,6 +37,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QBoxLayout>
 #include <QFont>
 #include <QFrame>
 #include <QIcon>
@@ -61,6 +63,7 @@
 #include <QTextStream>
 #include <QTimer>
 #include <QToolBar>
+#include <QToolBox>
 #include <QUrl>
 #include <QWhatsThis>
 
@@ -1768,11 +1771,24 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
           this, SLOT(pageComboEdited()) );
   
   // - sidebar  
-  sideBar = new QDockWidget(this);  // for now
+  sideBar = new QDockWidget(this); 
   sideBar->setObjectName("sidebar");
   sideBar->setAllowedAreas(Qt::AllDockWidgetAreas);
   addDockWidget(Qt::LeftDockWidgetArea, sideBar);
   sideBar->installEventFilter(this);
+  sideToolBox = new QToolBox(sideBar);
+  sideBar->setWidget(sideToolBox);
+  
+  // - sidebar components -- TODO
+  QLabel *thumbnailWidget = new QLabel("thumbnails",sideToolBox);
+  thumbnailWidget->setAlignment(Qt::AlignCenter);
+  sideToolBox->addItem(thumbnailWidget, tr("&Thumbnails"));
+  QLabel *outlineWidget = new QLabel("outline here",sideToolBox);
+  outlineWidget->setAlignment(Qt::AlignCenter);
+  sideToolBox->addItem(outlineWidget, tr("&Outline")); 
+  QLabel *findWidget = new QLabel("search stuff here",sideToolBox);
+  findWidget->setAlignment(Qt::AlignCenter);
+  sideToolBox->addItem(findWidget, tr("&Find")); 
 
   // Actions
   createActions();
@@ -2054,10 +2070,8 @@ QDjView::showSideBar(Qt::DockWidgetArea areas, int tab)
     }
   sideBar->setVisible(areas != 0);
   // Tab
-  if (tab >= 0)
-    {
-      // TODO
-    }
+  if (tab >= 0 && tab < sideToolBox->count())
+    sideToolBox->setCurrentIndex(tab);
   // Okay
   return true;
 }

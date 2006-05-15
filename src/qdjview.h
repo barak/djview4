@@ -38,6 +38,7 @@
 
 class QAction;
 class QActionGroup;
+class QBoxLayout;
 class QCloseEvent;
 class QComboBox;
 class QDockWidget;
@@ -49,6 +50,7 @@ class QStackedLayout;
 class QStatusBar;
 class QStringList;
 class QToolBar;
+class QToolBox;
 
 class QDjViewErrorDialog;
 class QDjViewInfoDialog;
@@ -200,6 +202,7 @@ protected:
   QComboBox          *zoomCombo;
   QComboBox          *pageCombo;
   QDockWidget        *sideBar;
+  QToolBox           *sideToolBox;
   // document data
   QDjVuContext           &djvuContext;
   QDjVuDocument          *document;
