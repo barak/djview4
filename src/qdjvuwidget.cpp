@@ -1544,7 +1544,6 @@ QDjVuPrivate::updateCurrentPoint(const Position &pos)
 void 
 QDjVuPrivate::docinfo()
 {
- qDebug() << __func__ ;
   ddjvu_status_t status;
   status = ddjvu_document_decoding_status(*doc);
   if (status == DDJVU_JOB_OK && !docReady)
@@ -1574,7 +1573,6 @@ QDjVuPrivate::docinfo()
 void 
 QDjVuPrivate::pageinfo()
 {
- qDebug() << __func__ ;
   changeLayout(CHANGE_SIZE);
 }
 
@@ -1587,7 +1585,6 @@ QDjVuPrivate::pageinfoPage()
     {
       Page *p = 0;
       int pageno = page->pageNo();
- qDebug() << __func__ << pageno;
       switch(ddjvu_page_decoding_status(*page))
         {
         case DDJVU_JOB_STARTED:
@@ -1626,7 +1623,6 @@ QDjVuPrivate::redisplayPage()
   if (page) 
     {
       int pageno = page->pageNo();
- qDebug() << __func__ << pageno;
       if (pageMap.contains(pageno)) 
         {
           Page *p = pageMap[pageno];
