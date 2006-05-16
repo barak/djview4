@@ -36,6 +36,7 @@
 
 class QDjViewDispatcher;
 class QDjVuPluginDocument;
+class QMutex;
 class QSocketNotifier;
 class QTimer;
 
@@ -46,7 +47,7 @@ class QDjViewDispatcher : public QObject
   Q_OBJECT
     
 public:
-  QDjViewDispatcher();
+  QDjViewDispatcher(QDjVuContext &context);
   ~QDjViewDispatcher();
   static QDjViewDispatcher *instance();
   int exec();
@@ -55,13 +56,17 @@ public slots:
   void viewerClosed();
   void lastViewerClosed();
   void dispatch(); 
-  void quit();
   void showStatus(QDjView *viewer, QString message);
   void showStatus(QString message);
   void getUrl(QDjView *viewer, QUrl url, QString target);
   void getUrl(QUrl url, QString target);
+  void exit(int retcode);
+  void quit();
 
-protected:
+private:
+  void makeStream(QUrl url, QDjView *viewer, 
+                  QDjVuDocument *document, int streamid);
+
   void cmdNew();
   void cmdAttachWindow();
   void cmdDetachWindow();
@@ -74,11 +79,9 @@ protected:
   void cmdPrint();
   void cmdHandshake();
   void cmdShutdown();
-
-  
-  class PipeError;
-  int  write(int fd, const void *buffer, int size);
-  int  read(int fd, void *buffer, int size);
+  void  write(int fd, const char *buffer, int size);
+  void  read(int fd, char *buffer, int size);
+  void    writeString(int fd, QByteArray x);
   void    writeString(int fd, QString x);
   void    writeInteger(int fd, int x);
   void    writeDouble(int fd, double x);
@@ -89,19 +92,21 @@ protected:
   double     readDouble(int fd);
   void *     readPointer(int fd);
   QByteArray readArray(int fd);
-  
+
 private:
   friend class QDjVuPluginDocument;
   class Stream;
-
+  QDjVuContext    &djvuContext;
+  QMutex          *mutex;
   QTimer          *timer;
   QSocketNotifier *notifier;
   QApplication    *application;
   QSet<QDjView*>   viewers;
   QSet<Stream*>    streams;
-  int  pipe_read;
+  int  pipe_cmd;
   int  pipe_reply;
   int  pipe_request;
+  int  return_code;
   bool quit_flag;
 
 };
@@ -115,10 +120,14 @@ protected:
   virtual void newstream(int streamid, QString name, QUrl url);
 private:
   friend class QDjViewDispatcher;
-  QDjViewPluginDocument(QDjViewDispatcher*, QDjView*);
-  const QDjViewDispatcher *dispatcher;
-  const QDjView           *viewer;
+  QDjViewDispatcher *dispatcher;
+  QDjView *viewer;
+  QDjVuPluginDocument(QDjViewDispatcher *dispatcher, 
+                      QDjView *viewer, QUrl url, bool cache);
 };
+
+
+
 
 
 #endif // Q_WS_X11
