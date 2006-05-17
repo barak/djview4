@@ -934,21 +934,6 @@ QDjVuPrivate::makeLayout()
                       layoutChange |= UPDATE_BORDERS;
                     }
                 }
-              // extract annotations and hidden text
-              if (p->annotations == miniexp_dummy)
-                {
-                  p->annotations = doc->getPageAnnotations(n);
-                  if (p->annotations && !continuous && !sideBySide)
-                    adjustSettings(PRIORITY_PAGE, p->annotations);
-                  if (p->annotations)
-                    prepareMapAreas(p);
-                }
-              if (p->hiddenText == miniexp_dummy)
-                {
-                  miniexp_t expr = doc->getPageText(n);
-                  if (expr != miniexp_dummy)
-                    p->hiddenText = flatten_hiddentext(expr);
-                }
             }
         }
       // Layout scaled page size
@@ -1211,7 +1196,25 @@ QDjVuPrivate::makeLayout()
               {
                 pageVisible.append(p);
                 if (p->dataPresent)
-                  requestPage(p);
+                  {
+                    // start decoding the page
+                    requestPage(p);
+                    // extract annotations and hidden text
+                    if (p->annotations == miniexp_dummy)
+                      {
+                        p->annotations = doc->getPageAnnotations(p->pageno);
+                        if (p->annotations && !continuous && !sideBySide)
+                          adjustSettings(PRIORITY_PAGE, p->annotations);
+                        if (p->annotations)
+                          prepareMapAreas(p);
+                      }
+                    if (p->hiddenText == miniexp_dummy)
+                      {
+                        miniexp_t expr = doc->getPageText(p->pageno);
+                        if (expr != miniexp_dummy)
+                          p->hiddenText = flatten_hiddentext(expr);
+                      }
+                  }
               }
           if (! pageRequestScheduled)
             {
