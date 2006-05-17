@@ -507,8 +507,10 @@ QDjViewInfoDialog::fillDocTable()
   table->setRowCount(filenum);
   for (int i=0; i<filenum; i++)
     fillDocRow(i);
+#if QT_VERSION >= 0x040100
   table->resizeColumnsToContents();
   table->resizeRowsToContents();
+#endif
   table->horizontalHeader()->setStretchLastSection(true);
   setTableWhatsThis(table, d->ui.tabDocument->whatsThis());
 }
@@ -712,8 +714,10 @@ metadataFill(QTableWidget *table, QMap<QString,QString> m)
       table->setItem(j, 0, kitem);
       table->setItem(j, 1, vitem);
     }
+#if QT_VERSION >= 0x040100
   table->resizeColumnsToContents();
   table->resizeRowsToContents();
+#endif
   table->horizontalHeader()->setStretchLastSection(true);
 }
 
