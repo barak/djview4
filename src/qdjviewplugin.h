@@ -16,11 +16,8 @@
 
 // $Id$
 
-#ifndef QDJVUPLUGIN_H
-#define QDJVUPLUGIN_H
-
-#ifdef Q_WS_X11
-
+#ifndef QDJVIEWPLUGIN_H
+#define QDJVIEWPLUGIN_H
 
 #include <QApplication>
 #include <QByteArray>
@@ -29,6 +26,8 @@
 #include <QSet>
 #include <QString>
 #include <QUrl>
+
+#if 1 //def Q_WS_X11
 
 #include "qdjvu.h"
 #include "qdjview.h"
@@ -39,7 +38,6 @@ class QDjVuPluginDocument;
 class QMutex;
 class QSocketNotifier;
 class QTimer;
-
 
 
 class QDjViewDispatcher : public QObject
@@ -71,7 +69,6 @@ private:
   void cmdAttachWindow();
   void cmdDetachWindow();
   void cmdResize();
-  void cmdPrint();
   void cmdNewStream();
   void cmdWrite();
   void cmdDestroyStream();
@@ -96,6 +93,7 @@ private:
 private:
   friend class QDjVuPluginDocument;
   class Stream;
+  class Saved;
   QDjVuContext    &djvuContext;
   QMutex          *mutex;
   QTimer          *timer;
@@ -123,16 +121,13 @@ private:
   QDjViewDispatcher *dispatcher;
   QDjView *viewer;
   QDjVuPluginDocument(QDjViewDispatcher *dispatcher, 
-                      QDjView *viewer, QUrl url, bool cache);
+                      QDjView *viewer, QUrl url);
 };
-
-
-
 
 
 #endif // Q_WS_X11
 
-#endif // QDJVUPLUGIN_H
+#endif // QDJVIEWPLUGIN_H
 
 /* -------------------------------------------------------------
    Local Variables:

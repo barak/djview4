@@ -1346,7 +1346,7 @@ QDjView::parseArgument(QString key, QString value)
     }
   else if (key == "cache")
     {
-      // see QDjView::open(QUrl)
+      // see QDjVuDocument::setUrl(...)
       parse_boolean(key, value, errors, okay);
     }
   else if (key == "passive" || key == "passivestretch")
@@ -1584,7 +1584,7 @@ QDjView::parseArgument(QString keyEqualValue)
 
 /*! Parse the \a QDjView options passed via 
   the CGI query arguments of \a url. 
-  This is called by \a QDjView::open(QUrl). */
+  This is called by \a QDjView::open(QDjVuDocument, QUrl). */
 
 void 
 QDjView::parseCgiArguments(QUrl url)
@@ -1860,6 +1860,8 @@ QDjView::open(QDjVuDocument *doc, QUrl url)
   docinfo();
   if (doc)
     emit documentOpened(doc);
+  if (url.isValid())
+    parseCgiArguments(url);
 }
 
 
@@ -1880,9 +1882,9 @@ QDjView::open(QString filename)
       raiseErrorDialog(QMessageBox::Critical, tr("Opening DjVu file..."));
       return false;
     }
-  open(doc);
   QFileInfo fileinfo(filename);
-  documentUrl = QUrl::fromLocalFile(fileinfo.absoluteFilePath());
+  QUrl url = QUrl::fromLocalFile(fileinfo.absoluteFilePath());
+  open(doc, url);
   documentFileName = filename;
   setWindowTitle(tr("Djview - %1[*]").arg(getShortFileName()));
   return true;
@@ -1896,29 +1898,10 @@ bool
 QDjView::open(QUrl url)
 {
   closeDocument();
-  
-  // Are we using the cache
-  bool cache = true;
-  if (url.path().section('/', -1).indexOf('.') < 0)
-    cache = false;
-  bool djvuopts = false;
-  QPair<QString,QString> pair;
-  foreach(pair, url.queryItems())
-    {
-      if (pair.first.toLower() == "djvuopts")
-        djvuopts = true;
-      else if (!djvuopts || pair.first.toLower() != "cache")
-        continue;
-      else if (string_is_on(pair.second))
-        cache = true;
-      else if (string_is_off(pair.second))
-        cache = false;
-    }
-  // proceed
   QDjVuHttpDocument *doc = new QDjVuHttpDocument(true);
   connect(doc, SIGNAL(error(QString,QString,int)),
           errorDialog, SLOT(error(QString,QString,int)));
-  doc->setUrl(&djvuContext, url, cache);
+  doc->setUrl(&djvuContext, url);
   if (!doc->isValid())
     {
       delete doc;
@@ -1926,9 +1909,7 @@ QDjView::open(QUrl url)
       raiseErrorDialog(QMessageBox::Critical, tr("Opening DjVu document..."));
       return false;
     }
-  open(doc);
-  documentUrl = url;
-  parseCgiArguments(url);
+  open(doc, url);
   setWindowTitle(tr("Djview - %1[*]").arg(getShortFileName()));
   return true;
 }

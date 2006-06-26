@@ -32,6 +32,7 @@
 #include <QList>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QPair>
 #include <QSet>
 #include <QString>
 #include <QTimer>
@@ -436,6 +437,7 @@ QDjVuDocument::setUrl(QDjVuContext *ctx, QUrl url, bool cache)
       qWarning("QDjVuDocument::setUrl: invalid url");
       return false;
     }
+  
   document = ddjvu_document_create(*ctx, b, cache);
   if (! document)
     {
@@ -446,6 +448,49 @@ QDjVuDocument::setUrl(QDjVuContext *ctx, QUrl url, bool cache)
   priv->docinfo();
   return true;
 }
+
+
+static bool
+string_is_on(QString val)
+{
+  QString v = val.toLower();
+  return v == "yes" || v == "on" || v == "true";
+}
+
+static bool
+string_is_off(QString val)
+{
+  QString v = val.toLower();
+  return v == "no" || v == "off" || v == "false";
+}
+
+
+/*! Overloaded version of \a setUrl.
+    Cache setup is determined heuristically from the url
+    and the url arguments. */
+
+bool
+QDjVuDocument::setUrl(QDjVuContext *ctx, QUrl url)
+{
+  bool cache = true;
+  if (url.path().section('/', -1).indexOf('.') < 0)
+    cache = false;
+  bool djvuopts = false;
+  QPair<QString,QString> pair;
+  foreach(pair, url.queryItems())
+    {
+      if (pair.first.toLower() == "djvuopts")
+        djvuopts = true;
+      else if (!djvuopts || pair.first.toLower() != "cache")
+        continue;
+      else if (string_is_on(pair.second))
+        cache = true;
+      else if (string_is_off(pair.second))
+        cache = false;
+    }
+  return setUrl(ctx, url, cache);
+}
+
 
 /*! This virtual function is called when receiving
     a DDJVUAPI \a m_newstream message. This happens

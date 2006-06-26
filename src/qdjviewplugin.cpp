@@ -16,8 +16,6 @@
 
 // $Id$
 
-#ifdef Q_WS_X11
-
 #include <stdlib.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -33,17 +31,19 @@
 #include <QPair>
 #include <QRegExp>
 #include <QSet>
+#include <QSocketNotifier>
 #include <QString>
+#include <QTimer>
 #include <QUrl>
 
 #include "qdjvu.h"
 #include "qdjview.h"
-#include "qdjvuplugin.h"
+#include "qdjviewplugin.h"
 
 #include <libdjvu/miniexp.h>
 #include <libdjvu/ddjvuapi.h>
 
-
+#ifdef Q_WS_X11
 
 
 // ========================================
@@ -59,25 +59,92 @@ struct QDjViewDispatcher::Stream
   int streamid;
 };
 
-
 typedef QPair<QString,QString> StringPair;
 
-
 static QList<StringPair>
-parseFlags(QString flags)
+splitFlags(QString flags)
 {
   QList<StringPair> result;
   // TODO
   return result;
 }
 
-
-static bool
-cacheEnabled(QUrl url, QList<QStringPair> args)
+struct QDjViewDispatcher::Saved
 {
-  // TODO
-  return true;
+  bool valid;
+  int zoom;
+  int rotation;
+  bool sideBySide;
+  bool continuous;
+  QDjVuWidget::DisplayMode mode;
+  QDjVuWidget::Position pos;
+
+  void unpack(int q[4]);
+  void pack(int q[4]);
+  void save(QDjVuWidget *widget);
+  void restore(QDjVuWidget *widget);
+};
+
+void 
+QDjViewDispatcher::Saved::unpack(int q[4])
+{
+  // embedding protocol only provides 4 integers
+  zoom = q[0] & 0xfff;
+  if (zoom & 0x800)
+    zoom -= 0x1000;
+  rotation = (q[0] & 0x3000) >> 12;
+  sideBySide = !! (q[0] & 0x4000);
+  continuous = !! (q[0] & 0x8000);
+  mode = (QDjVuWidget::DisplayMode)((q[0] & 0xf0000) >> 16);
+  pos.anchorRight = false;
+  pos.anchorBottom = false;
+  pos.inPage = false;
+  pos.pageNo = q[1];
+  pos.posView.rx() = q[2];
+  pos.posView.ry() = q[3];
 }
+
+void 
+QDjViewDispatcher::Saved::pack(int q[4])
+{
+  q[0] = 0;
+  q[1] = pos.pageNo;
+  q[2] = pos.posView.x();
+  q[3] = pos.posView.y();
+  q[0] |= (rotation & 0x3) << 12;
+  if (zoom >= 0)
+    q[0] = zoom & 0x7ff;
+  else
+    q[0] = 0x1000 - ((- zoom) & 0x7ff);
+  if (sideBySide)
+    q[0] |= 0x4000;
+  if (continuous)
+    q[0] |= 0x8000;
+  q[0] |= (((int)mode) & 0xf) << 16;
+}
+
+void 
+QDjViewDispatcher::Saved::save(QDjVuWidget *widget)
+{
+  zoom = widget->zoom();
+  rotation = widget->rotation();
+  sideBySide = widget->sideBySide();
+  continuous = widget->continuous();
+  mode = widget->displayMode();
+  pos = widget->position();
+}
+
+void 
+QDjViewDispatcher::Saved::restore(QDjVuWidget *widget)
+{
+  widget->setZoom(zoom);
+  widget->setRotation(rotation);
+  widget->setSideBySide(sideBySide);
+  widget->setContinuous(continuous);
+  widget->setDisplayMode(mode);
+  widget->setPosition(pos);
+}
+
 
 
 
@@ -92,24 +159,23 @@ void
 QDjViewDispatcher::makeStream(QUrl url, QDjView *viewer, 
                               QDjVuDocument *document, int streamid)
 {
-  QMutexLocker(mutex);
-  Stream stream;
-  stream.url = url;
-  stream.viewer = viewer;
-  stream.document = document;
-  stream.streamid = streamid;
+  QMutexLocker lock(mutex);
+  Stream *stream = new Stream;
+  stream->url = url;
+  stream->viewer = viewer;
+  stream->document = document;
+  stream->streamid = streamid;
   streams.insert(stream);
 }
 
 
-QDjVuPluginDocument::QDjViewPluginDocument(QDjViewDispatcher *dispatcher, 
-                                           QDjView *viewer,
-                                           QUrl url, bool cache )
+QDjVuPluginDocument::QDjVuPluginDocument(QDjViewDispatcher *dispatcher, 
+                                         QDjView *viewer, QUrl url)
   : QDjVuDocument(true),
     dispatcher(dispatcher), 
     viewer(viewer)
 {
-  setUrl(&dispatcher->djvuContext, url, cache);
+  setUrl(&dispatcher->djvuContext, url);
   dispatcher->makeStream(url, viewer, this, 0);
 }
 
@@ -135,7 +201,7 @@ QDjVuPluginDocument::newstream(int streamid, QString name, QUrl url)
 
 enum {
   TYPE_INTEGER = 1,
-  TYPE_DOUBLE = 2.
+  TYPE_DOUBLE = 2,
   TYPE_STRING = 3,
   TYPE_POINTER = 4,
   TYPE_ARRAY = 5
@@ -169,7 +235,7 @@ QDjViewDispatcher::write(int fd, const char *ptr, int size)
   while(size>0)
     {
       errno = 0;
-      int res=write(fd, ptr, size);
+      int res = ::write(fd, ptr, size);
       if (res<0 && errno==EINTR) 
         continue;
       if (res<=0) 
@@ -180,13 +246,13 @@ QDjViewDispatcher::write(int fd, const char *ptr, int size)
 }
 
 void
-QDjViewDispatcher::read(int fd, char *ptr, int size)
+QDjViewDispatcher::read(int fd, char *buffer, int size)
 {
-  char *ptr = (char*)buffer;
+  char *ptr = buffer;
   while(size>0)
     {
       errno = 0;
-      int res = read(fd, ptr, size);
+      int res = ::read(fd, ptr, size);
       if (res<0 && errno==EINTR)
         continue;
       if (res <= 0) 
@@ -212,7 +278,7 @@ QDjViewDispatcher::writeString(int fd, QByteArray s)
 void
 QDjViewDispatcher::writeString(int fd, QString x)
 {
-  writeString(fd, x.toUft8());
+  writeString(fd, x.toUtf8());
 }
 
 
@@ -270,7 +336,7 @@ QDjViewDispatcher::readString(int fd)
   if (length < 0) 
     throw 2;
   QByteArray utf(length, 0);
-  read(fd, utf8.data(), length);
+  read(fd, utf.data(), length);
   return QString::fromUtf8(utf);
 }
 
@@ -329,7 +395,7 @@ QDjViewDispatcher::readArray(int fd)
   if (length < 0) 
     throw 2;
   QByteArray x(length, 0);
-  read(fd, utf8.data(), length);
+  read(fd, x.data(), length);
   return x;
 }
 
@@ -348,7 +414,7 @@ QDjViewDispatcher::viewerClosed()
   if (viewer)
     {
       viewers.remove(viewer);
-      QList<Stream*> streamList streams.toList();
+      QList<Stream*> streamList = streams.toList();
       foreach(Stream *s, streamList)
         if (s->viewer == viewer)
           {
@@ -373,7 +439,7 @@ QDjViewDispatcher::showStatus(QDjView *viewer, QString message)
 {
   try
     {
-      message.replace(QRegExp("\s"), " ");
+      message.replace(QRegExp("\\s"), " ");
       QMutexLocker lock(mutex);
       writeInteger(pipe_request, CMD_SHOW_STATUS);
       writePointer(pipe_request, (void*) viewer);
@@ -447,32 +513,35 @@ QDjViewDispatcher::cmdNew()
       if (key.toLower() == "url")
         url = QUrl(val);
       else if (key.toLower() == "flags")
-        args << parseFlags(val);
+        args << splitFlags(val);
       else
         args << StringPair(key, val);
     }
-  bool savedData = !!readInteger(pipe_cmd);
+  Saved saved;
+  saved.valid = !!readInteger(pipe_cmd);
   if (saved.valid)
     {
-      readInteger(pipe_cmd);
-      readInteger(pipe_cmd);
-      readInteger(pipe_cmd);
-      readInteger(pipe_cmd);
+      int q[4];
+      q[0] = readInteger(pipe_cmd);
+      q[1] = readInteger(pipe_cmd);
+      q[2] = readInteger(pipe_cmd);
+      q[3] = readInteger(pipe_cmd);
+      saved.unpack(q);
     }
   // checks
   if (! url.isValid())
     {
-      writeString(pipe_reply, ERR_STRING);
+      writeString(pipe_reply, QByteArray(ERR_STRING));
       writeString(pipe_reply, QString("Url is invalid"));
       return;
     }
   // create viewer and document
-  bool cache = cacheEnabled(url, args);
+  timer->stop();
   QDjView::ViewerMode viewerMode = QDjView::EMBEDDED_PLUGIN;
   if (fullPage)
     viewerMode = QDjView::FULLPAGE_PLUGIN;
   QDjView *viewer = new QDjView(djvuContext, viewerMode);
-  QDjVuDocument *doc = new QDjVuPluginDocument(this, viewer, url, cache);
+  QDjVuDocument *doc = new QDjVuPluginDocument(this, viewer, url);
   viewer->open(doc, url);
   // apply flags
   foreach(StringPair pair, args)
@@ -480,16 +549,10 @@ QDjViewDispatcher::cmdNew()
       viewer->parseArgument(pair.first, pair.second);
   // apply saved data
   if (saved.valid)
-    {
-      // QDjVuWidget *djvu = viewer->getDjVuWidget();
-      // djvu->setDisplayMode((QDjVuWidget::DisplayMode)saved.mode);
-      // djvu->setRotation(saved.zoom & 0x3000
-      // djvu->setZoom(saved.zoom & 0xFFF);
-      // viewer->setCorner(QPoint(saved.posx,saved.posy));
-    }
+    saved.restore(viewer->getDjVuWidget());
   // success
   viewers.insert(viewer);
-  writeString(pipe_reply, OK_STRING);
+  writeString(pipe_reply, QByteArray(OK_STRING));
   writePointer(pipe_reply, (void*)viewer);
 }
 
@@ -508,12 +571,6 @@ QDjViewDispatcher::cmdDetachWindow()
 
 void
 QDjViewDispatcher::cmdResize()
-{
-}
-
-
-void
-QDjViewDispatcher::cmdPrint()
 {
 }
 
@@ -602,9 +659,10 @@ QDjViewDispatcher::QDjViewDispatcher(QDjVuContext &context)
   sigaction(SIGPIPE, &act, 0);
 # else
   signal(SIGPIPE, SIG_IGN);
+# endif
 #endif
   // Prepare mutex
-  mutes = new QMutex();
+  mutex = new QMutex();
   // Prepare timer
   timer = new QTimer(this);
   timer->setSingleShot(true);
@@ -665,8 +723,12 @@ QDjViewDispatcher::quit()
 int 
 QDjViewDispatcher::exec()
 {
+  return 0;
 }
 
+
+// ----------------------------------------
+// END
 
 
 #endif // Q_WS_X11

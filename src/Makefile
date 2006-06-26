@@ -43,6 +43,7 @@ SOURCES=qdjvu.h qdjvu.cpp\
 	qdjviewerrordialog.ui qdjviewinfodialog.ui \
 	qdjviewmetadialog.ui \
 	qdjview.h qdjview.cpp qdjview.qrc \
+	qdjviewplugin.h qdjviewplugin.cpp \
 	djview.cpp
 
 PROGRAM=djview

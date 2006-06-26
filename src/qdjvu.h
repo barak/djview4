@@ -106,7 +106,8 @@ public:
   void deref();
   bool setFileName(QDjVuContext *ctx, QString filename, bool cache=true);
 protected:
-  bool setUrl(QDjVuContext *ctx, QUrl url, bool cache=true);
+  bool setUrl(QDjVuContext *ctx, QUrl url);
+  bool setUrl(QDjVuContext *ctx, QUrl url, bool cache);
   virtual void newstream(int streamid, QString name, QUrl url);
 public:
   void streamWrite(int streamid, const char *data, unsigned long len );
