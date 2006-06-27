@@ -34,6 +34,7 @@ LIBS = ${LIBDEBUG} $(shell pkg-config --libs ${PKGS})
 FLGS = ${FLGDEBUG} $(shell pkg-config --cflags ${PKGS}) -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4/QtNetwork
 
 CXXFLAGS= -Wall ${FLGS} ${OPTS}
+MOCFLAGS= -DQ_OS_UNIX -DQ_WS_X11
 
 SOURCES=qdjvu.h qdjvu.cpp\
 	qdjvuhttp.h qdjvuhttp.cpp\

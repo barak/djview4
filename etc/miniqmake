@@ -70,7 +70,7 @@ do
                 then
                   moc="moc_${base}.inc"
                   echo "$moc : ${xdir}$base.cpp"
-                  echo "	\${MOC} ${xdir}$base.cpp -o $moc"
+                  echo "	\${MOC} \${MOCFLAGS} ${xdir}$base.cpp -o $moc"
                   echo "$base.o: $moc"
                   gens="$gens $moc"
                   dirs="$dirs ./"
@@ -85,7 +85,7 @@ do
                   moc="moc_${base}.cpp"
                   obj="moc_${base}.o"
                   echo "$moc : ${xdir}$base.h"
-                  echo "	\${MOC} ${xdir}$base.h -o $moc"
+                  echo "	\${MOC} \${MOCFLAGS} ${xdir}$base.h -o $moc"
                   echo "$obj : $moc"
                   echo "	\${CXX} \${CXXFLAGS} \${INCS} -c $moc"
                   gens="$gens $moc"

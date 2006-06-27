@@ -27,7 +27,7 @@
 #include <QString>
 #include <QUrl>
 
-#if 1 //def Q_WS_X11
+#ifdef Q_WS_X11
 
 #include "qdjvu.h"
 #include "qdjview.h"
