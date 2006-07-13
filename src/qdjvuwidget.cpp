@@ -719,6 +719,7 @@ public:
   QCursor cursHandClosed;
 
   void changeLayout(int change);
+  void getAnnotationsAndText(Page *p);
   bool requestPage(Page *p);
   Position findPosition(const QPoint &point);
   void updateModifiers(Qt::KeyboardModifiers, Qt::MouseButtons);
@@ -1199,21 +1200,7 @@ QDjVuPrivate::makeLayout()
                   {
                     // start decoding the page
                     requestPage(p);
-                    // extract annotations and hidden text
-                    if (p->annotations == miniexp_dummy)
-                      {
-                        p->annotations = doc->getPageAnnotations(p->pageno);
-                        if (p->annotations && !continuous && !sideBySide)
-                          adjustSettings(PRIORITY_PAGE, p->annotations);
-                        if (p->annotations)
-                          prepareMapAreas(p);
-                      }
-                    if (p->hiddenText == miniexp_dummy)
-                      {
-                        miniexp_t expr = doc->getPageText(p->pageno);
-                        if (expr != miniexp_dummy)
-                          p->hiddenText = flatten_hiddentext(expr);
-                      }
+                    getAnnotationsAndText(p);
                   }
               }
           if (! pageRequestScheduled)
@@ -1389,6 +1376,27 @@ QDjVuPrivate::makePageRequests(void)
   // finish
   pageRequestScheduled = false;
 }
+
+// Obtain page annotations and hidden text if not present
+void
+QDjVuPrivate::getAnnotationsAndText(Page *p)
+{
+  if (p->annotations == miniexp_dummy)
+    {
+      p->annotations = doc->getPageAnnotations(p->pageno);
+      if (p->annotations && !continuous && !sideBySide)
+        adjustSettings(PRIORITY_PAGE, p->annotations);
+      if (p->annotations)
+        prepareMapAreas(p);
+    }
+  if (p->hiddenText == miniexp_dummy)
+    {
+      miniexp_t expr = doc->getPageText(p->pageno);
+      if (expr != miniexp_dummy)
+        p->hiddenText = flatten_hiddentext(expr);
+    }
+}
+
 
 // Create the page decoder and connects its slots.
 bool
@@ -1588,11 +1596,14 @@ QDjVuPrivate::pageinfoPage()
     {
       Page *p = 0;
       int pageno = page->pageNo();
+      if (pageMap.contains(pageno))
+        p = pageMap[pageno];
       switch(ddjvu_page_decoding_status(*page))
         {
+        case DDJVU_JOB_OK:
+          if (p)
+            getAnnotationsAndText(p);
         case DDJVU_JOB_STARTED:
-          if (pageMap.contains(pageno))
-            p = pageMap[pageno];
           if (p && p->dpi <= 0)
             {
               ddjvu_page_rotation_t rot;
@@ -1689,10 +1700,9 @@ QDjVuWidget::QDjVuWidget(QWidget *parent)
   // setup viewport
 #if QT_VERSION >= 0x040100
   viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
-#else
+#endif
   viewport()->setAttribute(Qt::WA_NoSystemBackground);
   viewport()->setAttribute(Qt::WA_PaintOnScreen);
-#endif
   viewport()->setAttribute(Qt::WA_StaticContents);
   viewport()->setMouseTracking(true);
 }
@@ -1707,10 +1717,9 @@ QDjVuWidget::QDjVuWidget(QDjVuDocument *doc, QWidget *parent)
                 QSizePolicy::MinimumExpanding);
 #if QT_VERSION >= 0x040100
   viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
-#else
+#endif
   viewport()->setAttribute(Qt::WA_NoSystemBackground);
   viewport()->setAttribute(Qt::WA_PaintOnScreen);
-#endif
   viewport()->setAttribute(Qt::WA_StaticContents);
   viewport()->setMouseTracking(true);
   setDocument(doc);

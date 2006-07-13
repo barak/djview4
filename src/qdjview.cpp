@@ -2155,6 +2155,8 @@ QDjView::pageNumber(QString name, int from)
     }
   else if (name.startsWith("#="))
     name = name.mid(2);
+  else if (name.startsWith("#"))
+    name = name.mid(1);
   // Search exact name starting from current page
   QByteArray utf8Name= name.toUtf8();
   for (int i=from; i<pagenum; i++)
