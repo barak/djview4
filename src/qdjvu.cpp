@@ -96,7 +96,7 @@ QDjVuContext::setCacheSize(long size)
 }
 
 void 
-QDjVuContext::callback(ddjvu_context_t *context, void *closure)
+QDjVuContext::callback(ddjvu_context_t *, void *closure)
 {
   QDjVuContext *qcontext = (QDjVuContext*)closure;
   if (! qcontext->flag)
@@ -502,7 +502,7 @@ QDjVuDocument::setUrl(QDjVuContext *ctx, QUrl url)
     documentation for the \a m_newstream message. */
 
 void
-QDjVuDocument::newstream(int streamid, QString name, QUrl url)
+QDjVuDocument::newstream(int, QString, QUrl)
 {
   qWarning("QDjVuDocument::newstream called but not implemented");
 }

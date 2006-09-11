@@ -1157,7 +1157,7 @@ string_is_off(QString val)
 }
 
 static bool
-parse_boolean(QString key, QString val, QList<QString> &errors, bool &answer)
+parse_boolean(QString, QString val, QList<QString> &errors, bool &answer)
 {
   answer = false;
   if (string_is_off(val))
@@ -2604,7 +2604,7 @@ QDjView::pointerPosition(const Position &pos, const PageInfo &page)
 
 
 void 
-QDjView::pointerEnter(const Position &pos, miniexp_t maparea)
+QDjView::pointerEnter(const Position&, miniexp_t)
 {
   // Display information message about hyperlink
   QString link = widget->linkUrl();
@@ -2640,14 +2640,14 @@ QDjView::pointerEnter(const Position &pos, miniexp_t maparea)
 
 
 void 
-QDjView::pointerLeave(const Position &pos, miniexp_t maparea)
+QDjView::pointerLeave(const Position&, miniexp_t)
 {
   statusMessage();
 }
 
 
 void 
-QDjView::pointerClick(const Position &pos, miniexp_t maparea)
+QDjView::pointerClick(const Position &pos, miniexp_t)
 {
   // Obtain link information
   QString link = widget->linkUrl();

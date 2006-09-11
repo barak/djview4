@@ -3531,7 +3531,7 @@ QDjVuWidget::paintEvent(QPaintEvent *event)
 
 /*! Overridden \a QAbstractScrollArea virtual function. */
 void 
-QDjVuWidget::scrollContentsBy(int dx, int dy)
+QDjVuWidget::scrollContentsBy(int, int)
 {
   if (! (priv->layoutChange && CHANGE_SCROLLBARS))
     {
@@ -4206,7 +4206,7 @@ QDjVuLens::moveEvent(QMoveEvent *event)
 }
 
 void 
-QDjVuLens::resizeEvent(QResizeEvent *event)
+QDjVuLens::resizeEvent(QResizeEvent *)
 {
   refocus();
 }
