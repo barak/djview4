@@ -3591,7 +3591,7 @@ QDjVuWidget::resizeEvent(QResizeEvent *event)
 
 /* capture modifier changes */
 bool
-QDjVuPrivate::eventFilter(QObject *obj, QEvent *event)
+QDjVuPrivate::eventFilter(QObject *, QEvent *event)
 {
   QEvent::Type type = event->type();
   switch (type)

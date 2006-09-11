@@ -131,7 +131,7 @@ QDjVuHttpDocument::setUrl(QDjVuContext *ctx, QUrl url, bool cache)
 
 
 void 
-QDjVuHttpDocument::newstream(int streamid, QString name, QUrl url)
+QDjVuHttpDocument::newstream(int streamid, QString, QUrl url)
 {
   Req req;
   req.streamid = streamid;
