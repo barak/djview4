@@ -554,6 +554,8 @@ struct MapArea
   MapArea();
   bool error(const char *err, int pageno, miniexp_t info);
   bool parse(miniexp_t anno, int pageno=-1);
+  bool isClickable(void);
+  bool clicked(void);
   bool hasTransient();
   bool hasPermanent();
   bool contains(const QPoint &p);
@@ -2667,7 +2669,7 @@ MapArea::parse(miniexp_t full, int pageno)
             error("Only for text maparea", pageno, q);
           if (! miniexp_get_color(a, hiliteColor))
             return error("Color expected", pageno, q);
-          hiliteOpacity = 100;
+          hiliteOpacity = 200;
         }
       else if (s == k.textclr)
         {
@@ -2691,6 +2693,38 @@ MapArea::parse(miniexp_t full, int pageno)
   return true;
 }
 
+bool
+MapArea::clicked(void)
+{
+  Keywords &k = *keywords();
+  if (areaType == k.text && pushpin)
+    {
+      areaType = k.pushpin;     // fake area type
+      borderType = miniexp_nil; // no border
+      hiliteColor = QColor();   // no hilite
+      return true;
+    }
+  else if (areaType == k.pushpin)
+    {
+      parse(expr);              // restore
+      return true;
+    }
+  return false;
+}
+
+bool
+MapArea::isClickable(void)
+{
+  Keywords &k = *keywords();
+  if (url)
+    return true;
+  if (areaType == k.pushpin)
+    return true;
+  if (areaType == k.text && pushpin)
+    return true;
+  return false;
+}
+
 bool 
 MapArea::hasTransient()
 {
@@ -2707,9 +2741,9 @@ bool
 MapArea::hasPermanent()
 {
   Keywords &k = *keywords();
-  if (hiliteColor.isValid() ||
-      areaType == k.line ||
-      areaType == k.text )
+  if (hiliteColor.isValid() 
+      || areaType == k.line || areaType == k.text 
+      || areaType == k.pushpin )
     return true;
   return false;
 }
@@ -2911,7 +2945,32 @@ MapArea::paintPermanent(QPaintDevice *w, QRectMapper &m, QPoint offset)
         }
       else if (areaType == k.text)
         {
-          // TODO
+          int bw = borderWidth + 2;
+          bw = qMin(bw, qMin(rect.width()/4, rect.height()/4));
+          QRect r = rect.adjusted(bw, bw, -bw, -bw);
+          QString s = miniexp_to_qstring(comment);
+          paint.setPen(foregroundColor);
+          paint.drawText(r,Qt::AlignCenter|Qt::AlignVCenter|Qt::TextWordWrap,s,0);
+        }
+      else if (areaType == k.pushpin)
+        {
+          QPixmap pixmap;
+          pixmap.load(":/images/text_pushpin.png");
+          if (! pixmap.isNull())
+            {
+              QRect r = pixmap.rect().translated(rect.topLeft());
+              if (r.width() > rect.width())
+                {
+                  r.setHeight(r.height() * rect.width() / r.width());
+                  r.setWidth(rect.width());
+                }
+              if (r.height() > rect.height())
+                {
+                  r.setWidth(r.width() * rect.height() / r.height());
+                  r.setHeight(rect.height());
+                }
+              paint.drawPixmap(r, pixmap);
+            }
         }
     }
   if (! hasTransient())
@@ -2946,7 +3005,10 @@ QDjVuPrivate::prepareMapAreas(Page *p)
               MapArea data;
               miniexp_t anno = annos[i];
               if (data.parse(anno, p->pageno))
-                p->mapAreas << data;
+                {
+                  data.clicked(); // collapse pushpins
+                  p->mapAreas << data;
+                }
             }
           free(annos);
         }
@@ -3759,8 +3821,17 @@ QDjVuWidget::stopInteraction(void)
     case DRAG_LINKING:
       priv->updatePosition(priv->cursorPoint, true);
       if (priv->hyperlinkEnabled)
-        if (priv->currentMapArea && priv->currentMapArea->url)
-          emit pointerClick(priv->currentPos, priv->currentMapArea->expr);
+        {
+          if (priv->currentMapArea && priv->currentMapArea->clicked())
+            {
+              priv->pixelCache.clear();
+              priv->currentMapArea->update(priv->widget->viewport(),
+                                           priv->currentMapAreaPage->mapper,
+                                           priv->visibleRect.topLeft()); 
+            }
+          else if (priv->currentMapArea && priv->currentMapArea->url )
+            emit pointerClick(priv->currentPos, priv->currentMapArea->expr);
+        }
       break;
     case DRAG_SELECTING:
       priv->updatePosition(priv->cursorPoint, true);
@@ -3831,7 +3902,8 @@ QDjVuWidget::modifierEvent(Qt::KeyboardModifiers modifiers,
           viewport()->setCursor(Qt::CrossCursor);
           startSelecting(point);
         }
-      else if (priv->hyperlinkEnabled && !linkUrl().isEmpty())
+      else if (priv->hyperlinkEnabled && priv->currentMapArea 
+               && priv->currentMapArea->isClickable())
         {
           viewport()->setCursor(Qt::ArrowCursor);
           if (buttons != Qt::NoButton)
