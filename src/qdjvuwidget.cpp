@@ -2541,9 +2541,10 @@ MapArea::parse(miniexp_t full, int pageno)
   miniexp_t q = miniexp_car(anno);
   int itmp;
   // hyperlink
-  if (miniexp_stringp(q)) 
-    url = q;
-  else if (miniexp_consp(q) && miniexp_car(q)==k.url) {
+  if (miniexp_stringp(q)) {
+    const char *s = miniexp_to_str(q);
+    url = (s && s[0]) ? q : miniexp_nil;
+  } else if (miniexp_consp(q) && miniexp_car(q)==k.url) {
     if (! (miniexp_stringp(miniexp_cadr(q)) && 
            miniexp_stringp(miniexp_caddr(q)) &&
            ! miniexp_cdddr(q) ) )
