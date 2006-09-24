@@ -2,9 +2,8 @@ This cvs repository contains a QT4 djvu viewer under development.
 It is intended to replace the djview program in djvulibre-3.5.
 It depends only on the public djvulibre api ddjvuapi.h and miniexp.h.
 
-Go into directory src.
-Check the qt4 program names in Makefile.
+Go directory src.
+Use qmake (qt4) to generate a makefile.
 Compile and run.
-
 Many features are still missing....
 
