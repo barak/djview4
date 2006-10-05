@@ -933,9 +933,11 @@ QDjVuPrivate::makeLayout()
 #if DDJVUAPI_VERSION >= 18
                       p->initialRot = info.rotation;
 #endif
-                      layoutChange |= CHANGE_SCALE;
-                      layoutChange |= UPDATE_BORDERS;
+                      if (p->width <= 0 || p->height <= 0)
+                        p->dpi = 0;
                     }
+                  layoutChange |= CHANGE_SCALE;
+                  layoutChange |= UPDATE_BORDERS;
                 }
             }
         }
@@ -958,8 +960,8 @@ QDjVuPrivate::makeLayout()
           foreach(p, pageLayout)
             {
               QSize size;
-              if (p->dpi <= 0)  // unknown size
-                size = unknownSize;
+              if (p->dpi <= 0)
+                size = unknownSize;   // unknown size
               else if (layoutChange & CHANGE_SCALE_PASS2)
                 size = scale_size(p->width, p->height, 100, p->dpi, r);
               else if (zoom == ZOOM_ONE2ONE) 
@@ -1615,6 +1617,8 @@ QDjVuPrivate::pageinfoPage()
               p->height = ddjvu_page_get_height(*page);
               p->dpi = ddjvu_page_get_resolution(*page);
               p->initialRot = rot;
+              if (p->width <= 0 || p->height <= 0)
+                p->dpi = 0;
               changeLayout(CHANGE_SCALE|UPDATE_BORDERS);
             }
           break;

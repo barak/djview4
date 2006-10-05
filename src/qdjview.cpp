@@ -2465,7 +2465,7 @@ QDjView::errorCondition(int pageno)
 {
   QString message;
   if (pageno >= 0)
-    message = tr("Cannot decode page %1.").arg(pageno);
+    message = tr("Cannot decode page %1.").arg(pageno+1);
   else
     message = tr("Cannot decode document.");
   addToErrorDialog(message);
