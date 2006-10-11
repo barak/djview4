@@ -2339,17 +2339,19 @@ QDjView::startBrowser(QUrl url)
   // Determine browsers to try
   QStringList browsers;
 #ifdef Q_OS_WIN32
+  browsers << "firefox.exe";
   browsers << "iexplore.exe";
 #endif
 #ifdef Q_WS_MAC
   browsers << "open";
 #endif
 #ifdef Q_OS_UNIX
-  const char *varBrowser = ::getenv("BROWSER");
-  const char *varPath = ::getenv("PATH");
   browsers << "x-www-browser" << "firefox" << "konqueror";
+  const char *varBrowser = ::getenv("BROWSER");
   if (varBrowser && varBrowser[0])
-    browsers.prepend(QFile::decodeName(varBrowser));
+    browsers = QFile::decodeName(varBrowser).split(":") + browsers;
+  browsers << "sensible-browser";
+  const char *varPath = ::getenv("PATH");
   QStringList path;
   if (varPath && varPath[0])
     path = QFile::decodeName(varPath).split(":");
