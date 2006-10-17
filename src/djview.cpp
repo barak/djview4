@@ -24,6 +24,9 @@
 #include "qdjvu.h"
 #include "qdjview.h"
 #include "qdjvuwidget.h"
+#ifdef Q_WS_X11
+# include "qdjviewplugin.h"
+#endif
 
 #include <QtGlobal>
 #include <QApplication>
@@ -101,8 +104,20 @@ int
 main(int argc, char *argv[])
 {
   qtDefaultHandler = qInstallMsgHandler(qtMessageHandler);
-  QApplication app(argc, argv);  
+  
+#ifdef Q_WS_X11
+  for (int i=1; i<argc; i++)
+    if (!strcmp(argv[i],"-remote") || !strcmp(argv[i],"--remote"))
+      {
+        // run as plugin
+        QDjVuContext djvuContext(argv[0]);
+        QDjViewPlugin dispatcher(djvuContext);
+        return dispatcher.exec();
+      }
+#endif
+  
   QDjVuContext djvuContext(argv[0]);
+  QApplication app(argc, argv);  
   QDjView *main = new QDjView(djvuContext);
   main->setAttribute(Qt::WA_DeleteOnClose);
   

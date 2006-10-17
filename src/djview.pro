@@ -17,10 +17,15 @@
 
 TEMPLATE = app 
 TARGET = djview
-
-CONFIG += qt thread warn_on link_pkgconfig
-PKGCONFIG += ddjvuapi
+CONFIG += qt thread warn_on 
 QT += network 
+
+unix {
+  CONFIG += link_pkgconfig
+  PKGCONFIG += ddjvuapi
+} else {
+  LIBS += -ldjvulibre
+}
 
 HEADERS = qdjvu.h qdjvuhttp.h 
 HEADERS += qdjvuwidget.h
@@ -36,7 +41,8 @@ SOURCES += djview.cpp
 FORMS = qdjviewerrordialog.ui
 FORMS += qdjviewinfodialog.ui qdjviewmetadialog.ui 
 
-unix {
+unix:!macx {
+ CONFIG += x11
  SOURCES += qdjviewplugin.cpp
  HEADERS += qdjviewplugin.h
 }

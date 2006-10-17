@@ -25,6 +25,7 @@
 #include <QObject>
 #include <QSet>
 #include <QString>
+#include <QStringList>
 #include <QUrl>
 
 #ifdef Q_WS_X11
@@ -33,49 +34,31 @@
 #include "qdjview.h"
 
 
-class QDjViewDispatcher;
-class QDjVuPluginDocument;
 class QMutex;
 class QSocketNotifier;
 class QTimer;
 
 
-class QDjViewDispatcher : public QObject
+
+class QDjViewPlugin : public QObject
 {
   Q_OBJECT
     
 public:
-  QDjViewDispatcher(QDjVuContext &context);
-  ~QDjViewDispatcher();
-  static QDjViewDispatcher *instance();
+  QDjViewPlugin(QDjVuContext &context);
+  ~QDjViewPlugin();
+  static QDjViewPlugin *instance();
   int exec();
 
 public slots:
   void viewerClosed();
   void lastViewerClosed();
-  void dispatch(); 
-  void showStatus(QDjView *viewer, QString message);
   void showStatus(QString message);
-  void getUrl(QDjView *viewer, QUrl url, QString target);
   void getUrl(QUrl url, QString target);
   void exit(int retcode);
   void quit();
 
 private:
-  void makeStream(QUrl url, QDjView *viewer, 
-                  QDjVuDocument *document, int streamid);
-
-  void cmdNew();
-  void cmdAttachWindow();
-  void cmdDetachWindow();
-  void cmdResize();
-  void cmdNewStream();
-  void cmdWrite();
-  void cmdDestroyStream();
-  void cmdUrlNotify();
-  void cmdPrint();
-  void cmdHandshake();
-  void cmdShutdown();
   void  write(int fd, const char *buffer, int size);
   void  read(int fd, char *buffer, int size);
   void    writeString(int fd, QByteArray x);
@@ -90,16 +73,36 @@ private:
   void *     readPointer(int fd);
   QByteArray readArray(int fd);
 
-private:
-  friend class QDjVuPluginDocument;
-  class Stream;
+  void cmdNew();
+  void cmdAttachWindow();
+  void cmdDetachWindow();
+  void cmdResize();
+  void cmdDestroy();
+  void cmdNewStream();
+  void cmdWrite();
+  void cmdDestroyStream();
+  void cmdUrlNotify();
+  void cmdPrint();
+  void cmdHandshake();
+  void cmdShutdown();
+  int dispatch();
+  
   class Saved;
+  class Instance;
+  class Stream;
+
+  void reportError(int err);
+  void makeStream(int streamid, QUrl url, Instance *instance);
+  void getUrl(Instance *instance, QUrl url, QString target);
+  void showStatus(Instance *instance, QString message);
+  Instance *findInstance(QDjView *djview);
+
   QDjVuContext    &djvuContext;
   QMutex          *mutex;
   QTimer          *timer;
   QSocketNotifier *notifier;
   QApplication    *application;
-  QSet<QDjView*>   viewers;
+  QSet<Instance*>  instances;
   QSet<Stream*>    streams;
   int  pipe_cmd;
   int  pipe_reply;
@@ -110,18 +113,33 @@ private:
 };
 
 
-
-class QDjVuPluginDocument : public QDjVuDocument
+class QDjViewPlugin::Instance : public QDjVuDocument
 {
   Q_OBJECT
-protected:
+public:
+  QUrl            url;
+  QDjViewPlugin  *dispatcher;
+  QDjView        *djview;
+  QStringList           args;
+  QDjViewPlugin::Saved *saved;
+  QDjView::ViewerMode   viewerMode;
+
+  Instance(QUrl url, QDjViewPlugin *parent);
+  ~Instance();
   virtual void newstream(int streamid, QString name, QUrl url);
-private:
-  friend class QDjViewDispatcher;
-  QDjViewDispatcher *dispatcher;
-  QDjView *viewer;
-  QDjVuPluginDocument(QDjViewDispatcher *dispatcher, 
-                      QDjView *viewer, QUrl url);
+};
+  
+
+class QDjViewPlugin::Stream : public QObject
+{
+  Q_OBJECT
+public:
+  QUrl                     url;
+  QDjViewPlugin::Instance *instance;
+  int                      streamid;
+
+  Stream(int streamind, QUrl url, QDjViewPlugin::Instance *parent);
+  ~Stream();
 };
 
 
