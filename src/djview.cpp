@@ -107,11 +107,10 @@ main(int argc, char *argv[])
   
 #ifdef Q_WS_X11
   for (int i=1; i<argc; i++)
-    if (!strcmp(argv[i],"-remote") || !strcmp(argv[i],"--remote"))
+    if (!strcmp(argv[i],"-netscape") || !strcmp(argv[i],"--netscape"))
       {
         // run as plugin
-        QDjVuContext djvuContext(argv[0]);
-        QDjViewPlugin dispatcher(djvuContext);
+        QDjViewPlugin dispatcher(argv[0]);
         return dispatcher.exec();
       }
 #endif

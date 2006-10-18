@@ -107,8 +107,9 @@ public slots:
   void  statusMessage(QString s = QString());
   bool  showSideBar(Qt::DockWidgetArea areas, int tab=-1);
   bool  showSideBar(QString area, int tab=-1);
+  void  print(void);
   
-  signals:
+signals:
   void  documentClosed();
   void  documentOpened(QDjVuDocument *doc);
   void  pluginStatusMessage(QString message = QString());

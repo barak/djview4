@@ -37,7 +37,7 @@
 class QMutex;
 class QSocketNotifier;
 class QTimer;
-
+class QX11EmbedWidget;
 
 
 class QDjViewPlugin : public QObject
@@ -45,16 +45,16 @@ class QDjViewPlugin : public QObject
   Q_OBJECT
     
 public:
-  QDjViewPlugin(QDjVuContext &context);
+  QDjViewPlugin(const char *progname);
   ~QDjViewPlugin();
   static QDjViewPlugin *instance();
   int exec();
 
 public slots:
-  void viewerClosed();
   void lastViewerClosed();
   void showStatus(QString message);
   void getUrl(QUrl url, QString target);
+  void dispatch();
   void exit(int retcode);
   void quit();
 
@@ -68,6 +68,7 @@ private:
   void    writePointer(int fd, const void *x);
   void    writeArray(int fd, QByteArray x);
   QString    readString(int fd);
+  QByteArray readRawString(int fd);
   int        readInteger(int fd);
   double     readDouble(int fd);
   void *     readPointer(int fd);
@@ -85,20 +86,20 @@ private:
   void cmdPrint();
   void cmdHandshake();
   void cmdShutdown();
-  int dispatch();
   
   class Saved;
   class Instance;
   class Stream;
 
   void reportError(int err);
-  void makeStream(int streamid, QUrl url, Instance *instance);
+  void streamCreated(Stream *s);
+  void streamDestroyed(Stream *s);
   void getUrl(Instance *instance, QUrl url, QString target);
   void showStatus(Instance *instance, QString message);
   Instance *findInstance(QDjView *djview);
 
-  QDjVuContext    &djvuContext;
-  QMutex          *mutex;
+  const char      *progname;
+  QDjVuContext     djvuContext;
   QTimer          *timer;
   QSocketNotifier *notifier;
   QApplication    *application;
@@ -117,9 +118,10 @@ class QDjViewPlugin::Instance : public QDjVuDocument
 {
   Q_OBJECT
 public:
-  QUrl            url;
-  QDjViewPlugin  *dispatcher;
-  QDjView        *djview;
+  QUrl                  url;
+  QDjViewPlugin        *dispatcher;
+  QX11EmbedWidget      *embed;
+  QDjView              *djview;
   QStringList           args;
   QDjViewPlugin::Saved *saved;
   QDjView::ViewerMode   viewerMode;
@@ -127,6 +129,8 @@ public:
   Instance(QUrl url, QDjViewPlugin *parent);
   ~Instance();
   virtual void newstream(int streamid, QString name, QUrl url);
+public slots:
+  void destroyNotify(QObject *object);
 };
   
 
@@ -137,6 +141,9 @@ public:
   QUrl                     url;
   QDjViewPlugin::Instance *instance;
   int                      streamid;
+  bool                     started;
+  bool                     checked;
+  bool                     closed;
 
   Stream(int streamind, QUrl url, QDjViewPlugin::Instance *parent);
   ~Stream();

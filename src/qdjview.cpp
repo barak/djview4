@@ -365,7 +365,8 @@ QDjView::createActions()
   actionPrint = makeAction(tr("&Print...", "File|Print"))
     << QKeySequence(tr("Ctrl+P", "File|Print"))
     << QIcon(":/images/icon_print.png")
-    << tr("Print the DjVu document.");
+    << tr("Print the DjVu document.")
+    << Trigger(this, SLOT(print()));
 
   actionSearch = makeAction(tr("&Find..."))
     << QKeySequence(tr("Ctrl+F", "Find"))
@@ -2082,6 +2083,19 @@ QDjView::showSideBar(QString area, int tab)
 }
 
 
+/*! Pops up the print dialog */
+void
+QDjView::print()
+{
+  // TODO
+  QString caption = makeCaption(tr("Print document", "dialog caption"));
+  QMessageBox::warning(this, caption,
+                       tr("Print dialog is not yet implemented"));
+}
+
+
+
+
 // -----------------------------------
 // UTILITIES
 
@@ -2980,6 +2994,7 @@ QDjView::performViewFullScreen(bool checked)
         removeAction(actionViewFullScreen);
     }
 }
+
 
 
 
