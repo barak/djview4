@@ -45,16 +45,10 @@ class QDjViewPlugin : public QObject
   Q_OBJECT
     
 public:
-  QDjViewPlugin(const char *progname);
   ~QDjViewPlugin();
+  QDjViewPlugin(const char *progname);
   static QDjViewPlugin *instance();
-  int exec();
-
-public slots:
-  void lastViewerClosed();
-  void showStatus(QString message);
-  void getUrl(QUrl url, QString target);
-  void dispatch();
+  int  exec();
   void exit(int retcode);
   void quit();
 
@@ -87,22 +81,28 @@ private:
   void cmdHandshake();
   void cmdShutdown();
   
-  class Saved;
-  class Instance;
-  class Stream;
+  class  Document;
+  class  Forwarder;
+  struct Saved;
+  struct Instance;
+  struct Stream;
 
   void reportError(int err);
   void streamCreated(Stream *s);
   void streamDestroyed(Stream *s);
+  Instance *findInstance(QDjView *djview);
   void getUrl(Instance *instance, QUrl url, QString target);
   void showStatus(Instance *instance, QString message);
-  Instance *findInstance(QDjView *djview);
+  void dispatch();
+  void lastViewerClosed();
+  void clean(QObject *object);
 
   const char      *progname;
-  QDjVuContext     djvuContext;
+  QDjVuContext    *context;
   QTimer          *timer;
   QSocketNotifier *notifier;
   QApplication    *application;
+  Forwarder       *forwarder;
   QSet<Instance*>  instances;
   QSet<Stream*>    streams;
   int  pipe_cmd;
@@ -113,41 +113,33 @@ private:
 
 };
 
-
-class QDjViewPlugin::Instance : public QDjVuDocument
+class QDjViewPlugin::Document : public QDjVuDocument
 {
   Q_OBJECT
-public:
-  QUrl                  url;
-  QDjViewPlugin        *dispatcher;
-  QX11EmbedWidget      *embed;
-  QDjView              *djview;
-  QStringList           args;
-  QDjViewPlugin::Saved *saved;
-  QDjView::ViewerMode   viewerMode;
-
-  Instance(QUrl url, QDjViewPlugin *parent);
-  ~Instance();
+public: 
+  QDjViewPlugin::Instance * const instance;
+  Document(QDjViewPlugin::Instance *instance);
   virtual void newstream(int streamid, QString name, QUrl url);
-public slots:
-  void destroyNotify(QObject *object);
 };
-  
 
-class QDjViewPlugin::Stream : public QObject
+
+class QDjViewPlugin::Forwarder : public QObject
 {
   Q_OBJECT
 public:
-  QUrl                     url;
-  QDjViewPlugin::Instance *instance;
-  int                      streamid;
-  bool                     started;
-  bool                     checked;
-  bool                     closed;
-
-  Stream(int streamind, QUrl url, QDjViewPlugin::Instance *parent);
-  ~Stream();
+  QDjViewPlugin * const dispatcher;
+  Forwarder(QDjViewPlugin *dispatcher);
+public slots:
+  void showStatus(QString message);
+  void getUrl(QUrl url, QString target);
+  void quit();
+  void dispatch();
+  void lastViewerClosed();
+  void clean(QObject *object);
 };
+
+
+
 
 
 #endif // Q_WS_X11
