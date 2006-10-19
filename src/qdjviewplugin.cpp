@@ -224,6 +224,7 @@ QDjViewPlugin::Document::Document(QDjViewPlugin::Instance *instance)
 void
 QDjViewPlugin::Document::newstream(int streamid, QString, QUrl url)
 {
+  qDebug() << "newstream" << streamid << url;
   if (streamid > 0)
     {
       new QDjViewPlugin::Stream(streamid, url, instance);
@@ -707,7 +708,7 @@ QDjViewPlugin::cmdAttachWindow()
   // map and reparent djview object
   embed->setGeometry(0, 0, width, height);
   embed->embedInto(window);
-  qDebug() << "attach" << embed << embed->winId();
+  qDebug() << "attach" << embed << embed->winId() << "to" << window;
   instance->open();
   writeString(pipe_reply, QByteArray(OK_STRING));
   timer->stop();

@@ -2686,8 +2686,9 @@ QDjView::pointerClick(const Position &pos, miniexp_t)
           other->show();
           return;
         }
-      // Construct url.
+      // Construct url (TODO: reuse old query terms)
       url.setQueryItems(empty);
+      url.addQueryItem("djvuopts", "");
       url.addQueryItem("page", QString("#%1").arg(pageNumber(link)+1));
     }
   else

@@ -563,7 +563,7 @@ QDjVuDocument::handle(ddjvu_message_t *msg)
         QUrl url;
         QString name;
         if (msg->m_newstream.url)
-          url = QUrl(QString::fromUtf8(msg->m_newstream.url));
+          url = QUrl::fromEncoded(msg->m_newstream.url);
         if (msg->m_newstream.name)
           name = QString::fromLatin1(msg->m_newstream.name);
         newstream(msg->m_newstream.streamid, name, url);
