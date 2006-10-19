@@ -1588,7 +1588,7 @@ QDjView::parseArgument(QString keyEqualValue)
   This is called by \a QDjView::open(QDjVuDocument, QUrl). */
 
 void 
-QDjView::parseCgiArguments(QUrl url)
+QDjView::parseDjVuCgiArguments(QUrl url)
 {
   QStringList errors;
   // parse
@@ -1605,6 +1605,28 @@ QDjView::parseCgiArguments(QUrl url)
   if (djvuopts && errors.size() > 0)
     foreach(QString error, errors)
       qWarning((const char*)error.toLocal8Bit());
+}
+
+
+/*! Return a copy of the url without the
+  CGI query arguments corresponding to DjVu options. */
+
+QUrl 
+QDjView::removeDjVuCgiArguments(QUrl url)
+{
+  QList<QPair<QString,QString> > args;
+  bool djvuopts = false;
+  QPair<QString,QString> pair;
+  foreach(pair, url.queryItems())
+    {
+      if (pair.first.toLower() == "djvuopts")
+        djvuopts = true;
+      else if (!djvuopts)
+        args << pair;
+    }
+  QUrl newurl = url;
+  newurl.setQueryItems(args);
+  return newurl;
 }
 
 
@@ -1862,7 +1884,7 @@ QDjView::open(QDjVuDocument *doc, QUrl url)
   if (doc)
     emit documentOpened(doc);
   if (url.isValid())
-    parseCgiArguments(url);
+    parseDjVuCgiArguments(url);
 }
 
 
@@ -1902,7 +1924,8 @@ QDjView::open(QUrl url)
   QDjVuHttpDocument *doc = new QDjVuHttpDocument(true);
   connect(doc, SIGNAL(error(QString,QString,int)),
           errorDialog, SLOT(error(QString,QString,int)));
-  doc->setUrl(&djvuContext, url);
+  QUrl docurl = removeDjVuCgiArguments(url);
+  doc->setUrl(&djvuContext, docurl);
   if (!doc->isValid())
     {
       delete doc;

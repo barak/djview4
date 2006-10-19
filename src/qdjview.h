@@ -81,7 +81,8 @@ class QDjView : public QMainWindow
 
   QStringList  parseArgument(QString key, QString value);
   QStringList  parseArgument(QString keyEqualValue);
-  void         parseCgiArguments(QUrl url);
+  void         parseDjVuCgiArguments(QUrl url);
+  static QUrl  removeDjVuCgiArguments(QUrl url);
   
   int         pageNum(void);
   QString     pageName(int pageno);

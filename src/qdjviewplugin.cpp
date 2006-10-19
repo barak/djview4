@@ -216,15 +216,15 @@ QDjViewPlugin::Stream::~Stream()
 QDjViewPlugin::Document::Document(QDjViewPlugin::Instance *instance)
   : QDjVuDocument(true), instance(instance)
 {
-  setUrl(instance->dispatcher->context, instance->url);
-  new QDjViewPlugin::Stream(0, instance->url, instance);
+  QUrl docurl = QDjView::removeDjVuCgiArguments(instance->url);
+  setUrl(instance->dispatcher->context, docurl);
+  new QDjViewPlugin::Stream(0, docurl, instance);
 }
 
 
 void
 QDjViewPlugin::Document::newstream(int streamid, QString, QUrl url)
 {
-  qDebug() << "newstream" << streamid << url;
   if (streamid > 0)
     {
       new QDjViewPlugin::Stream(streamid, url, instance);
@@ -323,7 +323,6 @@ QDjViewPlugin::Instance::open()
 {
   if (!document && url.isValid() && embed && djview)
     {
-      qDebug() << "begin open" << url << embed->winId();
       document = new QDjViewPlugin::Document(this);
       connect(document, SIGNAL(destroyed(QObject*)),
               dispatcher->forwarder, SLOT(clean(QObject*)) );
@@ -331,7 +330,6 @@ QDjViewPlugin::Instance::open()
       if (saved)
         saved->restore(djview->getDjVuWidget());        
       embed->show();
-      qDebug() << "end open" << url << embed->winId();
     }
 }
 
@@ -681,7 +679,7 @@ QDjViewPlugin::cmdAttachWindow()
   // create djview object
   QX11EmbedWidget *embed = instance->embed;
   QDjView *djview = instance->djview;
-  if (! instance->embed)
+  if (! embed)
     {
       embed = new QX11EmbedWidget();
       instance->embed = embed;
@@ -768,6 +766,10 @@ QDjViewPlugin::cmdDestroy()
       instance->embed = 0;
       if (instance->saved)
         instance->saved->pack(q);
+      QList<Stream*> streamList = streams.toList();
+      foreach(Stream *stream, streamList)
+        if (stream->instance == instance)
+          delete(stream);
       delete instance;
       instances.remove(instance);
     }  
@@ -802,6 +804,7 @@ QDjViewPlugin::cmdNewStream()
         {
           instance->url = url;
           instance->open();
+          url = QDjView::removeDjVuCgiArguments(url);
         }
       // search stream
       foreach(Stream *s, streams)
