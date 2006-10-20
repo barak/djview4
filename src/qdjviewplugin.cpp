@@ -42,7 +42,7 @@
 #include <QTimer>
 #include <QUrl>
 
-#include <QDebug>
+// #include <QDebug>
 
 #include "qdjvu.h"
 #include "qdjview.h"
@@ -335,6 +335,8 @@ QDjViewPlugin::Document::newstream(int streamid, QString, QUrl url)
   if (streamid > 0)
     {
       new QDjViewPlugin::Stream(streamid, url, instance);
+      QString message = tr("Requesting %1.").arg(url.toString());
+      instance->dispatcher->showStatus(instance, message);
       instance->dispatcher->getUrl(instance, url, QString());
     }
 }
@@ -401,11 +403,15 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
         {
         default:
           break;
+#if !X11EMBED
           // Activate on mouse click
+          // - activation might be improved by deriving
+          //   class QApplication and overriding x11Event().
         case QEvent::MouseButtonPress:
           if (! w->isActiveWindow())
             w->activateWindow();
           break;
+#endif
           // Set property for transient windows
         case QEvent::Show:
           if (w->windowFlags() & Qt::Window)
@@ -998,6 +1004,7 @@ QDjViewPlugin::cmdDestroyStream()
       if (document && !stream->closed)
         ddjvu_stream_close(*document, stream->streamid, !okay);
       stream->closed = true;
+      showStatus(stream->instance, QString());
       delete stream;
     }
   writeString(pipe_reply, QByteArray(OK_STRING));
