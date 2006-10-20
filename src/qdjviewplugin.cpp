@@ -29,17 +29,18 @@
 #include <QApplication>
 #include <QByteArray>
 #include <QDesktopWidget>
+#include <QEvent>
 #include <QHBoxLayout>
 #include <QList>
 #include <QObject>
 #include <QPair>
+#include <QPointer>
 #include <QRegExp>
 #include <QSet>
 #include <QSocketNotifier>
 #include <QString>
 #include <QTimer>
 #include <QUrl>
-#include <QX11EmbedWidget>
 
 #include <QDebug>
 
@@ -53,14 +54,121 @@
 
 
 #ifdef Q_WS_X11
+# define X11EMBED 0
+
 # include <X11/Xlib.h>
+# include <X11/Xutil.h>
+# include <X11/Xatom.h>
+# undef FocusOut
+# undef FocusIn
+# undef KeyPress
+# undef KeyRelease
+# undef None
+# undef RevertToParent
+# undef GrayScale
+# undef CursorShape
+
 # include <QX11Info>
+# if X11EMBED
+#  include <QX11EmbedWidget>
+# endif
 
 
 
 
 // ========================================
-// STURCTURES
+// FIXING TRANSIENT WINDOW PROPERTIES
+// ========================================
+
+
+static Atom wm_state;
+static Atom wm_client_leader;
+
+static Window 
+x11ToplevelWindow(Display *dpy, Window start)
+{
+  Window shell = 0;
+  if (!dpy || !start)
+    return 0;
+  if (! wm_state)
+    wm_state = XInternAtom(dpy, "WM_STATE", True); 
+  if (! wm_state) 
+    return 0;
+  while (1)
+    {
+      int nprops;
+      Atom *props = XListProperties(dpy, start, &nprops);
+      if (props && nprops)
+        {
+          for(int i=0; i<nprops; i++)
+	    if (props[i] == wm_state) 
+              shell = start;
+          XFree(props);
+        }
+      Window root, parent;
+      Window *children = 0;
+      unsigned int nchildren;
+      if (! XQueryTree(dpy, start, &root, &parent, &children, &nchildren))
+        break;
+      if (children) 
+        XFree(children);
+      if (parent == root)
+        break;
+      start = parent;
+    }
+  return shell;
+}
+
+
+static void
+x11SetTransientForHint(QWidget *widget)
+{
+  QWidget *parent = widget->parentWidget();
+  Display *dpy = QX11Info::display();
+  if (dpy && parent && (widget->windowFlags() & Qt::Window))
+    {
+      Window transient = 0;
+      XGetTransientForHint(dpy, widget->winId(), &transient);
+      if (transient)
+        {
+          Window group = 0;
+          XWMHints *wmhints = XGetWMHints(dpy, widget->winId());
+          if (wmhints && (wmhints->flags & WindowGroupHint))
+            group = wmhints->window_group;
+          Window ntransient = x11ToplevelWindow(dpy, parent->winId());
+          Window ngroup = 0;
+          if (ntransient)
+            {
+              XWMHints *morehints = XGetWMHints(dpy, ntransient);
+              if (morehints && (morehints->flags & WindowGroupHint))
+                ngroup = morehints->window_group;
+              if (morehints)
+                XFree(morehints);
+              XSetTransientForHint(dpy, widget->winId(), ntransient);
+            }
+          if (ngroup)
+            {
+              wmhints->flags |= WindowGroupHint;
+              wmhints->window_group = ngroup;
+              XSetWMHints(dpy, widget->winId(), wmhints);
+              if (! wm_client_leader)
+                wm_client_leader = XInternAtom(dpy, "WM_CLIENT_LEADER", True); 
+              if (wm_client_leader)
+                XChangeProperty(dpy, widget->winId(), wm_client_leader, 
+                                XA_WINDOW, 32, PropModeReplace, 
+                                (unsigned char*)&ngroup, 1);
+            }
+          if (wmhints)
+            XFree(wmhints);
+        }
+    }
+}
+
+
+
+
+// ========================================
+// STRUCTURES
 // ========================================
 
 
@@ -96,18 +204,17 @@ struct QDjViewPlugin::Stream : public QObject
 
 struct QDjViewPlugin::Instance
 {
-  QUrl                     url;
-  QDjViewPlugin           *dispatcher;
-  QDjViewPlugin::Document *document;
-  QX11EmbedWidget         *embed;
-  QDjView                 *djview;
-  QStringList           args;
-  QDjViewPlugin::Saved *saved;
-  QDjView::ViewerMode   viewerMode;
+  QUrl                              url;
+  QDjViewPlugin                    *dispatcher;
+  QPointer<QDjViewPlugin::Document> document;
+  QPointer<QWidget>                 shell;
+  QPointer<QDjView>                 djview;
+  QStringList                    args;
+  QDjViewPlugin::Saved          *saved;
+  QDjView::ViewerMode            viewerMode;
   ~Instance();
   Instance(QDjViewPlugin *dispatcher);
   void open();
-  void clean(QObject *object);
 };
   
 
@@ -284,13 +391,35 @@ QDjViewPlugin::Forwarder::lastViewerClosed()
   dispatcher->lastViewerClosed();
 }
 
-void 
-QDjViewPlugin::Forwarder::clean(QObject *object)
+bool 
+QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
 {
-  dispatcher->clean(object);
+  if (o->isWidgetType())
+    {
+      QWidget *w = static_cast<QWidget*>(o);
+      switch( e->type() )
+        {
+        default:
+          break;
+          // Activate on mouse click
+        case QEvent::MouseButtonPress:
+          if (! w->isActiveWindow())
+            w->activateWindow();
+          break;
+          // Set property for transient windows
+        case QEvent::Show:
+          if (w->windowFlags() & Qt::Window)
+            QApplication::postEvent(w, new QEvent(QEvent::User));
+          break;
+        case QEvent::User:
+          if (w->windowFlags() & Qt::Window)
+            x11SetTransientForHint(w);
+          break;
+        }
+    }
+  // Keep processing
+  return false;
 }
-
-
 
 
 // ========================================
@@ -300,20 +429,20 @@ QDjViewPlugin::Forwarder::clean(QObject *object)
 
 QDjViewPlugin::Instance::~Instance()
 {
-  delete saved;
-  saved = 0;
-  delete embed;
-  embed = 0;
+  delete shell;
   delete djview;
-  djview = 0;
+  delete saved;
   delete document;
+  saved = 0;
+  shell = 0;
+  djview = 0;
   document = 0;
 }
 
 
 QDjViewPlugin::Instance::Instance(QDjViewPlugin *parent)
   : url(), dispatcher(parent), 
-    document(0), embed(0), djview(0), saved(0)
+    document(0), shell(0), djview(0), saved(0)
 {
 }
 
@@ -321,29 +450,16 @@ QDjViewPlugin::Instance::Instance(QDjViewPlugin *parent)
 void
 QDjViewPlugin::Instance::open()
 {
-  if (!document && url.isValid() && embed && djview)
+  if (!document && url.isValid() && djview)
     {
       document = new QDjViewPlugin::Document(this);
-      connect(document, SIGNAL(destroyed(QObject*)),
-              dispatcher->forwarder, SLOT(clean(QObject*)) );
       djview->open(document, url);
       if (saved)
         saved->restore(djview->getDjVuWidget());        
-      embed->show();
+      shell->show();
     }
 }
 
-
-void 
-QDjViewPlugin::Instance::clean(QObject *object)
-{
-  if (object == embed)
-    embed = 0;
-  if (object == djview)
-    djview = 0;
-  if (object == document)
-    document = 0;
-}
 
 
 
@@ -623,10 +739,10 @@ QDjViewPlugin::cmdAttachWindow()
 {
   Instance *instance = (Instance*) readPointer(pipe_cmd);
   QByteArray display = readRawString(pipe_cmd);
-  QByteArray bgcolor = readRawString(pipe_cmd);
+  readRawString(pipe_cmd); // bgcolor (unused)
   Window window = (XID)readInteger(pipe_cmd);
-  (XID)readInteger(pipe_cmd);  // colormap
-  (XID)readInteger(pipe_cmd);  // visualid
+  readInteger(pipe_cmd);   // colormap
+  readInteger(pipe_cmd);   // visualid
   int width = readInteger(pipe_cmd);
   int height = readInteger(pipe_cmd);
   
@@ -646,23 +762,16 @@ QDjViewPlugin::cmdAttachWindow()
                   "cannot open display %s\n", (const char*)display);
           throw 2;
         }
-      int argc = 0;
-      const char *argv[8];
+      argc = 0;
       argv[argc++] = progname;
       argv[argc++] = "-display";
       argv[argc++] = (const char*) display;
-#if COPY_BACKGROUND_COLOR
-      if (bgcolor.size() > 0)
-        {
-          argv[argc++] = "-bg";
-          argv[argc++] = (const char*) bgcolor;
-        }
-#endif
-      argv[argc++] = 0;
       application = new QApplication(argc, const_cast<char**>(argv));
+      argc = 1;
       application->setQuitOnLastWindowClosed(false);
       context = new QDjVuContext(progname);
       forwarder = new Forwarder(this);
+      application->installEventFilter(forwarder);
       connect(application, SIGNAL(lastWindowClosed()), 
               forwarder, SLOT(lastViewerClosed()));
       notifier = new QSocketNotifier(pipe_cmd, QSocketNotifier::Read); 
@@ -677,36 +786,41 @@ QDjViewPlugin::cmdAttachWindow()
     }
   
   // create djview object
-  QX11EmbedWidget *embed = instance->embed;
+  QWidget *shell = instance->shell;
   QDjView *djview = instance->djview;
-  if (! embed)
+  if (! shell)
     {
-      embed = new QX11EmbedWidget();
-      instance->embed = embed;
-      connect(embed, SIGNAL(destroyed(QObject*)),
-              forwarder, SLOT(clean(QObject*)) );
-      QLayout *layout = new QHBoxLayout(embed);
+#if X11EMBED
+      shell = new QX11EmbedWidget();
+#else
+      shell = new QWidget();
+#endif
+      shell->setObjectName("djvu_shell");
+      shell->setGeometry(0,0,width, height);
+#if X11EMBED
+      static_cast<QX11EmbedWidget*>(shell)->embedInto(window);
+#else
+      Display *dpy = QX11Info::display();
+      XSync(dpy, False);
+      XReparentWindow(dpy, shell->winId(), window, 0,0);
+#endif
+      djview = new QDjView(*context, instance->viewerMode, shell);
+      djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
+      QLayout *layout = new QHBoxLayout(shell);
       layout->setMargin(0);
       layout->setSpacing(0);
-      djview = new QDjView(*context, instance->viewerMode, embed);
-      Qt::WindowFlags flags = djview->windowFlags() & ~Qt::WindowType_Mask;
-      djview->setWindowFlags(flags | Qt::Widget);
-      instance->djview = djview;
       layout->addWidget(djview);
-      connect(djview, SIGNAL(destroyed(QObject*)),
-              forwarder, SLOT(clean(QObject*)) );
       connect(djview, SIGNAL(pluginStatusMessage(QString)),
               forwarder, SLOT(showStatus(QString)) );
       connect(djview, SIGNAL(pluginGetUrl(QUrl,QString)),
               forwarder, SLOT(getUrl(QUrl,QString)) );
+      instance->shell = shell;
+      instance->djview = djview;
       // apply arguments
       foreach (QString s, instance->args)
         djview->parseArgument(s);
     }
   // map and reparent djview object
-  embed->setGeometry(0, 0, width, height);
-  embed->embedInto(window);
-  qDebug() << "attach" << embed << embed->winId() << "to" << window;
   instance->open();
   writeString(pipe_reply, QByteArray(OK_STRING));
   timer->stop();
@@ -719,17 +833,23 @@ QDjViewPlugin::cmdDetachWindow()
   Instance *instance = (Instance*) readPointer(pipe_cmd);
   if (instances.contains(instance))
     {
-      if (instance->embed && application)
+      if (instance->djview && application)
         {
           if (!instance->saved)
             instance->saved = new Saved;
           if (instance->saved)
             instance->saved->save(instance->djview->getDjVuWidget());
-          instance->djview->close();
-          instance->embed->hide();
-          instance->embed->deleteLater();
-          instance->embed = 0;
-          instance->djview = 0;
+          if (instance->djview)
+            {
+              instance->djview->close();
+              instance->djview = 0;
+            }
+          if (instance->shell)
+            {
+              instance->shell->close();
+              instance->shell->deleteLater();
+              instance->shell = 0;
+            }
         }
     }
   writeString(pipe_reply, QByteArray(OK_STRING));
@@ -742,9 +862,9 @@ QDjViewPlugin::cmdResize()
   Instance *instance = (Instance*) readPointer(pipe_cmd);
   int width = readInteger(pipe_cmd);
   int height = readInteger(pipe_cmd);
-  if (instances.contains(instance))
-    if (instance->embed && application && width>0 && height>0)
-      instance->embed->resize(width, height);
+  if (instances.contains(instance) && width>0 && height>0)
+    if (instance->shell && application)
+      instance->shell->resize(width, height);
   writeString(pipe_reply, QByteArray(OK_STRING));
 }
 
@@ -759,11 +879,16 @@ QDjViewPlugin::cmdDestroy()
   if (instances.contains(instance))
     {
       if (instance->djview)
-        instance->djview->close();
-      instance->djview = 0;
-      if (instance->embed)
-        instance->embed->deleteLater();
-      instance->embed = 0;
+        {
+          instance->djview->close();
+          instance->djview = 0;
+        }
+      if (instance->shell)
+        {
+          instance->shell->close();
+          instance->shell->deleteLater();
+          instance->shell = 0;
+        }
       if (instance->saved)
         instance->saved->pack(q);
       QList<Stream*> streamList = streams.toList();
@@ -949,14 +1074,14 @@ QDjViewPlugin::~QDjViewPlugin()
   foreach(Instance *s, instanceList)
     delete(s);
   delete forwarder;
-  forwarder = 0;
   delete notifier;
-  notifier = 0;
   delete timer;
-  timer = 0;
   delete context;
-  context = 0;
   delete application;
+  forwarder = 0;
+  notifier = 0;
+  timer = 0;
+  context = 0;
   application = 0;
 }
 
@@ -1013,7 +1138,6 @@ QDjViewPlugin::exec()
 #endif
   try 
     {
-      qDebug() << "--- START EXEC";
       // startup message
       writeString(pipe_reply, QByteArray("Here am I"));
       // dispatch until we get display
@@ -1022,7 +1146,6 @@ QDjViewPlugin::exec()
       // handle events
       if (!quit_flag)
         application->exec();
-      qDebug() << "--- END EXEC";
     }
   catch(int err)
     {
@@ -1102,7 +1225,6 @@ QDjViewPlugin::findInstance(QDjView *djview)
 void
 QDjViewPlugin::getUrl(Instance *instance, QUrl url, QString target)
 {
-  qDebug() << "getUrl" << instance << url << target;
   try
     {
       writeInteger(pipe_request, CMD_GET_URL);
@@ -1145,7 +1267,6 @@ QDjViewPlugin::dispatch()
   try
     {
       int cmd = readInteger(pipe_cmd);
-      qDebug() << "dispatch" << cmd;
       switch (cmd)
         {
         case CMD_SHUTDOWN:       cmdShutdown(); break;
@@ -1190,12 +1311,6 @@ QDjViewPlugin::lastViewerClosed()
 }
 
 
-void
-QDjViewPlugin::clean(QObject *object)
-{
-  foreach(Instance *instance, instances)
-    instance->clean(object);
-}
 
 
 
