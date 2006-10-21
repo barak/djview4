@@ -42,7 +42,7 @@
 #include <QTimer>
 #include <QUrl>
 
-// #include <QDebug>
+//#include <QDebug>
 
 #include "qdjvu.h"
 #include "qdjview.h"
@@ -54,11 +54,11 @@
 
 
 #ifdef Q_WS_X11
-# define X11EMBED 0
 
 # include <X11/Xlib.h>
 # include <X11/Xutil.h>
 # include <X11/Xatom.h>
+
 # undef FocusOut
 # undef FocusIn
 # undef KeyPress
@@ -69,11 +69,7 @@
 # undef CursorShape
 
 # include <QX11Info>
-# if X11EMBED
-#  include <QX11EmbedWidget>
-# endif
-
-
+# include <QX11EmbedWidget>
 
 
 // ========================================
@@ -144,6 +140,8 @@ x11SetTransientForHint(QWidget *widget)
                 ngroup = morehints->window_group;
               if (morehints)
                 XFree(morehints);
+              if (transient == group && ngroup)
+                ntransient = ngroup;
               XSetTransientForHint(dpy, widget->winId(), ntransient);
             }
           if (ngroup)
@@ -172,22 +170,6 @@ x11SetTransientForHint(QWidget *widget)
 // ========================================
 
 
-struct QDjViewPlugin::Saved
-{
-  int zoom;
-  int rotation;
-  bool sideBySide;
-  bool continuous;
-  QDjVuWidget::DisplayMode mode;
-  QDjVuWidget::Position pos;
-
-  void unpack(int q[4]);
-  void pack(int q[4]);
-  void save(QDjVuWidget *widget);
-  void restore(QDjVuWidget *widget);
-};
-
-
 struct QDjViewPlugin::Stream : public QObject
 {
   typedef QDjViewPlugin::Instance Instance;
@@ -210,85 +192,18 @@ struct QDjViewPlugin::Instance
   QPointer<QWidget>                 shell;
   QPointer<QDjView>                 djview;
   QStringList                    args;
-  QDjViewPlugin::Saved          *saved;
+  QByteArray                     saved;
+  int                            savedformat;
   QDjView::ViewerMode            viewerMode;
   ~Instance();
   Instance(QDjViewPlugin *dispatcher);
   void open();
+  void destroy();
+  void save(QDjVuWidget*);
+  void restore(QDjVuWidget*);
 };
   
 
-
-
-
-
-// ========================================
-// SAVED
-// ========================================
-
-
-void 
-QDjViewPlugin::Saved::unpack(int q[4])
-{
-  // embedding protocol only provides 4 integers
-  zoom = q[0] & 0xfff;
-  if (zoom & 0x800)
-    zoom -= 0x1000;
-  rotation = (q[0] & 0x3000) >> 12;
-  sideBySide = !! (q[0] & 0x4000);
-  continuous = !! (q[0] & 0x8000);
-  mode = (QDjVuWidget::DisplayMode)((q[0] & 0xf0000) >> 16);
-  pos.anchorRight = false;
-  pos.anchorBottom = false;
-  pos.inPage = false;
-  pos.pageNo = q[1];
-  pos.posView.rx() = q[2];
-  pos.posView.ry() = q[3];
-}
-
-
-void 
-QDjViewPlugin::Saved::pack(int q[4])
-{
-  q[0] = 0;
-  q[1] = pos.pageNo;
-  q[2] = pos.posView.x();
-  q[3] = pos.posView.y();
-  q[0] |= (rotation & 0x3) << 12;
-  if (zoom >= 0)
-    q[0] = zoom & 0x7ff;
-  else
-    q[0] = 0x1000 - ((- zoom) & 0x7ff);
-  if (sideBySide)
-    q[0] |= 0x4000;
-  if (continuous)
-    q[0] |= 0x8000;
-  q[0] |= (((int)mode) & 0xf) << 16;
-}
-
-
-void 
-QDjViewPlugin::Saved::save(QDjVuWidget *widget)
-{
-  zoom = widget->zoom();
-  rotation = widget->rotation();
-  sideBySide = widget->sideBySide();
-  continuous = widget->continuous();
-  mode = widget->displayMode();
-  pos = widget->position();
-}
-
-
-void 
-QDjViewPlugin::Saved::restore(QDjVuWidget *widget)
-{
-  widget->setZoom(zoom);
-  widget->setRotation(rotation);
-  widget->setSideBySide(sideBySide);
-  widget->setContinuous(continuous);
-  widget->setDisplayMode(mode);
-  widget->setPosition(pos);
-}
 
 
 
@@ -325,7 +240,6 @@ QDjViewPlugin::Document::Document(QDjViewPlugin::Instance *instance)
 {
   QUrl docurl = QDjView::removeDjVuCgiArguments(instance->url);
   setUrl(instance->dispatcher->context, docurl);
-  new QDjViewPlugin::Stream(0, docurl, instance);
 }
 
 
@@ -403,15 +317,14 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
         {
         default:
           break;
-#if !X11EMBED
           // Activate on mouse click
           // - activation might be improved by deriving
           //   class QApplication and overriding x11Event().
         case QEvent::MouseButtonPress:
-          if (! w->isActiveWindow())
-            w->activateWindow();
+          if (! dispatcher->xembed_flag)
+            if (! w->isActiveWindow())
+              w->activateWindow();
           break;
-#endif
           // Set property for transient windows
         case QEvent::Show:
           if (w->windowFlags() & Qt::Window)
@@ -435,20 +348,16 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
 
 QDjViewPlugin::Instance::~Instance()
 {
+  destroy();
   delete shell;
   delete djview;
-  delete saved;
   delete document;
-  saved = 0;
-  shell = 0;
-  djview = 0;
-  document = 0;
 }
 
 
 QDjViewPlugin::Instance::Instance(QDjViewPlugin *parent)
   : url(), dispatcher(parent), 
-    document(0), shell(0), djview(0), saved(0)
+    document(0), shell(0), djview(0)
 {
 }
 
@@ -460,15 +369,97 @@ QDjViewPlugin::Instance::open()
     {
       document = new QDjViewPlugin::Document(this);
       djview->open(document, url);
-      if (saved)
-        saved->restore(djview->getDjVuWidget());        
+      restore(djview->getDjVuWidget());        
       shell->show();
     }
 }
 
 
+void
+QDjViewPlugin::Instance::destroy()
+{
+  if (djview)
+    {
+      save(djview->getDjVuWidget());
+      djview->close();
+      djview = 0;
+    }
+  if (shell)
+    {
+      shell->close();
+      Display *dpy = QX11Info::display();
+      XUnmapWindow(dpy, shell->winId());  
+      XReparentWindow(dpy, shell->winId(), QX11Info::appRootWindow(), 0,0);
+      shell->deleteLater(); // would like to deleteMuchLater() in fact!
+      shell = 0;
+    }
+}
 
 
+void 
+QDjViewPlugin::Instance::save(QDjVuWidget *widget)
+{
+  if (widget)
+    {
+      int q[4];
+      // get info
+      int zoom = widget->zoom();
+      int rotation = widget->rotation();
+      bool sideBySide = widget->sideBySide();
+      bool continuous = widget->continuous();
+      QDjVuWidget::DisplayMode mode = widget->displayMode();
+      QDjVuWidget::Position pos = widget->position();
+      // pack info (four bytes for compatibility)
+      q[0] = 0;
+      q[1] = pos.pageNo;
+      q[2] = pos.posView.x();
+      q[3] = pos.posView.y();
+      q[0] |= (rotation & 0x3) << 12;
+      if (zoom >= 0)
+        q[0] = zoom & 0x7ff;
+      else
+        q[0] = 0x1000 - ((- zoom) & 0x7ff);
+      if (sideBySide)
+        q[0] |= 0x4000;
+      if (continuous)
+        q[0] |= 0x8000;
+      q[0] |= (((int)mode) & 0xf) << 16;
+      // store
+      saved = QByteArray((const char*)q, sizeof(q));
+    }
+}
+
+void 
+QDjViewPlugin::Instance::restore(QDjVuWidget *widget)
+{
+  int q[4];
+  if (saved.size()==sizeof(q) && widget)
+    {
+      // unpack
+      memcpy((void*)q, (const char*)saved, sizeof(q));
+      int zoom = q[0] & 0xfff;
+      if (zoom & 0x800)
+        zoom -= 0x1000;
+      int rotation = (q[0] & 0x3000) >> 12;
+      bool sideBySide = !! (q[0] & 0x4000);
+      bool continuous = !! (q[0] & 0x8000);
+      QDjVuWidget::DisplayMode mode = (QDjVuWidget::DisplayMode)((q[0] & 0xf0000) >> 16);
+      QDjVuWidget::Position pos;
+      pos.anchorRight = false;
+      pos.anchorBottom = false;
+      pos.inPage = false;
+      pos.pageNo = q[1];
+      pos.posView.rx() = q[2];
+      pos.posView.ry() = q[3];
+      // apply
+      widget->setZoom(zoom);
+      widget->setRotation(rotation);
+      widget->setSideBySide(sideBySide);
+      widget->setContinuous(continuous);
+      widget->setDisplayMode(mode);
+      widget->setPosition(pos);
+    }
+}
 
 
 
@@ -699,7 +690,7 @@ QDjViewPlugin::cmdNew()
 {
   // read arguments
   bool fullPage = !!readInteger(pipe_cmd);
-  QString djvuDir = readString(pipe_cmd);
+  readString(pipe_cmd);  // djvuDir (unused)
   int argc = readInteger(pipe_cmd);
   QStringList args;
   for (int i=0; i<argc; i++)
@@ -713,18 +704,20 @@ QDjViewPlugin::cmdNew()
     }
   
   // read saved data
-  Saved *saved = 0;
-  if (readInteger(pipe_cmd))
+  QByteArray saved;
+  int savedformat = readInteger(pipe_cmd);
+  if (savedformat == 1)
     {
-      Saved *saved = new Saved;
       int q[4];
       q[0] = readInteger(pipe_cmd);
       q[1] = readInteger(pipe_cmd);
       q[2] = readInteger(pipe_cmd);
       q[3] = readInteger(pipe_cmd);
-      saved->unpack(q);
+      saved = QByteArray((const char*)&q[0], sizeof(q));
     }
-  
+  else if (savedformat)
+    saved = readArray(pipe_cmd);
+
   // create instance
   Instance *instance = new Instance(this);
   if (fullPage)
@@ -732,6 +725,7 @@ QDjViewPlugin::cmdNew()
   else
     instance->viewerMode = QDjView::EMBEDDED_PLUGIN;
   instance->saved = saved;
+  instance->savedformat = savedformat;
   instance->args = args;
   // success
   instances.insert(instance);
@@ -745,13 +739,13 @@ QDjViewPlugin::cmdAttachWindow()
 {
   Instance *instance = (Instance*) readPointer(pipe_cmd);
   QByteArray display = readRawString(pipe_cmd);
-  readRawString(pipe_cmd); // bgcolor (unused)
+  QString protocol = readString(pipe_cmd);
   Window window = (XID)readInteger(pipe_cmd);
   readInteger(pipe_cmd);   // colormap
   readInteger(pipe_cmd);   // visualid
   int width = readInteger(pipe_cmd);
   int height = readInteger(pipe_cmd);
-  
+  // check
   if (!instances.contains(instance))
     {
       fprintf(stderr, "djview dispatcher: bad instance\n");
@@ -775,6 +769,7 @@ QDjViewPlugin::cmdAttachWindow()
       application = new QApplication(argc, const_cast<char**>(argv));
       argc = 1;
       application->setQuitOnLastWindowClosed(false);
+      XCloseDisplay(dpy);
       context = new QDjVuContext(progname);
       forwarder = new Forwarder(this);
       application->installEventFilter(forwarder);
@@ -788,7 +783,8 @@ QDjViewPlugin::cmdAttachWindow()
       timer->start(5*60*1000);
       connect(timer, SIGNAL(timeout()), 
               forwarder, SLOT(quit()));
-      XCloseDisplay(dpy);
+      if (protocol.startsWith("XEMBED"))
+        xembed_flag = true;
     }
   
   // create djview object
@@ -796,20 +792,22 @@ QDjViewPlugin::cmdAttachWindow()
   QDjView *djview = instance->djview;
   if (! shell)
     {
-#if X11EMBED
-      shell = new QX11EmbedWidget();
-#else
-      shell = new QWidget();
-#endif
+      if (xembed_flag)
+        shell = new QX11EmbedWidget();
+      else
+        shell = new QWidget();
       shell->setObjectName("djvu_shell");
       shell->setGeometry(0,0,width, height);
-#if X11EMBED
-      static_cast<QX11EmbedWidget*>(shell)->embedInto(window);
-#else
-      Display *dpy = QX11Info::display();
-      XSync(dpy, False);
-      XReparentWindow(dpy, shell->winId(), window, 0,0);
-#endif
+      if (xembed_flag)
+        {
+          QX11EmbedWidget *embed = static_cast<QX11EmbedWidget*>(shell);
+          embed->embedInto(window);
+        }
+      else
+        {
+          Display *dpy = QX11Info::display();
+          XReparentWindow(dpy, shell->winId(), window, 0,0);
+        }
       djview = new QDjView(*context, instance->viewerMode, shell);
       djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
       QLayout *layout = new QHBoxLayout(shell);
@@ -838,26 +836,7 @@ QDjViewPlugin::cmdDetachWindow()
 {
   Instance *instance = (Instance*) readPointer(pipe_cmd);
   if (instances.contains(instance))
-    {
-      if (instance->djview && application)
-        {
-          if (!instance->saved)
-            instance->saved = new Saved;
-          if (instance->saved)
-            instance->saved->save(instance->djview->getDjVuWidget());
-          if (instance->djview)
-            {
-              instance->djview->close();
-              instance->djview = 0;
-            }
-          if (instance->shell)
-            {
-              instance->shell->close();
-              instance->shell->deleteLater();
-              instance->shell = 0;
-            }
-        }
-    }
+    instance->destroy();
   writeString(pipe_reply, QByteArray(OK_STRING));
 }
 
@@ -878,37 +857,35 @@ QDjViewPlugin::cmdResize()
 void
 QDjViewPlugin::cmdDestroy()
 {
-  Saved saved;
+  int savedformat = 0;
+  QByteArray saved;
   Instance *instance = (Instance*) readPointer(pipe_cmd);
-  int q[4];
-  q[0] = q[1] = q[2] = q[3] = 0;
   if (instances.contains(instance))
     {
-      if (instance->djview)
-        {
-          instance->djview->close();
-          instance->djview = 0;
-        }
-      if (instance->shell)
-        {
-          instance->shell->close();
-          instance->shell->deleteLater();
-          instance->shell = 0;
-        }
-      if (instance->saved)
-        instance->saved->pack(q);
+      instance->destroy();
       QList<Stream*> streamList = streams.toList();
       foreach(Stream *stream, streamList)
         if (stream->instance == instance)
           delete(stream);
+      savedformat = instance->savedformat;
+      saved = instance->saved;
       delete instance;
       instances.remove(instance);
     }  
   writeString(pipe_reply, QByteArray(OK_STRING));
-  writeInteger(pipe_reply, q[0]);
-  writeInteger(pipe_reply, q[1]);
-  writeInteger(pipe_reply, q[2]);
-  writeInteger(pipe_reply, q[3]);
+  if (savedformat == 1 || savedformat == 0)
+    {
+      int q[4];
+      q[0] = q[1] = q[2] = q[3] = 0;
+      if (saved.size() == sizeof(q))
+        memcpy((void*)q, (const char*)saved, sizeof(q));
+      writeInteger(pipe_reply, q[0]);
+      writeInteger(pipe_reply, q[1]);
+      writeInteger(pipe_reply, q[2]);
+      writeInteger(pipe_reply, q[3]);
+    }
+  else
+    writeArray(pipe_reply, saved);
 }
 
 
@@ -934,8 +911,9 @@ QDjViewPlugin::cmdNewStream()
       if (! streams.size())
         {
           instance->url = url;
-          instance->open();
           url = QDjView::removeDjVuCgiArguments(url);
+          new QDjViewPlugin::Stream(0, url, instance);
+          instance->open();
         }
       // search stream
       foreach(Stream *s, streams)
@@ -1049,6 +1027,8 @@ QDjViewPlugin::cmdShutdown()
 {
   QList<Stream*> streamList = streams.toList();
   QList<Instance*> instanceList = instances.toList();
+  foreach(Instance *s, instanceList)
+    s->destroy();
   foreach(Stream *s, streamList) 
     delete(s);
   foreach(Instance *s, instanceList)
@@ -1085,11 +1065,6 @@ QDjViewPlugin::~QDjViewPlugin()
   delete timer;
   delete context;
   delete application;
-  forwarder = 0;
-  notifier = 0;
-  timer = 0;
-  context = 0;
-  application = 0;
 }
 
 
@@ -1104,7 +1079,8 @@ QDjViewPlugin::QDjViewPlugin(const char *progname)
     pipe_reply(4),
     pipe_request(5),
     return_code(0),
-    quit_flag(false)
+    quit_flag(false),
+    xembed_flag(false)
 {
   // Disable SIGPIPE
 #ifdef SIGPIPE
@@ -1138,11 +1114,6 @@ QDjViewPlugin::instance()
 int 
 QDjViewPlugin::exec()
 {
-#if 1
-  int loop = getenv("DEBUGDJVIEW") ? 1 : 0;
-  while (loop)
-    sleep(1);
-#endif
   try 
     {
       // startup message

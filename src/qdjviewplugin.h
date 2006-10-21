@@ -82,7 +82,6 @@ private:
   
   class  Document;
   class  Forwarder;
-  struct Saved;
   struct Instance;
   struct Stream;
 
@@ -108,6 +107,7 @@ private:
   int           pipe_request;
   int           return_code;
   bool          quit_flag;
+  bool          xembed_flag;
   int           argc;
   const char*   argv[4];
 };
