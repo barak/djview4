@@ -26,8 +26,6 @@
 #include "qdjvu.h"
 #include "qdjvuwidget.h"
 
-#include <QDebug>
-
 #include <QWidget>
 #include <QMenu>
 #include <QCursor>
@@ -1228,8 +1226,17 @@ QDjVuPrivate::makeLayout()
           QScrollBar *vBar = widget->verticalScrollBar();
           int hStep = qMin(rv.width(), rd.width());
           int vStep = qMin(rv.height(), rd.height());
+          int vcorr = 0;
+          if (zoom == ZOOM_FITWIDTH && vBar->isVisible() &&
+              widget->verticalScrollBarPolicy() == Qt::ScrollBarAsNeeded )
+            { // detect and prevent infinite loops
+              int vw = rv.width();
+              int sw = vBar->width();
+              if (scale_int(rd.height(), vw+sw, vw) > rv.height())
+                vcorr = 1;
+            }
           vBar->setMinimum(rd.top());
-          vBar->setMaximum(rd.top()+rd.height()-vStep);
+          vBar->setMaximum(rd.top()+rd.height()-vStep+vcorr);
           vBar->setPageStep(vStep);
           vBar->setSingleStep(lineStep);
           vBar->setValue(rv.top());
@@ -4132,8 +4139,11 @@ QDjVuWidget::paintDesk(QPainter &p, const QRegion &region)
 */
 
 void 
-QDjVuWidget::paintFrame(QPainter &p, const QRect &rect, int sw)
+QDjVuWidget::paintFrame(QPainter &p, const QRect &crect, int sw)
 {
+  QRect rect = crect.adjusted(0,0,-1,-1);
+  if (!rect.isValid())
+    return;
   // draw shadow 
   QBrush brush(QColor(0,0,0,80));
   p.setPen(Qt::NoPen);
@@ -4619,7 +4629,7 @@ QDjVuWidget::readPrev(void)
 // ----------------------------------------
 // MOC
 
-#include "moc_qdjvuwidget.inc"
+#include "qdjvuwidget.moc"
 
 
 // ----------------------------------------

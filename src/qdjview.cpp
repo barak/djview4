@@ -74,8 +74,8 @@
 #include "qdjviewprefs.h"
 #include "qdjviewdialogs.h"
 
-#if DDJVUAPI_VERSION < 17
-# error "DDJVUAPI_VERSION>=17 is required !"
+#if DDJVUAPI_VERSION < 18
+# error "DDJVUAPI_VERSION>=18 is required !"
 #endif
 
 
@@ -1132,6 +1132,17 @@ QDjView::applyPreferences(void)
   widget->setLensSize(prefs->lensSize);
   widget->setLensPower(prefs->lensPower);
 
+  // Special preferences for embedded plugins
+  if (viewerMode == EMBEDDED_PLUGIN)
+    {
+      setMinimumSize(QSize(8,8));
+      widget->setBorderBrush(QBrush(Qt::white));
+      widget->setBorderSize(0);
+    }
+  
+  // Preferences have low priority
+  widget->makeDefaults();
+
   // Preload full screen prefs.
   fsSavedNormal = prefs->forStandalone;
   fsSavedFullScreen = prefs->forFullScreen;
@@ -1327,11 +1338,11 @@ QDjView::parseArgument(QString key, QString value)
   bool okay;
   QStringList errors;
   key = key.toLower();
-  
+
   if (key == "fullscreen" || key == "fs")
     {
       if (viewerMode != STANDALONE)
-        errors << tr("Option '%1' only works for a standalone viewer.").arg(key);
+        errors << tr("Option '%1' requires a standalone viewer.").arg(key);
       if (parse_boolean(key, value, errors, okay))
         if (actionViewFullScreen->isChecked() != okay)
           actionViewFullScreen->activate(QAction::Trigger);
@@ -1443,7 +1454,8 @@ QDjView::parseArgument(QString key, QString value)
         widget->setZoom(QDjVuWidget::ZOOM_FITPAGE);
       else if (val == "stretch")
         widget->setZoom(QDjVuWidget::ZOOM_STRETCH);
-      else if (okay && z >= QDjVuWidget::ZOOM_MIN && z <= QDjVuWidget::ZOOM_MAX)
+      else if (okay && z >= QDjVuWidget::ZOOM_MIN 
+               && z <= QDjVuWidget::ZOOM_MAX)
         widget->setZoom(z);
       else
         illegal_value(key, value, errors);
@@ -1683,8 +1695,12 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   // - djvu widget
   QWidget *central = new QWidget(this);
   widget = new QDjVuWidget(central);
-  widget->setFrameShape(QFrame::Panel);
-  widget->setFrameShadow(QFrame::Sunken);
+  widget->setFrameShape(QFrame::NoFrame);
+  if (viewerMode == STANDALONE)
+    {
+      widget->setFrameShadow(QFrame::Sunken);
+      widget->setFrameShape(QFrame::Box);
+    }
   widget->viewport()->installEventFilter(this);
   connect(widget, SIGNAL(errorCondition(int)),
           this, SLOT(errorCondition(int)));
@@ -1708,7 +1724,6 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
           this, SLOT(pointerClick(const Position&,miniexp_t)));
   connect(widget, SIGNAL(pointerSelect(const QPoint&,const QRect&)),
           this, SLOT(pointerSelect(const QPoint&,const QRect&)));
-
   // - splash screen
   splash = new QLabel(central);
   splash->setFrameShape(QFrame::Box);
@@ -1870,7 +1885,6 @@ void
 QDjView::open(QDjVuDocument *doc, QUrl url)
 {
   closeDocument();
-  widget->makeDefaults();
   document = doc;
   if (url.isValid())
     documentUrl = url;

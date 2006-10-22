@@ -121,8 +121,10 @@ QDjViewPrefs::QDjViewPrefs(void)
 {
   Options mss = (SHOW_MENUBAR|SHOW_STATUSBAR|SHOW_SIDEBAR);
   forFullScreen.options &= ~(mss|SHOW_SCROLLBARS|SHOW_TOOLBAR|SHOW_SIDEBAR);
-  forFullPagePlugin.options &= ~(mss|SHOW_TOOLBAR);
-  forEmbeddedPlugin.options &= ~(mss);
+  forFullPagePlugin.options &= ~(mss);
+  forFullPagePlugin.remember = false;
+  forEmbeddedPlugin.options &= ~(mss|SHOW_TOOLBAR);
+  forEmbeddedPlugin.remember = false;
 }
 
 

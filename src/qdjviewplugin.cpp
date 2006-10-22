@@ -26,6 +26,9 @@
 #include <unistd.h>
 #include <signal.h>
 
+#define DEBUG_DJVIEW 1
+#include <QDebug>
+
 #include <QApplication>
 #include <QByteArray>
 #include <QDesktopWidget>
@@ -42,15 +45,12 @@
 #include <QTimer>
 #include <QUrl>
 
-//#include <QDebug>
-
 #include "qdjvu.h"
 #include "qdjview.h"
 #include "qdjviewplugin.h"
 
 #include <libdjvu/miniexp.h>
 #include <libdjvu/ddjvuapi.h>
-
 
 
 #ifdef Q_WS_X11
@@ -369,7 +369,7 @@ QDjViewPlugin::Instance::open()
     {
       document = new QDjViewPlugin::Document(this);
       djview->open(document, url);
-      restore(djview->getDjVuWidget());        
+      restore(djview->getDjVuWidget());
       shell->show();
     }
 }
@@ -797,7 +797,7 @@ QDjViewPlugin::cmdAttachWindow()
       else
         shell = new QWidget();
       shell->setObjectName("djvu_shell");
-      shell->setGeometry(0,0,width, height);
+      shell->setGeometry(0, 0, width, height);
       if (xembed_flag)
         {
           QX11EmbedWidget *embed = static_cast<QX11EmbedWidget*>(shell);
@@ -1114,6 +1114,15 @@ QDjViewPlugin::instance()
 int 
 QDjViewPlugin::exec()
 {
+#if DEBUG_DJVIEW
+  const char *s = getenv("DEBUG_DJVIEW");
+  if (s && strcmp(s,"0"))
+    {
+      static int loop = 1;
+      while (loop)
+        sleep(1);
+    }
+#endif
   try 
     {
       // startup message

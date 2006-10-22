@@ -926,7 +926,7 @@ QDjVuJob::handle(ddjvu_message_t *msg)
 // ----------------------------------------
 // MOC
 
-#include "moc_qdjvu.inc"
+#include "qdjvu.moc"
 
 
 /* -------------------------------------------------------------
