@@ -33,6 +33,7 @@
 #include <QByteArray>
 #include <QDesktopWidget>
 #include <QEvent>
+#include <QEventLoop>
 #include <QHBoxLayout>
 #include <QList>
 #include <QObject>
@@ -321,7 +322,7 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
           // - activation might be improved by deriving
           //   class QApplication and overriding x11Event().
         case QEvent::MouseButtonPress:
-          if (! dispatcher->xembed_flag)
+          if (! dispatcher->xembedFlag)
             if (! w->isActiveWindow())
               w->activateWindow();
           break;
@@ -390,7 +391,7 @@ QDjViewPlugin::Instance::destroy()
       Display *dpy = QX11Info::display();
       XUnmapWindow(dpy, shell->winId());  
       XReparentWindow(dpy, shell->winId(), QX11Info::appRootWindow(), 0,0);
-      shell->deleteLater(); // would like to deleteMuchLater() in fact!
+      dispatcher->registerForDeletion(shell);
       shell = 0;
     }
 }
@@ -443,7 +444,8 @@ QDjViewPlugin::Instance::restore(QDjVuWidget *widget)
       int rotation = (q[0] & 0x3000) >> 12;
       bool sideBySide = !! (q[0] & 0x4000);
       bool continuous = !! (q[0] & 0x8000);
-      QDjVuWidget::DisplayMode mode = (QDjVuWidget::DisplayMode)((q[0] & 0xf0000) >> 16);
+      QDjVuWidget::DisplayMode mode 
+        = (QDjVuWidget::DisplayMode)((q[0] & 0xf0000) >> 16);
       QDjVuWidget::Position pos;
       pos.anchorRight = false;
       pos.anchorBottom = false;
@@ -689,14 +691,14 @@ void
 QDjViewPlugin::cmdNew()
 {
   // read arguments
-  bool fullPage = !!readInteger(pipe_cmd);
-  readString(pipe_cmd);  // djvuDir (unused)
-  int argc = readInteger(pipe_cmd);
+  bool fullPage = !!readInteger(pipeRead);
+  readString(pipeRead);  // djvuDir (unused)
+  int argc = readInteger(pipeRead);
   QStringList args;
   for (int i=0; i<argc; i++)
     {
-      QString key = readString(pipe_cmd);
-      QString val = readString(pipe_cmd);
+      QString key = readString(pipeRead);
+      QString val = readString(pipeRead);
       if (key.toLower() == "flags")
         args += val.split(QRegExp("\\s+"), QString::SkipEmptyParts);
       else if (key.toLower() != "src")
@@ -705,18 +707,18 @@ QDjViewPlugin::cmdNew()
   
   // read saved data
   QByteArray saved;
-  int savedformat = readInteger(pipe_cmd);
+  int savedformat = readInteger(pipeRead);
   if (savedformat == 1)
     {
       int q[4];
-      q[0] = readInteger(pipe_cmd);
-      q[1] = readInteger(pipe_cmd);
-      q[2] = readInteger(pipe_cmd);
-      q[3] = readInteger(pipe_cmd);
+      q[0] = readInteger(pipeRead);
+      q[1] = readInteger(pipeRead);
+      q[2] = readInteger(pipeRead);
+      q[3] = readInteger(pipeRead);
       saved = QByteArray((const char*)&q[0], sizeof(q));
     }
   else if (savedformat)
-    saved = readArray(pipe_cmd);
+    saved = readArray(pipeRead);
 
   // create instance
   Instance *instance = new Instance(this);
@@ -729,27 +731,27 @@ QDjViewPlugin::cmdNew()
   instance->args = args;
   // success
   instances.insert(instance);
-  writeString(pipe_reply, QByteArray(OK_STRING));
-  writePointer(pipe_reply, (void*)instance);
+  writeString(pipeWrite, QByteArray(OK_STRING));
+  writePointer(pipeWrite, (void*)instance);
 }
 
 
 void
 QDjViewPlugin::cmdAttachWindow()
 {
-  Instance *instance = (Instance*) readPointer(pipe_cmd);
-  QByteArray display = readRawString(pipe_cmd);
-  QString protocol = readString(pipe_cmd);
-  Window window = (XID)readInteger(pipe_cmd);
-  readInteger(pipe_cmd);   // colormap
-  readInteger(pipe_cmd);   // visualid
-  int width = readInteger(pipe_cmd);
-  int height = readInteger(pipe_cmd);
+  Instance *instance = (Instance*) readPointer(pipeRead);
+  QByteArray display = readRawString(pipeRead);
+  QString protocol = readString(pipeRead);
+  Window window = (XID)readInteger(pipeRead);
+  readInteger(pipeRead);   // colormap
+  readInteger(pipeRead);   // visualid
+  int width = readInteger(pipeRead);
+  int height = readInteger(pipeRead);
   // check
   if (!instances.contains(instance))
     {
       fprintf(stderr, "djview dispatcher: bad instance\n");
-      writeString(pipe_reply, QByteArray(ERR_STRING));
+      writeString(pipeWrite, QByteArray(ERR_STRING));
       return;
     }
   // create application object
@@ -775,7 +777,7 @@ QDjViewPlugin::cmdAttachWindow()
       application->installEventFilter(forwarder);
       connect(application, SIGNAL(lastWindowClosed()), 
               forwarder, SLOT(lastViewerClosed()));
-      notifier = new QSocketNotifier(pipe_cmd, QSocketNotifier::Read); 
+      notifier = new QSocketNotifier(pipeRead, QSocketNotifier::Read); 
       connect(notifier, SIGNAL(activated(int)), 
               forwarder, SLOT(dispatch()));
       timer = new QTimer();
@@ -784,7 +786,7 @@ QDjViewPlugin::cmdAttachWindow()
       connect(timer, SIGNAL(timeout()), 
               forwarder, SLOT(quit()));
       if (protocol.startsWith("XEMBED"))
-        xembed_flag = true;
+        xembedFlag = true;
     }
   
   // create djview object
@@ -792,13 +794,13 @@ QDjViewPlugin::cmdAttachWindow()
   QDjView *djview = instance->djview;
   if (! shell)
     {
-      if (xembed_flag)
+      if (xembedFlag)
         shell = new QX11EmbedWidget();
       else
         shell = new QWidget();
       shell->setObjectName("djvu_shell");
       shell->setGeometry(0, 0, width, height);
-      if (xembed_flag)
+      if (xembedFlag)
         {
           QX11EmbedWidget *embed = static_cast<QX11EmbedWidget*>(shell);
           embed->embedInto(window);
@@ -810,6 +812,7 @@ QDjViewPlugin::cmdAttachWindow()
         }
       djview = new QDjView(*context, instance->viewerMode, shell);
       djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
+      djview->setAttribute(Qt::WA_DeleteOnClose, false);
       QLayout *layout = new QHBoxLayout(shell);
       layout->setMargin(0);
       layout->setSpacing(0);
@@ -826,7 +829,7 @@ QDjViewPlugin::cmdAttachWindow()
     }
   // map and reparent djview object
   instance->open();
-  writeString(pipe_reply, QByteArray(OK_STRING));
+  writeString(pipeWrite, QByteArray(OK_STRING));
   timer->stop();
 }
 
@@ -834,23 +837,23 @@ QDjViewPlugin::cmdAttachWindow()
 void
 QDjViewPlugin::cmdDetachWindow()
 {
-  Instance *instance = (Instance*) readPointer(pipe_cmd);
+  Instance *instance = (Instance*) readPointer(pipeRead);
   if (instances.contains(instance))
     instance->destroy();
-  writeString(pipe_reply, QByteArray(OK_STRING));
+  writeString(pipeWrite, QByteArray(OK_STRING));
 }
 
 
 void
 QDjViewPlugin::cmdResize()
 {
-  Instance *instance = (Instance*) readPointer(pipe_cmd);
-  int width = readInteger(pipe_cmd);
-  int height = readInteger(pipe_cmd);
+  Instance *instance = (Instance*) readPointer(pipeRead);
+  int width = readInteger(pipeRead);
+  int height = readInteger(pipeRead);
   if (instances.contains(instance) && width>0 && height>0)
     if (instance->shell && application)
       instance->shell->resize(width, height);
-  writeString(pipe_reply, QByteArray(OK_STRING));
+  writeString(pipeWrite, QByteArray(OK_STRING));
 }
 
 
@@ -859,7 +862,7 @@ QDjViewPlugin::cmdDestroy()
 {
   int savedformat = 0;
   QByteArray saved;
-  Instance *instance = (Instance*) readPointer(pipe_cmd);
+  Instance *instance = (Instance*) readPointer(pipeRead);
   if (instances.contains(instance))
     {
       instance->destroy();
@@ -872,20 +875,20 @@ QDjViewPlugin::cmdDestroy()
       delete instance;
       instances.remove(instance);
     }  
-  writeString(pipe_reply, QByteArray(OK_STRING));
+  writeString(pipeWrite, QByteArray(OK_STRING));
   if (savedformat == 1 || savedformat == 0)
     {
       int q[4];
       q[0] = q[1] = q[2] = q[3] = 0;
       if (saved.size() == sizeof(q))
         memcpy((void*)q, (const char*)saved, sizeof(q));
-      writeInteger(pipe_reply, q[0]);
-      writeInteger(pipe_reply, q[1]);
-      writeInteger(pipe_reply, q[2]);
-      writeInteger(pipe_reply, q[3]);
+      writeInteger(pipeWrite, q[0]);
+      writeInteger(pipeWrite, q[1]);
+      writeInteger(pipeWrite, q[2]);
+      writeInteger(pipeWrite, q[3]);
     }
   else
-    writeArray(pipe_reply, saved);
+    writeArray(pipeWrite, saved);
 }
 
 
@@ -893,14 +896,14 @@ void
 QDjViewPlugin::cmdNewStream()
 {
   // read
-  Instance *instance = (Instance*) readPointer(pipe_cmd);
-  QUrl url = QUrl::fromEncoded(readRawString(pipe_cmd));
+  Instance *instance = (Instance*) readPointer(pipeRead);
+  QUrl url = QUrl::fromEncoded(readRawString(pipeRead));
   // check
   if (! url.isValid() )
     {
       fprintf(stderr,"djview dispatcher: invalid url '%s'\n",
               (const char*) url.toEncoded());
-      writeString(pipe_reply, QByteArray(ERR_STRING));
+      writeString(pipeWrite, QByteArray(ERR_STRING));
       return;
     }
   // proceed
@@ -925,22 +928,22 @@ QDjViewPlugin::cmdNewStream()
   if (stream)
     stream->started = true;
   // reply (null means discard stream)
-  writeString(pipe_reply, QByteArray(OK_STRING));
-  writePointer(pipe_reply, (void*)stream);
+  writeString(pipeWrite, QByteArray(OK_STRING));
+  writePointer(pipeWrite, (void*)stream);
 }
 
 
 void
 QDjViewPlugin::cmdWrite()
 {
-  Stream *stream = (Stream*) readPointer(pipe_cmd);
-  QByteArray data = readArray(pipe_cmd);
+  Stream *stream = (Stream*) readPointer(pipeRead);
+  QByteArray data = readArray(pipeRead);
   // locate stream
   if (!streams.contains(stream) || stream->closed)
     {
       // -- null return value means that stream must be discarded.
-      writeString(pipe_reply, QByteArray(OK_STRING));
-      writeInteger(pipe_reply, 0);
+      writeString(pipeWrite, QByteArray(OK_STRING));
+      writeInteger(pipeWrite, 0);
       return;
     }
   // check stream
@@ -957,8 +960,8 @@ QDjViewPlugin::cmdWrite()
             {
               getUrl(stream->instance, stream->url, QString("_self")); 
               delete stream;
-              writeString(pipe_reply, QByteArray(OK_STRING));
-              writeInteger(pipe_reply, 0);
+              writeString(pipeWrite, QByteArray(OK_STRING));
+              writeInteger(pipeWrite, 0);
               return;
             }
         }
@@ -966,16 +969,16 @@ QDjViewPlugin::cmdWrite()
   // pass data
   Document *document = stream->instance->document;
   ddjvu_stream_write(*document, stream->streamid, data, data.size());
-  writeString(pipe_reply, QByteArray(OK_STRING));
-  writeInteger(pipe_reply, data.size());
+  writeString(pipeWrite, QByteArray(OK_STRING));
+  writeInteger(pipeWrite, data.size());
 }
 
 
 void
 QDjViewPlugin::cmdDestroyStream()
 {
-  Stream *stream = (Stream*) readPointer(pipe_cmd);
-  int okay = readInteger(pipe_cmd);
+  Stream *stream = (Stream*) readPointer(pipeRead);
+  int okay = readInteger(pipeRead);
   if (streams.contains(stream))
     {
       Document *document = stream->instance->document;
@@ -985,40 +988,40 @@ QDjViewPlugin::cmdDestroyStream()
       showStatus(stream->instance, QString());
       delete stream;
     }
-  writeString(pipe_reply, QByteArray(OK_STRING));
+  writeString(pipeWrite, QByteArray(OK_STRING));
 }
 
 
 void
 QDjViewPlugin::cmdUrlNotify()
 {
-  QUrl url = QUrl::fromEncoded(readRawString(pipe_cmd));
-  readInteger(pipe_cmd); // notification code (unused)
+  QUrl url = QUrl::fromEncoded(readRawString(pipeRead));
+  readInteger(pipeRead); // notification code (unused)
   Stream *stream = 0;
   QList<Stream*> streamList = streams.toList();
   foreach(stream, streamList)
     if (!stream->started && stream->url == url)
       delete stream;
-  writeString(pipe_reply, QByteArray(OK_STRING));
+  writeString(pipeWrite, QByteArray(OK_STRING));
 }
 
 
 void
 QDjViewPlugin::cmdPrint()
 {
-  Instance *instance = (Instance*) readPointer(pipe_cmd);
-  readInteger(pipe_cmd); // full mode (unused)
+  Instance *instance = (Instance*) readPointer(pipeRead);
+  readInteger(pipeRead); // full mode (unused)
   if (instances.contains(instance))
     if (instance->djview)
       QTimer::singleShot(0, instance->djview, SLOT(print()));
-  writeString(pipe_reply, QByteArray(OK_STRING));
+  writeString(pipeWrite, QByteArray(OK_STRING));
 }
 
 
 void
 QDjViewPlugin::cmdHandshake()
 {
-  writeString(pipe_reply, QByteArray(OK_STRING));
+  writeString(pipeWrite, QByteArray(OK_STRING));
 }
 
 
@@ -1075,12 +1078,13 @@ QDjViewPlugin::QDjViewPlugin(const char *progname)
     notifier(0),
     application(0),
     forwarder(0),
-    pipe_cmd(3),
-    pipe_reply(4),
-    pipe_request(5),
-    return_code(0),
-    quit_flag(false),
-    xembed_flag(false)
+    xembedFlag(false),
+    eventLoop(0),
+    returnCode(0),
+    quitFlag(false),
+    pipeRead(3),
+    pipeWrite(4),
+    pipeRequest(5)
 {
   // Disable SIGPIPE
 #ifdef SIGPIPE
@@ -1126,28 +1130,39 @@ QDjViewPlugin::exec()
   try 
     {
       // startup message
-      writeString(pipe_reply, QByteArray("Here am I"));
+      writeString(pipeWrite, QByteArray("Here am I"));
       // dispatch until we get display
-      while (!application && !quit_flag)
+      while (!application && !quitFlag)
         dispatch();
-      // handle events
-      if (!quit_flag)
-        application->exec();
+      // handle events 
+      while (!quitFlag)
+        {
+          QEventLoop loop;
+          eventLoop = &loop;
+          eventLoop->exec();
+          eventLoop = 0;
+          foreach(QObject *o, pendingDelete)
+            delete o;
+          pendingDelete.clear();
+        }
+      // make sure we do everything QApplication::exec() does.
+      QTimer::singleShot(0, application, SLOT(quit()));
+      application->exec();
     }
   catch(int err)
     {
       reportError(err);
-      return_code = 10;
+      returnCode = 10;
     }
-  return return_code;
+  return returnCode;
 }
 
 
 void 
 QDjViewPlugin::exit(int retcode)
 {
-  return_code = retcode;
-  quit_flag = true;
+  returnCode = retcode;
+  quitFlag = true;
   if (timer)
     timer->stop();
   if (application)
@@ -1214,16 +1229,16 @@ QDjViewPlugin::getUrl(Instance *instance, QUrl url, QString target)
 {
   try
     {
-      writeInteger(pipe_request, CMD_GET_URL);
-      writePointer(pipe_request, (void*) instance);
-      writeString(pipe_request, url.toEncoded());
-      writeString(pipe_request, target);
+      writeInteger(pipeRequest, CMD_GET_URL);
+      writePointer(pipeRequest, (void*) instance);
+      writeString(pipeRequest, url.toEncoded());
+      writeString(pipeRequest, target);
     }
   catch(int err)
     {
       reportError(err);
-      return_code = 10;
-      quit_flag = true;
+      returnCode = 10;
+      quitFlag = true;
     }
 }
 
@@ -1234,15 +1249,15 @@ QDjViewPlugin::showStatus(Instance *instance, QString message)
   try
     {
       message.replace(QRegExp("\\s"), " ");
-      writeInteger(pipe_request, CMD_SHOW_STATUS);
-      writePointer(pipe_request, (void*) instance);
-      writeString(pipe_request, message);
+      writeInteger(pipeRequest, CMD_SHOW_STATUS);
+      writePointer(pipeRequest, (void*) instance);
+      writeString(pipeRequest, message);
     }
   catch(int err)
     {
       reportError(err);
-      return_code = 10;
-      quit_flag = true;
+      returnCode = 10;
+      quitFlag = true;
     }
 }
 
@@ -1253,7 +1268,7 @@ QDjViewPlugin::dispatch()
 {
   try
     {
-      int cmd = readInteger(pipe_cmd);
+      int cmd = readInteger(pipeRead);
       switch (cmd)
         {
         case CMD_SHUTDOWN:       cmdShutdown(); break;
@@ -1293,11 +1308,29 @@ QDjViewPlugin::lastViewerClosed()
     }
   else
     {
-      quit_flag = true;
+      quitFlag = true;
     }
 }
 
 
+void 
+QDjViewPlugin::registerForDeletion(QObject *p)
+{
+  // QObject::deleteLater() deletes when 
+  // returning to the current event loop.
+  // Here we want deletions to happen when
+  // returning to the main loop.
+  // Otherwise Instance::destroy() might
+  // delete window modal dialogs while
+  // they are running.
+  if (eventLoop)
+    {
+      pendingDelete.append(p);
+      eventLoop->exit(0);
+      return;
+    }
+  p->deleteLater();
+}
 
 
 

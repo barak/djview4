@@ -37,6 +37,7 @@
 class QMutex;
 class QSocketNotifier;
 class QTimer;
+class QEventLoop;
 
 
 class QDjViewPlugin : public QObject
@@ -93,6 +94,7 @@ private:
   void showStatus(Instance *instance, QString message);
   void dispatch();
   void lastViewerClosed();
+  void registerForDeletion(QObject*);
 
   QByteArray       progname;
   QDjVuContext    *context;
@@ -102,14 +104,16 @@ private:
   Forwarder       *forwarder;
   QSet<Instance*>  instances;
   QSet<Stream*>    streams;
-  int           pipe_cmd;
-  int           pipe_reply;
-  int           pipe_request;
-  int           return_code;
-  bool          quit_flag;
-  bool          xembed_flag;
-  int           argc;
-  const char*   argv[4];
+  bool             xembedFlag;
+  int              argc;
+  const char*      argv[4];
+  QEventLoop   *eventLoop;
+  QObjectList   pendingDelete;
+  int           returnCode;
+  bool          quitFlag;
+  int        pipeRead;
+  int        pipeWrite;
+  int        pipeRequest;
 };
 
 class QDjViewPlugin::Document : public QDjVuDocument
