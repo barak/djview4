@@ -40,10 +40,8 @@ class QTimer;
 class QEventLoop;
 
 
-class QDjViewPlugin : public QObject
+class QDjViewPlugin
 {
-  Q_OBJECT
-    
 public:
   ~QDjViewPlugin();
   QDjViewPlugin(const char *progname);

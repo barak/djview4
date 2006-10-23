@@ -81,6 +81,7 @@
 static Atom wm_state;
 static Atom wm_client_leader;
 
+
 static Window 
 x11ToplevelWindow(Display *dpy, Window start)
 {
@@ -171,7 +172,12 @@ x11SetTransientForHint(QWidget *widget)
 // ========================================
 
 
-struct QDjViewPlugin::Stream : public QObject
+// QDjViewPlugin, Stream and Instance cannot be QObjects
+// because subtle errors occur when one creates QObjects 
+// before the QApplication. 
+
+
+struct QDjViewPlugin::Stream
 {
   typedef QDjViewPlugin::Instance Instance;
   QUrl      url;
@@ -268,7 +274,11 @@ QDjViewPlugin::Document::newstream(int streamid, QString, QUrl url)
 QDjViewPlugin::Forwarder::Forwarder(QDjViewPlugin *dispatcher)
   : QObject(), dispatcher(dispatcher)
 {
+  // The purpose of the Forwarder is to redirect 
+  // certain signals towards the QDjViewPlugin
+  // (which cannot be a QObject.)
 }
+
 
 void 
 QDjViewPlugin::Forwarder::showStatus(QString message)
@@ -278,6 +288,7 @@ QDjViewPlugin::Forwarder::showStatus(QString message)
   if (instance)
     dispatcher->showStatus(instance, message);
 }
+
 
 void 
 QDjViewPlugin::Forwarder::getUrl(QUrl url, QString target)
@@ -290,11 +301,13 @@ QDjViewPlugin::Forwarder::getUrl(QUrl url, QString target)
     dispatcher->getUrl(instance, url, target);
 }
 
+
 void 
 QDjViewPlugin::Forwarder::quit()
 {
   dispatcher->quit();
 }
+
 
 void 
 QDjViewPlugin::Forwarder::dispatch()
@@ -302,11 +315,13 @@ QDjViewPlugin::Forwarder::dispatch()
   dispatcher->dispatch();
 }
 
+
 void 
 QDjViewPlugin::Forwarder::lastViewerClosed()
 {
   dispatcher->lastViewerClosed();
 }
+
 
 bool 
 QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
@@ -340,6 +355,8 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
   // Keep processing
   return false;
 }
+
+
 
 
 // ========================================
@@ -775,16 +792,16 @@ QDjViewPlugin::cmdAttachWindow()
       context = new QDjVuContext(progname);
       forwarder = new Forwarder(this);
       application->installEventFilter(forwarder);
-      connect(application, SIGNAL(lastWindowClosed()), 
-              forwarder, SLOT(lastViewerClosed()));
+      QObject::connect(application, SIGNAL(lastWindowClosed()), 
+                       forwarder, SLOT(lastViewerClosed()));
       notifier = new QSocketNotifier(pipeRead, QSocketNotifier::Read); 
-      connect(notifier, SIGNAL(activated(int)), 
-              forwarder, SLOT(dispatch()));
+      QObject::connect(notifier, SIGNAL(activated(int)), 
+                       forwarder, SLOT(dispatch()));
       timer = new QTimer();
       timer->setSingleShot(true);
       timer->start(5*60*1000);
-      connect(timer, SIGNAL(timeout()), 
-              forwarder, SLOT(quit()));
+      QObject::connect(timer, SIGNAL(timeout()), 
+                       forwarder, SLOT(quit()));
       if (protocol.startsWith("XEMBED"))
         xembedFlag = true;
     }
@@ -817,10 +834,10 @@ QDjViewPlugin::cmdAttachWindow()
       layout->setMargin(0);
       layout->setSpacing(0);
       layout->addWidget(djview);
-      connect(djview, SIGNAL(pluginStatusMessage(QString)),
-              forwarder, SLOT(showStatus(QString)) );
-      connect(djview, SIGNAL(pluginGetUrl(QUrl,QString)),
-              forwarder, SLOT(getUrl(QUrl,QString)) );
+      QObject::connect(djview, SIGNAL(pluginStatusMessage(QString)),
+                       forwarder, SLOT(showStatus(QString)) );
+      QObject::connect(djview, SIGNAL(pluginGetUrl(QUrl,QString)),
+                       forwarder, SLOT(getUrl(QUrl,QString)) );
       instance->shell = shell;
       instance->djview = djview;
       // apply arguments
@@ -1165,7 +1182,9 @@ QDjViewPlugin::exit(int retcode)
   quitFlag = true;
   if (timer)
     timer->stop();
-  if (application)
+  if (eventLoop)
+    eventLoop->exit(retcode);
+  else if (application)
     application->exit(retcode);
 }
 
@@ -1182,9 +1201,7 @@ QDjViewPlugin::reportError(int err)
 {
   if (err < 0)
     perror("djview dispatcher");
-  else if (err == 0)
-    fprintf(stderr, "djview dispatcher: unexpected end of file\n");
-  else
+  else if (err > 0)
     fprintf(stderr, "djview dispatcher: protocol error (%d)\n", err);
 }
 
@@ -1237,8 +1254,7 @@ QDjViewPlugin::getUrl(Instance *instance, QUrl url, QString target)
   catch(int err)
     {
       reportError(err);
-      returnCode = 10;
-      quitFlag = true;
+      exit(10);
     }
 }
 
@@ -1256,11 +1272,9 @@ QDjViewPlugin::showStatus(Instance *instance, QString message)
   catch(int err)
     {
       reportError(err);
-      returnCode = 10;
-      quitFlag = true;
+      exit(10);
     }
 }
-
 
 
 void
@@ -1288,12 +1302,8 @@ QDjViewPlugin::dispatch()
     }
   catch(int err)
     {
-      if (err)
-        reportError(err);
-      if (err)
-        exit(10);
-      else
-        exit(0);
+      reportError(err);
+      exit(err ? 10 : 0);
     }
 }
 
@@ -1305,11 +1315,9 @@ QDjViewPlugin::lastViewerClosed()
     {
       timer->stop();
       timer->start(5*60*1000);
+      return;
     }
-  else
-    {
-      quitFlag = true;
-    }
+  exit(0);
 }
 
 
