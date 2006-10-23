@@ -21,7 +21,6 @@
 #include <libdjvu/miniexp.h>
 #include <libdjvu/ddjvuapi.h>
 
-#include <QDebug>
 
 #include <QAction>
 #include <QActionGroup>
@@ -31,6 +30,7 @@
 #include <QCloseEvent>
 #include <QComboBox>
 #include <QCoreApplication>
+#include <QDebug>
 #include <QDir>
 #include <QDockWidget>
 #include <QEvent>
@@ -1432,11 +1432,6 @@ QDjView::parseArgument(QString key, QString value)
       if (parse_boolean(key, value, errors, okay))
         widget->enableKeyboard(okay);
     }
-  else if (key == "frame")
-    {
-      if (parse_boolean(key, value, errors, okay))
-        widget->setDisplayFrame(okay);
-    }
   else if (key == "links")
     {
       if (parse_boolean(key, value, errors, okay))
@@ -1560,7 +1555,7 @@ QDjView::parseArgument(QString key, QString value)
   else if (key == "url")
     {
       if (viewerMode != STANDALONE)
-        qWarning("Option 'url' applies to plugins only");
+        errors << tr("Option '%1' requires a standalone viewer.").arg(key);
       else
         pendingUrl = value;        
       if (! pendingUrl.isEmpty())

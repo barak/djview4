@@ -16,9 +16,9 @@
 
 // $Id$
 
-#include <QDebug>
 
 #include <QCoreApplication>
+#include <QDebug>
 #include <QMetaEnum>
 #include <QMetaObject>
 #include <QMutex>

@@ -36,8 +36,11 @@
 #include <QStringList>
 
 
-
+#ifndef QT_NO_DEBUG
 static bool verbose = true;
+#else
+static bool verbose = false;
+#endif
 static QtMsgHandler qtDefaultHandler;
 
 void 
@@ -128,6 +131,8 @@ main(int argc, char *argv[])
         usage();
       else if (arg == "verbose")
         verbose = true;
+      else if (arg == "quiet")
+        verbose = false;
       else if (arg == "fix")
         message(QDjView::tr("Options 'fix' is deprecated"));
       else 

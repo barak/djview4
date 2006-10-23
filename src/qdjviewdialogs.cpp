@@ -16,10 +16,10 @@
 
 // $Id$
 
-#include <QDebug>
 
 #include <QApplication>
 #include <QClipboard>
+#include <QDebug>
 #include <QDialog>
 #include <QFont>
 #include <QHeaderView>

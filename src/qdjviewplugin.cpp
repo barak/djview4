@@ -26,11 +26,9 @@
 #include <unistd.h>
 #include <signal.h>
 
-#define DEBUG_DJVIEW 1
-#include <QDebug>
-
 #include <QApplication>
 #include <QByteArray>
+#include <QDebug>
 #include <QDesktopWidget>
 #include <QEvent>
 #include <QEventLoop>
@@ -198,6 +196,7 @@ struct QDjViewPlugin::Instance
   QPointer<QDjViewPlugin::Document> document;
   QPointer<QWidget>                 shell;
   QPointer<QDjView>                 djview;
+  Window                            container;
   QStringList                    args;
   QByteArray                     saved;
   int                            savedformat;
@@ -375,7 +374,7 @@ QDjViewPlugin::Instance::~Instance()
 
 QDjViewPlugin::Instance::Instance(QDjViewPlugin *parent)
   : url(), dispatcher(parent), 
-    document(0), shell(0), djview(0)
+    document(0), shell(0), djview(0), container(0)
 {
 }
 
@@ -409,6 +408,7 @@ QDjViewPlugin::Instance::destroy()
       XUnmapWindow(dpy, shell->winId());  
       XReparentWindow(dpy, shell->winId(), QX11Info::appRootWindow(), 0,0);
       dispatcher->registerForDeletion(shell);
+      container = 0;
       shell = 0;
     }
 }
@@ -840,6 +840,7 @@ QDjViewPlugin::cmdAttachWindow()
                        forwarder, SLOT(getUrl(QUrl,QString)) );
       instance->shell = shell;
       instance->djview = djview;
+      instance->container = window;
       // apply arguments
       foreach (QString s, instance->args)
         djview->parseArgument(s);
@@ -867,6 +868,16 @@ QDjViewPlugin::cmdResize()
   Instance *instance = (Instance*) readPointer(pipeRead);
   int width = readInteger(pipeRead);
   int height = readInteger(pipeRead);
+  if (instance->container)
+    { // the plugin lies sometimes (why?)
+      int x, y; unsigned int w, h, b, d; Window r;
+      if (XGetGeometry(QX11Info::display(), instance->container, 
+                       &r, &x, &y, &w, &h, &b, &d))
+        { 
+          width = qMin(width, (int)w);
+          height = qMin(height, (int)h);
+        }
+    }
   if (instances.contains(instance) && width>0 && height>0)
     if (instance->shell && application)
       instance->shell->resize(width, height);
@@ -1135,7 +1146,7 @@ QDjViewPlugin::instance()
 int 
 QDjViewPlugin::exec()
 {
-#if DEBUG_DJVIEW
+#ifndef QT_NO_DEBUG
   const char *s = getenv("DEBUG_DJVIEW");
   if (s && strcmp(s,"0"))
     {
@@ -1146,6 +1157,7 @@ QDjViewPlugin::exec()
 #endif
   try 
     {
+      qDebug() << "begin netscape mode";
       // startup message
       writeString(pipeWrite, QByteArray("Here am I"));
       // dispatch until we get display
@@ -1165,6 +1177,7 @@ QDjViewPlugin::exec()
       // make sure we do everything QApplication::exec() does.
       QTimer::singleShot(0, application, SLOT(quit()));
       application->exec();
+      qDebug() << "end netscape mode";
     }
   catch(int err)
     {

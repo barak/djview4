@@ -23,10 +23,10 @@
 
 #include "qdjvu.h"
 
-#include <QDebug>
 
 #include <QByteArray>
 #include <QCoreApplication>
+#include <QDebug>
 #include <QFile>
 #include <QFileInfo>
 #include <QList>

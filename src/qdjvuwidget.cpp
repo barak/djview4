@@ -26,25 +26,26 @@
 #include "qdjvu.h"
 #include "qdjvuwidget.h"
 
-#include <QWidget>
-#include <QMenu>
-#include <QCursor>
 #include <QApplication>
-#include <QScrollBar>
+#include <QBitmap>
+#include <QCursor>
+#include <QDebug>
+#include <QImage>
+#include <QList>
+#include <QMap>
+#include <QMenu>
 #include <QPaintEvent>
 #include <QPainter>
 #include <QPainterPath>
-#include <QImage>
 #include <QPixmap>
-#include <QBitmap>
-#include <QToolTip>
-#include <QTimer>
+#include <QPolygon>
 #include <QRect>
 #include <QRectF>
-#include <QPolygon>
-#include <QList>
+#include <QScrollBar>
+#include <QTimer>
+#include <QToolTip>
 #include <QVector>
-#include <QMap>
+#include <QWidget>
 
 
 

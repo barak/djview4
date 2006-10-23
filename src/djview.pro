@@ -20,11 +20,24 @@ TARGET = djview
 CONFIG += qt thread warn_on 
 QT += network 
 
+CONFIG(release,debug|release) {
+  DEFINES += QT_NO_DEBUG QT_NO_DEBUG_STREAM
+}
+
 unix {
   CONFIG += link_pkgconfig
   PKGCONFIG += ddjvuapi
 } else {
   LIBS += -ldjvulibre
+  INCLUDEPATH += /path/to/djvulibre-3.5
+}
+
+macx {
+  contains(DEFINES,__USE_WS_X11__): CONFIG += x11
+} else:win32 {
+  contains(DEFINES,_WIN32_X11_):    CONFIG += x11
+} else:unix {
+  CONFIG += x11
 }
 
 HEADERS = qdjvu.h qdjvuhttp.h 
@@ -41,8 +54,7 @@ SOURCES += djview.cpp
 FORMS = qdjviewerrordialog.ui
 FORMS += qdjviewinfodialog.ui qdjviewmetadialog.ui 
 
-unix:!macx {
- CONFIG += x11
- SOURCES += qdjviewplugin.cpp
- HEADERS += qdjviewplugin.h
+x11 {
+  SOURCES += qdjviewplugin.cpp
+  HEADERS += qdjviewplugin.h
 }
