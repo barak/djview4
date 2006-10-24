@@ -47,6 +47,9 @@
 #include <QVector>
 #include <QWidget>
 
+#if DDJVUAPI_VERSION < 17
+# error "DDJVUAPI_VERSION>=17 is required !"
+#endif
 
 
 #ifdef Q_NO_USING_KEYWORD
@@ -2963,7 +2966,8 @@ MapArea::paintPermanent(QPaintDevice *w, QRectMapper &m, QPoint offset)
           QRect r = rect.adjusted(bw, bw, -bw, -bw);
           QString s = miniexp_to_qstring(comment);
           paint.setPen(foregroundColor);
-          paint.drawText(r,Qt::AlignCenter|Qt::AlignVCenter|Qt::TextWordWrap,s,0);
+          int flags = Qt::AlignCenter|Qt::AlignVCenter|Qt::TextWordWrap;
+          paint.drawText(r,flags,s,0);
         }
       else if (areaType == k.pushpin)
         {
@@ -3118,6 +3122,51 @@ QDjVuPrivate::showTransientMapAreas(bool b)
               area.update(widget->viewport(), p->mapper, 
                           visibleRect.topLeft() );
           }
+    }
+}
+
+
+
+/*! Removes all highlight rectangles 
+  installed for page \a pageno. */
+
+void 
+QDjVuWidget::clearHighlights(int pageno)
+{
+  if (pageno>=0 && pageno<priv->pageData.size())
+    {
+      Page *p = &priv->pageData[pageno];
+      int j = p->mapAreas.size();
+      while (--j >= 0)
+        if (! p->mapAreas[j].expr)
+          {
+            priv->pixelCache.clear();
+            viewport()->update();
+            p->mapAreas.removeAt(j);
+          }
+    }
+}
+
+/*! Add a new highlight rectangle with color \a color,
+  at position \a x, \a y, \a w, \a h on page \a pageno. */
+
+void 
+QDjVuWidget::addHighlight(int pageno, int x, int y, int w, int h, QColor color)
+{
+  if (pageno>=0 && pageno<priv->pageData.size() && w>0 && h>0)
+    {
+      Page *p = &priv->pageData[pageno];
+      Keywords &k = *keywords();
+      MapArea area;
+      area.areaType = k.rect;
+      area.areaRect = QRect(x,y,w,h);
+      area.hiliteColor = color;
+      area.hiliteColor.setAlpha(255);
+      area.hiliteOpacity = color.alpha() * 200 / 255;
+      area.borderType = miniexp_nil;
+      p->mapAreas << area;
+      priv->pixelCache.clear();
+      viewport()->update();
     }
 }
 

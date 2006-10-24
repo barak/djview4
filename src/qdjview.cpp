@@ -73,6 +73,7 @@
 #include "qdjview.h"
 #include "qdjviewprefs.h"
 #include "qdjviewdialogs.h"
+#include "qdjviewsidebar.h"
 
 #if DDJVUAPI_VERSION < 18
 # error "DDJVUAPI_VERSION>=18 is required !"
@@ -871,7 +872,7 @@ QDjView::createWhatsThis()
   ms = prefs->modifiersToString(prefs->modifiersForSelect);
   ml = prefs->modifiersToString(prefs->modifiersForLens);
 
-  Help(tr("<html><b>Selecting a rectangle...</b><br/> "
+  Help(tr("<html><b>Selecting a rectangle.</b><br/> "
           "Once a rectanglular area is selected, a popup menu "
           "lets you copy the corresponding text or image. "
           "Instead of using this tool, you can also hold %1 "
@@ -879,7 +880,7 @@ QDjView::createWhatsThis()
           "</html>").arg(ms))
             >> actionSelect;
   
-  Help(tr("<html><b>Zooming...</b><br/> "
+  Help(tr("<html><b>Zooming.</b><br/> "
           "Choose a zoom level for viewing the document. "
           "Zoom level 100% displays the document for a 100 dpi screen. "
           "Zoom levels <tt>Fit Page</tt> and <tt>Fit Width</tt> ensure "
@@ -891,14 +892,14 @@ QDjView::createWhatsThis()
             >> actionZoom75 >> actionZoom50
             >> zoomCombo;
   
-  Help(tr("<html><b>Rotating the pages...</b><br/> "
+  Help(tr("<html><b>Rotating the pages.</b><br/> "
           "Choose to display pages in portrait or landscape mode. "
           "You can also turn them upside down.</html>"))
             >> actionRotateLeft >> actionRotateRight
             >> actionRotate0 >> actionRotate90
             >> actionRotate180 >> actionRotate270;
 
-  Help(tr("<html><b>Display mode...</b><br/> "
+  Help(tr("<html><b>Display mode.</b><br/> "
           "DjVu images compose a background layer and a foreground layer "
           "using a stencil. The display mode specifies with layers "
           "should be displayed.</html>"))
@@ -906,7 +907,7 @@ QDjView::createWhatsThis()
             >> actionDisplayForeground >> actionDisplayBackground
             >> modeCombo;
 
-  Help(tr("<html><b>Navigating the document...</b><br/> "
+  Help(tr("<html><b>Navigating the document.</b><br/> "
           "The page selector lets you jump to any page by name. "
           "The navigation buttons jump to the first page, the previous "
           "page, the next page, or the last page. </html>"))
@@ -952,11 +953,11 @@ QDjView::createWhatsThis()
           "<li>Arrows and page keys to navigate the document.</li>"
           "<li>Space and BackSpace to read the document.</li>"
           "<li>Keys <tt>+</tt>, <tt>-</tt>, <tt>[</tt>, <tt>]</tt> "
-          "    to zoom or rotate the document.</li>"
+          "to zoom or rotate the document.</li>"
           "<li>Left Mouse Button for panning and selecting links.</li>"
           "<li>Right Mouse Button for displaying the contextual menu.</li>"
           "<li><tt>%1</tt> Left Mouse Button "
-          "    for selecting text or images.</li>"
+          "for selecting text or images.</li>"
           "<li><tt>%2</tt> for popping the magnification lens.</li>"
           "</ul></html>").arg(ms).arg(ml))
             >> widget;
@@ -1083,6 +1084,10 @@ QDjView::applySaved(Saved *saved)
   if (saved == &prefs->forStandalone)
     if (! (prefs->windowSize.isNull()))
       resize(prefs->windowSize);
+  // sidebar tab
+  if (saved->sidebarTab >= 0 
+      && saved->sidebarTab < sideToolBox->count())
+    sideToolBox->setCurrentIndex(saved->sidebarTab);
 }
 
 
@@ -1116,6 +1121,8 @@ QDjView::updateSaved(Saved *saved)
       if (saved == &prefs->forStandalone)
         if (! (windowState() & unusualWindowStates))
           prefs->windowSize = size();
+      // sidebar tab
+      saved->sidebarTab = sideToolBox->currentIndex();
     }
 }
 
@@ -1538,7 +1545,8 @@ QDjView::parseArgument(QString key, QString value)
            key == "noscrollbars" ||
            key == "nomenu" )
     {
-      qWarning("Deprecated option '%s'", (const char*)key.toLocal8Bit());
+      QString msg = tr("Deprecated option '%1'").arg(key);
+      qWarning((const char*)msg.toLocal8Bit());
       if (key == "notoolbar" && value.isNull())
         toolBar->setVisible(false);
       else if (key == "noscrollbars" && value.isNull())
@@ -1568,7 +1576,7 @@ QDjView::parseArgument(QString key, QString value)
   else if (key == "logo")
     {
       QString msg = tr("Ignoring deprecated option '%1'.").arg(key);
-      qWarning((const char*) msg.toLocal8Bit());
+      qWarning((const char*)msg.toLocal8Bit());
     }
   else
     {
@@ -1816,12 +1824,11 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   sideToolBox = new QToolBox(sideBar);
   sideBar->setWidget(sideToolBox);
   
-  // - sidebar components -- TODO
+  // - sidebar components
   QLabel *thumbnailWidget = new QLabel("thumbnails",sideToolBox);
   thumbnailWidget->setAlignment(Qt::AlignCenter);
   sideToolBox->addItem(thumbnailWidget, tr("&Thumbnails"));
-  QLabel *outlineWidget = new QLabel("outline here",sideToolBox);
-  outlineWidget->setAlignment(Qt::AlignCenter);
+  QDjViewOutline*outlineWidget = new QDjViewOutline(this);
   sideToolBox->addItem(outlineWidget, tr("&Outline")); 
   QLabel *findWidget = new QLabel("search stuff here",sideToolBox);
   findWidget->setAlignment(Qt::AlignCenter);
@@ -1967,7 +1974,10 @@ QDjView::goToPage(int pageno)
       if (pageno>=0 && pageno<pagenum)
         widget->setPage(pageno);
       else
-        qWarning("Cannot find page numbered: %d", pageno+1);
+        {
+          QString msg = tr("Cannot find page numbered: %1").arg(pageno+1);
+          qWarning((const char*)msg.toLocal8Bit());
+        }
       updateActionsLater();
     }
 }
@@ -1994,8 +2004,10 @@ QDjView::goToPage(QString name, int from)
       if (pageno >= 0 && pageno < pagenum)
         widget->setPage(pageno);
       else
-        qWarning("Cannot find page named: %s", 
-                 (const char*)name.toLocal8Bit());
+        {
+          QString msg = tr("Cannot find page named: %1").arg(name);
+          qWarning((const char*)msg.toLocal8Bit());
+        }
       updateActionsLater();
     }
 }
@@ -2114,7 +2126,7 @@ QDjView::showSideBar(QString area, int tab)
   else if (string_is_on(area) || area.isNull())
     return showSideBar(Qt::AllDockWidgetAreas, tab);
   else if (string_is_off(area))
-    return showSideBar(0, tab);
+    return showSideBar((Qt::DockWidgetArea)0, tab);
   return false;
 }
 
@@ -2232,7 +2244,6 @@ QDjView::pageNumber(QString name, int from)
           !strcmp(utf8Name, documentPages[i].id))
         return i;
   // Failed
-  qWarning("Cannot find page '%s'", (const char*)name.toLocal8Bit());
   return -1;
 }
 
@@ -2435,6 +2446,8 @@ QDjView::startBrowser(QUrl url)
 /*! \fn QDjView::documentOpened(QDjVuDocument*)
   This signal is emitted when opening a new document. */
   
+/*! \fn QDjView::documentReady(QDjVuDocument*)
+  This signal is emitted when the document structure is known. */
 
 /*! \fn QDjView::pluginStatusMessage(QString message = QString())
   This signal is emitted when a message is displayed
@@ -2558,9 +2571,19 @@ QDjView::docinfo()
       // Fill page combo
       fillPageCombo(pageCombo);
       
-      // Update actions
-      performPendingLater();
+      // Continue processing a bit later
+      QTimer::singleShot(0, this, SLOT(docinfoExtra()));
+    }
+}
+
+void 
+QDjView::docinfoExtra()
+{
+  if (document && documentPages.size()>0)
+    {
+      performPending();
       updateActionsLater();
+      emit documentReady(document);
     }
 }
 
@@ -2594,7 +2617,22 @@ QDjView::performPending()
         }
       if (pendingHilite.size() > 0)
         {
-          // TODO
+          StringPair pair;
+          foreach(pair, pendingHilite)
+            {
+              int x, y, w, h;
+              QColor color = Qt::blue;
+              int pageno = widget->page();
+              if (! pair.first.isEmpty())
+                pageno = pageNumber(pair.first);
+              if (pageno >= 0 && pageno < pageNum() &&
+                  parse_highlight(pair.second, x, y, w, h, color) &&
+                  w > 0 && h > 0 )
+                {
+                  color.setAlpha(96);
+                  widget->addHighlight(pageno, x, y, w, h, color);
+                }
+            }
           pendingHilite.clear();
         }
       if (pendingSearch.size() > 0)
@@ -2727,7 +2765,8 @@ QDjView::pointerClick(const Position &pos, miniexp_t)
   // Check url
   if (! url.isValid() || url.isRelative())
     {
-      qWarning("Cannot resolve link '%s'", (const char*) link.toLocal8Bit());
+      QString msg = tr("Cannot resolve link '%1'").arg(link);
+      qWarning(msg.toLocal8Bit());
       return;
     }
   // Signal browser
@@ -2753,8 +2792,10 @@ QDjView::pointerClick(const Position &pos, miniexp_t)
     }
   // Open a browser
   if (! startBrowser(url))
-    qWarning("Cannot spawn a browser for url '%s'",
-             (const char*) link.toLocal8Bit() );
+    {
+      QString msg = tr("Cannot spawn a browser for url '%1'").arg(link);
+      qWarning((const char*)msg.toLocal8Bit());
+    }
 }
 
   

@@ -51,11 +51,13 @@ RESOURCES += qdjvuwidget.qrc
 
 HEADERS += qdjviewprefs.h
 HEADERS += qdjviewdialogs.h 
+HEADERS += qdjviewsidebar.h
 HEADERS += qdjview.h
 SOURCES += qdjviewprefs.cpp 
 SOURCES += qdjviewdialogs.cpp
+SOURCES += qdjviewsidebar.cpp
 SOURCES += qdjview.cpp
-RESOURCES = qdjview.qrc 
+RESOURCES += qdjview.qrc 
 FORMS += qdjviewerrordialog.ui
 FORMS += qdjviewinfodialog.ui 
 FORMS += qdjviewmetadialog.ui 

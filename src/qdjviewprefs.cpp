@@ -100,7 +100,8 @@ QDjViewPrefs::create(void)
 QDjViewPrefs::Saved::Saved(void)
   : remember(true),
     options(defaultOptions),
-    zoom(QDjVuWidget::ZOOM_FITWIDTH)
+    zoom(QDjVuWidget::ZOOM_FITWIDTH),
+    sidebarTab(0)
 {
 }
 
@@ -238,6 +239,8 @@ QDjViewPrefs::loadGroup(QSettings &s, QString name, Saved &saved)
     saved.zoom = s.value("zoom").toInt();
   if (s.contains("state"))
     saved.state = s.value("state").toByteArray();
+  if (s.contains("sidebarTab"))
+    saved.sidebarTab = s.value("sidebarTab").toInt();
   s.endGroup();
 }
 
@@ -292,6 +295,7 @@ QDjViewPrefs::saveGroup(QSettings &s, QString name, Saved &saved)
   s.setValue("options", optionsToString(saved.options));
   s.setValue("zoom", saved.zoom);
   s.setValue("state", saved.state);
+  s.setValue("sidebarTab", saved.sidebarTab);
   s.endGroup();
 }
 

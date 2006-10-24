@@ -183,6 +183,8 @@ QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
 
   connect(d->djview, SIGNAL(documentClosed()), 
           this, SLOT(documentClosed()));
+  connect(d->djview, SIGNAL(documentReady(QDjVuDocument*)), 
+          this, SLOT(refresh()));
   connect(d->djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
           this, SLOT(setPage(int)));
   connect(d->ui.okButton, SIGNAL(clicked()), 
@@ -208,15 +210,15 @@ QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
   // what's this
   QWidget *wd = d->ui.tabDocument;
   wd->setWhatsThis(tr("<html><b>Document information</b><br>"
-                      "Display information about the document and "
+                      "This panel shows information about the document and "
                       "its component files. Select a component file "
                       "to display detailled information in the 'File' "
                       "tab. Double click a component file to show "
                       "the corresponding page in the main window."
                       "</html>"));
   QWidget *wf = d->ui.tabFile;
-  wf->setWhatsThis(tr("<html><b>File/Page information</b><br>"
-                      "Display the structure of the DjVu data "
+  wf->setWhatsThis(tr("<html><b>File and page information</b><br>"
+                      "This panel shows the structure of the DjVu data "
                       "corresponding to the component file or the page "
                       "selected in the 'Document' tab. The arrow buttons "
                       "let you navigate to the previous or next "
@@ -234,8 +236,6 @@ QDjViewInfoDialog::refresh()
       if (! doc)
         return;
       d->document = doc;
-      connect(doc, SIGNAL(docinfo()),
-              this, SLOT(refresh()) );
       connect(doc, SIGNAL(pageinfo()),
               this, SLOT(refresh()) );
     }
@@ -569,6 +569,8 @@ QDjViewMetaDialog::QDjViewMetaDialog(QDjView *parent)
   // connections
   connect(d->djview, SIGNAL(documentClosed()),
           this, SLOT(documentClosed()) );
+  connect(d->djview, SIGNAL(documentReady(QDjVuDocument*)), 
+          this, SLOT(refresh()));
   connect(d->djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
           this, SLOT(setPage(int)) );
   connect(d->ui.okButton, SIGNAL(clicked()),
@@ -585,16 +587,18 @@ QDjViewMetaDialog::QDjViewMetaDialog(QDjView *parent)
           this, SLOT(setPage(int)) );
   // what's this
   QWidget *wd = d->ui.docTab;
-  wd->setWhatsThis(tr("<html><b>Document Metadata</b><br>"
-                      "Display metadata pertaining to the document, "
-                      "such as author, title, references, etc. "
+  wd->setWhatsThis(tr("<html><b>Document metadata</b><br>"
+                      "This panel displays metadata pertaining "
+                      "to the document, such as author, title, "
+                      "references, etc. "
                       "This information can be saved into the document "
                       "with program <tt>djvused</tt>: use the commands "
                       "<tt>create-shared-ant</tt> and <tt>set-meta</tt>."
                       "</html>"));
   QWidget *wp = d->ui.pageTab;
-  wp->setWhatsThis(tr("<html><b>Page Metadata</b><br>"
-                      "Display metadata pertaining to a specific page. "
+  wp->setWhatsThis(tr("<html><b>Page metadata</b><br>"
+                      "This panel displays metadata pertaining "
+                      "to a specific page. "
                       "Page specific metadata override document metadata. "
                       "This information can be saved into the document "
                       "with program <tt>djvused</tt>: use command "
@@ -677,8 +681,6 @@ QDjViewMetaDialog::refresh()
       if (! doc)
         return;
       d->document = doc;
-      connect(doc, SIGNAL(docinfo()),
-              this, SLOT(refresh()) );
       connect(doc, SIGNAL(pageinfo()),
               this, SLOT(refresh()) );
     }

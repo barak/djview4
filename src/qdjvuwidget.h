@@ -205,6 +205,8 @@ public:
   QString getTextForRect(const QRect &rect);
   QImage  getImageForRect(const QRect &rect);
   QDjVuPage *getDjVuPage(int pageno);
+  void clearHighlights(int pageno);
+  void addHighlight(int pageno, int x, int y, int w, int h, QColor color);
   
 protected:
   virtual bool viewportEvent (QEvent *event);

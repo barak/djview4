@@ -113,6 +113,7 @@ public slots:
 signals:
   void  documentClosed();
   void  documentOpened(QDjVuDocument *doc);
+  void  documentReady(QDjVuDocument *doc);
   void  pluginStatusMessage(QString message = QString());
   void  pluginGetUrl(QUrl url, QString target);
 
@@ -153,6 +154,7 @@ protected slots:
   void error(QString, QString, int);
   void errorCondition(int);
   void docinfo();
+  void docinfoExtra();
   void performPending();
   void performPendingLater();
   void pointerPosition(const Position &pos, const PageInfo &page);
