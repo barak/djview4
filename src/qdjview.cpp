@@ -539,18 +539,20 @@ QDjView::createActions()
     << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
 
-  actionDisplayForeground = makeAction(tr("&Foreground", "Display|Foreground"), false)
+  actionDisplayForeground 
+    = makeAction(tr("&Foreground", "Display|Foreground"), false)
     << tr("Only display the foreground layer.")
     << Trigger(widget, SLOT(displayModeForeground()))
     << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
 
-  actionDisplayBackground = makeAction(tr("&Background", "Display|Background"), false)
+  actionDisplayBackground
+    = makeAction(tr("&Background", "Display|Background"), false)
     << tr("Only display the background layer.")
     << Trigger(widget, SLOT(displayModeBackground()))
     << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
-
+  
   actionPreferences = makeAction(tr("Prefere&nces...")) 
     << QIcon(":/images/icon_prefs.png")
     << tr("Show the preferences dialog.");
@@ -573,7 +575,8 @@ QDjView::createActions()
     << Trigger(statusBar,SLOT(setVisible(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionViewFullScreen = makeAction(tr("F&ull Screen","View|FullScreen"), false)
+  actionViewFullScreen 
+    = makeAction(tr("F&ull Screen","View|FullScreen"), false)
     << QKeySequence("F11")
     << QIcon(":/images/icon_fullscreen.png")
     << tr("Toggle full screen mode.")
@@ -767,8 +770,7 @@ QDjView::updateActions()
   actionOpen->setVisible(viewerMode == STANDALONE);
   actionClose->setVisible(viewerMode == STANDALONE);
   actionQuit->setVisible(viewerMode == STANDALONE);
-  actionViewFullScreen->setVisible(viewerMode == STANDALONE);
-  
+  actionViewFullScreen->setVisible(viewerMode == STANDALONE);  
 
   // Zoom combo and actions
   int zoom = widget->zoom();
@@ -908,7 +910,8 @@ QDjView::createWhatsThis()
           "The page selector lets you jump to any page by name. "
           "The navigation buttons jump to the first page, the previous "
           "page, the next page, or the last page. </html>"))
-            >> actionNavFirst >> actionNavPrev >> actionNavNext >> actionNavLast
+            >> actionNavFirst >> actionNavPrev 
+            >> actionNavNext >> actionNavLast
             >> pageCombo;
 
   Help(tr("<html><b>Document and page infromation.</b><br> "
@@ -952,7 +955,8 @@ QDjView::createWhatsThis()
           "    to zoom or rotate the document.</li>"
           "<li>Left Mouse Button for panning and selecting links.</li>"
           "<li>Right Mouse Button for displaying the contextual menu.</li>"
-          "<li><tt>%1</tt> Left Mouse Button for selecting text or images.</li>"
+          "<li><tt>%1</tt> Left Mouse Button "
+          "    for selecting text or images.</li>"
           "<li><tt>%2</tt> for popping the magnification lens.</li>"
           "</ul></html>").arg(ms).arg(ml))
             >> widget;
@@ -1108,7 +1112,7 @@ QDjView::updateSaved(Saved *saved)
         saved->options |= (QDjViewPrefs::SHOW_MENUBAR |
                            QDjViewPrefs::SHOW_SCROLLBARS |
                            QDjViewPrefs::SHOW_FRAME);
-      // main window size in standalone modea
+      // main window size in standalone mode
       if (saved == &prefs->forStandalone)
         if (! (windowState() & unusualWindowStates))
           prefs->windowSize = size();
@@ -1658,7 +1662,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
     viewerMode(mode),
     djvuContext(context),
     document(0),
-    documentTitleNumerical(true),
+    hasNumericalPageTitle(true),
     updateActionsScheduled(false),
     performPendingScheduled(false),
     printingAllowed(true),
@@ -1863,7 +1867,7 @@ QDjView::closeDocument()
   widget->setDocument(0);
   documentPages.clear();
   documentFileName.clear();
-  documentTitleNumerical = true;
+  hasNumericalPageTitle = true;
   documentUrl.clear();
   document = 0;
   if (doc)
@@ -2167,7 +2171,7 @@ QDjView::pageName(int pageno)
   if (pageno>=0 && pageno<documentPages.size())
     if ( documentPages[pageno].title )
       return QString::fromUtf8(documentPages[pageno].title);
-  if (documentTitleNumerical)
+  if (hasNumericalPageTitle)
     return QString("#%1").arg(pageno + 1);
   return QString("%1").arg(pageno + 1);
 }
@@ -2341,7 +2345,7 @@ QDjView::saveImageFile(QImage image, QString filename)
         patterns << "*." + QString(format).toLower();
       QString filters = QString("All supported files (%1);;All files (*)");
       filters = filters.arg(patterns.join(" "));
-      filename = QFileDialog::getSaveFileName(this, caption, filename, filters);
+      filename = QFileDialog::getSaveFileName(this, caption, "", filters);
       if (filename.isEmpty())
         return false;
     }
@@ -2363,7 +2367,7 @@ QDjView::saveImageFile(QImage image, QString filename)
     {
       QString message = file.errorString();
       if (writer.error() == QImageWriter::UnsupportedFormatError)
-        message = tr("Image format %1 is not supported.").arg(suffix.toUpper());
+        message = tr("Image format %1 not supported.").arg(suffix.toUpper());
       else if (file.error() == QFile::OpenError && errno > 0)
         message = strerror(errno);
       QMessageBox::critical(this, caption,
@@ -2529,44 +2533,27 @@ QDjView::docinfo()
     {
       // Obtain information about pages.
       int n = ddjvu_document_get_pagenum(*document);
-#if DDJVUAPI_VERSION < 18
-      ddjvu_document_type_t docType = ddjvu_document_get_type(*document);
-      if (docType != DDJVU_DOCTYPE_BUNDLED &&  
-          docType != DDJVU_DOCTYPE_INDIRECT )
+      int m = ddjvu_document_get_filenum(*document);
+      for (int i=0; i<m; i++)
         {
-          // work around bug in ddjvuapi<=17 */
-          for (int i=0; i<n; i++)
-            {
-              ddjvu_fileinfo_t info; info.type = 'P'; info.pageno = i;
-              info.id = info.name = info.title = 0;
-              documentPages << info;
-            }
-        }
-      else
-#endif
-        {
-          int m = ddjvu_document_get_filenum(*document);
-          for (int i=0; i<m; i++)
-            {
-              ddjvu_fileinfo_t info;
-              if (ddjvu_document_get_fileinfo(*document, i, &info) != DDJVU_JOB_OK)
-                qWarning("Internal (docinfo): ddjvu_document_get_fileinfo failed.");
-              if (info.title && info.name && !strcmp(info.title, info.name))
-                info.title = 0;  // clear title if equal to name.
-              if (info.type == 'P')
-                documentPages << info;
-            }
+          ddjvu_fileinfo_t info;
+          if (ddjvu_document_get_fileinfo(*document, i, &info)!=DDJVU_JOB_OK)
+            qWarning("Internal(docinfo): ddjvu_document_get_fileinfo fails.");
+          if (info.title && info.name && !strcmp(info.title, info.name))
+            info.title = 0;  // clear title if equal to name.
+          if (info.type == 'P')
+            documentPages << info;
         }
       if (documentPages.size() != n)
-        qWarning("Internal (docinfo): inconsistent number of pages.");
+        qWarning("Internal(docinfo): inconsistent number of pages.");
 
       // Check for numerical title
-      documentTitleNumerical = false;
+      hasNumericalPageTitle = false;
       QRegExp allNumbers("\\d+");
       for (int i=0; i<n; i++)
         if (documentPages[i].title &&
             allNumbers.exactMatch(QString::fromUtf8(documentPages[i].title)) )
-          documentTitleNumerical = true;
+          hasNumericalPageTitle = true;
       
       // Fill page combo
       fillPageCombo(pageCombo);
@@ -2698,10 +2685,10 @@ void
 QDjView::pointerClick(const Position &pos, miniexp_t)
 {
   // Obtain link information
+  QList<QPair<QString, QString> > query;
   QString link = widget->linkUrl();
   QString target = widget->linkTarget();
   bool inPlace = target.isEmpty() || target=="_self" || target=="_page";
-  QList<QPair<QString, QString> > empty;
   QUrl url = documentUrl;
   // Internal link
   if (link.startsWith("#"))
@@ -2718,8 +2705,14 @@ QDjView::pointerClick(const Position &pos, miniexp_t)
           other->show();
           return;
         }
-      // Construct url (TODO: reuse old query terms)
-      url.setQueryItems(empty);
+      // Construct url
+      QPair<QString,QString> pair;
+      foreach(pair, url.queryItems())
+        if (pair.first.toLower() != "djvuopts")
+          query << pair;
+        else
+          break;
+      url.setQueryItems(query);
       url.addQueryItem("djvuopts", "");
       url.addQueryItem("page", QString("#%1").arg(pageNumber(link)+1));
     }
@@ -2727,7 +2720,7 @@ QDjView::pointerClick(const Position &pos, miniexp_t)
     {
       // Resolve url
       QUrl linkUrl(link);
-      url.setQueryItems(empty);
+      url.setQueryItems(query); // empty!
       url = url.resolved(linkUrl);
       url.setQueryItems(linkUrl.queryItems());
     }
@@ -2884,16 +2877,18 @@ QDjView::performAbout(void)
 {
   QString html = 
     tr("<html>"
-        "<h2>DjVuLibre DjView %1</h2>"
+       "<h2>DjVuLibre DjView %1</h2>"
        "<p>"
-      "Viewer for DjVu documents<br>"
-       "<a href=http://djvulibre.djvuzone.org>http://djvulibre.djvuzone.org</a><br>"
-       "Copyright \251 2006- L\351on Bottou."
+       "Viewer for DjVu documents<br>"
+       "<a href=http://djvulibre.djvuzone.org>"
+       "http://djvulibre.djvuzone.org</a><br>"
+       "Copyright \251 2006-- L\351on Bottou."
        "</p>"
        "<p align=justify><small>"
        "This program is free software. "
        "You can redistribute or modify it under the terms of the "
-       "GNU General Public License as published by the Free Software Foundation. "
+       "GNU General Public License as published "
+       "by the Free Software Foundation. "
        "This program is distributed <i>without any warranty</i>. "
        "See the GNU General Public License for more details."
        "</small></p>"
@@ -2980,14 +2975,6 @@ QDjView::performSelect(bool checked)
     widget->setModifiersForSelect(Qt::NoModifier);
   else
     widget->setModifiersForSelect(prefs->modifiersForSelect);
-}
-
-
-template<class T> 
-static inline void
-exch(T& a, T& b)
-{
-  T tmp = a; a = b; b = tmp;
 }
 
 

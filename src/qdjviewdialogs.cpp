@@ -44,6 +44,10 @@
 #include "qdjview.h"
 
 
+#if DDJVUAPI_VERSION < 18
+# error "DDJVUAPI_VERSION>=18 is required !"
+#endif
+
 
 // =======================================
 // QDJVIEWERRORDIALOG
@@ -241,7 +245,6 @@ QDjViewInfoDialog::refresh()
       QDjVuDocument *doc = d->document;
       if (ddjvu_document_decoding_status(*doc) != DDJVU_JOB_OK)
         return;
-#if DDJVUAPI_VERSION >= 18
       int filenum = ddjvu_document_get_filenum(*doc);
       for (int i=0; i<filenum; i++)
         {
@@ -249,27 +252,6 @@ QDjViewInfoDialog::refresh()
           ddjvu_document_get_fileinfo(*doc, i, &info);
           d->files << info;
         }
-#else
-      int filenum;
-      ddjvu_document_type_t docType = ddjvu_document_get_type(*doc);
-      if (docType == DDJVU_DOCTYPE_BUNDLED ||
-          docType == DDJVU_DOCTYPE_INDIRECT )
-        filenum = ddjvu_document_get_filenum(*doc);
-      else
-        filenum = ddjvu_document_get_pagenum(*doc);
-      for (int i=0; i<filenum; i++)
-        {
-          ddjvu_fileinfo_t info;
-          info.type = 'P';
-          info.pageno = i;
-          info.size = -1;
-          info.id = info.title = info.name = 0;
-          if (docType == DDJVU_DOCTYPE_BUNDLED ||
-              docType == DDJVU_DOCTYPE_INDIRECT )
-            ddjvu_document_get_fileinfo(*doc, i, &info);
-          d->files << info;
-        }
-#endif
       fillFileCombo();
       fillDocLabel();
       fillDocTable();
@@ -290,7 +272,6 @@ QDjViewInfoDialog::refresh()
 
       // file dump
       QString dump = tr("Waiting for data...");
-#if DDJVUAPI_VERSION >= 18
       char *s = ddjvu_document_get_filedump(*doc, d->fileno);
       if (! s)
         d->done = false;
@@ -299,35 +280,6 @@ QDjViewInfoDialog::refresh()
           dump = QString::fromUtf8(s);
           free(s);
         }
-#else
-      if (info.type != 'P')
-        dump = tr("File dumps not available with ddjvuapi<18");
-      else
-        {
-          if (! d->page)
-            {
-              d->page = new QDjVuPage(doc, info.pageno, this);
-              connect(d->page, SIGNAL(pageinfo()),
-                      this, SLOT(refresh()) );
-            }
-          if (!ddjvu_page_decoding_done(*d->page))
-            d->done = false;
-          else
-            {
-              char *s = ddjvu_page_get_long_description(*d->page);
-              if (s)
-                {
-                  QStringList d = QString::fromUtf8(s).split("\n");
-                  QStringList f;
-                  foreach(QString z, d)
-                    if (z.contains(QRegExp("^\\s*[0-9]")))
-                      f << z;
-                  dump = f.join("\n");
-                  free(s);
-                }
-            }
-        }
-#endif
       d->ui.fileText->setPlainText(dump);
       d->ui.prevButton->setEnabled(d->fileno - 1 >= 0);
       d->ui.nextButton->setEnabled(d->fileno + 1 < d->files.size());
@@ -475,14 +427,7 @@ QDjViewInfoDialog::fillDocLabel()
             msg << tr("Obsolete indexed DjVu document");
           
           int pagenum = ddjvu_document_get_pagenum(*doc);
-#if DDJVUAPI_VERSION < 18
-          int filenum = pagenum;
-          if (docType == DDJVU_DOCTYPE_BUNDLED ||
-              docType == DDJVU_DOCTYPE_INDIRECT )
-            filenum = ddjvu_document_get_filenum(*doc);
-#else
           int filenum = ddjvu_document_get_filenum(*doc);
-#endif
           msg << tr("%1 files").arg(filenum);
           msg << tr("%1 pages").arg(pagenum);
         }

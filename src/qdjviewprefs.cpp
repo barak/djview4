@@ -229,7 +229,6 @@ QDjViewPrefs::stringToTools(QString s)
 void 
 QDjViewPrefs::loadGroup(QSettings &s, QString name, Saved &saved)
 {
-  QString tmp;
   s.beginGroup(name);
   if (s.contains("remember"))
     saved.remember = s.value("remember").toBool();

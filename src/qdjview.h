@@ -211,7 +211,7 @@ protected:
   QString                 documentFileName;
   QUrl                    documentUrl;
   QList<ddjvu_fileinfo_t> documentPages;
-  bool                    documentTitleNumerical;
+  bool                    hasNumericalPageTitle;
   // delayed settings
   typedef QPair<QString,QString> StringPair;
   QString           pendingUrl;

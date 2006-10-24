@@ -29,7 +29,8 @@ unix {
   PKGCONFIG += ddjvuapi
 } else {
   LIBS += -ldjvulibre
-  INCLUDEPATH += /path/to/djvulibre-3.5
+  # INCLUDEPATH += ...
+  # QMAKE_CXXFLAGS += ...
 }
 
 macx {
@@ -40,21 +41,28 @@ macx {
   CONFIG += x11
 }
 
-HEADERS = qdjvu.h qdjvuhttp.h 
+HEADERS += qdjvu.h 
+HEADERS += qdjvuhttp.h 
 HEADERS += qdjvuwidget.h
-HEADERS += qdjviewprefs.h qdjviewdialogs.h qdjview.h
-
-RESOURCES = qdjview.qrc qdjvuwidget.qrc 
-
-SOURCES = qdjvu.cpp qdjvuhttp.cpp
+SOURCES += qdjvu.cpp
+SOURCES += qdjvuhttp.cpp
 SOURCES += qdjvuwidget.cpp
-SOURCES += qdjviewprefs.cpp qdjviewdialogs.cpp qdjview.cpp
+RESOURCES += qdjvuwidget.qrc 
+
+HEADERS += qdjviewprefs.h
+HEADERS += qdjviewdialogs.h 
+HEADERS += qdjview.h
+SOURCES += qdjviewprefs.cpp 
+SOURCES += qdjviewdialogs.cpp
+SOURCES += qdjview.cpp
+RESOURCES = qdjview.qrc 
+FORMS += qdjviewerrordialog.ui
+FORMS += qdjviewinfodialog.ui 
+FORMS += qdjviewmetadialog.ui 
+
 SOURCES += djview.cpp
 
-FORMS = qdjviewerrordialog.ui
-FORMS += qdjviewinfodialog.ui qdjviewmetadialog.ui 
-
 x11 {
-  SOURCES += qdjviewplugin.cpp
   HEADERS += qdjviewplugin.h
+  SOURCES += qdjviewplugin.cpp
 }
