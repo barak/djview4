@@ -712,13 +712,22 @@ QDjViewPlugin::cmdNew()
   readString(pipeRead);  // djvuDir (unused)
   int argc = readInteger(pipeRead);
   QStringList args;
+  // skip plugin related keywords
+  QSet<QString> pluginWords;
+  pluginWords << "src" << "type" << "pluginspage"
+              << "pluginurl" << "align" << "border"
+              << "frameborder" << "height" << "width"
+              << "units" << "hidden" << "hspace" 
+              << "vspace" << "name" << "palette";
+  // collect
   for (int i=0; i<argc; i++)
     {
       QString key = readString(pipeRead);
       QString val = readString(pipeRead);
-      if (key.toLower() == "flags")
+      QString k = key.toLower();
+      if (k == "flags")
         args += val.split(QRegExp("\\s+"), QString::SkipEmptyParts);
-      else if (key.toLower() != "src")
+      else if (! pluginWords.contains(k))
         args += key + QString("=") + val;
     }
   
@@ -842,8 +851,12 @@ QDjViewPlugin::cmdAttachWindow()
       instance->djview = djview;
       instance->container = window;
       // apply arguments
+      QStringList errors;
       foreach (QString s, instance->args)
-        djview->parseArgument(s);
+        errors << djview->parseArgument(s);
+      if (errors.size() > 0)
+        foreach(QString error, errors)
+          qWarning((const char*)error.toLocal8Bit());
     }
   // map and reparent djview object
   instance->open();
@@ -1147,7 +1160,7 @@ int
 QDjViewPlugin::exec()
 {
 #ifndef QT_NO_DEBUG
-  const char *s = getenv("DEBUG_DJVIEW");
+  const char *s = ::getenv("DJVIEW_DEBUG");
   if (s && strcmp(s,"0"))
     {
       static int loop = 1;

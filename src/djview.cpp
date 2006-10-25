@@ -107,12 +107,18 @@ int
 main(int argc, char *argv[])
 {
   qtDefaultHandler = qInstallMsgHandler(qtMessageHandler);
-  
+
+#ifdef Q_OS_UNIX
+  const char *s = ::getenv("DJVIEW_VERBOSE");
+  if (s && strcmp(s,"0"))
+    verbose = true;
+#endif
 #ifdef Q_WS_X11
   for (int i=1; i<argc; i++)
     if (!strcmp(argv[i],"-netscape") || !strcmp(argv[i],"--netscape"))
-      {
-        // run as plugin
+      { // run as plugin
+        
+        verbose = true;
         QDjViewPlugin dispatcher(argv[0]);
         return dispatcher.exec();
       }

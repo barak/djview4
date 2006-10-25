@@ -106,8 +106,9 @@ public slots:
   void  setPageLabelText(QString s = QString());
   void  setMouseLabelText(QString s = QString());
   void  statusMessage(QString s = QString());
-  bool  showSideBar(Qt::DockWidgetArea areas, int tab=-1);
-  bool  showSideBar(QString area, int tab=-1);
+  bool  showSideBar(Qt::DockWidgetAreas areas, int tab=-1);
+  bool  showSideBar(QString args, QStringList &errors);
+  bool  showSideBar(QString args);
   void  print(void);
   
 signals:

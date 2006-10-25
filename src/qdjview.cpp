@@ -1257,21 +1257,23 @@ QDjView::parseToolBarOption(QString option, QStringList &errors)
         npos = len;
       QString key = str.mid(pos, npos-pos).trimmed();
       if ((key=="no" || key=="false") && !plus && !minus)
-        set_reset(options, false, true, QDjViewPrefs::SHOW_TOOLBAR);
+        options &= ~QDjViewPrefs::SHOW_TOOLBAR;
       else if ((key=="yes" || key=="true") && !plus && !minus)
-        set_reset(options, true, false, QDjViewPrefs::SHOW_TOOLBAR);
+        options |= QDjViewPrefs::SHOW_TOOLBAR;
       else if (key=="true" && !plus && !minus)
         toolbar = true;
-      else if (key=="bottom" && !plus && !minus)
+      else if (key=="bottom" && !plus && !minus) {
+        options |= QDjViewPrefs::SHOW_TOOLBAR;
         tools &= ~QDjViewPrefs::TOOLBAR_TOP;
-      else if (key=="top" && !plus && !minus)
+      } else if (key=="top" && !plus && !minus) {
+        options |= QDjViewPrefs::SHOW_TOOLBAR;
         tools &= ~QDjViewPrefs::TOOLBAR_BOTTOM;
-      else if (key=="auto" && !plus && !minus)
+      } else if (key=="auto" && !plus && !minus)
         tools |= QDjViewPrefs::TOOLBAR_AUTOHIDE;
       else if (key=="fixed" && !plus && !minus)
         tools &= ~QDjViewPrefs::TOOLBAR_AUTOHIDE;
       else if (key=="always" && !plus && !minus) {
-        set_reset(options, true, false, QDjViewPrefs::SHOW_TOOLBAR);
+        options |= QDjViewPrefs::SHOW_TOOLBAR;
         tools &= ~QDjViewPrefs::TOOLBAR_AUTOHIDE;
       } else if (key.contains(QRegExp("^(fore|back|color|bw)(_button)?$")))
         wantmode |= plus;
@@ -1299,15 +1301,21 @@ QDjView::parseToolBarOption(QString option, QStringList &errors)
         set_reset(tools, plus, minus, QDjViewPrefs::TOOL_PREVNEXT);
       else if (key=="firstlast" || key=="firstlastpage")
         set_reset(tools, plus, minus, QDjViewPrefs::TOOL_FIRSTLAST);
-      else if (key=="select")   // new for djview4
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_SELECT);
-      else if (key=="new")      // new for djview4
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_NEW);
-      else if (key=="open")     // new for djview4
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_OPEN);
-      else if (key=="layout")   // new for djview4
+      // lizards
+      else if (key=="doublepage")  // lizards!
         set_reset(tools, plus, minus, QDjViewPrefs::TOOL_LAYOUT);
-      else if (key=="help")     // new for djview4
+      else if (key=="calibrate" || key=="ruler" || key=="lizard")
+        errors << tr("Toolbar option '%1' is not implemented.").arg(key);
+      // djview4
+      else if (key=="select")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_SELECT);
+      else if (key=="new")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_NEW);
+      else if (key=="open")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_OPEN);
+      else if (key=="layout")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_LAYOUT);
+      else if (key=="help")
         set_reset(tools, plus, minus, QDjViewPrefs::TOOL_WHATSTHIS);
       else if (key!="")
         errors << tr("Toolbar option '%1' is not recognized").arg(key);
@@ -1402,10 +1410,10 @@ QDjView::parseArgument(QString key, QString value)
       if (parse_boolean(key, value, errors, okay))
         menuBar->setVisible(okay);
     }
-  else if (key == "sidebar")    // new for djview4
+  else if (key == "sidebar" ||  // new for djview4
+           key == "navpane" )   // lizards
     {
-      if (! showSideBar(value))
-        illegal_value(key, value, errors);
+      showSideBar(value, errors);
     }
   else if (key == "statusbar")  // new for djview4
     {
@@ -1556,12 +1564,12 @@ QDjView::parseArgument(QString key, QString value)
     }
   else if (key == "thumbnails")
     {
-      if (! showSideBar(value, 0))
+      if (! showSideBar(value+",thumbnails"))
         illegal_value(key, value, errors);
     }
   else if (key == "outline")
     {
-      if (! showSideBar(value, 1))
+      if (! showSideBar(value+",outline"))
         illegal_value(key, value, errors);
     }
   else if (key == "url")
@@ -1573,9 +1581,9 @@ QDjView::parseArgument(QString key, QString value)
       if (! pendingUrl.isEmpty())
         performPendingLater();
     }
-  else if (key == "logo")
+  else if (key == "logo" || key == "textsel")
     {
-      QString msg = tr("Ignoring deprecated option '%1'.").arg(key);
+      QString msg = tr("Option '%1' is not implemented.").arg(key);
       qWarning((const char*)msg.toLocal8Bit());
     }
   else
@@ -2081,7 +2089,7 @@ QDjView::statusMessage(QString message)
 /*! Change the position and composition of the sidebar. */
 
 bool  
-QDjView::showSideBar(Qt::DockWidgetArea areas, int tab)
+QDjView::showSideBar(Qt::DockWidgetAreas areas, int tab)
 {
   // Position
   if (areas && !(dockWidgetArea(sideBar) & areas))
@@ -2108,27 +2116,57 @@ QDjView::showSideBar(Qt::DockWidgetArea areas, int tab)
 
 
 /*! Change the position and composition of the sidebar.
-  String \a area can be "left", "right", "top", "bottom",
-  "yes", or "no". */
+  String \a args contains comma separated keywords:
+  \a left, \a right, \a top, \a bottom, \a yes, or \a no,
+  \a outline, \a bookmarks, \a thumbnails, \a search, etc.
+  Error messages are added to string list \a errors. */
 
 bool
-QDjView::showSideBar(QString area, int tab)
+QDjView::showSideBar(QString args, QStringList &errors)
 {
-  area = area.toLower();
-  if (area == "left")
-    return showSideBar(Qt::LeftDockWidgetArea, tab);
-  else if (area == "right")
-    return showSideBar(Qt::RightDockWidgetArea, tab);
-  else if (area == "top")
-    return showSideBar(Qt::TopDockWidgetArea, tab);
-  else if (area == "bottom")
-    return showSideBar(Qt::BottomDockWidgetArea, tab);
-  else if (string_is_on(area) || area.isNull())
-    return showSideBar(Qt::AllDockWidgetAreas, tab);
-  else if (string_is_off(area))
-    return showSideBar((Qt::DockWidgetArea)0, tab);
+  bool ret = true;
+  int tab = -1;
+  Qt::DockWidgetAreas areas = 0;
+  QString arg;
+  foreach(arg, args.split(",", QString::SkipEmptyParts))
+    {
+      arg = arg.toLower();
+      if (arg == "left")
+        areas |= Qt::LeftDockWidgetArea;
+      else if (arg == "right")
+        areas |= Qt::RightDockWidgetArea;
+      else if (arg == "top")
+        areas |= Qt::TopDockWidgetArea;
+      else if (arg == "bottom")
+        areas |= Qt::BottomDockWidgetArea;
+      else if (arg == "yes" && !areas)
+        areas |= Qt::AllDockWidgetAreas;
+      else if (arg == "thumbnails" || arg == "thumbnail")
+        tab = 0;
+      else if (arg == "outline" || arg == "bookmarks")
+        tab = 1;
+      else if (arg == "search" || arg == "find")
+        tab = 2;
+      else {
+        errors << tr("Unrecognized sidebar options '%1'.").arg(arg);
+        ret = false;
+      }
+    }
+  if (showSideBar(areas, tab))
+    return ret;
   return false;
 }
+
+
+/* Overloaded version of \a showSideBar for convenience. */
+
+bool
+QDjView::showSideBar(QString args)
+{
+  QStringList errors;
+  return showSideBar(args, errors);
+}
+
 
 
 /*! Pops up the print dialog */
