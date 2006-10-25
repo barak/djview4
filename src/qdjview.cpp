@@ -1245,7 +1245,6 @@ QDjView::parseToolBarOption(QString option, QStringList &errors)
   int len = str.size();
   bool wantselect = false;
   bool wantmode = false;
-  bool toolbar = true;
   bool minus = false;
   bool plus = false;
   int npos = 0;
@@ -1260,8 +1259,6 @@ QDjView::parseToolBarOption(QString option, QStringList &errors)
         options &= ~QDjViewPrefs::SHOW_TOOLBAR;
       else if ((key=="yes" || key=="true") && !plus && !minus)
         options |= QDjViewPrefs::SHOW_TOOLBAR;
-      else if (key=="true" && !plus && !minus)
-        toolbar = true;
       else if (key=="bottom" && !plus && !minus) {
         options |= QDjViewPrefs::SHOW_TOOLBAR;
         tools &= ~QDjViewPrefs::TOOLBAR_TOP;
@@ -1270,8 +1267,6 @@ QDjView::parseToolBarOption(QString option, QStringList &errors)
         tools &= ~QDjViewPrefs::TOOLBAR_BOTTOM;
       } else if (key=="auto" && !plus && !minus)
         tools |= QDjViewPrefs::TOOLBAR_AUTOHIDE;
-      else if (key=="fixed" && !plus && !minus)
-        tools &= ~QDjViewPrefs::TOOLBAR_AUTOHIDE;
       else if (key=="always" && !plus && !minus) {
         options |= QDjViewPrefs::SHOW_TOOLBAR;
         tools &= ~QDjViewPrefs::TOOLBAR_AUTOHIDE;
@@ -2124,6 +2119,7 @@ QDjView::showSideBar(Qt::DockWidgetAreas areas, int tab)
 bool
 QDjView::showSideBar(QString args, QStringList &errors)
 {
+  bool no = false;
   bool ret = true;
   int tab = -1;
   Qt::DockWidgetAreas areas = 0;
@@ -2131,7 +2127,9 @@ QDjView::showSideBar(QString args, QStringList &errors)
   foreach(arg, args.split(",", QString::SkipEmptyParts))
     {
       arg = arg.toLower();
-      if (arg == "left")
+      if (arg == "no" || arg == "false")
+        no = true;
+      else if (arg == "left")
         areas |= Qt::LeftDockWidgetArea;
       else if (arg == "right")
         areas |= Qt::RightDockWidgetArea;
@@ -2139,19 +2137,21 @@ QDjView::showSideBar(QString args, QStringList &errors)
         areas |= Qt::TopDockWidgetArea;
       else if (arg == "bottom")
         areas |= Qt::BottomDockWidgetArea;
-      else if (arg == "yes" && !areas)
-        areas |= Qt::AllDockWidgetAreas;
       else if (arg == "thumbnails" || arg == "thumbnail")
         tab = 0;
       else if (arg == "outline" || arg == "bookmarks")
         tab = 1;
       else if (arg == "search" || arg == "find")
         tab = 2;
-      else {
+      else if (arg != "yes" && arg != "true") {
         errors << tr("Unrecognized sidebar options '%1'.").arg(arg);
         ret = false;
       }
     }
+  if (no)
+    areas = 0;
+  else if (! areas)
+    areas |= Qt::AllDockWidgetAreas;
   if (showSideBar(areas, tab))
     return ret;
   return false;
