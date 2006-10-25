@@ -138,8 +138,6 @@ QDjVuContext::event(QEvent *event)
 bool
 QDjVuContext::handle(ddjvu_message_t *msg)
 {
-  qDebug() << "message" << msg->m_any.tag;
-
   if (msg->m_any.page)
     {
       QObject *p = (QObject*)ddjvu_page_get_user_data(msg->m_any.page);
@@ -784,7 +782,6 @@ QDjVuPage::handle(ddjvu_message_t *msg)
       emit relayout();
       return true;
     case DDJVU_REDISPLAY:
-      qDebug() << "redisplay" << pageNo();
       emit redisplay();
       return true;
     case DDJVU_ERROR:
