@@ -1488,10 +1488,10 @@ QDjVuPrivate::updatePosition(const QPoint &point, bool click, bool links)
   Position pos = findPosition(point);
   if (! pageMap.contains(pos.pageNo))
     return;
-  if (pos.pageNo  != currentPos.pageNo  ||
-      pos.inPage  != currentPos.inPage  ||
-      pos.posView != currentPos.posView ||
-      pos.posPage != currentPos.posPage )
+  if (pos.pageNo  != cursorPos.pageNo  ||
+      pos.inPage  != cursorPos.inPage  ||
+      pos.posView != cursorPos.posView ||
+      pos.posPage != cursorPos.posPage )
     changed = true;
   // update
   cursorPos = pos;
