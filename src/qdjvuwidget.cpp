@@ -3892,7 +3892,7 @@ QDjVuWidget::stopInteraction(void)
                                            priv->visibleRect.topLeft()); 
             }
           else if (priv->currentMapArea && priv->currentMapArea->url )
-            emit pointerClick(priv->currentPos, priv->currentMapArea->expr);
+            emit pointerClick(priv->cursorPos, priv->currentMapArea->expr);
         }
       break;
     case DRAG_SELECTING:
