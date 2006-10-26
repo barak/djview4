@@ -34,6 +34,7 @@
 #include "qdjvuwidget.h"
 #include "qdjview.h"
 
+class QEvent;
 class QTreeWidget;
 class QTreeWidgetItem;
 
@@ -67,25 +68,31 @@ private:
 // ----------------------------------------
 // THUMBNAILS
 
-#if 0
+
 class QDjViewThumbnails : public QListView
 {
   Q_OBJECT
 public:
-  QDjViewThumbnails
+  QDjViewThumbnails(QDjView *djview);
 public slots:
   void clear(); 
   void refresh(); 
   void pageChanged(int pageno);
+  void setThumbnailSize(int);
 protected slots:
-  void activated(QTreeWidgetItem *item);
+  void activated(const QModelIndex *index);
+protected:
+  virtual bool event(QEvent *event);
 private:
+  QDjView *djview;
   class Model;
   class Delegate;
   Model *model;
   Delegate *delegate;
+  int maxSize;
+  int size;
 };
-#endif
+
 
 
 

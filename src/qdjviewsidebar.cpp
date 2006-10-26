@@ -19,9 +19,14 @@
 #include "stdlib.h"
 #include "math.h"
 
+#include <QAbstractItemDelegate>
+#include <QAbstractListModel>
+#include <QEvent>
 #include <QHeaderView>
 #include <QList>
+#include <QResizeEvent>
 #include <QTreeWidget>
+#include <QVariant>
 #include <QVBoxLayout>
 
 #include <libdjvu/ddjvuapi.h>
@@ -241,12 +246,122 @@ QDjViewOutline::itemActivated(QTreeWidgetItem *item)
 
 
 // ----------------------------------------
-// THUMBNAILS
+// THUMBNAILS MODEL
+
+
+class QDjViewThumbnails::Model : public QAbstractListModel
+{
+  Q_OBJECT
+public:
+  Model(QDjView*);
+protected:
+  int rowCount(const QModelIndex &parent);
+  QVariant data(const QModelIndex &index, int role);
+private:
+  QDjView *djview;
+};
+
+
+QDjViewThumbnails::Model::Model(QDjView *djview)
+  : QAbstractListModel(djview), djview(djview)
+{
+}
+
+
+int 
+QDjViewThumbnails::Model::rowCount(const QModelIndex &)
+{
+  return djview->pageNum();
+}
+
+
+QVariant 
+QDjViewThumbnails::Model::data(const QModelIndex &index, int role)
+{
+  if (index.isValid())
+    {
+      int pageno = index.row();
+      if (pageno<0 || pageno>=djview->pageNum())
+        {
+          if (role == Qt::DisplayRole)
+            return QVariant(djview->pageName(pageno));
+          if (role == Qt::UserRole)
+            return QVariant(pageno);
+        }
+    }
+  return QVariant();
+}
 
 
 
 
+// ----------------------------------------
+// THUMBNAILS DELEGATE
 
+
+
+// ----------------------------------------
+// THUMBNAILS WIDGET
+
+
+
+QDjViewThumbnails::QDjViewThumbnails(QDjView *djview)
+  : QListView(djview), 
+    djview(djview), model(0), delegate(0),
+    maxSize(64), size(64)
+{
+}
+
+
+void 
+QDjViewThumbnails::clear()
+{
+}
+
+void 
+QDjViewThumbnails::refresh()
+{
+}
+
+void 
+QDjViewThumbnails::pageChanged(int pageno)
+{
+}
+
+void 
+QDjViewThumbnails::setThumbnailSize(int)
+{
+}
+
+void 
+QDjViewThumbnails::activated(const QModelIndex *index)
+{
+}
+
+bool 
+QDjViewThumbnails::event(QEvent *event)
+{
+  switch(event->type())
+    {
+    case QEvent::Resize:
+      {
+        QResizeEvent *resize = (QResizeEvent*)event;
+        size = qMax(maxSize, resize->size().width());
+        refresh();
+        break;
+      }
+    default:
+      break;
+    }
+  return QListView::event(event);
+}
+
+
+
+// ----------------------------------------
+// MOC
+
+#include "qdjviewsidebar.moc"
 
 
 
