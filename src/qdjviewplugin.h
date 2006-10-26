@@ -114,34 +114,6 @@ private:
   int        pipeRequest;
 };
 
-class QDjViewPlugin::Document : public QDjVuDocument
-{
-  Q_OBJECT
-public: 
-  QDjViewPlugin::Instance * const instance;
-  Document(QDjViewPlugin::Instance *instance);
-  virtual void newstream(int streamid, QString name, QUrl url);
-};
-
-
-class QDjViewPlugin::Forwarder : public QObject
-{
-  Q_OBJECT
-public:
-  QDjViewPlugin * const dispatcher;
-  Forwarder(QDjViewPlugin *dispatcher);
-  virtual bool eventFilter(QObject*, QEvent*);
-public slots:
-  void showStatus(QString message);
-  void getUrl(QUrl url, QString target);
-  void quit();
-  void dispatch();
-  void lastViewerClosed();
-};
-
-
-
-
 
 #endif // Q_WS_X11
 

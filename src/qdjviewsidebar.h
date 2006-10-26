@@ -20,8 +20,9 @@
 #define QDJVIEWSIDEBAR_H
 
 #include <Qt>
+#include <QListView>
 #include <QObject>
-#include <QMessageBox>
+#include <QModelIndex>
 #include <QString>
 #include <QUrl>
 #include <QWidget>
@@ -35,7 +36,6 @@
 
 class QTreeWidget;
 class QTreeWidgetItem;
-class QListView;
 
 
 // ----------------------------------------
@@ -67,6 +67,25 @@ private:
 // ----------------------------------------
 // THUMBNAILS
 
+#if 0
+class QDjViewThumbnails : public QListView
+{
+  Q_OBJECT
+public:
+  QDjViewThumbnails
+public slots:
+  void clear(); 
+  void refresh(); 
+  void pageChanged(int pageno);
+protected slots:
+  void activated(QTreeWidgetItem *item);
+private:
+  class Model;
+  class Delegate;
+  Model *model;
+  Delegate *delegate;
+};
+#endif
 
 
 

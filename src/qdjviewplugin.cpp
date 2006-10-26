@@ -72,6 +72,79 @@
 
 
 // ========================================
+// STRUCTURES
+// ========================================
+
+
+
+class QDjViewPlugin::Document : public QDjVuDocument
+{
+  Q_OBJECT
+public: 
+  QDjViewPlugin::Instance * const instance;
+  Document(QDjViewPlugin::Instance *instance);
+  virtual void newstream(int streamid, QString name, QUrl url);
+};
+
+
+class QDjViewPlugin::Forwarder : public QObject
+{
+  Q_OBJECT
+public:
+  QDjViewPlugin * const dispatcher;
+  Forwarder(QDjViewPlugin *dispatcher);
+  virtual bool eventFilter(QObject*, QEvent*);
+public slots:
+  void showStatus(QString message);
+  void getUrl(QUrl url, QString target);
+  void quit();
+  void dispatch();
+  void lastViewerClosed();
+};
+
+
+// QDjViewPlugin, Stream and Instance cannot be QObjects
+// because subtle errors occur when one creates QObjects 
+// before the QApplication. 
+
+
+struct QDjViewPlugin::Stream
+{
+  typedef QDjViewPlugin::Instance Instance;
+  QUrl      url;
+  Instance *instance;
+  int       streamid;
+  bool      started;
+  bool      checked;
+  bool      closed;
+  ~Stream();
+  Stream(int streamid, QUrl url, Instance *instance);
+};
+
+
+struct QDjViewPlugin::Instance
+{
+  QUrl                              url;
+  QDjViewPlugin                    *dispatcher;
+  QPointer<QDjViewPlugin::Document> document;
+  QPointer<QWidget>                 shell;
+  QPointer<QDjView>                 djview;
+  Window                            container;
+  QStringList                    args;
+  QByteArray                     saved;
+  int                            savedformat;
+  QDjView::ViewerMode            viewerMode;
+  ~Instance();
+  Instance(QDjViewPlugin *dispatcher);
+  void open();
+  void destroy();
+  void save(QDjVuWidget*);
+  void restore(QDjVuWidget*);
+};
+  
+
+
+// ========================================
 // FIXING TRANSIENT WINDOW PROPERTIES
 // ========================================
 
@@ -164,51 +237,6 @@ x11SetTransientForHint(QWidget *widget)
 
 
 
-
-// ========================================
-// STRUCTURES
-// ========================================
-
-
-// QDjViewPlugin, Stream and Instance cannot be QObjects
-// because subtle errors occur when one creates QObjects 
-// before the QApplication. 
-
-
-struct QDjViewPlugin::Stream
-{
-  typedef QDjViewPlugin::Instance Instance;
-  QUrl      url;
-  Instance *instance;
-  int       streamid;
-  bool      started;
-  bool      checked;
-  bool      closed;
-  ~Stream();
-  Stream(int streamid, QUrl url, Instance *instance);
-};
-
-
-struct QDjViewPlugin::Instance
-{
-  QUrl                              url;
-  QDjViewPlugin                    *dispatcher;
-  QPointer<QDjViewPlugin::Document> document;
-  QPointer<QWidget>                 shell;
-  QPointer<QDjView>                 djview;
-  Window                            container;
-  QStringList                    args;
-  QByteArray                     saved;
-  int                            savedformat;
-  QDjView::ViewerMode            viewerMode;
-  ~Instance();
-  Instance(QDjViewPlugin *dispatcher);
-  void open();
-  void destroy();
-  void save(QDjVuWidget*);
-  void restore(QDjVuWidget*);
-};
-  
 
 
 
@@ -1367,6 +1395,12 @@ QDjViewPlugin::registerForDeletion(QObject *p)
 }
 
 
+
+
+// ----------------------------------------
+// MOC
+
+#include "qdjviewplugin.moc"
 
 
 // ----------------------------------------
