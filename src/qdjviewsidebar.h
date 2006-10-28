@@ -20,7 +20,6 @@
 #define QDJVIEWSIDEBAR_H
 
 #include <Qt>
-#include <QListView>
 #include <QObject>
 #include <QModelIndex>
 #include <QString>
@@ -34,10 +33,13 @@
 #include "qdjvuwidget.h"
 #include "qdjview.h"
 
-class QEvent;
+class QAction;
+class QContextMenuEvent;
+class QItemSelectionModel;
+class QListView;
+class QMenu;
 class QTreeWidget;
 class QTreeWidgetItem;
-
 
 // ----------------------------------------
 // OUTLINE
@@ -69,28 +71,33 @@ private:
 // THUMBNAILS
 
 
-class QDjViewThumbnails : public QListView
+class QDjViewThumbnails : public QWidget
 {
   Q_OBJECT
+  Q_PROPERTY(int size READ size WRITE setSize)
+  Q_PROPERTY(bool smart READ smart WRITE setSmart)
 public:
   QDjViewThumbnails(QDjView *djview);
+  int size();
+  bool smart();
 public slots:
-  void clear(); 
-  void refresh(); 
   void pageChanged(int pageno);
-  void setThumbnailSize(int);
+  void setSize(int);
+  void setSmart(bool);
 protected slots:
-  void activated(const QModelIndex *index);
+  void setSize();
+  void activated(const QModelIndex &index);
 protected:
-  virtual bool event(QEvent *event);
+  void contextMenuEvent(QContextMenuEvent *event);
+  void updateActions();
 private:
-  QDjView *djview;
+  class View;
   class Model;
-  class Delegate;
-  Model *model;
-  Delegate *delegate;
-  int maxSize;
-  int size;
+  QDjView             *djview;
+  Model               *model;
+  View                *view;
+  QItemSelectionModel *selection;
+  QMenu               *menu;
 };
 
 

@@ -181,8 +181,8 @@ QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
   d->ui.docTable->horizontalHeader()->setHighlightSections(false);
   d->ui.docTable->horizontalHeader()->setStretchLastSection(true);
 
-  connect(d->djview, SIGNAL(documentClosed()), 
-          this, SLOT(documentClosed()));
+  connect(d->djview, SIGNAL(documentClosed(QDjVuDocument*)), 
+          this, SLOT(clear()));
   connect(d->djview, SIGNAL(documentReady(QDjVuDocument*)), 
           this, SLOT(refresh()));
   connect(d->djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
@@ -355,7 +355,7 @@ QDjViewInfoDialog::nextFile()
 }
 
 void 
-QDjViewInfoDialog::jumpToSelectedPage(void)
+QDjViewInfoDialog::jumpToSelectedPage()
 {
   if (d->document && d->files.size())
     {
@@ -366,7 +366,7 @@ QDjViewInfoDialog::jumpToSelectedPage(void)
 }
 
 void 
-QDjViewInfoDialog::documentClosed()
+QDjViewInfoDialog::clear()
 {
   hide();
   if (d->document)
@@ -567,8 +567,8 @@ QDjViewMetaDialog::QDjViewMetaDialog(QDjView *parent)
   d->ui.prevButton->setEnabled(false);
   d->ui.nextButton->setEnabled(false);
   // connections
-  connect(d->djview, SIGNAL(documentClosed()),
-          this, SLOT(documentClosed()) );
+  connect(d->djview, SIGNAL(documentClosed(QDjVuDocument*)),
+          this, SLOT(clear()) );
   connect(d->djview, SIGNAL(documentReady(QDjVuDocument*)), 
           this, SLOT(refresh()));
   connect(d->djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
@@ -753,7 +753,7 @@ QDjViewMetaDialog::setPage(int pageno)
 }
 
 void 
-QDjViewMetaDialog::jumpToSelectedPage(void)
+QDjViewMetaDialog::jumpToSelectedPage()
 {
   if (d->document &&
       d->pageno >= 0 && d->pageno < d->djview->pageNum() )
@@ -761,7 +761,7 @@ QDjViewMetaDialog::jumpToSelectedPage(void)
 }
 
 void 
-QDjViewMetaDialog::documentClosed(void)
+QDjViewMetaDialog::clear()
 {
   hide();
   d->document = 0;
@@ -776,7 +776,7 @@ QDjViewMetaDialog::documentClosed(void)
 }
 
 void 
-QDjViewMetaDialog::copy(void)
+QDjViewMetaDialog::copy()
 {
   QTableWidget *table = d->ui.pageTable;
   if (d->ui.tabWidget->currentWidget() == d->ui.docTab)

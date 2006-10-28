@@ -59,14 +59,14 @@ public:
   ~QDjViewInfoDialog();
   QDjViewInfoDialog(QDjView *parent);
 public slots:
+  void clear();
   void refresh();
   void setPage(int pageno);
   void setFile(int fileno);
 protected slots:
-  void prevFile(void);
-  void nextFile(void);
-  void jumpToSelectedPage(void);
-  void documentClosed(void);
+  void prevFile();
+  void nextFile();
+  void jumpToSelectedPage();
 private:
   void fillFileCombo();
   void fillDocLabel();
@@ -90,14 +90,14 @@ public:
   ~QDjViewMetaDialog();
   QDjViewMetaDialog(QDjView *parent);
 public slots:
+  void clear();
   void refresh();
-  void prevPage(void);
-  void nextPage(void);
+  void prevPage();
+  void nextPage();
   void setPage(int pageno);
 protected slots:
-  void jumpToSelectedPage(void);
-  void documentClosed(void);
-  void copy(void);
+  void jumpToSelectedPage();
+  void copy();
 private:
   struct Private;
   Private *d;

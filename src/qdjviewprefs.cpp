@@ -118,7 +118,9 @@ QDjViewPrefs::QDjViewPrefs(void)
     printerGamma(0.0),
     modifiersForLens(Qt::ControlModifier|Qt::ShiftModifier),
     modifiersForSelect(Qt::ControlModifier),
-    modifiersForLinks(Qt::ShiftModifier)
+    modifiersForLinks(Qt::ShiftModifier),
+    thumbnailSize(64),
+    thumbnailSmart(true)
 {
   Options mss = (SHOW_MENUBAR|SHOW_STATUSBAR|SHOW_SIDEBAR);
   forFullScreen.options &= ~(mss|SHOW_SCROLLBARS|SHOW_TOOLBAR|SHOW_SIDEBAR);
@@ -273,6 +275,8 @@ QDjViewPrefs::load(void)
     lensPower = s.value("lensPower").toInt();
   if (s.contains("printerGamma"))
     printerGamma = s.value("printerGamma").toDouble();
+  if (s.contains("browserProgram"))
+    browserProgram = s.value("browserProgram").toString();
   if (s.contains("modifiersForLens"))
     modifiersForLens 
       = stringToModifiers(s.value("modifiersForLens").toString());
@@ -282,8 +286,10 @@ QDjViewPrefs::load(void)
   if (s.contains("modifiersForLinks"))
     modifiersForLinks 
       = stringToModifiers(s.value("modifiersForLinks").toString());
-  if (s.contains("browserProgram"))
-    browserProgram = s.value("browserProgram").toString();
+  if (s.contains("thumbnailSize"))
+    thumbnailSize = s.value("thumbnailSize").toInt();
+  if (s.contains("thumbnailSmart"))
+    thumbnailSmart = s.value("thumbnailSmart").toBool();
 }
 
 
@@ -322,10 +328,12 @@ QDjViewPrefs::save(void)
   s.setValue("lensSize", lensSize);
   s.setValue("lensPower", lensPower);
   s.setValue("printerGamma", printerGamma);
+  s.setValue("browserProgram", browserProgram);
   s.setValue("modifiersForLens", modifiersToString(modifiersForLens));
   s.setValue("modifiersForSelect", modifiersToString(modifiersForSelect));
   s.setValue("modifiersForLinks", modifiersToString(modifiersForLinks));
-  s.setValue("browserProgram", browserProgram);
+  s.setValue("thumbnailSize", thumbnailSize);
+  s.setValue("thumbnailSmart", thumbnailSmart);
 }
 
 

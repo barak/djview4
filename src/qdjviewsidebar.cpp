@@ -21,10 +21,25 @@
 
 #include <QAbstractItemDelegate>
 #include <QAbstractListModel>
+#include <QAction>
+#include <QActionGroup>
+#include <QContextMenuEvent>
+#include <QDebug>
 #include <QEvent>
+#include <QFont>
+#include <QFontMetrics>
+#include <QHBoxLayout>
 #include <QHeaderView>
+#include <QItemDelegate>
 #include <QList>
+#include <QListView>
+#include <QMenu>
+#include <QPainter>
+#include <QPainterPath>
+#include <QPixmap>
 #include <QResizeEvent>
+#include <QStringList>
+#include <QTimer>
 #include <QTreeWidget>
 #include <QVariant>
 #include <QVBoxLayout>
@@ -47,19 +62,10 @@
 
 
 QDjViewOutline::QDjViewOutline(QDjView *djview)
-  : QWidget(djview), djview(djview), tree(0), loaded(false)
+  : QWidget(djview), 
+    djview(djview), 
+    loaded(false)
 {
-  connect(djview, SIGNAL(documentClosed()),
-          this, SLOT(clear()) );
-  connect(djview, SIGNAL(documentOpened(QDjVuDocument*)),
-          this, SLOT(clear()) );
-  connect(djview, SIGNAL(documentReady(QDjVuDocument*)),
-          this, SLOT(refresh()) );
-  connect(djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
-          this, SLOT(pageChanged(int)) );
-  connect(djview->getDjVuWidget(), SIGNAL(layoutChanged()),
-          this, SLOT(refresh()) );
-
   tree = new QTreeWidget(this);
   tree->setColumnCount(1);
   tree->setItemsExpandable(true);
@@ -70,14 +76,24 @@ QDjViewOutline::QDjViewOutline(QDjView *djview)
   tree->setSelectionBehavior(QAbstractItemView::SelectRows);
   tree->setSelectionMode(QAbstractItemView::SingleSelection);
   tree->setTextElideMode(Qt::ElideRight);
-  connect(tree, SIGNAL(itemActivated(QTreeWidgetItem*, int)),
-          this, SLOT(itemActivated(QTreeWidgetItem*)) );
-  
   QVBoxLayout *layout = new QVBoxLayout(this);
   layout->setMargin(0);
   layout->setSpacing(0);
   layout->addWidget(tree);
 
+  connect(tree, SIGNAL(itemActivated(QTreeWidgetItem*, int)),
+          this, SLOT(itemActivated(QTreeWidgetItem*)) );
+  connect(djview, SIGNAL(documentClosed(QDjVuDocument*)),
+          this, SLOT(clear()) );
+  connect(djview, SIGNAL(documentOpened(QDjVuDocument*)),
+          this, SLOT(clear()) );
+  connect(djview, SIGNAL(documentReady(QDjVuDocument*)),
+          this, SLOT(refresh()) );
+  connect(djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
+          this, SLOT(pageChanged(int)) );
+  connect(djview->getDjVuWidget(), SIGNAL(layoutChanged()),
+          this, SLOT(refresh()) );
+  
   setWhatsThis(tr("<html><b>Document outline.</b><br/> "
                   "This panel display the document outline, "
                   "or the page names when the outline is not available, "
@@ -86,7 +102,6 @@ QDjViewOutline::QDjViewOutline(QDjView *djview)
   
   if (djview->pageNum() > 0)
     refresh();
-
 }
 
 
@@ -246,115 +261,506 @@ QDjViewOutline::itemActivated(QTreeWidgetItem *item)
 
 
 // ----------------------------------------
-// THUMBNAILS MODEL
+// THUMBNAILS
 
 
 class QDjViewThumbnails::Model : public QAbstractListModel
 {
   Q_OBJECT
 public:
-  Model(QDjView*);
-protected:
-  int rowCount(const QModelIndex &parent);
-  QVariant data(const QModelIndex &index, int role);
+  ~Model();
+  Model(QDjViewThumbnails*);
+  virtual QModelIndex index(int row, 
+                            int column = 0, 
+                            const QModelIndex &p = QModelIndex()) const;
+  virtual int rowCount(const QModelIndex &parent) const;
+  virtual QVariant data(const QModelIndex &index, int role) const;
+  virtual int flags(QModelIndex &index) const;
+  int getSize() { return size; }
+  int getSmart() { return smart; }
+public slots:
+  void setSize(int);
+  void setSmart(bool);
+  void scheduleRefresh();
+protected slots:
+  void documentClosed(QDjVuDocument *doc);
+  void documentReady(QDjVuDocument *doc);
+  void thumbnail(int);
+  void refresh();
 private:
+  QDjView *djview;
+  QDjViewThumbnails *widget;
+  QStringList names;
+  ddjvu_format_t *format;
+  QIcon icon;
+  int size;
+  bool smart;
+  bool refreshScheduled;
+  int  pageInProgress;
+  QIcon makeIcon(int pageno) const;
+  QSize makeHint(int pageno) const;
+};
+
+
+class QDjViewThumbnails::View : public QListView
+{
+  Q_OBJECT
+public:
+  View(QDjViewThumbnails *widget);
+protected:
+  QStyleOptionViewItem viewOptions() const;
+private:
+  QDjViewThumbnails *widget;
   QDjView *djview;
 };
 
 
-QDjViewThumbnails::Model::Model(QDjView *djview)
-  : QAbstractListModel(djview), djview(djview)
+QDjViewThumbnails::QDjViewThumbnails(QDjView *djview)
+  : QWidget(djview),
+    djview(djview)
 {
+  model = new Model(this);
+  selection = new QItemSelectionModel(model);
+  view = new View(this);
+  QVBoxLayout *layout = new QVBoxLayout(this);
+  layout->setMargin(0);
+  layout->setSpacing(0);
+  layout->addWidget(view);
+  
+  connect(djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
+          this, SLOT(pageChanged(int)) );
+  connect(view, SIGNAL(activated(const QModelIndex&)),
+          this, SLOT(activated(const QModelIndex&)) );
+
+  menu = new QMenu(this);
+  QActionGroup *group = new QActionGroup(this);
+  QAction *action;
+
+  action = menu->addAction(tr("Tiny","thumbnail menu"));
+  connect(action,SIGNAL(triggered()),this,SLOT(setSize()) );
+  action->setCheckable(true);
+  action->setActionGroup(group);
+  action->setData(32);
+  action = menu->addAction(tr("Small","thumbnail menu"));
+  connect(action,SIGNAL(triggered()),this,SLOT(setSize()) );
+  action->setCheckable(true);  
+  action->setActionGroup(group);
+  action->setData(64);
+  action = menu->addAction(tr("Medium","thumbnail menu"));
+  connect(action,SIGNAL(triggered()),this,SLOT(setSize()) );
+  action->setCheckable(true);
+  action->setActionGroup(group);
+  action->setData(96);
+  action = menu->addAction(tr("Large","thumbnail menu"));
+  connect(action,SIGNAL(triggered()),this,SLOT(setSize()) );
+  action->setCheckable(true);
+  action->setActionGroup(group);
+  action->setData(160);
+  menu->addSeparator();
+  action = menu->addAction(tr("Smart","thumbnail menu"));
+  connect(action,SIGNAL(toggled(bool)),this,SLOT(setSmart(bool)) );
+  action->setCheckable(true);
+  action->setData(true);
+  updateActions();
+
+  setWhatsThis(tr("<html><b>Document thumbnails.</b><br/> "
+                  "This panel display thumbnails for the document pages. "
+                  "The right mouse buttons pops a menu for changing "
+                  "the thumbnail sizes or the refresh mode. "
+                  "The smart refresh mode only computes thumbnails "
+                  "when the page data is present (displayed or cached.)"
+                  "</html>"));
 }
 
 
-int 
-QDjViewThumbnails::Model::rowCount(const QModelIndex &)
+void 
+QDjViewThumbnails::updateActions(void)
 {
-  return djview->pageNum();
+  QAction *action;
+  int size = model->getSize();
+  bool smart = model->getSmart();
+  foreach(action, menu->actions())
+    {
+      QVariant data = action->data();
+      if (data.type() == QVariant::Bool)
+        action->setChecked(smart);
+      else
+        action->setChecked(data.toInt() == size);
+    }
 }
 
 
-QVariant 
-QDjViewThumbnails::Model::data(const QModelIndex &index, int role)
+void 
+QDjViewThumbnails::pageChanged(int pageno)
+{
+  if (pageno>=0 && pageno<djview->pageNum())
+    {
+      QModelIndex mi = model->index(pageno);
+      if (! selection->isSelected(mi))
+        selection->select(mi, QItemSelectionModel::ClearAndSelect);
+      view->scrollTo(mi);
+    }
+}
+
+
+void 
+QDjViewThumbnails::activated(const QModelIndex &index)
 {
   if (index.isValid())
     {
       int pageno = index.row();
-      if (pageno<0 || pageno>=djview->pageNum())
+      if (pageno>=0 && pageno<djview->pageNum())
+        djview->goToPage(pageno);
+    }
+}
+
+
+int 
+QDjViewThumbnails::size()
+{
+  return model->getSize();
+}
+
+
+void 
+QDjViewThumbnails::setSize(int size)
+{
+  model->setSize(size);
+  updateActions();
+}
+
+
+void 
+QDjViewThumbnails::setSize()
+{
+  QAction *action = qobject_cast<QAction*>(sender());
+  if (action)
+    setSize(action->data().toInt());
+}
+
+
+bool 
+QDjViewThumbnails::smart()
+{
+  return model->getSmart();
+}
+
+
+void 
+QDjViewThumbnails::setSmart(bool smart)
+{
+  model->setSmart(smart);
+  updateActions();
+}
+
+void 
+QDjViewThumbnails::contextMenuEvent(QContextMenuEvent *event)
+{
+  menu->exec(event->globalPos());
+  event->accept();
+}
+
+
+// ----------------------------------------
+// THUMBNAILS MODEL
+
+
+QDjViewThumbnails::Model::~Model()
+{
+  if (format)
+    ddjvu_format_release(format);
+}
+
+
+QDjViewThumbnails::Model::Model(QDjViewThumbnails *widget)
+  : QAbstractListModel(widget),
+    djview(widget->djview), 
+    widget(widget), 
+    format(0),
+    size(0),
+    smart(true),
+    refreshScheduled(false),
+    pageInProgress(-1)
+{
+  // create format
+  unsigned int masks[4] = { 0xff0000, 0xff00, 0xff, 0xff000000 };
+  format = ddjvu_format_create(DDJVU_FORMAT_RGBMASK32, 3, masks);
+  ddjvu_format_set_row_order(format, true);
+  ddjvu_format_set_y_direction(format, true);
+  ddjvu_format_set_ditherbits(format, QPixmap::defaultDepth());
+  // set size
+  setSize(64);
+  // connect
+  connect(djview, SIGNAL(documentClosed(QDjVuDocument*)),
+          this, SLOT(documentClosed(QDjVuDocument*)) );
+  connect(djview, SIGNAL(documentReady(QDjVuDocument*)),
+          this, SLOT(documentReady(QDjVuDocument*)) );
+  // update
+  if (djview->pageNum() > 0)
+    documentReady(djview->getDocument());
+}
+
+
+QModelIndex 
+QDjViewThumbnails::Model::index(int row, int, const QModelIndex&) const
+{
+  return createIndex(row, 0);
+}
+
+
+void 
+QDjViewThumbnails::Model::documentClosed(QDjVuDocument *doc)
+{
+  names.clear();
+  disconnect(doc, 0, this, 0);
+  emit layoutChanged();
+}
+
+
+void 
+QDjViewThumbnails::Model::documentReady(QDjVuDocument *doc)
+{
+  names.clear();
+  int pagenum = djview->pageNum();
+  for (int pageno=0; pageno<pagenum; pageno++)
+    names << djview->pageName(pageno);
+  connect(doc, SIGNAL(thumbnail(int)),
+          this, SLOT(thumbnail(int)) );
+  connect(doc, SIGNAL(pageinfo()),
+          this, SLOT(refresh()) );
+  connect(doc, SIGNAL(idle()),
+          this, SLOT(refresh()) );
+  emit layoutChanged();
+  widget->pageChanged(djview->getDjVuWidget()->page());
+
+}
+
+
+void 
+QDjViewThumbnails::Model::thumbnail(int pageno)
+{
+  QModelIndex mi = index(pageno);
+  emit dataChanged(mi, mi);
+  refresh();
+}
+
+
+void
+QDjViewThumbnails::Model::scheduleRefresh()
+{
+  if (! refreshScheduled)
+    QTimer::singleShot(0, this, SLOT(refresh()));
+  refreshScheduled = true;
+}
+
+
+void
+QDjViewThumbnails::Model::refresh()
+{
+  QDjVuDocument *doc = djview->getDocument();
+  ddjvu_status_t status;
+  refreshScheduled = false;
+  if (doc && pageInProgress >= 0)
+    {
+      status = ddjvu_thumbnail_status(*doc, pageInProgress, 0);
+      if (status >= DDJVU_JOB_OK)
+        pageInProgress = -1;
+    }
+  if (doc && pageInProgress < 0)
+    {
+      QRect dr = widget->view->rect();
+      for (int i=0; i<names.size(); i++)
         {
-          if (role == Qt::DisplayRole)
-            return QVariant(djview->pageName(pageno));
-          if (role == Qt::UserRole)
-            return QVariant(pageno);
+          QModelIndex mi = index(i);
+          if (dr.intersects(widget->view->visualRect(mi)))
+            {
+              status = ddjvu_thumbnail_status(*doc, i, 0);
+              if (status == DDJVU_JOB_NOTSTARTED)
+                {
+                  if (smart && !ddjvu_document_check_pagedata(*doc, i))
+                    continue;
+                  status = ddjvu_thumbnail_status(*doc, i, 1);
+                  if (status == DDJVU_JOB_STARTED)
+                    {
+                      pageInProgress = i;
+                      break;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+void 
+QDjViewThumbnails::Model::setSmart(bool b)
+{
+  if (b != smart)
+    {
+      smart = b;
+      scheduleRefresh();
+    }
+}
+
+
+void 
+QDjViewThumbnails::Model::setSize(int newSize)
+{
+  newSize = qBound(16, newSize, 256);
+  if (newSize != size)
+    {
+      size = newSize;
+      QPixmap pixmap(size,size);
+      pixmap.fill();
+      QPainter painter;
+      int s8 = size/8;
+      if (s8 >= 1)
+        {
+          QPolygon poly;
+          poly << QPoint(s8,0)
+               << QPoint(size-2*s8,0) 
+               << QPoint(size-s8-1,s8) 
+               << QPoint(size-s8-1,size-1) 
+               << QPoint(s8,size-1);
+          QPainter painter(&pixmap);
+          painter.setBrush(Qt::NoBrush);
+          painter.setPen(Qt::darkGray);
+          painter.drawPolygon(poly);
+        }
+      icon = QIcon(pixmap);
+    }
+  emit layoutChanged();
+}
+
+
+QIcon
+QDjViewThumbnails::Model::makeIcon(int pageno) const
+{
+  QDjVuDocument *doc = djview->getDocument();
+  if (doc)
+    {
+      // render thumbnail
+      int w = size;
+      int h = size;
+      QImage img(size, size, QImage::Format_RGB32);
+      if (ddjvu_thumbnail_render(*doc, pageno, &w, &h, format, 
+                                 img.bytesPerLine(), (char*)img.bits() ) )
+        {
+          QPixmap pixmap(size,size);
+          pixmap.fill();
+          QPoint dst((size-w)/2, (size-h)/2);
+          QRect src(0,0,w,h);
+          QPainter painter;
+          painter.begin(&pixmap);
+          painter.drawImage(dst, img, src);
+          painter.setBrush(Qt::NoBrush);
+          painter.setPen(Qt::darkGray);
+          painter.drawRect(dst.x(), dst.y(), w-1, h-1);
+          painter.end();
+          return QIcon(pixmap);
+        }
+      else if (ddjvu_thumbnail_status(*doc,pageno,0)==DDJVU_JOB_NOTSTARTED)
+        {
+          const_cast<Model*>(this)->scheduleRefresh();
+        }
+    }
+  return icon;
+}
+
+
+QSize 
+QDjViewThumbnails::Model::makeHint(int) const
+{
+  QFontMetrics metrics(widget->view->font());
+  return QSize(size, size+metrics.height());
+}
+
+
+int 
+QDjViewThumbnails::Model::rowCount(const QModelIndex &) const
+{
+  return names.size();
+}
+
+
+QVariant 
+QDjViewThumbnails::Model::data(const QModelIndex &index, int role) const
+{
+  if (index.isValid())
+    {
+      int pageno = index.row();
+      if (pageno>=0 && pageno<names.size())
+        {
+          switch(role)
+            {
+            case Qt::DisplayRole: 
+            case Qt::ToolTipRole:
+              return names[pageno];
+            case Qt::SizeHintRole:
+              return makeHint(pageno);
+            case Qt::UserRole:
+              return pageno;
+            case Qt::DecorationRole:
+              return makeIcon(pageno);
+            case Qt::WhatsThisRole:
+              return widget->whatsThis();
+            default:
+              break;
+            }
         }
     }
   return QVariant();
 }
 
 
+int 
+QDjViewThumbnails::Model::flags(QModelIndex&) const
+{
+  return Qt::ItemIsEnabled|Qt::ItemIsSelectable;
+}
+
 
 
 // ----------------------------------------
-// THUMBNAILS DELEGATE
+// THUMBNAILS VIEW
 
 
-
-// ----------------------------------------
-// THUMBNAILS WIDGET
-
-
-
-QDjViewThumbnails::QDjViewThumbnails(QDjView *djview)
-  : QListView(djview), 
-    djview(djview), model(0), delegate(0),
-    maxSize(64), size(64)
+QDjViewThumbnails::View::View(QDjViewThumbnails *widget)
+  : QListView(widget), 
+    widget(widget), 
+    djview(widget->djview)
 {
+  setModel(widget->model);
+  setSelectionModel(widget->selection);
+  setDragEnabled(false);
+  setEditTriggers(QAbstractItemView::NoEditTriggers);
+  setSelectionBehavior(QAbstractItemView::SelectRows);
+  setSelectionMode(QAbstractItemView::SingleSelection);
+  setTextElideMode(Qt::ElideLeft);
+  setViewMode(QListView::IconMode);
+  setFlow(QListView::LeftToRight);
+  setWrapping(true);
+  setMovement(QListView::Static);
+  setResizeMode(QListView::Adjust);
+  setLayoutMode(QListView::Batched);
+  setUniformItemSizes(true);
+  setSpacing(8);
 }
 
 
-void 
-QDjViewThumbnails::clear()
+QStyleOptionViewItem 
+QDjViewThumbnails::View::viewOptions() const
 {
+  int size = widget->model->getSize();
+  QStyleOptionViewItem opt = QListView::viewOptions();
+  opt.decorationAlignment = Qt::AlignCenter;
+  opt.decorationPosition = QStyleOptionViewItem::Top;
+  opt.decorationSize = QSize(size, size);
+  opt.displayAlignment = Qt::AlignCenter;
+  return opt;
 }
 
-void 
-QDjViewThumbnails::refresh()
-{
-}
 
-void 
-QDjViewThumbnails::pageChanged(int pageno)
-{
-}
-
-void 
-QDjViewThumbnails::setThumbnailSize(int)
-{
-}
-
-void 
-QDjViewThumbnails::activated(const QModelIndex *index)
-{
-}
-
-bool 
-QDjViewThumbnails::event(QEvent *event)
-{
-  switch(event->type())
-    {
-    case QEvent::Resize:
-      {
-        QResizeEvent *resize = (QResizeEvent*)event;
-        size = qMax(maxSize, resize->size().width());
-        refresh();
-        break;
-      }
-    default:
-      break;
-    }
-  return QListView::event(event);
-}
 
 
 

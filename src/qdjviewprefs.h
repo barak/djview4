@@ -131,9 +131,10 @@ public:
   Qt::KeyboardModifiers modifiersForSelect; //!< Keys for selecting.
   Qt::KeyboardModifiers modifiersForLinks;  //!< Keys for showing the links.
   
-  // Preferences set via the print dialog.
-  // ...TODO... 
-
+  // Thumbnail preferences
+  int        thumbnailSize;
+  bool       thumbnailSmart;
+  
 public:
   static QDjViewPrefs *create(void);
   void load(void);

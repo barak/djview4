@@ -1143,6 +1143,10 @@ QDjView::applyPreferences(void)
   widget->setLensSize(prefs->lensSize);
   widget->setLensPower(prefs->lensPower);
 
+  // Thumbnail preferences
+  thumbnailWidget->setSize(prefs->thumbnailSize);
+  thumbnailWidget->setSmart(prefs->thumbnailSmart);
+
   // Special preferences for embedded plugins
   if (viewerMode == EMBEDDED_PLUGIN)
     {
@@ -1828,10 +1832,9 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   sideBar->setWidget(sideToolBox);
   
   // - sidebar components
-  QLabel *thumbnailWidget = new QLabel("thumbnails",sideToolBox);
-  thumbnailWidget->setAlignment(Qt::AlignCenter);
+  thumbnailWidget = new QDjViewThumbnails(this);
   sideToolBox->addItem(thumbnailWidget, tr("&Thumbnails"));
-  QDjViewOutline*outlineWidget = new QDjViewOutline(this);
+  outlineWidget = new QDjViewOutline(this);
   sideToolBox->addItem(outlineWidget, tr("&Outline")); 
   QLabel *findWidget = new QLabel("search stuff here",sideToolBox);
   findWidget->setAlignment(Qt::AlignCenter);
@@ -1882,7 +1885,7 @@ QDjView::closeDocument()
   document = 0;
   if (doc)
     {
-      emit documentClosed();
+      emit documentClosed(doc);
       doc->deref();
     }
 }
@@ -2478,14 +2481,16 @@ QDjView::startBrowser(QUrl url)
 
 
 
-/*! \fn QDjView::documentClosed()
-  This signal is emitted when clearing the current document. */
+/*! \fn QDjView::documentClosed(QDjVuDocument *doc)
+  This signal is emitted when clearing the current document.
+  Argument \a doc is the previous document. */
 
-/*! \fn QDjView::documentOpened(QDjVuDocument*)
-  This signal is emitted when opening a new document. */
+/*! \fn QDjView::documentOpened(QDjVuDocument *doc)
+  This signal is emitted when opening a new document \a doc. */
   
-/*! \fn QDjView::documentReady(QDjVuDocument*)
-  This signal is emitted when the document structure is known. */
+/*! \fn QDjView::documentReady(QDjVuDocument *doc)
+  This signal is emitted when the document structure 
+  for the current document \a doc is known. */
 
 /*! \fn QDjView::pluginStatusMessage(QString message = QString())
   This signal is emitted when a message is displayed
@@ -2511,6 +2516,8 @@ QDjView::closeEvent(QCloseEvent *event)
   //  after closing the document in order to 
   //  avoid saving document defined settings.
   updateSaved(getSavedPrefs());
+  prefs->thumbnailSize = thumbnailWidget->size();
+  prefs->thumbnailSmart = thumbnailWidget->smart();
   prefs->save();
   // continue closing the window
   event->accept();

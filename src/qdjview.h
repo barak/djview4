@@ -42,6 +42,8 @@ class QBoxLayout;
 class QCloseEvent;
 class QComboBox;
 class QDockWidget;
+class QDjViewOutline;
+class QDjViewThumbnails;
 class QFileDialog;
 class QLabel;
 class QMenu;
@@ -112,7 +114,7 @@ public slots:
   void  print(void);
   
 signals:
-  void  documentClosed();
+  void  documentClosed(QDjVuDocument *doc);
   void  documentOpened(QDjVuDocument *doc);
   void  documentReady(QDjVuDocument *doc);
   void  pluginStatusMessage(QString message = QString());
@@ -208,6 +210,8 @@ protected:
   QComboBox          *pageCombo;
   QDockWidget        *sideBar;
   QToolBox           *sideToolBox;
+  QDjViewOutline     *outlineWidget;
+  QDjViewThumbnails  *thumbnailWidget;
   // document data
   QDjVuContext           &djvuContext;
   QDjVuDocument          *document;
