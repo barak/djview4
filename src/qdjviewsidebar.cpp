@@ -532,12 +532,11 @@ QDjViewThumbnails::Model::documentReady(QDjVuDocument *doc)
   connect(doc, SIGNAL(thumbnail(int)),
           this, SLOT(thumbnail(int)) );
   connect(doc, SIGNAL(pageinfo()),
-          this, SLOT(refresh()) );
+          this, SLOT(scheduleRefresh()) );
   connect(doc, SIGNAL(idle()),
-          this, SLOT(refresh()) );
+          this, SLOT(scheduleRefresh()) );
   emit layoutChanged();
   widget->pageChanged(djview->getDjVuWidget()->page());
-
 }
 
 
@@ -546,7 +545,7 @@ QDjViewThumbnails::Model::thumbnail(int pageno)
 {
   QModelIndex mi = index(pageno);
   emit dataChanged(mi, mi);
-  refresh();
+  scheduleRefresh();
 }
 
 
@@ -701,14 +700,14 @@ QDjViewThumbnails::Model::data(const QModelIndex &index, int role) const
             case Qt::DisplayRole: 
             case Qt::ToolTipRole:
               return names[pageno];
-            case Qt::SizeHintRole:
-              return makeHint(pageno);
-            case Qt::UserRole:
-              return pageno;
             case Qt::DecorationRole:
               return makeIcon(pageno);
+            case Qt::SizeHintRole:
+              return makeHint(pageno);
             case Qt::WhatsThisRole:
               return widget->whatsThis();
+            case Qt::UserRole:
+              return pageno;
             default:
               break;
             }
@@ -741,7 +740,7 @@ QDjViewThumbnails::View::View(QDjViewThumbnails *widget)
   setEditTriggers(QAbstractItemView::NoEditTriggers);
   setSelectionBehavior(QAbstractItemView::SelectRows);
   setSelectionMode(QAbstractItemView::SingleSelection);
-  setTextElideMode(Qt::ElideLeft);
+  setTextElideMode(Qt::ElideRight);
   setViewMode(QListView::IconMode);
   setFlow(QListView::LeftToRight);
   setWrapping(true);
