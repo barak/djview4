@@ -3603,10 +3603,8 @@ QDjVuPrivate::paintAll(QPainter &paint, const QRegion &paintRegion)
                              s==DDJVU_JOB_FAILED);
         }
       // Paint frames to reduce flashing.
-#if QT_VERSION < 0x040100
       if (frame)
         widget->paintFrame(paint, p->viewRect, shadowSize);
-#endif
     }
   // Paint desk
   QRegion deskRegion = paintRegion;

@@ -960,12 +960,11 @@ QDjView::createWhatsThis()
           "This is the main display area for the DjVu document. <ul>"
           "<li>Arrows and page keys to navigate the document.</li>"
           "<li>Space and BackSpace to read the document.</li>"
-          "<li>Keys <tt>+</tt>, <tt>-</tt>, <tt>[</tt>, <tt>]</tt> "
+          "<li>Keys <tt>+</tt> <tt>-</tt> <tt>[</tt> <tt>]</tt> "
           "to zoom or rotate the document.</li>"
           "<li>Left Mouse Button for panning and selecting links.</li>"
           "<li>%3 for displaying the contextual menu.</li>"
-          "<li>%1 and the Left Mouse Button "
-          "for selecting text or images.</li>"
+          "<li>%1 Left Mouse Button for selecting text or images.</li>"
           "<li>%2 for popping the magnification lens.</li>"
           "</ul></html>").arg(ms).arg(ml).arg(mc))
             >> widget;
