@@ -42,6 +42,46 @@
 // SAVE
 
 
+QDjViewSaveJob::QDjViewSaveJob(QDjView *djview)
+  : QObject(djview),
+    djview(djview),
+    document(0),
+    dialog(0),
+    job(0)
+{
+}
+
+
+void
+QDjViewSaveJob::documentClosed()
+{
+  if (job)
+    ddjvu_job_stop(*job);
+  if (document)
+    document->deref();
+#if NOTYET
+  if (dialog)
+    dialog->hide();
+  delete dialog;
+#endif
+  job = 0;
+  document = 0;
+  dialog = 0;
+}
+
+bool 
+QDjViewSaveJob::ignite(QDjVuDocument *d)
+{
+  if (document)
+    return false;
+  d->ref();
+  document = d;
+  // ...
+  document = 0;
+  d->deref();
+  return true;
+}
+
 
 
 

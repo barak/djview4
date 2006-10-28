@@ -363,13 +363,18 @@ QDjViewThumbnails::QDjViewThumbnails(QDjView *djview)
   action->setData(true);
   updateActions();
 
+#if Q_WS_MAC
+  QString mc = tr("Control Left Mouse Button");
+#else
+  QString mc = tr("Right Mouse Button");
+#endif
   setWhatsThis(tr("<html><b>Document thumbnails.</b><br/> "
                   "This panel display thumbnails for the document pages. "
-                  "The right mouse buttons pops a menu for changing "
-                  "the thumbnail sizes or the refresh mode. "
+                  "Double click a thumbnail to jump to the selected page. "
+                  "%1 to change the thumbnail size or the refresh mode. "
                   "The smart refresh mode only computes thumbnails "
                   "when the page data is present (displayed or cached.)"
-                  "</html>"));
+                  "</html>").arg(mc) );
 }
 
 

@@ -38,6 +38,26 @@
 
 
 
+class QDjViewSaveJob : public QObject
+{
+  Q_OBJECT
+public:
+  QDjViewSaveJob(QDjView *djview);
+  bool ignite(QDjVuDocument *document);
+protected slots:
+  void documentClosed();
+private:
+  class Dialog;
+  QDjView *djview;
+  QDjVuDocument *document;
+  Dialog *dialog;
+  QDjVuJob *job;
+};
+
+
+
+
+
 // ----------------------------------------
 // EXPORT
 

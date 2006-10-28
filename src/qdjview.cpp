@@ -869,12 +869,19 @@ struct Help {
 void
 QDjView::createWhatsThis()
 {
-  QString ms, ml;
+  QString mc, ms, ml;
+#if Q_WS_MAC
+  mc = tr("Control Left Mouse Button");
+#else
+  mc = tr("Right Mouse Button");
+#endif
   ms = prefs->modifiersToString(prefs->modifiersForSelect);
+  ms = ms.replace("+"," ");
   ml = prefs->modifiersToString(prefs->modifiersForLens);
-
+  ml = ml.replace("+"," ");
+  
   Help(tr("<html><b>Selecting a rectangle.</b><br/> "
-          "Once a rectanglular area is selected, a popup menu "
+          "Once a rectangular area is selected, a popup menu "
           "lets you copy the corresponding text or image. "
           "Instead of using this tool, you can also hold %1 "
           "and use the Left Mouse Button."
@@ -956,11 +963,11 @@ QDjView::createWhatsThis()
           "<li>Keys <tt>+</tt>, <tt>-</tt>, <tt>[</tt>, <tt>]</tt> "
           "to zoom or rotate the document.</li>"
           "<li>Left Mouse Button for panning and selecting links.</li>"
-          "<li>Right Mouse Button for displaying the contextual menu.</li>"
-          "<li><tt>%1</tt> Left Mouse Button "
+          "<li>%3 for displaying the contextual menu.</li>"
+          "<li>%1 and the Left Mouse Button "
           "for selecting text or images.</li>"
-          "<li><tt>%2</tt> for popping the magnification lens.</li>"
-          "</ul></html>").arg(ms).arg(ml))
+          "<li>%2 for popping the magnification lens.</li>"
+          "</ul></html>").arg(ms).arg(ml).arg(mc))
             >> widget;
   
   Help(tr("<html><b>Document viewing area.</b><br/> "

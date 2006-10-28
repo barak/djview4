@@ -151,12 +151,21 @@ QString
 QDjViewPrefs::modifiersToString(Qt::KeyboardModifiers m)
 {
   QStringList l;
+#ifdef Q_WS_MAC
   if (m & Qt::MetaModifier)
-    l << "Meta";
+    l << "Control";
   if (m & Qt::AltModifier)
     l << "Alt";
   if (m & Qt::ControlModifier)
+    l << "Command";
+#else
+  if (m & Qt::MetaModifier)
+    l << "Meta";
+  if (m & Qt::ControlModifier)
     l << "Control";
+  if (m & Qt::AltModifier)
+    l << "Alt";
+#endif
   if (m & Qt::ShiftModifier)
     l << "Shift";
   return l.join("+");
@@ -169,16 +178,24 @@ QDjViewPrefs::stringToModifiers(QString s)
 {
   Qt::KeyboardModifiers m = Qt::NoModifier;
   QStringList l = s.split("+");
-  foreach(s, l)
+  foreach(QString key, l)
     {
-      if (s.toLower() == "shift")
+      key = key.toLower();
+      if (key == "shift")
         m |= Qt::ShiftModifier;
-      else if (s.toLower() == "control")
-        m |= Qt::ControlModifier;
-      else if (s.toLower() == "alt")
-        m |= Qt::AltModifier;
-      else if (s.toLower() == "meta")
+#if Q_WS_MAC
+      else if (key == "control")
         m |= Qt::MetaModifier;
+      else if (key == "command")
+        m |= Qt::ControlModifier;
+#else
+      else if (key == "meta")
+        m |= Qt::MetaModifier;
+      else if (key == "control")
+        m |= Qt::ControlModifier;
+#endif
+      else if (key == "alt")
+        m |= Qt::AltModifier;
     }
   return m;
 }
