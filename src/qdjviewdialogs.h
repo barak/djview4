@@ -120,11 +120,12 @@ public:
   QDjViewSaveDialog(QDjView *djview);
 public slots:
   void refresh(QDjVuDocument *doc);
+  void browse();
   void save();
   void progress(int);
   void stop();
 protected:
-  void closeEvent(QCloseEvent *event);
+  virtual void done(int);
 private:
   struct Private;
   Private *d;

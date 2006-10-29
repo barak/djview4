@@ -112,6 +112,7 @@ public slots:
   bool  showSideBar(QString args, QStringList &errors);
   bool  showSideBar(QString args);
   void  print(void);
+  void  save(void);
   
 signals:
   void  documentClosed(QDjVuDocument *doc);

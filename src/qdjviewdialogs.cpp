@@ -808,6 +808,7 @@ struct QDjViewSaveDialog::Private {
 
 QDjViewSaveDialog::~QDjViewSaveDialog()
 {
+  qDebug() << "delete";
   delete d;
 }
 
@@ -824,6 +825,12 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *parent)
 
 void 
 QDjViewSaveDialog::refresh(QDjVuDocument*)
+{
+}
+
+
+void 
+QDjViewSaveDialog::browse()
 {
 }
 
@@ -847,9 +854,10 @@ QDjViewSaveDialog::stop()
 
 
 void 
-QDjViewSaveDialog::closeEvent(QCloseEvent *event)
+QDjViewSaveDialog::done(int result)
 {
-  event->accept();
+  qDebug() << "done" << result;
+  QDialog::done(result);
 }
 
 

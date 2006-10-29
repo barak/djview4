@@ -358,7 +358,8 @@ QDjView::createActions()
   actionSave = makeAction(tr("Save &as...", "File|Save"))
     << QKeySequence(tr("Ctrl+S", "File|Save"))
     << QIcon(":/images/icon_save.png")
-    << tr("Save the DjVu document.");
+    << tr("Save the DjVu document.")
+    << Trigger(this, SLOT(save()));
 
   actionExport = makeAction(tr("&Export as...", "File|Export"))
     << tr("Export the DjVu document under another format.");
@@ -2178,7 +2179,7 @@ QDjView::showSideBar(QString args)
 
 
 
-/*! Pops up the print dialog */
+/*! Pops up a print dialog */
 void
 QDjView::print()
 {
@@ -2186,6 +2187,16 @@ QDjView::print()
   QString caption = makeCaption(tr("Print document", "dialog caption"));
   QMessageBox::warning(this, caption,
                        tr("Print dialog is not yet implemented"));
+}
+
+
+/*! Pops up a save dialog */
+void
+QDjView::save()
+{
+  QDjViewSaveDialog *saveDialog = new QDjViewSaveDialog(this);
+  saveDialog->setAttribute(Qt::WA_DeleteOnClose);
+  saveDialog->show();
 }
 
 
