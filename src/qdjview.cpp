@@ -2194,10 +2194,15 @@ QDjView::print()
 void
 QDjView::save()
 {
-  QDjViewSaveDialog *saveDialog = new QDjViewSaveDialog(this);
-  saveDialog->setAttribute(Qt::WA_DeleteOnClose);
-  saveDialog->setWindowTitle(makeCaption(tr("Save","dialog caption")));
-  saveDialog->show();
+  QDjViewSaveDialog *sd = saveDialog;
+  if (! sd)
+    {
+      saveDialog = sd = new QDjViewSaveDialog(this);
+      sd->setAttribute(Qt::WA_DeleteOnClose);
+      sd->setWindowTitle(makeCaption(tr("Save","dialog caption")));
+    }
+  sd->show();
+  sd->raise();
 }
 
 

@@ -23,12 +23,9 @@
 #include <QDialog>
 #include <QLabel>
 #include <QMessageBox>
+#include <QWidget>
 
-#include "qdjview.h"
-
-class QCloseEvent;
-class QEvent;
-class QWidget;
+class QDjView;
 
 
 // ----------- QDJVIEWERRORDIALOG

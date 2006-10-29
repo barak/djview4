@@ -24,6 +24,7 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QPair>
+#include <QPointer>
 #include <QString>
 #include <QList>
 #include <QUrl>
@@ -34,6 +35,7 @@
 #include "qdjvu.h"
 #include "qdjvuwidget.h"
 #include "qdjviewprefs.h"
+#include "qdjviewdialogs.h"
 
 
 class QAction;
@@ -53,10 +55,6 @@ class QStatusBar;
 class QStringList;
 class QToolBar;
 class QToolBox;
-
-class QDjViewErrorDialog;
-class QDjViewInfoDialog;
-class QDjViewMetaDialog;
 
 
 class QDjView : public QMainWindow
@@ -190,9 +188,10 @@ protected:
   Tools          tools;
   Tools          toolsCached;
   // dialogs
-  QDjViewErrorDialog *errorDialog;
-  QDjViewInfoDialog  *infoDialog;
-  QDjViewMetaDialog  *metaDialog;
+  QPointer<QDjViewErrorDialog> errorDialog;
+  QPointer<QDjViewInfoDialog>  infoDialog;
+  QPointer<QDjViewMetaDialog>  metaDialog;
+  QPointer<QDjViewSaveDialog>  saveDialog;
   // widgets
   QLabel             *splash;
   QDjVuWidget        *widget;
