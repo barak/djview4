@@ -920,11 +920,6 @@ QDjViewSaveDialog::save()
   QDir dir = info.dir();
   if (!d->document)
     return;
-  if (!dir.exists() &&
-      QMessageBox::critical(this, tr("Directory does not exist"),
-                            tr("The specified file name belongs\n"
-                               "to a non existant directory.") ) >= 0 )
-    return;
   if (info.exists() &&
       QMessageBox::question(this, tr("Overwrite file?"),
                             tr("A file with this name already exists.\n"
@@ -1033,13 +1028,13 @@ QDjViewSaveDialog::error(QString message, QString filename, int lineno)
     {
       d->errdialog = new QDjViewErrorDialog(this);
       QString caption = d->djview->makeCaption(tr("Saving DjVu file..."));
+      d->errdialog->prepare(QMessageBox::Critical, caption);
+      connect(d->errdialog, SIGNAL(closing()), this, SLOT(reject()));
 #if QT_VERSION >= 0x040100
       d->errdialog->setWindowModality(Qt::WindowModal);
 #else
-      d->errdialog->setModal(modal);
+      d->errdialog->setModal(true);
 #endif
-      d->errdialog->prepare(QMessageBox::Critical, caption);
-      connect(d->errdialog, SIGNAL(closing()), this, SLOT(reject()));
     }
   d->errdialog->error(message, filename, lineno);
   d->errdialog->show();
