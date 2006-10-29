@@ -2184,7 +2184,7 @@ void
 QDjView::print()
 {
   // TODO
-  QString caption = makeCaption(tr("Print document", "dialog caption"));
+  QString caption = makeCaption(tr("Print DjVu", "dialog caption"));
   QMessageBox::warning(this, caption,
                        tr("Print dialog is not yet implemented"));
 }
@@ -2196,6 +2196,7 @@ QDjView::save()
 {
   QDjViewSaveDialog *saveDialog = new QDjViewSaveDialog(this);
   saveDialog->setAttribute(Qt::WA_DeleteOnClose);
+  saveDialog->setWindowTitle(makeCaption(tr("Save","dialog caption")));
   saveDialog->show();
 }
 

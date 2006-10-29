@@ -113,6 +113,9 @@ public slots:
   bool  showSideBar(QString args);
   void  print(void);
   void  save(void);
+  void  fillZoomCombo(QComboBox *zoomCombo);
+  void  fillModeCombo(QComboBox *modeCombo);
+  void  fillPageCombo(QComboBox *pageCombo);
   
 signals:
   void  documentClosed(QDjVuDocument *doc);
@@ -122,9 +125,6 @@ signals:
   void  pluginGetUrl(QUrl url, QString target);
 
 protected:
-  friend class QDjViewInfoDialog;
-  friend class QDjViewMetaDialog;
-
   typedef QDjVuWidget::Position Position;
   typedef QDjVuWidget::PageInfo PageInfo;
   typedef QDjViewPrefs::Options Options;
@@ -132,9 +132,6 @@ protected:
   typedef QDjViewPrefs::Saved Saved;
 
   void     fillToolBar(QToolBar *toolBar);
-  void     fillZoomCombo(QComboBox *zoomCombo);
-  void     fillModeCombo(QComboBox *modeCombo);
-  void     fillPageCombo(QComboBox *pageCombo);
   QAction *makeAction(QString text);
   QAction *makeAction(QString text, bool value);
   void     createActions(void);

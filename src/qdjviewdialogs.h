@@ -43,7 +43,9 @@ public:
   void prepare(QMessageBox::Icon icon, QString caption);
 public slots:
   void error(QString message, QString filename, int lineno);
-  void okay(void);
+  virtual void done(int);
+signals:
+  void closing();
 private:
   void compose(void);
   struct Private;
@@ -118,13 +120,13 @@ class QDjViewSaveDialog : public QDialog
 public:
   ~QDjViewSaveDialog();
   QDjViewSaveDialog(QDjView *djview);
-public slots:
-  void refresh(QDjVuDocument *doc);
+protected slots:
+  void refresh();
   void browse();
   void save();
-  void progress(int);
+  void progress(int percent);
   void stop();
-protected:
+  void error(QString message, QString filename, int lineno);
   virtual void done(int);
 private:
   struct Private;

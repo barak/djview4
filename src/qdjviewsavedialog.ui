@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>523</width>
-    <height>288</height>
+    <width>455</width>
+    <height>290</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -31,7 +31,7 @@
       <number>6</number>
      </property>
      <item>
-      <widget class="QGroupBox" name="groupBox1" >
+      <widget class="QGroupBox" name="saveGroupBox" >
        <property name="title" >
         <string>Save</string>
        </property>
@@ -45,7 +45,7 @@
         <item>
          <widget class="QRadioButton" name="documentButton" >
           <property name="text" >
-           <string>Document</string>
+           <string>&amp;Document</string>
           </property>
           <property name="checked" >
            <bool>true</bool>
@@ -53,9 +53,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QRadioButton" name="currrentPageButton" >
+         <widget class="QRadioButton" name="currentPageButton" >
           <property name="text" >
-           <string>Current page</string>
+           <string>C&amp;urrent page</string>
           </property>
          </widget>
         </item>
@@ -70,7 +70,7 @@
           <item>
            <widget class="QRadioButton" name="pageRangeButton" >
             <property name="text" >
-             <string>Pages</string>
+             <string>&amp;Pages</string>
             </property>
            </widget>
           </item>
@@ -90,13 +90,26 @@
           <item>
            <widget class="QComboBox" name="toPageCombo" />
           </item>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
          </layout>
         </item>
        </layout>
       </widget>
      </item>
      <item>
-      <widget class="QGroupBox" name="groupBox2" >
+      <widget class="QGroupBox" name="formatGroupBox" >
        <property name="title" >
         <string>Format</string>
        </property>
@@ -110,7 +123,7 @@
         <item>
          <widget class="QRadioButton" name="bundledButton" >
           <property name="text" >
-           <string>Bundled file</string>
+           <string>&amp;Bundled</string>
           </property>
           <property name="checked" >
            <bool>true</bool>
@@ -120,7 +133,7 @@
         <item>
          <widget class="QRadioButton" name="indirectButton" >
           <property name="text" >
-           <string>Indirect document</string>
+           <string>&amp;Indirect</string>
           </property>
          </widget>
         </item>
@@ -143,7 +156,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox3" >
+    <widget class="QGroupBox" name="destinationGroupBox" >
      <property name="title" >
       <string>Destination</string>
      </property>
@@ -155,12 +168,15 @@
        <number>6</number>
       </property>
       <item>
-       <widget class="QLineEdit" name="filenameEdit" />
+       <widget class="QLineEdit" name="fileNameEdit" />
       </item>
       <item>
        <widget class="QPushButton" name="browseButton" >
         <property name="text" >
-         <string>Browse</string>
+         <string>&amp;Browse</string>
+        </property>
+        <property name="autoDefault" >
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -194,16 +210,28 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="okButton" >
+        <widget class="QPushButton" name="saveButton" >
          <property name="text" >
-          <string>Save</string>
+          <string>&amp;Save</string>
+         </property>
+         <property name="autoDefault" >
+          <bool>true</bool>
+         </property>
+         <property name="default" >
+          <bool>true</bool>
+         </property>
+         <property name="flat" >
+          <bool>false</bool>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="cancelButton" >
          <property name="text" >
-          <string>Cancel</string>
+          <string>&amp;Cancel</string>
+         </property>
+         <property name="autoDefault" >
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -219,9 +247,6 @@
        </property>
        <item>
         <widget class="QProgressBar" name="progressBar" >
-         <property name="value" >
-          <number>24</number>
-         </property>
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
          </property>
