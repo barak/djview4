@@ -73,7 +73,6 @@
 #include "qdjview.h"
 #include "qdjviewprefs.h"
 #include "qdjviewdialogs.h"
-#include "qdjviewjobs.h"
 #include "qdjviewsidebar.h"
 
 #if DDJVUAPI_VERSION < 18

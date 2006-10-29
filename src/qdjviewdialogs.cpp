@@ -19,6 +19,7 @@
 
 #include <QApplication>
 #include <QClipboard>
+#include <QCloseEvent>
 #include <QDebug>
 #include <QDialog>
 #include <QFont>
@@ -785,6 +786,72 @@ QDjViewMetaDialog::copy()
   if (selected.size() == 1)
     QApplication::clipboard()->setText(selected[0]->text());
 }
+
+
+
+
+// =======================================
+// QDJVIEWSAVEDIALOG
+// =======================================
+
+
+
+#include "ui_qdjviewsavedialog.h"
+
+struct QDjViewSaveDialog::Private {
+  Ui::QDjViewSaveDialog ui;
+  QDjView *djview;
+  QDjVuDocument *document;
+  QDjVuJob *job;
+};
+
+
+QDjViewSaveDialog::~QDjViewSaveDialog()
+{
+  delete d;
+}
+
+
+QDjViewSaveDialog::QDjViewSaveDialog(QDjView *parent)
+  : QDialog(parent), d(new Private)
+{
+  d->djview = parent;
+  d->document = 0;
+  d->job = 0;
+  d->ui.setupUi(this);
+}
+
+
+void 
+QDjViewSaveDialog::refresh(QDjVuDocument*)
+{
+}
+
+
+void 
+QDjViewSaveDialog::save()
+{
+}
+
+
+void 
+QDjViewSaveDialog::progress(int)
+{
+}
+
+
+void 
+QDjViewSaveDialog::stop()
+{
+}
+
+
+void 
+QDjViewSaveDialog::closeEvent(QCloseEvent *event)
+{
+  event->accept();
+}
+
 
 
 /* -------------------------------------------------------------

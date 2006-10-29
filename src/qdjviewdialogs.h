@@ -26,6 +26,10 @@
 
 #include "qdjview.h"
 
+class QCloseEvent;
+class QEvent;
+class QWidget;
+
 
 // ----------- QDJVIEWERRORDIALOG
 
@@ -104,6 +108,31 @@ private:
 };
 
 
+
+// ----------- QDJVIEWSAVEDIALOG
+
+
+class QDjViewSaveDialog : public QDialog
+{
+  Q_OBJECT
+public:
+  ~QDjViewSaveDialog();
+  QDjViewSaveDialog(QDjView *djview);
+public slots:
+  void refresh(QDjVuDocument *doc);
+  void save();
+  void progress(int);
+  void stop();
+protected:
+  void closeEvent(QCloseEvent *event);
+private:
+  struct Private;
+  Private *d;
+};
+
+
+
+// ----------- QDJVIEWPRINTDIALOG
 
 
 
