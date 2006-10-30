@@ -856,6 +856,13 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *parent)
           this, SLOT(refresh()) );
   connect(d->ui.fileNameEdit, SIGNAL(textChanged(QString)),
           this, SLOT(refresh()));
+  setWhatsThis(tr("<html><b>Saving DjVu data.</b><br/> "
+                  "You can save the whole document or a page range. "
+                  "The bundled format conveniently saves all the pages "
+                  "into a single file. The indirect format spreads them "
+                  "into several files for efficient web serving. "
+                  "<br><i>Saving in indirect format does not work yet!</i>"
+                  "</html>"));
   refresh();
 }
 
