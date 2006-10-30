@@ -958,9 +958,10 @@ QDjViewSaveDialog::save()
     argv[argc++] = "--indirect";
   if (! pagespec.isEmpty())
     argv[argc++] = pagespec.data();
-
+  
   QByteArray sname = QFile::encodeName(fname);
-  d->output = fopen(sname.data(), "w");
+  ::remove(sname.data());
+  d->output = ::fopen(sname.data(), "w");
   if (! d->output)
     {
       QString message = tr("System error: %1").arg(strerror(errno));
@@ -1045,6 +1046,9 @@ void
 QDjViewSaveDialog::done(int result)
 {
   stop();
+  if (d->job)
+    delete d->job;
+  d->job = 0;
   if (d->output && result == QDialog::Rejected)
     QFile(d->ui.fileNameEdit->text()).remove();
   if (d->output)
