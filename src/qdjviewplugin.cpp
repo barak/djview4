@@ -852,33 +852,35 @@ QDjViewPlugin::cmdAttachWindow()
   QDjView *djview = instance->djview;
   if (! shell)
     {
-#if QT_VERSION >= 0x40100
-      if (xembedFlag)
-        shell = new QX11EmbedWidget();
-      else
-#endif
-        shell = new QWidget();
-      shell->setObjectName("djvu_shell");
-      shell->setGeometry(0, 0, width, height);
-#if QT_VERSION >= 0x40100
       if (xembedFlag)
         {
-          QX11EmbedWidget *embed = static_cast<QX11EmbedWidget*>(shell);
+#if QT_VERSION >= 0x40100
+          QX11EmbedWidget *embed = new QX11EmbedWidget();
+          shell = embed;
+          shell->setObjectName("djvu_shell");
+          shell->setGeometry(0, 0, width, height);
+          djview = new QDjView(*context, instance->viewerMode, shell);
+          djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
+          djview->setAttribute(Qt::WA_DeleteOnClose, false);
+          QLayout *layout = new QHBoxLayout(shell);
+          layout->setMargin(0);
+          layout->setSpacing(0);
+          layout->addWidget(djview);
           embed->embedInto(window);
+#endif
         }
       else
-#endif
         {
+          shell = djview = new QDjView(*context, instance->viewerMode);
+          djview->setAttribute(Qt::WA_DeleteOnClose, false);
+          shell->setObjectName("djvu_shell");
+          shell->setGeometry(0, 0, width, height);
           Display *dpy = QX11Info::display();
           XReparentWindow(dpy, shell->winId(), window, 0,0);
+#if QT_VERSION < 0x40100
+          shell->show();
+#endif
         }
-      djview = new QDjView(*context, instance->viewerMode, shell);
-      djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
-      djview->setAttribute(Qt::WA_DeleteOnClose, false);
-      QLayout *layout = new QHBoxLayout(shell);
-      layout->setMargin(0);
-      layout->setSpacing(0);
-      layout->addWidget(djview);
       QObject::connect(djview, SIGNAL(pluginStatusMessage(QString)),
                        forwarder, SLOT(showStatus(QString)) );
       QObject::connect(djview, SIGNAL(pluginGetUrl(QUrl,QString)),
@@ -1406,6 +1408,19 @@ QDjViewPlugin::registerForDeletion(QObject *p)
 }
 
 
+
+
+// ----------------------------------------
+// HOT FIXES FOR EARLY QT4...
+
+#if QT_VERSION < 0x40100
+QList<QPair<QString, QString> > 
+QUrl::queryItems() const
+{
+  QList<QPair<QString, QString> > empty;
+  return empty;
+}
+#endif
 
 
 // ----------------------------------------
