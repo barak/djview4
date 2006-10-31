@@ -102,6 +102,7 @@ public slots:
   void quit();
   void dispatch();
   void lastViewerClosed();
+  void continueExec();
 };
 
 
@@ -351,6 +352,11 @@ QDjViewPlugin::Forwarder::lastViewerClosed()
   dispatcher->lastViewerClosed();
 }
 
+void 
+QDjViewPlugin::Forwarder::continueExec()
+{
+  dispatcher->continueExec();
+}
 
 bool 
 QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
@@ -1217,21 +1223,10 @@ QDjViewPlugin::exec()
       // dispatch until we get display
       while (!application && !quitFlag)
         dispatch();
-      // handle events 
-      while (!quitFlag)
+      // start application
+      if (application && forwarder)
         {
-          QEventLoop loop;
-          eventLoop = &loop;
-          eventLoop->exec();
-          eventLoop = 0;
-          foreach(QObject *o, pendingDelete)
-            delete o;
-          pendingDelete.clear();
-        }
-      // make sure we do everything QApplication::exec() does.
-      if (application)
-        {
-          QTimer::singleShot(0, application, SLOT(quit()));
+          QTimer::singleShot(0, forwarder, SLOT(continueExec()));
           application->exec();
         }
       qWarning("end netscape mode");
@@ -1242,6 +1237,34 @@ QDjViewPlugin::exec()
       returnCode = 10;
     }
   return returnCode;
+}
+
+
+void 
+QDjViewPlugin::continueExec()
+{
+  try 
+    {
+      // handle events in private loop
+      while (!quitFlag)
+        {
+          QEventLoop loop;
+          eventLoop = &loop;
+          eventLoop->exec();
+          eventLoop = 0;
+          // see registerForDeletion()
+          foreach(QObject *o, pendingDelete)
+            delete o;
+          pendingDelete.clear();
+        }
+      if (application)
+        application->exit(returnCode);
+    }
+  catch(int err)
+    {
+      reportError(err);
+      returnCode = 10;
+    }
 }
 
 
@@ -1401,12 +1424,14 @@ QDjViewPlugin::registerForDeletion(QObject *p)
   // Otherwise Instance::destroy() might
   // delete window modal dialogs while
   // they are running.
-  if (eventLoop)
+  if (application)
     {
       pendingDelete.append(p);
-      eventLoop->exit(0);
+      if (eventLoop)
+        eventLoop->exit(0);
       return;
     }
+  // Fallback
   p->deleteLater();
 }
 

@@ -90,6 +90,7 @@ private:
   Instance *findInstance(QDjView *djview);
   void getUrl(Instance *instance, QUrl url, QString target);
   void showStatus(Instance *instance, QString message);
+  void continueExec();
   void dispatch();
   void lastViewerClosed();
   void registerForDeletion(QObject*);
