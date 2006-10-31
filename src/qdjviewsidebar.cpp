@@ -663,10 +663,12 @@ QDjViewThumbnails::Model::makeIcon(int pageno) const
           painter.end();
           return QIcon(pixmap);
         }
+#if QT_VERSION >= 0x40100
+      // we know this is a repaint request because size hint
+      // requests are taken care of by Qt::SizeHintRole.
       else if (ddjvu_thumbnail_status(*doc,pageno,0)==DDJVU_JOB_NOTSTARTED)
-        {
-          const_cast<Model*>(this)->scheduleRefresh();
-        }
+        const_cast<Model*>(this)->scheduleRefresh();
+#endif
     }
   return icon;
 }
@@ -749,10 +751,15 @@ QDjViewThumbnails::View::View(QDjViewThumbnails *widget)
   setMovement(QListView::Static);
   setResizeMode(QListView::Adjust);
   setLayoutMode(QListView::Batched);
+  setSpacing(8);
 #if QT_VERSION >= 0x040100
   setUniformItemSizes(true);
 #endif
-  setSpacing(8);
+#if QT_VERSION < 0x040100
+  // hack to request thumbnail computations.
+  connect((QObject*)verticalScrollBar(), SIGNAL(sliderMoved(int)),
+          (QObject*)widget->model, SLOT(scheduleRefresh()) );
+#endif
 }
 
 
