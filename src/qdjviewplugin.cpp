@@ -852,26 +852,23 @@ QDjViewPlugin::cmdAttachWindow()
   QDjView *djview = instance->djview;
   if (! shell)
     {
+#if QT_VERSION >= 0x40100
       if (xembedFlag)
         {
-#if QT_VERSION >= 0x40100
           QX11EmbedWidget *embed = new QX11EmbedWidget();
           shell = embed;
           shell->setObjectName("djvu_shell");
           shell->setGeometry(0, 0, width, height);
           embed->embedInto(window);
-#endif
         }
       else
+#endif
         {
           shell = new QWidget();
           shell->setObjectName("djvu_shell");
           shell->setGeometry(0, 0, width, height);
           Display *dpy = QX11Info::display();
           XReparentWindow(dpy, shell->winId(), window, 0,0);
-#if QT_VERSION < 0x40100
-          shell->show();
-#endif
         }
       djview = new QDjView(*context, instance->viewerMode, shell);
       djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
@@ -989,7 +986,7 @@ QDjViewPlugin::cmdNewStream()
   if (instances.contains(instance))
     {
       // first stream
-      if (! streams.size())
+      if (! instance->url.isValid())
         {
           instance->url = url;
           url = QDjView::removeDjVuCgiArguments(url);
