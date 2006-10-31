@@ -1420,8 +1420,19 @@ QDjViewPlugin::registerForDeletion(QObject *p)
 QList<QPair<QString, QString> > 
 QUrl::queryItems() const
 {
-  QList<QPair<QString, QString> > empty;
-  return empty;
+  QList<QPair<QString, QString> > items;
+  QByteArray query = encodedQuery();
+  QList<QByteArray> pairs = query.split('&');
+  for (int i=0; i<pairs.count(); i++)
+    {
+      QList<QByteArray> pair = pairs[i].split('=');
+      if (pair.size() == 1)
+        items << qMakePair(QUrl::fromPercentEncoding(pair.at(0)), QString());
+      else if (pair.size() == 2)
+        items << qMakePair(QUrl::fromPercentEncoding(pair.at(0)),
+                           QUrl::fromPercentEncoding(pair.at(1)) );
+    }
+  return items;
 }
 #endif
 
