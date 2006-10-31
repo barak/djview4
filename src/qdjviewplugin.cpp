@@ -417,6 +417,13 @@ QDjViewPlugin::Instance::open()
       document = new QDjViewPlugin::Document(this);
       djview->open(document, url);
       restore(djview->getDjVuWidget());
+#if QT_VERSION < 0x40100
+      if (!dispatcher->xembedFlag)
+        {
+          Display *dpy = QX11Info::display();
+          XMapWindow(dpy, shell->winId());
+        }
+#endif
       shell->show();
     }
 }
