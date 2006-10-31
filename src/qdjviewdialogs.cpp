@@ -515,7 +515,10 @@ QDjViewInfoDialog::fillDocRow(int i)
   
   QTableWidgetItem *titleItem = new QTableWidgetItem();
   if (info.type == 'P')
-    titleItem->setText(QString(" %1 ").arg(d->djview->pageName(info.pageno)));
+    {
+      QString title = d->djview->pageName(info.pageno, true);
+      titleItem->setText(QString(" %1 ").arg(title));
+    }
   titleItem->setTextAlignment(Qt::AlignLeft|Qt::AlignVCenter);
   titleItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
   table->setItem(i, 5, titleItem);

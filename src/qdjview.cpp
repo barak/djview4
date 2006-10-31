@@ -2242,11 +2242,15 @@ QDjView::pageNum(void)
 /*! Return a name for page \a pageno. */
 
 QString 
-QDjView::pageName(int pageno)
+QDjView::pageName(int pageno, bool titleonly)
 {
+  // obtain page title
   if (pageno>=0 && pageno<documentPages.size())
     if ( documentPages[pageno].title )
       return QString::fromUtf8(documentPages[pageno].title);
+  if (titleonly)
+    return QString();
+  // generate a name from the page number
   if (hasNumericalPageTitle)
     return QString("#%1").arg(pageno + 1);
   return QString("%1").arg(pageno + 1);
