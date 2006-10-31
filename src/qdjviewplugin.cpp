@@ -860,40 +860,26 @@ QDjViewPlugin::cmdAttachWindow()
           shell->setObjectName("djvu_shell");
           shell->setGeometry(0, 0, width, height);
           embed->embedInto(window);
-          djview = new QDjView(*context, instance->viewerMode, shell);
-          djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
-          djview->setAttribute(Qt::WA_DeleteOnClose, false);
-          QLayout *layout = new QHBoxLayout(shell);
-          layout->setMargin(0);
-          layout->setSpacing(0);
-          layout->addWidget(djview);
 #endif
         }
       else
         {
-#if QT_VERSION >= 0x40100
           shell = new QWidget();
           shell->setObjectName("djvu_shell");
           shell->setGeometry(0, 0, width, height);
           Display *dpy = QX11Info::display();
           XReparentWindow(dpy, shell->winId(), window, 0,0);
-          djview = new QDjView(*context, instance->viewerMode, shell);
-          djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
-          djview->setAttribute(Qt::WA_DeleteOnClose, false);
-          QLayout *layout = new QHBoxLayout(shell);
-          layout->setMargin(0);
-          layout->setSpacing(0);
-          layout->addWidget(djview);
-#else
-          shell = djview = new QDjView(*context, instance->viewerMode);
-          djview->setAttribute(Qt::WA_DeleteOnClose, false);
-          shell->setObjectName("djvu_shell");
-          shell->setGeometry(0, 0, width, height);
-          Display *dpy = QX11Info::display();
-          XReparentWindow(dpy, shell->winId(), window, 0,0);
+#if QT_VERSION < 0x40100
           shell->show();
 #endif
         }
+      djview = new QDjView(*context, instance->viewerMode, shell);
+      djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
+      djview->setAttribute(Qt::WA_DeleteOnClose, false);
+      QLayout *layout = new QHBoxLayout(shell);
+      layout->setMargin(0);
+      layout->setSpacing(0);
+      layout->addWidget(djview);
       QObject::connect(djview, SIGNAL(pluginStatusMessage(QString)),
                        forwarder, SLOT(showStatus(QString)) );
       QObject::connect(djview, SIGNAL(pluginGetUrl(QUrl,QString)),
