@@ -937,6 +937,7 @@ QDjViewSaveDialog::save()
                             tr("&Overwrite"),
                             tr("&Cancel") ) )
     return;
+#if QT_VERSION >= 0x40100
   if (d->ui.indirectButton->isChecked() &&
       !dir.entryList(QDir::AllEntries|QDir::NoDotAndDotDot).isEmpty() &&
       QMessageBox::question(this, tr("Directory is not empty"),
@@ -948,6 +949,7 @@ QDjViewSaveDialog::save()
                             tr("Con&tinue"),
                             tr("&Cancel") ) )
     return;
+#endif
   
   QByteArray pagespec;
   int curpage = d->djview->getDjVuWidget()->page();

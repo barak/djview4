@@ -702,12 +702,14 @@ QDjViewThumbnails::Model::data(const QModelIndex &index, int role) const
               return names[pageno];
             case Qt::DecorationRole:
               return makeIcon(pageno);
-            case Qt::SizeHintRole:
-              return makeHint(pageno);
             case Qt::WhatsThisRole:
               return widget->whatsThis();
             case Qt::UserRole:
               return pageno;
+#if QT_VERSION >= 0x040100
+            case Qt::SizeHintRole:
+              return makeHint(pageno);
+#endif
             default:
               break;
             }
@@ -747,7 +749,9 @@ QDjViewThumbnails::View::View(QDjViewThumbnails *widget)
   setMovement(QListView::Static);
   setResizeMode(QListView::Adjust);
   setLayoutMode(QListView::Batched);
+#if QT_VERSION >= 0x040100
   setUniformItemSizes(true);
+#endif
   setSpacing(8);
 }
 

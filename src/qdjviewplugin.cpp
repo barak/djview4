@@ -68,7 +68,9 @@
 # undef CursorShape
 
 # include <QX11Info>
-# include <QX11EmbedWidget>
+# if QT_VERSION >= 0x040100
+#  include <QX11EmbedWidget>
+# endif
 
 
 // ========================================
@@ -839,8 +841,10 @@ QDjViewPlugin::cmdAttachWindow()
       timer->start(5*60*1000);
       QObject::connect(timer, SIGNAL(timeout()), 
                        forwarder, SLOT(quit()));
+#if QT_VERSION >= 0x40100
       if (protocol.startsWith("XEMBED"))
         xembedFlag = true;
+#endif
     }
   
   // create djview object
@@ -848,18 +852,22 @@ QDjViewPlugin::cmdAttachWindow()
   QDjView *djview = instance->djview;
   if (! shell)
     {
+#if QT_VERSION >= 0x40100
       if (xembedFlag)
         shell = new QX11EmbedWidget();
       else
+#endif
         shell = new QWidget();
       shell->setObjectName("djvu_shell");
       shell->setGeometry(0, 0, width, height);
+#if QT_VERSION >= 0x40100
       if (xembedFlag)
         {
           QX11EmbedWidget *embed = static_cast<QX11EmbedWidget*>(shell);
           embed->embedInto(window);
         }
       else
+#endif
         {
           Display *dpy = QX11Info::display();
           XReparentWindow(dpy, shell->winId(), window, 0,0);
