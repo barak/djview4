@@ -1206,7 +1206,7 @@ QDjViewPlugin::exec()
 #endif
   try 
     {
-      qDebug() << "begin netscape mode";
+      qWarning("begin netscape mode");
       // startup message
       writeString(pipeWrite, QByteArray("Here am I"));
       // dispatch until we get display
@@ -1224,9 +1224,12 @@ QDjViewPlugin::exec()
           pendingDelete.clear();
         }
       // make sure we do everything QApplication::exec() does.
-      QTimer::singleShot(0, application, SLOT(quit()));
-      application->exec();
-      qDebug() << "end netscape mode";
+      if (application)
+        {
+          QTimer::singleShot(0, application, SLOT(quit()));
+          application->exec();
+        }
+      qWarning("end netscape mode");
     }
   catch(int err)
     {
