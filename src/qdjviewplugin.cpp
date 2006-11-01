@@ -1257,14 +1257,14 @@ QDjViewPlugin::continueExec()
             delete o;
           pendingDelete.clear();
         }
-      if (application)
-        application->exit(returnCode);
     }
   catch(int err)
     {
       reportError(err);
       returnCode = 10;
     }
+  if (application)
+    application->exit(returnCode);
 }
 
 
