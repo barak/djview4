@@ -1057,10 +1057,8 @@ QDjViewSaveDialog::error(QString message, QString filename, int lineno)
 void 
 QDjViewSaveDialog::done(int result)
 {
-  stop();
   if (d->job)
-    delete d->job;
-  d->job = 0;
+    stop();
   if (d->output && result == QDialog::Rejected)
     QFile(d->ui.fileNameEdit->text()).remove();
   if (d->output)

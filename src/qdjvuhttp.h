@@ -31,6 +31,7 @@ class QDjVuHttpDocument : public QDjVuDocument
   Q_OBJECT
 
 public:
+  ~QDjVuHttpDocument();
   QDjVuHttpDocument(int nConnections=4, bool autoDelete=false, 
                     QObject *parent=0);
   QDjVuHttpDocument(bool autoDelete, QObject *parent=0);

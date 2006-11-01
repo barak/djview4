@@ -85,6 +85,20 @@ QDjVuHttpDocument::QDjVuHttpDocument(QObject *parent)
 }
 
 
+
+/*! Destructor.
+  Destroying the objecy stops all streams. */
+
+QDjVuHttpDocument::~QDjVuHttpDocument()
+{
+  for (int i=0; i<connections.size(); i++)
+    ddjvu_stream_close(*this, connections[i].streamid, true);
+  foreach(Req req, requests)
+    ddjvu_stream_close(*this, req.streamid, true);
+}
+
+
+
 /*! Specify an HTTP proxy. */
 
 void 

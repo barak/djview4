@@ -1211,15 +1211,18 @@ QDjViewPlugin::exec()
   if (s && strcmp(s,"0"))
     {
       static int loop = 1;
+      qWarning("QDjViewPlugin::exec() looping for gdb");
       while (loop)
         sleep(1);
     }
 #endif
+  returnCode = 0;
+  quitFlag = false;
+  qWarning("QDjViewPlugin::exec() begin");
   try 
     {
-      qWarning("begin netscape mode");
       // startup message
-      writeString(pipeWrite, QByteArray("Here am I"));
+      writeString(pipeWrite, QByteArray("DJVIEW/4"));
       // dispatch until we get display
       while (!application && !quitFlag)
         dispatch();
@@ -1229,13 +1232,13 @@ QDjViewPlugin::exec()
           QTimer::singleShot(0, forwarder, SLOT(continueExec()));
           application->exec();
         }
-      qWarning("end netscape mode");
     }
   catch(int err)
     {
       reportError(err);
       returnCode = 10;
     }
+  qWarning("QDjViewPlugin::exec() end code=%d", returnCode);
   return returnCode;
 }
 
