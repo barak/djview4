@@ -664,8 +664,10 @@ QDjViewThumbnails::Model::makeIcon(int pageno) const
           return QIcon(pixmap);
         }
 #if QT_VERSION >= 0x40100
-      // we know this is a repaint request because size hint
-      // requests are taken care of by Qt::SizeHintRole.
+      // We know this is not a sizehint request because the
+      // sizehint code calls Model::data(Qt::SizeHintRole) first.
+      // Therefore it must be a paint request and we can
+      // safely request thumbnail calculations.
       else if (ddjvu_thumbnail_status(*doc,pageno,0)==DDJVU_JOB_NOTSTARTED)
         const_cast<Model*>(this)->scheduleRefresh();
 #endif
@@ -756,7 +758,8 @@ QDjViewThumbnails::View::View(QDjViewThumbnails *widget)
   setUniformItemSizes(true);
 #endif
 #if QT_VERSION < 0x040100
-  // hack to request thumbnail computations.
+  // Hack to request thumbnail computations because
+  // we cannot do it efficiently in Model::makeData().
   connect((QObject*)verticalScrollBar(), SIGNAL(sliderMoved(int)),
           (QObject*)widget->model, SLOT(scheduleRefresh()) );
 #endif
