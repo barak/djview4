@@ -87,7 +87,7 @@ QDjVuHttpDocument::QDjVuHttpDocument(QObject *parent)
 
 
 /*! Destructor.
-  Destroying the objecy stops all streams. */
+  Destroying the http document stops all streams. */
 
 QDjVuHttpDocument::~QDjVuHttpDocument()
 {
