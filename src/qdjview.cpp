@@ -1578,12 +1578,11 @@ QDjView::parseArgument(QString key, QString value)
       if (! showSideBar(value+",outline"))
         illegal_value(key, value, errors);
     }
-  else if (key == "url")
+  else if (key == "src" && viewerMode != STANDALONE)
     {
-      if (viewerMode != STANDALONE)
-        errors << tr("Option '%1' requires a standalone viewer.").arg(key);
-      else
-        pendingUrl = value;        
+      // parseArgument("src", someurl) redirects the viewer.
+      // This could be used to set javascript properties.
+      pendingUrl = value;        
       if (! pendingUrl.isEmpty())
         performPendingLater();
     }
