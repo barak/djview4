@@ -1578,6 +1578,11 @@ QDjView::parseArgument(QString key, QString value)
       if (! showSideBar(value+",outline"))
         illegal_value(key, value, errors);
     }
+  else if (key == "find")
+    {
+      showSideBar("find");
+      pendingFind = value;
+    }
   else if (key == "src" && viewerMode != STANDALONE)
     {
       // parseArgument("src", someurl) redirects the viewer.
@@ -2708,8 +2713,15 @@ QDjView::performPending()
         }
       if (pendingSearch.size() > 0)
         {
-          // TODO
+          // TODO: hilite search terms
           pendingSearch.clear();
+        }
+      if (pendingFind.size())
+        {
+          // TODO: run find dialog
+          // findWidget->setText(pendingFind);
+          // findWidget->start();
+          pendingFind.clear();
         }
     }
   performPendingScheduled = false;
