@@ -78,9 +78,9 @@ class QDjView : public QMainWindow
   QString             getDocumentFileName() { return documentFileName; }
   QUrl                getDocumentUrl()      { return documentUrl; }
   QString             getShortFileName();
-
-  QStringList  parseArgument(QString key, QString value);
-  QStringList  parseArgument(QString keyEqualValue);
+  
+  QStringList  parseArgument(QString key, QString val);
+  QStringList  parseArgument(QString keyEqualVal);
   void         parseDjVuCgiArguments(QUrl url);
   static QUrl  removeDjVuCgiArguments(QUrl url);
   
@@ -222,6 +222,7 @@ protected:
   QString           pendingPage;
   QList<StringPair> pendingHilite;
   QList<StringPair> pendingSearch;
+  QString           pendingFind;
   // delayed updates
   bool  updateActionsScheduled;
   bool  performPendingScheduled;

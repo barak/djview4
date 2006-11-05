@@ -118,8 +118,8 @@ public:
   int runningProcesses(void);
   miniexp_t getDocumentAnnotations();
   miniexp_t getDocumentOutline();
-  miniexp_t getPageAnnotations(int pageno);
-  miniexp_t getPageText(int pageno);
+  miniexp_t getPageAnnotations(int pageno, bool start=true);
+  miniexp_t getPageText(int pageno, bool start=true);
 
 
 signals:

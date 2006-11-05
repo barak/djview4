@@ -635,13 +635,13 @@ QDjVuDocument::getDocumentOutline()
 }
 
 /*! Obtains the cached annotations for page \a pageno.
-  This function returns \a miniexp_dummy if this 
-  information is not yet available.
-  Check again some time after 
-  receiving signal \a pageinfo(). */
+  If this information is not yet available, 
+  this function returns \a miniexp_dummy 
+  and, if \a start is true, starts loading the page data.
+  Check again after receiving signal \a pageinfo(). */
 
 miniexp_t 
-QDjVuDocument::getPageAnnotations(int pageno)
+QDjVuDocument::getPageAnnotations(int pageno, bool start)
 {
   QMutexLocker locker(&priv->mutex);  
   if (! priv->docReady)
@@ -651,6 +651,8 @@ QDjVuDocument::getPageAnnotations(int pageno)
   minivar_t expr = priv->pageAnnotations[pageno];
   if (expr != miniexp_dummy)
     return expr;
+  if (! (start && ddjvu_document_check_pagedata(*this, pageno)))
+    return expr;
   expr = ddjvu_document_get_pageanno(document, pageno);
   ddjvu_miniexp_release(document, expr);
   if (expr != miniexp_dummy)
@@ -659,13 +661,13 @@ QDjVuDocument::getPageAnnotations(int pageno)
 }
 
 /*! Obtains the cached hidden text for page \a pageno.
-  This function returns \a miniexp_dummy if this 
-  information is not yet available.
-  Check again some time after 
-  receiving signal \a pageinfo(). */
+  If this information is not yet available, 
+  this function returns \a miniexp_dummy 
+  and, if \a start is true, starts loading the page data.
+  Check again after receiving signal \a pageinfo(). */
 
 miniexp_t 
-QDjVuDocument::getPageText(int pageno)
+QDjVuDocument::getPageText(int pageno, bool start)
 {
   QMutexLocker locker(&priv->mutex);  
   if (! priv->docReady)
@@ -674,6 +676,8 @@ QDjVuDocument::getPageText(int pageno)
     return miniexp_dummy;
   minivar_t expr = priv->pageText[pageno];
   if (expr != miniexp_dummy)
+    return expr;
+  if (! (start && ddjvu_document_check_pagedata(*this, pageno)))
     return expr;
   expr = ddjvu_document_get_pagetext(document, pageno, 0);
   ddjvu_miniexp_release(document, expr);
