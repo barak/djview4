@@ -103,6 +103,44 @@ private:
 
 
 
+// ----------------------------------------
+// THUMBNAILS
+
+
+class QDjViewFind : public QWidget
+{
+  Q_OBJECT
+  Q_PROPERTY(QString text READ text WRITE setText)
+  Q_PROPERTY(bool caseSensitive READ caseSensitive WRITE setCaseSensitive)
+  Q_PROPERTY(bool wordOnly READ wordOnly WRITE setWordOnly)
+public:
+  ~QDjViewFind();
+  QDjViewFind(QDjView *djview);
+  void takeFocus(Qt::FocusReason);
+  QString text();
+  bool caseSensitive();
+  bool wordOnly();
+public slots:
+  void eraseText();
+  void setText(QString s);
+  void setCaseSensitive(bool);
+  void setWordOnly(bool);
+  void findNext();
+  void findPrev();
+protected slots:
+  void pageinfo();
+  void textChanged();
+  void pageChanged(int);
+  void documentClosed(QDjVuDocument*);
+  void documentReady(QDjVuDocument*);
+private:
+  QDjView *djview;
+  struct Private;
+  Private *d;
+};
+
+
+
 #endif
 /* -------------------------------------------------------------
    Local Variables:

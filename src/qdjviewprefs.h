@@ -77,7 +77,7 @@ public:
     TOOL_BACKFORW     = 0x00080,
     TOOL_NEW          = 0x00100,
     TOOL_OPEN         = 0x00200,
-    TOOL_SEARCH       = 0x00400,
+    TOOL_FIND         = 0x00400,
     TOOL_SELECT       = 0x00800,
     TOOL_SAVE         = 0x01000,
     TOOL_PRINT        = 0x02000,

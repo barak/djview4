@@ -31,6 +31,8 @@
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QItemDelegate>
+#include <QLabel>
+#include <QLineEdit>
 #include <QList>
 #include <QListView>
 #include <QMenu>
@@ -40,6 +42,7 @@
 #include <QResizeEvent>
 #include <QStringList>
 #include <QTimer>
+#include <QToolBar>
 #include <QTreeWidget>
 #include <QVariant>
 #include <QVBoxLayout>
@@ -777,6 +780,197 @@ QDjViewThumbnails::View::viewOptions() const
   opt.displayAlignment = Qt::AlignCenter;
   return opt;
 }
+
+
+
+
+
+// ----------------------------------------
+// FIND
+
+
+
+struct QDjViewFind::Private
+{
+  QToolBar  *tools;
+  QLineEdit *edit;
+  QLabel *label;
+  bool caseSensitive;
+  bool wordOnly;
+  QMenu *menu;
+};
+
+
+QDjViewFind::~QDjViewFind()
+{
+  delete d;
+}
+
+
+QDjViewFind::QDjViewFind(QDjView *djview)
+  : QWidget(djview), 
+    djview(djview), 
+    d(new Private)
+{
+  d->caseSensitive = false;
+  d->wordOnly = true;
+
+  
+  QAction *eraseAction;
+  eraseAction = new QAction(tr("Erase text"), this);
+  eraseAction->setIcon(QIcon(":/images/icon_erase.png"));
+  connect(eraseAction, SIGNAL(triggered()), 
+          this, SLOT(eraseText()));
+  
+  QAction *caseSensitiveAction;
+  caseSensitiveAction = new QAction(tr("Case sensitive"), this);
+  caseSensitiveAction->setCheckable(true);
+  caseSensitiveAction->setChecked(d->caseSensitive);
+  connect(caseSensitiveAction, SIGNAL(triggered(bool)),
+          this, SLOT(setCaseSensitive(bool)));
+ 
+  QAction *wordOnlyAction;
+  wordOnlyAction = new QAction(tr("Words only"), this);
+  wordOnlyAction->setCheckable(true);
+  wordOnlyAction->setChecked(d->wordOnly);
+  connect(wordOnlyAction, SIGNAL(triggered(bool)),
+          this, SLOT(setWordOnly(bool)));
+ 
+  d->menu = new QMenu(this);
+  d->menu->addAction(caseSensitiveAction);
+  d->menu->addAction(wordOnlyAction);
+  
+  d->tools = new QToolBar(this);
+  d->tools->addAction(eraseAction);
+  d->edit = new QLineEdit(d->tools);
+  d->tools->addWidget(d->edit);
+  d->tools->setSizePolicy(QSizePolicy::Expanding, 
+                          QSizePolicy::Minimum);
+  d->label = new QLabel("more stuff here",this);
+  d->label->setAlignment(Qt::AlignCenter);
+  d->label->setSizePolicy(QSizePolicy::MinimumExpanding, 
+                          QSizePolicy::MinimumExpanding);
+    
+  QBoxLayout *vlayout = new QVBoxLayout(this);
+  vlayout->addWidget(d->tools);
+  vlayout->addWidget(d->label);
+  
+  connect(djview, SIGNAL(documentClosed(QDjVuDocument*)),
+          this, SLOT(documentClosed(QDjVuDocument*)) );
+  connect(djview, SIGNAL(documentReady(QDjVuDocument*)),
+          this, SLOT(documentReady(QDjVuDocument*)) );
+  connect(djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
+          this, SLOT(pageChanged(int)));
+  connect(d->edit, SIGNAL(textChanged(QString)),
+          this, SLOT(textChanged()));
+}
+
+
+void
+QDjViewFind::takeFocus(Qt::FocusReason reason)
+{
+  d->edit->setFocus(reason);
+}
+
+
+QString 
+QDjViewFind::text()
+{
+  return d->edit->text();
+}
+
+
+bool 
+QDjViewFind::caseSensitive()
+{
+  return d->caseSensitive;
+}
+
+
+bool 
+QDjViewFind::wordOnly()
+{
+  return d->wordOnly;
+}
+
+
+void 
+QDjViewFind::setText(QString s)
+{
+  if (s != text())
+    d->edit->setText(s);
+}
+
+
+void 
+QDjViewFind::eraseText()
+{
+  setText(QString());
+}
+
+
+void 
+QDjViewFind::setCaseSensitive(bool b)
+{
+  if (b != d->caseSensitive)
+    {
+      d->caseSensitive = b;
+      textChanged();
+    }
+}
+
+
+void 
+QDjViewFind::setWordOnly(bool b)
+{
+  if (b != d->wordOnly)
+    {
+      d->wordOnly = b;
+      textChanged();
+    }
+}
+
+
+void 
+QDjViewFind::findNext()
+{
+}
+
+
+void 
+QDjViewFind::findPrev()
+{
+}
+
+
+void 
+QDjViewFind::pageinfo()
+{
+}
+
+
+void 
+QDjViewFind::documentClosed(QDjVuDocument*)
+{
+}
+
+void 
+QDjViewFind::documentReady(QDjVuDocument*)
+{
+}
+
+void 
+QDjViewFind::textChanged()
+{
+  qDebug() << "find text changed" << d->edit->text();
+}
+
+void 
+QDjViewFind::pageChanged(int)
+{
+  qDebug() << "find page changed";
+}
+
 
 
 

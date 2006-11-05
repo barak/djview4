@@ -46,6 +46,7 @@ class QComboBox;
 class QDockWidget;
 class QDjViewOutline;
 class QDjViewThumbnails;
+class QDjViewFind;
 class QFileDialog;
 class QLabel;
 class QMenu;
@@ -111,6 +112,7 @@ public slots:
   bool  showSideBar(QString args);
   void  print(void);
   void  save(void);
+  void  find(QString find = QString());
   void  fillZoomCombo(QComboBox *zoomCombo);
   void  fillModeCombo(QComboBox *modeCombo);
   void  fillPageCombo(QComboBox *pageCombo);
@@ -209,6 +211,7 @@ protected:
   QToolBox           *sideToolBox;
   QDjViewOutline     *outlineWidget;
   QDjViewThumbnails  *thumbnailWidget;
+  QDjViewFind        *findWidget;
   // document data
   QDjVuContext           &djvuContext;
   QDjVuDocument          *document;
@@ -239,7 +242,7 @@ protected:
   QAction *actionSave;
   QAction *actionExport;
   QAction *actionPrint;
-  QAction *actionSearch;
+  QAction *actionFind;
   QAction *actionSelect;
   QAction *actionZoomIn;
   QAction *actionZoomOut;

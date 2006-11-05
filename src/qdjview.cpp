@@ -162,9 +162,9 @@ QDjView::fillToolBar(QToolBar *toolBar)
     {
       toolBar->addAction(actionPrint);
     }
-  if (tools & QDjViewPrefs::TOOL_SEARCH)
+  if (tools & QDjViewPrefs::TOOL_FIND)
     {
-      toolBar->addAction(actionSearch);
+      toolBar->addAction(actionFind);
     }
   if (tools & QDjViewPrefs::TOOL_SELECT)
     {
@@ -370,10 +370,11 @@ QDjView::createActions()
     << tr("Print the DjVu document.")
     << Trigger(this, SLOT(print()));
 
-  actionSearch = makeAction(tr("&Find..."))
+  actionFind = makeAction(tr("&Find..."))
     << QKeySequence(tr("Ctrl+F", "Find"))
     << QIcon(":/images/icon_find.png")
-    << tr("Find text in the document.");
+    << tr("Find text in the document.")
+    << Trigger(this, SLOT(find()));
 
   actionSelect = makeAction(tr("&Select"), false)
     << QIcon(":/images/icon_select.png")
@@ -630,7 +631,7 @@ QDjView::createMenus()
     fileMenu->addAction(actionQuit);
   QMenu *editMenu = menuBar->addMenu(tr("&Edit", "Edit|"));
   editMenu->addAction(actionSelect);
-  editMenu->addAction(actionSearch);
+  editMenu->addAction(actionFind);
   editMenu->addSeparator();
   editMenu->addAction(actionInformation);
   editMenu->addAction(actionMetadata);
@@ -722,7 +723,7 @@ QDjView::createMenus()
   contextMenu->addAction(actionLayoutContinuous);
   contextMenu->addAction(actionLayoutSideBySide);
   contextMenu->addSeparator();
-  contextMenu->addAction(actionSearch);
+  contextMenu->addAction(actionFind);
   contextMenu->addAction(actionInformation);
   contextMenu->addAction(actionMetadata);
   contextMenu->addSeparator();
@@ -1293,8 +1294,8 @@ QDjView::parseToolBarOption(QString option, QStringList &errors)
         set_reset(tools, plus, minus, QDjViewPrefs::TOOL_ZOOMBUTTONS);
       else if (key=="rotate")
         set_reset(tools, plus, minus, QDjViewPrefs::TOOL_ROTATE);
-      else if (key=="search")
-        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_SEARCH);
+      else if (key=="search" || key=="find")
+        set_reset(tools, plus, minus, QDjViewPrefs::TOOL_FIND);
       else if (key=="print")
         set_reset(tools, plus, minus, QDjViewPrefs::TOOL_PRINT);
       else if (key=="save")
@@ -1840,6 +1841,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   addDockWidget(Qt::LeftDockWidgetArea, sideBar);
   sideBar->installEventFilter(this);
   sideToolBox = new QToolBox(sideBar);
+  sideToolBox->setBackgroundRole(QPalette::Background);
   sideBar->setWidget(sideToolBox);
   
   // - sidebar components
@@ -1847,8 +1849,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   sideToolBox->addItem(thumbnailWidget, tr("&Thumbnails"));
   outlineWidget = new QDjViewOutline(this);
   sideToolBox->addItem(outlineWidget, tr("&Outline")); 
-  QLabel *findWidget = new QLabel("search stuff here",sideToolBox);
-  findWidget->setAlignment(Qt::AlignCenter);
+  findWidget = new QDjViewFind(this);
   sideToolBox->addItem(findWidget, tr("&Find")); 
 
   // Actions
@@ -2208,6 +2209,19 @@ QDjView::save()
   sd->show();
   sd->raise();
 }
+
+
+/*! Pops up the find interface with text \a find. */
+void 
+QDjView::find(QString find)
+{
+  if (! find.isNull())
+    findWidget->setText(find);
+  showSideBar("find");
+  findWidget->takeFocus(Qt::ShortcutFocusReason);
+}
+
+
 
 
 
@@ -2718,9 +2732,7 @@ QDjView::performPending()
         }
       if (pendingFind.size())
         {
-          // TODO: run find dialog
-          // findWidget->setText(pendingFind);
-          // findWidget->start();
+          find(pendingFind);
           pendingFind.clear();
         }
     }
