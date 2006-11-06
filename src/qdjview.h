@@ -243,6 +243,8 @@ protected:
   QAction *actionExport;
   QAction *actionPrint;
   QAction *actionFind;
+  QAction *actionFindNext;
+  QAction *actionFindPrev;
   QAction *actionSelect;
   QAction *actionZoomIn;
   QAction *actionZoomOut;

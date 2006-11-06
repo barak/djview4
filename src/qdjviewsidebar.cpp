@@ -24,6 +24,7 @@
 #include <QAction>
 #include <QActionGroup>
 #include <QContextMenuEvent>
+#include <QCheckBox>
 #include <QDebug>
 #include <QEvent>
 #include <QFont>
@@ -38,6 +39,7 @@
 #include <QMenu>
 #include <QPainter>
 #include <QPainterPath>
+#include <QPushButton>
 #include <QPixmap>
 #include <QResizeEvent>
 #include <QStringList>
@@ -792,12 +794,11 @@ QDjViewThumbnails::View::viewOptions() const
 
 struct QDjViewFind::Private
 {
-  QToolBar  *tools;
   QLineEdit *edit;
-  QLabel *label;
+  QMenu *menu;
+  bool searchBackwards;
   bool caseSensitive;
   bool wordOnly;
-  QMenu *menu;
 };
 
 
@@ -812,48 +813,59 @@ QDjViewFind::QDjViewFind(QDjView *djview)
     djview(djview), 
     d(new Private)
 {
+  d->searchBackwards = false;
   d->caseSensitive = false;
   d->wordOnly = true;
-
   
-  QAction *eraseAction;
-  eraseAction = new QAction(tr("Erase text"), this);
+  QAction *eraseAction = new QAction(tr("Erase text"), this);
   eraseAction->setIcon(QIcon(":/images/icon_erase.png"));
-  connect(eraseAction, SIGNAL(triggered()), 
-          this, SLOT(eraseText()));
-  
-  QAction *caseSensitiveAction;
-  caseSensitiveAction = new QAction(tr("Case sensitive"), this);
+  QAction *caseSensitiveAction = new QAction(tr("Case sensitive"), this);
   caseSensitiveAction->setCheckable(true);
   caseSensitiveAction->setChecked(d->caseSensitive);
-  connect(caseSensitiveAction, SIGNAL(triggered(bool)),
-          this, SLOT(setCaseSensitive(bool)));
- 
-  QAction *wordOnlyAction;
-  wordOnlyAction = new QAction(tr("Words only"), this);
+  QAction *wordOnlyAction = new QAction(tr("Words only"), this);
   wordOnlyAction->setCheckable(true);
   wordOnlyAction->setChecked(d->wordOnly);
-  connect(wordOnlyAction, SIGNAL(triggered(bool)),
-          this, SLOT(setWordOnly(bool)));
- 
-  d->menu = new QMenu(this);
-  d->menu->addAction(caseSensitiveAction);
-  d->menu->addAction(wordOnlyAction);
   
-  d->tools = new QToolBar(this);
-  d->tools->addAction(eraseAction);
-  d->edit = new QLineEdit(d->tools);
-  d->tools->addWidget(d->edit);
-  d->tools->setSizePolicy(QSizePolicy::Expanding, 
-                          QSizePolicy::Minimum);
-  d->label = new QLabel("more stuff here",this);
-  d->label->setAlignment(Qt::AlignCenter);
-  d->label->setSizePolicy(QSizePolicy::MinimumExpanding, 
-                          QSizePolicy::MinimumExpanding);
-    
   QBoxLayout *vlayout = new QVBoxLayout(this);
-  vlayout->addWidget(d->tools);
-  vlayout->addWidget(d->label);
+  vlayout->setMargin(2);
+  
+  QToolBar *tools = new QToolBar(this);
+  tools->addAction(eraseAction);
+  QLineEdit *edit = new QLineEdit(tools);
+  tools->addWidget(edit);
+  tools->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+  vlayout->addWidget(tools);
+  
+  QMenu *menu = new QMenu(this);
+  menu->addAction(caseSensitiveAction);
+  menu->addAction(wordOnlyAction);
+
+  QBoxLayout *hlayout = new QHBoxLayout;
+  vlayout->addLayout(hlayout);
+  QPushButton *upButton = new QPushButton(this);
+  upButton->setIcon(QIcon(":/images/icon_up.png"));
+  hlayout->addWidget(upButton);
+  QPushButton *downButton = new QPushButton(this);
+  downButton->setIcon(QIcon(":/images/icon_down.png"));
+  hlayout->addWidget(downButton);
+  hlayout->addStretch(2);
+  QPushButton *optionButton = new QPushButton(tr("Options"), this);
+  optionButton->setMenu(menu);
+  optionButton->setFlat(true);
+  optionButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+  hlayout->addWidget(optionButton);
+  
+  QLabel *label = new QLabel("more stuff here",this);
+  label->setAutoFillBackground(true);
+  label->setBackgroundRole(QPalette::Base);
+  label->setAlignment(Qt::AlignCenter);
+  label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  label->setFrameShadow(QFrame::Sunken);
+  label->setFrameShape(QFrame::StyledPanel);
+  vlayout->addWidget(label);  
+  
+  d->edit = edit;
+  d->menu = menu;
   
   connect(djview, SIGNAL(documentClosed(QDjVuDocument*)),
           this, SLOT(documentClosed(QDjVuDocument*)) );
@@ -861,8 +873,28 @@ QDjViewFind::QDjViewFind(QDjView *djview)
           this, SLOT(documentReady(QDjVuDocument*)) );
   connect(djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
           this, SLOT(pageChanged(int)));
-  connect(d->edit, SIGNAL(textChanged(QString)),
+  connect(edit, SIGNAL(textChanged(QString)),
           this, SLOT(textChanged()));
+  connect(edit, SIGNAL(returnPressed()),
+          this, SLOT(findAgain()));
+  connect(eraseAction, SIGNAL(triggered()), 
+          this, SLOT(eraseText()));
+  connect(caseSensitiveAction, SIGNAL(triggered(bool)),
+          this, SLOT(setCaseSensitive(bool)));
+  connect(wordOnlyAction, SIGNAL(triggered(bool)),
+          this, SLOT(setWordOnly(bool)));
+  connect(upButton, SIGNAL(clicked()), 
+          this, SLOT(findPrev()));
+  connect(downButton, SIGNAL(clicked()), 
+          this, SLOT(findNext()));
+}
+
+
+void 
+QDjViewFind::contextMenuEvent(QContextMenuEvent *event)
+{
+  d->menu->exec(event->globalPos());
+  event->accept();
 }
 
 
@@ -934,12 +966,32 @@ QDjViewFind::setWordOnly(bool b)
 void 
 QDjViewFind::findNext()
 {
+  if (text().isEmpty())
+    djview->find();
+  
+  d->searchBackwards = false;
+  qDebug() << "findNext";
 }
 
 
 void 
 QDjViewFind::findPrev()
 {
+  if (text().isEmpty())
+    djview->find();
+  
+  d->searchBackwards = true;
+  qDebug() << "findPrev";
+}
+
+
+void 
+QDjViewFind::findAgain()
+{
+  if (d->searchBackwards)
+    findPrev();
+  else
+    findNext();
 }
 
 

@@ -127,12 +127,15 @@ public slots:
   void setWordOnly(bool);
   void findNext();
   void findPrev();
+  void findAgain();
 protected slots:
   void pageinfo();
   void textChanged();
   void pageChanged(int);
   void documentClosed(QDjVuDocument*);
   void documentReady(QDjVuDocument*);
+protected:
+  void contextMenuEvent(QContextMenuEvent *event);
 private:
   QDjView *djview;
   struct Private;

@@ -376,6 +376,16 @@ QDjView::createActions()
     << tr("Find text in the document.")
     << Trigger(this, SLOT(find()));
 
+  actionFindNext = makeAction(tr("Find &Next"))
+    << QKeySequence(tr("F3", "Find next"))
+    << tr("Find next occurence of search text in the document.")
+    << Trigger(findWidget, SLOT(findNext()));
+
+  actionFindPrev = makeAction(tr("Find &Previous"))
+    << QKeySequence(tr("Shift+F3", "Find previous"))
+    << tr("Find previous occurence of search text in the document.")
+    << Trigger(findWidget, SLOT(findPrev()));
+
   actionSelect = makeAction(tr("&Select"), false)
     << QIcon(":/images/icon_select.png")
     << tr("Select a rectangle in the document.")
@@ -587,14 +597,14 @@ QDjView::createActions()
 
   actionLayoutContinuous = makeAction(tr("&Continuous","Layout"), false)
     << QIcon(":/images/icon_continuous.png")
-    << QKeySequence("F2")
+    << QKeySequence("F4")
     << tr("Toggle continuous layout mode.")
     << Trigger(widget, SLOT(setContinuous(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
 
   actionLayoutSideBySide = makeAction(tr("Side &by side","Layout"), false)
     << QIcon(":/images/icon_sidebyside.png")
-    << QKeySequence("F3")
+    << QKeySequence("F5")
     << tr("Toggle side-by-side layout mode.")
     << Trigger(widget, SLOT(setSideBySide(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
@@ -632,6 +642,8 @@ QDjView::createMenus()
   QMenu *editMenu = menuBar->addMenu(tr("&Edit", "Edit|"));
   editMenu->addAction(actionSelect);
   editMenu->addAction(actionFind);
+  editMenu->addAction(actionFindNext);
+  editMenu->addAction(actionFindPrev);
   editMenu->addSeparator();
   editMenu->addAction(actionInformation);
   editMenu->addAction(actionMetadata);
@@ -1006,13 +1018,21 @@ QDjView::enableContextMenu(bool enable)
   if (!enable || oldContextMenu != contextMenu)
     {
       if (oldContextMenu)
-        widget->removeAction(oldContextMenu->menuAction());
+        {
+          widget->removeAction(oldContextMenu->menuAction());
+          widget->removeAction(actionFindNext);
+          widget->removeAction(actionFindPrev);
+        }
       widget->setContextMenu(0);
     }
   if (enable && oldContextMenu != contextMenu)
     {
       if (contextMenu)
-        widget->addAction(contextMenu->menuAction());
+        {
+          widget->addAction(contextMenu->menuAction());
+          widget->addAction(actionFindNext);
+          widget->addAction(actionFindPrev);
+        }
       widget->setContextMenu(contextMenu);
     }
 }
@@ -1772,7 +1792,6 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 
   // - context menu
   contextMenu = new QMenu(this);
-  enableContextMenu(true);
 
   // - menubar
   menuBar = new QMenuBar(this);
@@ -1856,6 +1875,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   createActions();
   createMenus();
   createWhatsThis();
+  enableContextMenu(true);
   
   // Preferences
   applyPreferences();

@@ -7,9 +7,10 @@
      <file>images/icon_close.png</file>
      <file>images/icon_continuous.png</file>
      <file>images/icon_djvu.png</file>
+     <file>images/icon_down.png</file>
+     <file>images/icon_erase.png</file>
      <file>images/icon_export.png</file>
      <file>images/icon_find.png</file>
-     <file>images/icon_select.png</file>
      <file>images/icon_first.png</file>
      <file>images/icon_forw.png</file>
      <file>images/icon_fullscreen.png</file>
@@ -24,11 +25,12 @@
      <file>images/icon_rotateleft.png</file>
      <file>images/icon_rotateright.png</file>
      <file>images/icon_save.png</file>
+     <file>images/icon_select.png</file>
      <file>images/icon_sidebar.png</file>
      <file>images/icon_sidebyside.png</file>
+     <file>images/icon_up.png</file>
      <file>images/icon_zoomin.png</file>
      <file>images/icon_zoomout.png</file>
-     <file>images/icon_erase.png</file>
      <file>images/text_pushpin.png</file>
 </qresource>
 </RCC>
