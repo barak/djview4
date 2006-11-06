@@ -57,6 +57,7 @@
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QScrollBar>
+#include <QShortcut>
 #include <QStackedLayout>
 #include <QStatusBar>
 #include <QString>
@@ -387,6 +388,7 @@ QDjView::createActions()
     << Trigger(findWidget, SLOT(findPrev()));
 
   actionSelect = makeAction(tr("&Select"), false)
+    << QKeySequence(tr("F2", "Select"))
     << QIcon(":/images/icon_select.png")
     << tr("Select a rectangle in the document.")
     << Trigger(this, SLOT(performSelect(bool)));
@@ -1017,23 +1019,26 @@ QDjView::enableContextMenu(bool enable)
   QMenu *oldContextMenu = widget->contextMenu();
   if (!enable || oldContextMenu != contextMenu)
     {
-      if (oldContextMenu)
-        {
-          widget->removeAction(oldContextMenu->menuAction());
-          widget->removeAction(actionFindNext);
-          widget->removeAction(actionFindPrev);
-        }
+      // remove context menu
       widget->setContextMenu(0);
+      // disable shortcuts
+      if (oldContextMenu)
+        foreach(QAction *action, widget->actions())
+          widget->removeAction(action);
     }
   if (enable && oldContextMenu != contextMenu)
     {
+      // setup context menu
+      widget->setContextMenu(contextMenu);
+      // enable shortcuts
       if (contextMenu)
         {
+          // all explicit shortcuts in context menu
           widget->addAction(contextMenu->menuAction());
+          // things that do not have a context menu entry
           widget->addAction(actionFindNext);
           widget->addAction(actionFindPrev);
         }
-      widget->setContextMenu(contextMenu);
     }
 }
 
@@ -1862,6 +1867,10 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   sideToolBox = new QToolBox(sideBar);
   sideToolBox->setBackgroundRole(QPalette::Background);
   sideBar->setWidget(sideToolBox);
+
+  // - escape shortcut for sidebar
+  QShortcut *esc = new QShortcut(QKeySequence("Esc"), sideToolBox);
+  connect(esc, SIGNAL(activated()), sideBar, SLOT(hide()));
   
   // - sidebar components
   thumbnailWidget = new QDjViewThumbnails(this);
@@ -2926,8 +2935,8 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
   
   // Prepare menu
   QMenu *menu = new QMenu(this);
-  QAction *copyText = menu->addAction(tr("&Copy text (%1)").arg(s));
-  QAction *saveText = menu->addAction(tr("&Save text as..."));
+  QAction *copyText = menu->addAction(tr("Copy text (%1)").arg(s));
+  QAction *saveText = menu->addAction(tr("Save text as..."));
   copyText->setEnabled(l>0);
   saveText->setEnabled(l>0);
   menu->addSeparator();

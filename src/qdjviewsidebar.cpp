@@ -844,9 +844,11 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   vlayout->addLayout(hlayout);
   QPushButton *upButton = new QPushButton(this);
   upButton->setIcon(QIcon(":/images/icon_up.png"));
+  upButton->setToolTip(tr("Find Previous (Shift+F3) "));
   hlayout->addWidget(upButton);
   QPushButton *downButton = new QPushButton(this);
   downButton->setIcon(QIcon(":/images/icon_down.png"));
+  downButton->setToolTip(tr("Find Next (F3) "));
   hlayout->addWidget(downButton);
   hlayout->addStretch(2);
   QPushButton *optionButton = new QPushButton(tr("Options"), this);
@@ -854,7 +856,7 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   optionButton->setFlat(true);
   optionButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
   hlayout->addWidget(optionButton);
-  
+
   QLabel *label = new QLabel("more stuff here",this);
   label->setAutoFillBackground(true);
   label->setBackgroundRole(QPalette::Base);
