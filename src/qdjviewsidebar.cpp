@@ -1095,9 +1095,16 @@ QDjViewFind::findAgain()
 }
 
 void 
-QDjViewFind::pageChanged(int n)
+QDjViewFind::pageChanged(int pageno)
 {
-  model->pageChanged(n);
+  if (pageno>=0 && pageno<djview->pageNum())
+    {
+      QModelIndex mi = model->index(pageno);
+      if (! selection->isSelected(mi))
+        selection->select(mi, QItemSelectionModel::ClearAndSelect);
+      view->scrollTo(mi);
+      model->pageChanged(pageno);
+    }
 }
 
 
