@@ -914,7 +914,6 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   model = new Model(this);
   selection = new QItemSelectionModel(model);
   view = new QListView(this);
-  
   view->setModel(model);
   view->setSelectionModel(selection);
   view->setDragEnabled(false);
@@ -934,21 +933,16 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   QAction *wordOnlyAction = new QAction(tr("Words only"), this);
   wordOnlyAction->setCheckable(true);
   wordOnlyAction->setChecked(model->wordOnly);
-  
+  menu = new QMenu(this);
+  menu->addAction(caseSensitiveAction);
+  menu->addAction(wordOnlyAction);
   QBoxLayout *vlayout = new QVBoxLayout(this);
-  vlayout->setMargin(2);
-  
   QToolBar *tools = new QToolBar(this);
   tools->addAction(eraseAction);
   edit = new QLineEdit(tools);
   tools->addWidget(edit);
   tools->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
   vlayout->addWidget(tools);
-  
-  menu = new QMenu(this);
-  menu->addAction(caseSensitiveAction);
-  menu->addAction(wordOnlyAction);
-
   QBoxLayout *hlayout = new QHBoxLayout;
   vlayout->addLayout(hlayout);
   QPushButton *upButton = new QPushButton(this);
@@ -965,7 +959,6 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   optionButton->setFlat(true);
   optionButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
   hlayout->addWidget(optionButton);
-
   view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   view->setFrameShadow(QFrame::Sunken);
   view->setFrameShape(QFrame::StyledPanel);
