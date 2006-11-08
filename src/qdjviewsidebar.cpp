@@ -61,7 +61,7 @@
 
 
 // ----------------------------------------
-// OUTLINE
+// QDJVIEWOUTLINE
 
 
 
@@ -266,7 +266,20 @@ QDjViewOutline::itemActivated(QTreeWidgetItem *item)
 
 
 // ----------------------------------------
-// THUMBNAILS
+// QDJVIEWTHUMBNAILS SUBCLASSES
+
+
+class QDjViewThumbnails::View : public QListView
+{
+  Q_OBJECT
+public:
+  View(QDjViewThumbnails *widget);
+protected:
+  QStyleOptionViewItem viewOptions() const;
+private:
+  QDjViewThumbnails *widget;
+  QDjView *djview;
+};
 
 
 class QDjViewThumbnails::Model : public QAbstractListModel
@@ -307,172 +320,56 @@ private:
 };
 
 
-class QDjViewThumbnails::View : public QListView
+
+// ----------------------------------------
+// QDJVIEWTHUMBNAILS::VIEW
+
+
+QDjViewThumbnails::View::View(QDjViewThumbnails *widget)
+  : QListView(widget), 
+    widget(widget), 
+    djview(widget->djview)
 {
-  Q_OBJECT
-public:
-  View(QDjViewThumbnails *widget);
-protected:
-  QStyleOptionViewItem viewOptions() const;
-private:
-  QDjViewThumbnails *widget;
-  QDjView *djview;
-};
-
-
-QDjViewThumbnails::QDjViewThumbnails(QDjView *djview)
-  : QWidget(djview),
-    djview(djview)
-{
-  model = new Model(this);
-  selection = new QItemSelectionModel(model);
-  view = new View(this);
-  QVBoxLayout *layout = new QVBoxLayout(this);
-  layout->setMargin(0);
-  layout->setSpacing(0);
-  layout->addWidget(view);
-  
-  connect(djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
-          this, SLOT(pageChanged(int)) );
-  connect(view, SIGNAL(activated(const QModelIndex&)),
-          this, SLOT(activated(const QModelIndex&)) );
-
-  menu = new QMenu(this);
-  QActionGroup *group = new QActionGroup(this);
-  QAction *action;
-
-  action = menu->addAction(tr("Tiny","thumbnail menu"));
-  connect(action,SIGNAL(triggered()),this,SLOT(setSize()) );
-  action->setCheckable(true);
-  action->setActionGroup(group);
-  action->setData(32);
-  action = menu->addAction(tr("Small","thumbnail menu"));
-  connect(action,SIGNAL(triggered()),this,SLOT(setSize()) );
-  action->setCheckable(true);  
-  action->setActionGroup(group);
-  action->setData(64);
-  action = menu->addAction(tr("Medium","thumbnail menu"));
-  connect(action,SIGNAL(triggered()),this,SLOT(setSize()) );
-  action->setCheckable(true);
-  action->setActionGroup(group);
-  action->setData(96);
-  action = menu->addAction(tr("Large","thumbnail menu"));
-  connect(action,SIGNAL(triggered()),this,SLOT(setSize()) );
-  action->setCheckable(true);
-  action->setActionGroup(group);
-  action->setData(160);
-  menu->addSeparator();
-  action = menu->addAction(tr("Smart","thumbnail menu"));
-  connect(action,SIGNAL(toggled(bool)),this,SLOT(setSmart(bool)) );
-  action->setCheckable(true);
-  action->setData(true);
-  updateActions();
-
-#if Q_WS_MAC
-  QString mc = tr("Control Left Mouse Button");
-#else
-  QString mc = tr("Right Mouse Button");
+  setDragEnabled(false);
+  setEditTriggers(QAbstractItemView::NoEditTriggers);
+  setSelectionBehavior(QAbstractItemView::SelectRows);
+  setSelectionMode(QAbstractItemView::SingleSelection);
+  setTextElideMode(Qt::ElideRight);
+  setViewMode(QListView::IconMode);
+  setFlow(QListView::LeftToRight);
+  setWrapping(true);
+  setMovement(QListView::Static);
+  setResizeMode(QListView::Adjust);
+  setLayoutMode(QListView::Batched);
+  setSpacing(8);
+#if QT_VERSION >= 0x040100
+  setUniformItemSizes(true);
 #endif
-  setWhatsThis(tr("<html><b>Document thumbnails.</b><br/> "
-                  "This panel display thumbnails for the document pages. "
-                  "Double click a thumbnail to jump to the selected page. "
-                  "%1 to change the thumbnail size or the refresh mode. "
-                  "The smart refresh mode only computes thumbnails "
-                  "when the page data is present (displayed or cached.)"
-                  "</html>").arg(mc) );
+#if QT_VERSION < 0x040100
+  // Hack to request thumbnail computations because
+  // we cannot do it efficiently in Model::makeData().
+  connect((QObject*)verticalScrollBar(), SIGNAL(sliderMoved(int)),
+          (QObject*)widget->model, SLOT(scheduleRefresh()) );
+#endif
 }
 
 
-void 
-QDjViewThumbnails::updateActions(void)
+QStyleOptionViewItem 
+QDjViewThumbnails::View::viewOptions() const
 {
-  QAction *action;
-  int size = model->getSize();
-  bool smart = model->getSmart();
-  foreach(action, menu->actions())
-    {
-      QVariant data = action->data();
-      if (data.type() == QVariant::Bool)
-        action->setChecked(smart);
-      else
-        action->setChecked(data.toInt() == size);
-    }
+  int size = widget->model->getSize();
+  QStyleOptionViewItem opt = QListView::viewOptions();
+  opt.decorationAlignment = Qt::AlignCenter;
+  opt.decorationPosition = QStyleOptionViewItem::Top;
+  opt.decorationSize = QSize(size, size);
+  opt.displayAlignment = Qt::AlignCenter;
+  return opt;
 }
 
-
-void 
-QDjViewThumbnails::pageChanged(int pageno)
-{
-  if (pageno>=0 && pageno<djview->pageNum())
-    {
-      QModelIndex mi = model->index(pageno);
-      if (! selection->isSelected(mi))
-        selection->select(mi, QItemSelectionModel::ClearAndSelect);
-      view->scrollTo(mi);
-    }
-}
-
-
-void 
-QDjViewThumbnails::activated(const QModelIndex &index)
-{
-  if (index.isValid())
-    {
-      int pageno = index.row();
-      if (pageno>=0 && pageno<djview->pageNum())
-        djview->goToPage(pageno);
-    }
-}
-
-
-int 
-QDjViewThumbnails::size()
-{
-  return model->getSize();
-}
-
-
-void 
-QDjViewThumbnails::setSize(int size)
-{
-  model->setSize(size);
-  updateActions();
-}
-
-
-void 
-QDjViewThumbnails::setSize()
-{
-  QAction *action = qobject_cast<QAction*>(sender());
-  if (action)
-    setSize(action->data().toInt());
-}
-
-
-bool 
-QDjViewThumbnails::smart()
-{
-  return model->getSmart();
-}
-
-
-void 
-QDjViewThumbnails::setSmart(bool smart)
-{
-  model->setSmart(smart);
-  updateActions();
-}
-
-void 
-QDjViewThumbnails::contextMenuEvent(QContextMenuEvent *event)
-{
-  menu->exec(event->globalPos());
-  event->accept();
-}
 
 
 // ----------------------------------------
-// THUMBNAILS MODEL
+// QDJVIEWTHUMBNAILS::MODEL
 
 
 QDjViewThumbnails::Model::~Model()
@@ -736,107 +633,319 @@ QDjViewThumbnails::Model::flags(QModelIndex&) const
 
 
 
+
 // ----------------------------------------
-// THUMBNAILS VIEW
+// QDJVIEWTHUMBNAILS
 
 
-QDjViewThumbnails::View::View(QDjViewThumbnails *widget)
-  : QListView(widget), 
-    widget(widget), 
-    djview(widget->djview)
+QDjViewThumbnails::QDjViewThumbnails(QDjView *djview)
+  : QWidget(djview),
+    djview(djview)
 {
-  setModel(widget->model);
-  setSelectionModel(widget->selection);
-  setDragEnabled(false);
-  setEditTriggers(QAbstractItemView::NoEditTriggers);
-  setSelectionBehavior(QAbstractItemView::SelectRows);
-  setSelectionMode(QAbstractItemView::SingleSelection);
-  setTextElideMode(Qt::ElideRight);
-  setViewMode(QListView::IconMode);
-  setFlow(QListView::LeftToRight);
-  setWrapping(true);
-  setMovement(QListView::Static);
-  setResizeMode(QListView::Adjust);
-  setLayoutMode(QListView::Batched);
-  setSpacing(8);
-#if QT_VERSION >= 0x040100
-  setUniformItemSizes(true);
+  model = new Model(this);
+  selection = new QItemSelectionModel(model);
+  view = new View(this);
+  view->setModel(model);
+  view->setSelectionModel(selection);
+
+  QVBoxLayout *layout = new QVBoxLayout(this);
+  layout->setMargin(0);
+  layout->setSpacing(0);
+  layout->addWidget(view);
+  
+  connect(djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
+          this, SLOT(pageChanged(int)) );
+  connect(view, SIGNAL(activated(const QModelIndex&)),
+          this, SLOT(activated(const QModelIndex&)) );
+  
+  menu = new QMenu(this);
+  QActionGroup *group = new QActionGroup(this);
+  QAction *action;
+  action = menu->addAction(tr("Tiny","thumbnail menu"));
+  connect(action,SIGNAL(triggered()),this,SLOT(setSize()) );
+  action->setCheckable(true);
+  action->setActionGroup(group);
+  action->setData(32);
+  action = menu->addAction(tr("Small","thumbnail menu"));
+  connect(action,SIGNAL(triggered()),this,SLOT(setSize()) );
+  action->setCheckable(true);  
+  action->setActionGroup(group);
+  action->setData(64);
+  action = menu->addAction(tr("Medium","thumbnail menu"));
+  connect(action,SIGNAL(triggered()),this,SLOT(setSize()) );
+  action->setCheckable(true);
+  action->setActionGroup(group);
+  action->setData(96);
+  action = menu->addAction(tr("Large","thumbnail menu"));
+  connect(action,SIGNAL(triggered()),this,SLOT(setSize()) );
+  action->setCheckable(true);
+  action->setActionGroup(group);
+  action->setData(160);
+  menu->addSeparator();
+  action = menu->addAction(tr("Smart","thumbnail menu"));
+  connect(action,SIGNAL(toggled(bool)),this,SLOT(setSmart(bool)) );
+  action->setCheckable(true);
+  action->setData(true);
+  updateActions();
+
+#if Q_WS_MAC
+  QString mc = tr("Control Left Mouse Button");
+#else
+  QString mc = tr("Right Mouse Button");
 #endif
-#if QT_VERSION < 0x040100
-  // Hack to request thumbnail computations because
-  // we cannot do it efficiently in Model::makeData().
-  connect((QObject*)verticalScrollBar(), SIGNAL(sliderMoved(int)),
-          (QObject*)widget->model, SLOT(scheduleRefresh()) );
-#endif
+  setWhatsThis(tr("<html><b>Document thumbnails.</b><br/> "
+                  "This panel display thumbnails for the document pages. "
+                  "Double click a thumbnail to jump to the selected page. "
+                  "%1 to change the thumbnail size or the refresh mode. "
+                  "The smart refresh mode only computes thumbnails "
+                  "when the page data is present (displayed or cached.)"
+                  "</html>").arg(mc) );
 }
 
 
-QStyleOptionViewItem 
-QDjViewThumbnails::View::viewOptions() const
+void 
+QDjViewThumbnails::updateActions(void)
 {
-  int size = widget->model->getSize();
-  QStyleOptionViewItem opt = QListView::viewOptions();
-  opt.decorationAlignment = Qt::AlignCenter;
-  opt.decorationPosition = QStyleOptionViewItem::Top;
-  opt.decorationSize = QSize(size, size);
-  opt.displayAlignment = Qt::AlignCenter;
-  return opt;
+  QAction *action;
+  int size = model->getSize();
+  bool smart = model->getSmart();
+  foreach(action, menu->actions())
+    {
+      QVariant data = action->data();
+      if (data.type() == QVariant::Bool)
+        action->setChecked(smart);
+      else
+        action->setChecked(data.toInt() == size);
+    }
+}
+
+
+void 
+QDjViewThumbnails::pageChanged(int pageno)
+{
+  if (pageno>=0 && pageno<djview->pageNum())
+    {
+      QModelIndex mi = model->index(pageno);
+      if (! selection->isSelected(mi))
+        selection->select(mi, QItemSelectionModel::ClearAndSelect);
+      view->scrollTo(mi);
+    }
+}
+
+
+void 
+QDjViewThumbnails::activated(const QModelIndex &index)
+{
+  if (index.isValid())
+    {
+      int pageno = index.row();
+      if (pageno>=0 && pageno<djview->pageNum())
+        djview->goToPage(pageno);
+    }
+}
+
+
+int 
+QDjViewThumbnails::size()
+{
+  return model->getSize();
+}
+
+
+void 
+QDjViewThumbnails::setSize(int size)
+{
+  model->setSize(size);
+  updateActions();
+}
+
+
+void 
+QDjViewThumbnails::setSize()
+{
+  QAction *action = qobject_cast<QAction*>(sender());
+  if (action)
+    setSize(action->data().toInt());
+}
+
+
+bool 
+QDjViewThumbnails::smart()
+{
+  return model->getSmart();
+}
+
+
+void 
+QDjViewThumbnails::setSmart(bool smart)
+{
+  model->setSmart(smart);
+  updateActions();
+}
+
+void 
+QDjViewThumbnails::contextMenuEvent(QContextMenuEvent *event)
+{
+  menu->exec(event->globalPos());
+  event->accept();
 }
 
 
 
 
-
 // ----------------------------------------
-// FIND
+// QDJVIEWFIND::MODEL
 
 
-
-struct QDjViewFind::Private
+class QDjViewFind::Model : public QAbstractListModel
 {
-  QLineEdit *edit;
-  QMenu *menu;
+  Q_OBJECT
+public:
+  Model(QDjViewFind*);
+  virtual QModelIndex index(int row, int column = 0, 
+                            const QModelIndex &p = QModelIndex()) const;
+  virtual int rowCount(const QModelIndex &parent) const;
+  virtual QVariant data(const QModelIndex &index, int role) const;
+  virtual int flags(QModelIndex &index) const;
+public slots:
+  void documentClosed(QDjVuDocument*);
+  void documentReady(QDjVuDocument*);
+  void pageChanged(int);
+  void textChanged(QString);
+  void pageinfo();
+private:
+  friend class QDjViewFind;
+  QDjViewFind *widget;
+  QDjView *djview;
   bool searchBackwards;
   bool caseSensitive;
   bool wordOnly;
+
 };
 
 
-QDjViewFind::~QDjViewFind()
+QDjViewFind::Model::Model(QDjViewFind *widget)
+  : QAbstractListModel(widget),
+    widget(widget), 
+    djview(widget->djview),
+    searchBackwards(false),
+    caseSensitive(false),
+    wordOnly(true)
 {
-  delete d;
 }
+
+
+QModelIndex 
+QDjViewFind::Model::index(int row, int, const QModelIndex&) const
+{
+  return createIndex(row, 0);
+}
+
+
+int 
+QDjViewFind::Model::rowCount(const QModelIndex &parent) const
+{
+  return 0;
+}
+
+
+QVariant 
+QDjViewFind::Model::data(const QModelIndex &index, int role) const
+{
+  return QVariant();
+}
+
+
+int 
+QDjViewFind::Model::flags(QModelIndex &index) const
+{
+  return 0;
+}
+
+
+void 
+QDjViewFind::Model::documentClosed(QDjVuDocument*)
+{
+}
+
+
+void 
+QDjViewFind::Model::documentReady(QDjVuDocument*)
+{
+}
+
+
+void 
+QDjViewFind::Model::pageChanged(int n)
+{
+  qDebug() << "find page changed" << n;
+}
+
+
+void 
+QDjViewFind::Model::textChanged(QString s)
+{
+  qDebug() << "find text changed" << s;
+}
+
+
+void 
+QDjViewFind::Model::pageinfo()
+{
+}
+
+
+
+
+
+
+
+// ----------------------------------------
+// QDJVIEWFIND
 
 
 QDjViewFind::QDjViewFind(QDjView *djview)
   : QWidget(djview), 
     djview(djview), 
-    d(new Private)
+    model(0),
+    view(0),
+    selection(0)
 {
-  d->searchBackwards = false;
-  d->caseSensitive = false;
-  d->wordOnly = true;
+  model = new Model(this);
+  selection = new QItemSelectionModel(model);
+  view = new QListView(this);
+  
+  view->setModel(model);
+  view->setSelectionModel(selection);
+  view->setDragEnabled(false);
+  view->setEditTriggers(QAbstractItemView::NoEditTriggers);
+  view->setSelectionBehavior(QAbstractItemView::SelectRows);
+  view->setSelectionMode(QAbstractItemView::SingleSelection);
+  view->setTextElideMode(Qt::ElideMiddle);
+  view->setViewMode(QListView::ListMode);
+  view->setWrapping(false);
+  view->setResizeMode(QListView::Adjust);
   
   QAction *eraseAction = new QAction(tr("Erase text"), this);
   eraseAction->setIcon(QIcon(":/images/icon_erase.png"));
   QAction *caseSensitiveAction = new QAction(tr("Case sensitive"), this);
   caseSensitiveAction->setCheckable(true);
-  caseSensitiveAction->setChecked(d->caseSensitive);
+  caseSensitiveAction->setChecked(model->caseSensitive);
   QAction *wordOnlyAction = new QAction(tr("Words only"), this);
   wordOnlyAction->setCheckable(true);
-  wordOnlyAction->setChecked(d->wordOnly);
+  wordOnlyAction->setChecked(model->wordOnly);
   
   QBoxLayout *vlayout = new QVBoxLayout(this);
   vlayout->setMargin(2);
   
   QToolBar *tools = new QToolBar(this);
   tools->addAction(eraseAction);
-  QLineEdit *edit = new QLineEdit(tools);
+  edit = new QLineEdit(tools);
   tools->addWidget(edit);
   tools->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
   vlayout->addWidget(tools);
   
-  QMenu *menu = new QMenu(this);
+  menu = new QMenu(this);
   menu->addAction(caseSensitiveAction);
   menu->addAction(wordOnlyAction);
 
@@ -857,26 +966,19 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   optionButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
   hlayout->addWidget(optionButton);
 
-  QLabel *label = new QLabel("more stuff here",this);
-  label->setAutoFillBackground(true);
-  label->setBackgroundRole(QPalette::Base);
-  label->setAlignment(Qt::AlignCenter);
-  label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  label->setFrameShadow(QFrame::Sunken);
-  label->setFrameShape(QFrame::StyledPanel);
-  vlayout->addWidget(label);  
-  
-  d->edit = edit;
-  d->menu = menu;
+  view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  view->setFrameShadow(QFrame::Sunken);
+  view->setFrameShape(QFrame::StyledPanel);
+  vlayout->addWidget(view);  
   
   connect(djview, SIGNAL(documentClosed(QDjVuDocument*)),
-          this, SLOT(documentClosed(QDjVuDocument*)) );
+          model, SLOT(documentClosed(QDjVuDocument*)) );
   connect(djview, SIGNAL(documentReady(QDjVuDocument*)),
-          this, SLOT(documentReady(QDjVuDocument*)) );
+          model, SLOT(documentReady(QDjVuDocument*)) );
   connect(djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
           this, SLOT(pageChanged(int)));
   connect(edit, SIGNAL(textChanged(QString)),
-          this, SLOT(textChanged()));
+          model, SLOT(textChanged(QString)));
   connect(edit, SIGNAL(returnPressed()),
           this, SLOT(findAgain()));
   connect(eraseAction, SIGNAL(triggered()), 
@@ -889,13 +991,16 @@ QDjViewFind::QDjViewFind(QDjView *djview)
           this, SLOT(findPrev()));
   connect(downButton, SIGNAL(clicked()), 
           this, SLOT(findNext()));
+  
+  if (djview->getDocument())
+    model->documentReady(djview->getDocument());
 }
 
 
 void 
 QDjViewFind::contextMenuEvent(QContextMenuEvent *event)
 {
-  d->menu->exec(event->globalPos());
+  menu->exec(event->globalPos());
   event->accept();
 }
 
@@ -903,28 +1008,28 @@ QDjViewFind::contextMenuEvent(QContextMenuEvent *event)
 void
 QDjViewFind::takeFocus(Qt::FocusReason reason)
 {
-  d->edit->setFocus(reason);
+  edit->setFocus(reason);
 }
 
 
 QString 
 QDjViewFind::text()
 {
-  return d->edit->text();
+  return edit->text();
 }
 
 
 bool 
 QDjViewFind::caseSensitive()
 {
-  return d->caseSensitive;
+  return model->caseSensitive;
 }
 
 
 bool 
 QDjViewFind::wordOnly()
 {
-  return d->wordOnly;
+  return model->wordOnly;
 }
 
 
@@ -932,7 +1037,7 @@ void
 QDjViewFind::setText(QString s)
 {
   if (s != text())
-    d->edit->setText(s);
+    edit->setText(s);
 }
 
 
@@ -946,10 +1051,10 @@ QDjViewFind::eraseText()
 void 
 QDjViewFind::setCaseSensitive(bool b)
 {
-  if (b != d->caseSensitive)
+  if (b != model->caseSensitive)
     {
-      d->caseSensitive = b;
-      textChanged();
+      model->caseSensitive = b;
+      model->textChanged(text());
     }
 }
 
@@ -957,10 +1062,10 @@ QDjViewFind::setCaseSensitive(bool b)
 void 
 QDjViewFind::setWordOnly(bool b)
 {
-  if (b != d->wordOnly)
+  if (b != model->wordOnly)
     {
-      d->wordOnly = b;
-      textChanged();
+      model->wordOnly = b;
+      model->textChanged(text());
     }
 }
 
@@ -971,7 +1076,7 @@ QDjViewFind::findNext()
   if (text().isEmpty())
     djview->find();
   
-  d->searchBackwards = false;
+  model->searchBackwards = false;
   qDebug() << "findNext";
 }
 
@@ -982,7 +1087,7 @@ QDjViewFind::findPrev()
   if (text().isEmpty())
     djview->find();
   
-  d->searchBackwards = true;
+  model->searchBackwards = true;
   qDebug() << "findPrev";
 }
 
@@ -990,40 +1095,19 @@ QDjViewFind::findPrev()
 void 
 QDjViewFind::findAgain()
 {
-  if (d->searchBackwards)
+  if (model->searchBackwards)
     findPrev();
   else
     findNext();
 }
 
-
 void 
-QDjViewFind::pageinfo()
+QDjViewFind::pageChanged(int n)
 {
+  model->pageChanged(n);
 }
 
 
-void 
-QDjViewFind::documentClosed(QDjVuDocument*)
-{
-}
-
-void 
-QDjViewFind::documentReady(QDjVuDocument*)
-{
-}
-
-void 
-QDjViewFind::textChanged()
-{
-  qDebug() << "find text changed" << d->edit->text();
-}
-
-void 
-QDjViewFind::pageChanged(int)
-{
-  qDebug() << "find page changed";
-}
 
 
 

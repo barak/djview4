@@ -36,6 +36,7 @@
 class QAction;
 class QContextMenuEvent;
 class QItemSelectionModel;
+class QLineEdit;
 class QListView;
 class QMenu;
 class QTreeWidget;
@@ -91,8 +92,8 @@ protected:
   void contextMenuEvent(QContextMenuEvent *event);
   void updateActions();
 private:
-  class View;
   class Model;
+  class View;
   QDjView             *djview;
   Model               *model;
   View                *view;
@@ -114,7 +115,6 @@ class QDjViewFind : public QWidget
   Q_PROPERTY(bool caseSensitive READ caseSensitive WRITE setCaseSensitive)
   Q_PROPERTY(bool wordOnly READ wordOnly WRITE setWordOnly)
 public:
-  ~QDjViewFind();
   QDjViewFind(QDjView *djview);
   void takeFocus(Qt::FocusReason);
   QString text();
@@ -129,17 +129,17 @@ public slots:
   void findPrev();
   void findAgain();
 protected slots:
-  void pageinfo();
-  void textChanged();
   void pageChanged(int);
-  void documentClosed(QDjVuDocument*);
-  void documentReady(QDjVuDocument*);
 protected:
   void contextMenuEvent(QContextMenuEvent *event);
 private:
-  QDjView *djview;
-  struct Private;
-  Private *d;
+  class Model;
+  QDjView             *djview;
+  Model               *model;
+  QListView           *view;
+  QItemSelectionModel *selection;
+  QMenu               *menu;
+  QLineEdit           *edit;
 };
 
 
