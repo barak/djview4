@@ -2428,7 +2428,8 @@ QDjView::saveTextFile(QString text, QString filename)
   QString caption = makeCaption(tr("Save text", "dialog caption"));
   if (filename.isEmpty())
     {
-      QString filters = "Text files (*.txt);;All files (*)";
+      QString filters = tr("Text files")+" (*.txt);;" 
+                      + tr("All files") + " (*)";
       filename = QFileDialog::getSaveFileName(this, caption, "", filters);
       if (filename.isEmpty())
         return false;
@@ -2469,7 +2470,8 @@ QDjView::saveImageFile(QImage image, QString filename)
       QStringList patterns;
       foreach(QByteArray format, QImageWriter::supportedImageFormats())
         patterns << "*." + QString(format).toLower();
-      QString filters = QString("All supported files (%1);;All files (*)");
+      QString filters = tr("All supported files") + " (%1);;"
+                      + tr("All files") + " (*)";
       filters = filters.arg(patterns.join(" "));
       filename = QFileDialog::getSaveFileName(this, caption, "", filters);
       if (filename.isEmpty())
@@ -3080,7 +3082,7 @@ QDjView::performOpen(void)
   if (viewerMode != STANDALONE)
     return;
   QString caption = tr("Open", "dialog caption");
-  QString filters = "DjVu files (*.djvu *.djv)";
+  QString filters = tr("DjVu files") + " (*.djvu *.djv)";
   QString filename = QFileDialog::getOpenFileName(this, caption, "", filters);
   if (! filename.isEmpty())
     open(filename);

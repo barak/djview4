@@ -31,9 +31,11 @@
 #include <QtGlobal>
 #include <QApplication>
 #include <QByteArray>
+#include <QDebug>
 #include <QRegExp>
 #include <QString>
 #include <QStringList>
+#include <QTranslator>
 
 
 #ifdef QT_NO_DEBUG
@@ -42,9 +44,11 @@ static bool verbose = false;
 static bool verbose = true;
 #endif
 
+
 static QtMsgHandler qtDefaultHandler;
 
-void 
+
+static void 
 qtMessageHandler(QtMsgType type, const char *msg)
 {
   switch (type) 
@@ -66,6 +70,8 @@ qtMessageHandler(QtMsgType type, const char *msg)
     }
 }
 
+
+
 static void
 message(QString string, bool prefix=true)
 {
@@ -75,12 +81,16 @@ message(QString string, bool prefix=true)
   fprintf(stderr, "%s\n", (const char*) m);
 }
 
+
+
 static void
 message(QStringList sl)
 {
   foreach (QString s, sl)
     message(s);
 }
+
+
 
 static void 
 usage()
@@ -104,9 +114,67 @@ usage()
   exit(10);
 }
 
+
+
+void
+setupApplication()
+{
+  QCoreApplication *app = QCoreApplication::instance();
+  QTranslator *qtTrans = new QTranslator(app);
+  QTranslator *djviewTrans = new QTranslator(app);
+
+  // potential directories for qm files
+  QStringList dirs;
+  dirs << "/usr/share/djvu/djview";  
+  dirs << "/usr/share/qt4/translations";
+  
+  // parse environment variable LANGUAGE
+  QString langs = ::getenv("LANGUAGE");
+  if (langs.size() > 0)
+    {
+      QString dir;
+      QString lang;
+      foreach(lang, langs.split(":"))
+        {
+          foreach(dir, dirs)
+            {
+              if (qtTrans->isEmpty())
+                qtTrans->load("qt_" + lang, dir);
+              if (djviewTrans->isEmpty())
+                djviewTrans->load("djview_" + lang, dir);
+            }
+        }
+    }
+  // parse locale variable LC_MESSAGES
+  QString lang = setlocale(LC_MESSAGES, NULL);
+  lang = lang.section(QRegExp("[.@]"), 0, 0);
+  if (lang.size() > 0)
+    {
+      QString dir;
+      foreach(dir, dirs)
+        {
+          if (qtTrans->isEmpty())
+            qtTrans->load("qt_" + lang, dir);
+          if (djviewTrans->isEmpty())
+            djviewTrans->load("djview_" + lang, dir);
+        }
+    }
+  // install tranlators
+  if (! qtTrans->isEmpty())
+    app->installTranslator(qtTrans);
+  if (! djviewTrans->isEmpty())
+    app->installTranslator(djviewTrans);
+}
+
+
+
+
 int 
 main(int argc, char *argv[])
 {
+  setlocale(LC_ALL, "");
+  setlocale(LC_NUMERIC, "C");
+
   qtDefaultHandler = qInstallMsgHandler(qtMessageHandler);
 
 #if QT_VERSION < 0x40100
@@ -130,7 +198,8 @@ main(int argc, char *argv[])
 #endif
   
   QDjVuContext djvuContext(argv[0]);
-  QApplication app(argc, argv);  
+  QApplication app(argc, argv);
+  setupApplication();
   QDjView *main = new QDjView(djvuContext);
   main->setAttribute(Qt::WA_DeleteOnClose);
   
@@ -174,6 +243,8 @@ main(int argc, char *argv[])
   main->show();
   return app.exec();
 }
+
+
 
 
 /* -------------------------------------------------------------

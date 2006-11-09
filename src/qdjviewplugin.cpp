@@ -73,6 +73,10 @@
 # endif
 
 
+// declared in djview.cpp
+extern void setupApplication(void);
+
+
 // ========================================
 // STRUCTURES
 // ========================================
@@ -838,6 +842,7 @@ QDjViewPlugin::cmdAttachWindow()
       argv[argc++] = "-display";
       argv[argc++] = (const char*) display;
       application = new QApplication(argc, const_cast<char**>(argv));
+      setupApplication();
       argc = 1;
       application->setQuitOnLastWindowClosed(false);
       XCloseDisplay(dpy);
