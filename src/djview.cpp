@@ -117,6 +117,14 @@ usage()
 }
 
 
+static void
+addDirectory(QStringList &dirs, QString path)
+{
+  QDir dir = path;
+  if (dir.exists())
+    dirs << dir.canonicalPath();
+}
+
 
 void
 setupApplication()
@@ -137,22 +145,28 @@ setupApplication()
   // potential directories
   QStringList dirs;
   QDir dir = app->applicationDirPath();
-  dirs << dir.canonicalPath();
-#ifdef Q_WS_MAC
-  dirs << QDir::cleanPath(dir.canonicalPath() + "/../Resources/translations");
-#endif
-  dirs << QDir::cleanPath(dir.canonicalPath() + "/../share/djview/translations");
+  QString dirPath = dir.canonicalPath();
+  addDirectory(dirs, dirPath);
+  addDirectory(dirs, dirPath + "/Resources/translations");
+  addDirectory(dirs, dirPath + "/share/djvu/djview4/translations");
+  addDirectory(dirs, dirPath + "/share/djview4/translations");
+  addDirectory(dirs, dirPath + "/../Resources/translations");
+  addDirectory(dirs, dirPath + "/../share/djvu/djview4/translations");
+  addDirectory(dirs, dirPath + "/../share/djview4/translations");
 #ifdef PREFIX_NAME
-  dirs << QDir::cleanPath(QString(PREFIX_NAME) + "/share/djview");
+  addDirectory(dirs, QString(PREFIX_NAME) + "/share/djvu/djview4/translations");
+  addDirectory(dirs, QString(PREFIX_NAME) + "/share/djview4/translations");
 #endif
-  dirs << "/usr/share/djvu/djview/translations";
-  dirs << QLibraryInfo::location(QLibraryInfo::TranslationsPath);
-  
+  addDirectory(dirs, "/usr/share/djvu/djview4/translations");
+  addDirectory(dirs, "/usr/share/djview4/translations");
+  addDirectory(dirs, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+               
   // load translators
   foreach (QString lang, langs)
     {
       foreach (QString directory, dirs)
         {
+          qDebug() << directory << lang;
           if (qtTrans->isEmpty())
             qtTrans->load("qt_" + lang, directory);
           if (djviewTrans->isEmpty())
