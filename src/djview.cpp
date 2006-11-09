@@ -32,6 +32,8 @@
 #include <QApplication>
 #include <QByteArray>
 #include <QDebug>
+#include <QDir>
+#include <QLibraryInfo>
 #include <QRegExp>
 #include <QString>
 #include <QStringList>
@@ -123,42 +125,41 @@ setupApplication()
   QTranslator *qtTrans = new QTranslator(app);
   QTranslator *djviewTrans = new QTranslator(app);
 
-  // potential directories for qm files
+  // preferred languages
+  QStringList langs; 
+  QString varLanguage = ::getenv("LANGUAGE");
+  QString varLcMessages = ::setlocale(LC_MESSAGES, NULL);
+  if (varLanguage.size())
+    langs += varLanguage.toLower().split(":", QString::SkipEmptyParts);
+  if (varLcMessages.size())
+    langs += varLcMessages;
+
+  // potential directories
   QStringList dirs;
-  dirs << "/usr/share/djvu/djview";  
-  dirs << "/usr/share/qt4/translations";
+  QDir dir = app->applicationDirPath();
+  dirs << dir.canonicalPath();
+#ifdef Q_WS_MAC
+  dirs << QDir::cleanPath(dir.canonicalPath() + "/../Resources/translations");
+#endif
+  dirs << QDir::cleanPath(dir.canonicalPath() + "/../share/djview/translations");
+#ifdef PREFIX_NAME
+  dirs << QDir::cleanPath(QString(PREFIX_NAME) + "/share/djview");
+#endif
+  dirs << "/usr/share/djvu/djview/translations";
+  dirs << QLibraryInfo::location(QLibraryInfo::TranslationsPath);
   
-  // parse environment variable LANGUAGE
-  QString langs = ::getenv("LANGUAGE");
-  if (langs.size() > 0)
+  // load translators
+  foreach (QString lang, langs)
     {
-      QString dir;
-      QString lang;
-      foreach(lang, langs.split(":"))
-        {
-          foreach(dir, dirs)
-            {
-              if (qtTrans->isEmpty())
-                qtTrans->load("qt_" + lang, dir);
-              if (djviewTrans->isEmpty())
-                djviewTrans->load("djview_" + lang, dir);
-            }
-        }
-    }
-  // parse locale variable LC_MESSAGES
-  QString lang = setlocale(LC_MESSAGES, NULL);
-  lang = lang.section(QRegExp("[.@]"), 0, 0);
-  if (lang.size() > 0)
-    {
-      QString dir;
-      foreach(dir, dirs)
+      foreach (QString directory, dirs)
         {
           if (qtTrans->isEmpty())
-            qtTrans->load("qt_" + lang, dir);
+            qtTrans->load("qt_" + lang, directory);
           if (djviewTrans->isEmpty())
-            djviewTrans->load("djview_" + lang, dir);
+            djviewTrans->load("djview_" + lang, directory);
         }
     }
+
   // install tranlators
   if (! qtTrans->isEmpty())
     app->installTranslator(qtTrans);
