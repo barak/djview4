@@ -332,206 +332,206 @@ QDjView::createActions()
   rotationActionGroup  = new QActionGroup(this);
   
   // Create all actions
-  actionNew = makeAction(tr("&New", "File|New"))
+  actionNew = makeAction(tr("&New", "File|"))
     << QKeySequence(tr("Ctrl+N", "File|New"))
     << QIcon(":/images/icon_new.png")
     << tr("Create a new DjView window.")
     << Trigger(this, SLOT(performNew()));
 
-  actionOpen = makeAction(tr("&Open", "File|Open"))
+  actionOpen = makeAction(tr("&Open", "File|"))
     << QKeySequence(tr("Ctrl+O", "File|Open"))
     << QIcon(":/images/icon_open.png")
     << tr("Open a DjVu document.")
     << Trigger(this, SLOT(performOpen()));
 
-  actionClose = makeAction(tr("&Close", "File|Close"))
+  actionClose = makeAction(tr("&Close", "File|"))
     << QKeySequence(tr("Ctrl+W", "File|Close"))
     << QIcon(":/images/icon_close.png")
     << tr("Close this window.")
     << Trigger(this, SLOT(close()));
 
-  actionQuit = makeAction(tr("&Quit", "File|Quit"))
+  actionQuit = makeAction(tr("&Quit", "File|"))
     << QKeySequence(tr("Ctrl+Q", "File|Quit"))
     << QIcon(":/images/icon_quit.png")
     << tr("Close all windows and quit the application.")
     << Trigger(QCoreApplication::instance(), SLOT(closeAllWindows()));
 
-  actionSave = makeAction(tr("Save &as...", "File|Save"))
+  actionSave = makeAction(tr("Save &as...", "File|"))
     << QKeySequence(tr("Ctrl+S", "File|Save"))
     << QIcon(":/images/icon_save.png")
     << tr("Save the DjVu document.")
     << Trigger(this, SLOT(save()));
 
-  actionExport = makeAction(tr("&Export as...", "File|Export"))
+  actionExport = makeAction(tr("&Export as...", "File|"))
     << tr("Export the DjVu document under another format.");
 
-  actionPrint = makeAction(tr("&Print...", "File|Print"))
+  actionPrint = makeAction(tr("&Print...", "File|"))
     << QKeySequence(tr("Ctrl+P", "File|Print"))
     << QIcon(":/images/icon_print.png")
     << tr("Print the DjVu document.")
     << Trigger(this, SLOT(print()));
 
-  actionFind = makeAction(tr("&Find..."))
-    << QKeySequence(tr("Ctrl+F", "Find"))
+  actionFind = makeAction(tr("&Find...", "Edit|"))
+    << QKeySequence(tr("Ctrl+F", "Edit|Find"))
     << QIcon(":/images/icon_find.png")
     << tr("Find text in the document.")
     << Trigger(this, SLOT(find()));
 
-  actionFindNext = makeAction(tr("Find &Next"))
-    << QKeySequence(tr("F3", "Find next"))
+  actionFindNext = makeAction(tr("Find &Next", "Edit|"))
+    << QKeySequence(tr("F3", "Edit|Find Next"))
     << tr("Find next occurence of search text in the document.")
     << Trigger(findWidget, SLOT(findNext()));
 
-  actionFindPrev = makeAction(tr("Find &Previous"))
-    << QKeySequence(tr("Shift+F3", "Find previous"))
+  actionFindPrev = makeAction(tr("Find &Previous", "Edit|"))
+    << QKeySequence(tr("Shift+F3", "Edit|Find Previous"))
     << tr("Find previous occurence of search text in the document.")
     << Trigger(findWidget, SLOT(findPrev()));
 
-  actionSelect = makeAction(tr("&Select"), false)
-    << QKeySequence(tr("F2", "Select"))
+  actionSelect = makeAction(tr("&Select", "Edit|"), false)
+    << QKeySequence(tr("F2", "Edit|Select"))
     << QIcon(":/images/icon_select.png")
     << tr("Select a rectangle in the document.")
     << Trigger(this, SLOT(performSelect(bool)));
   
-  actionZoomIn = makeAction(tr("Zoom &In"))
+  actionZoomIn = makeAction(tr("Zoom &In", "Zoom|"))
     << QIcon(":/images/icon_zoomin.png")
     << tr("Increase the magnification.")
     << Trigger(widget, SLOT(zoomIn()));
 
-  actionZoomOut = makeAction(tr("Zoom &Out"))
+  actionZoomOut = makeAction(tr("Zoom &Out", "Zoom|"))
     << QIcon(":/images/icon_zoomout.png")
     << tr("Decrease the magnification.")
     << Trigger(widget, SLOT(zoomOut()));
 
-  actionZoomFitWidth = makeAction(tr("Fit &Width", "Zoom|Fitwith"),false)
+  actionZoomFitWidth = makeAction(tr("Fit &Width", "Zoom|"),false)
     << tr("Set magnification to fit page width.")
     << QVariant(QDjVuWidget::ZOOM_FITWIDTH)
     << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
-  actionZoomFitPage = makeAction(tr("Fit &Page", "Zoom|Fitpage"),false)
+  actionZoomFitPage = makeAction(tr("Fit &Page", "Zoom|"),false)
     << tr("Set magnification to fit page.")
     << QVariant(QDjVuWidget::ZOOM_FITPAGE)
     << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
-  actionZoomOneToOne = makeAction(tr("One &to one", "Zoom|1:1"),false)
+  actionZoomOneToOne = makeAction(tr("One &to one", "Zoom|"),false)
     << tr("Set full resolution magnification.")
     << QVariant(QDjVuWidget::ZOOM_ONE2ONE)
     << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
-  actionZoom300 = makeAction(tr("&300%", "Zoom|300%"), false)
+  actionZoom300 = makeAction(tr("&300%", "Zoom|"), false)
     << tr("Magnify 300%")
     << QVariant(300)
     << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
-  actionZoom200 = makeAction(tr("&200%", "Zoom|200%"), false)
+  actionZoom200 = makeAction(tr("&200%", "Zoom|"), false)
     << tr("Magnify 20%")
     << QVariant(200)
     << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
-  actionZoom150 = makeAction(tr("150%", "Zoom|150%"), false)
+  actionZoom150 = makeAction(tr("150%", "Zoom|"), false)
     << tr("Magnify 150%")
     << QVariant(200)
     << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
-  actionZoom100 = makeAction(tr("&100%", "Zoom|100%"), false)
+  actionZoom100 = makeAction(tr("&100%", "Zoom|"), false)
     << tr("Magnify 100%")
     << QVariant(100)
     << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
-  actionZoom75 = makeAction(tr("&75%", "Zoom|75%"), false)
+  actionZoom75 = makeAction(tr("&75%", "Zoom|"), false)
     << tr("Magnify 75%")
     << QVariant(75)
     << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
-  actionZoom50 = makeAction(tr("&50%", "Zoom|50%"), false)
+  actionZoom50 = makeAction(tr("&50%", "Zoom|"), false)
     << tr("Magnify 0%")
     << QVariant(50)
     << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
-  actionNavFirst = makeAction(tr("&First Page"))
+  actionNavFirst = makeAction(tr("&First Page", "Go|"))
     << QIcon(":/images/icon_first.png")
     << tr("Jump to first document page.")
     << Trigger(widget, SLOT(firstPage()))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionNavNext = makeAction(tr("&Next Page"))
+  actionNavNext = makeAction(tr("&Next Page", "Go|"))
     << QIcon(":/images/icon_next.png")
     << tr("Jump to next document page.")
     << Trigger(widget, SLOT(nextPage()))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionNavPrev = makeAction(tr("&Previous Page"))
+  actionNavPrev = makeAction(tr("&Previous Page", "Go|"))
     << QIcon(":/images/icon_prev.png")
     << tr("Jump to previous document page.")
     << Trigger(widget, SLOT(prevPage()))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionNavLast = makeAction(tr("&Last Page"))
+  actionNavLast = makeAction(tr("&Last Page", "Go|"))
     << QIcon(":/images/icon_last.png")
     << tr("Jump to last document page.")
     << Trigger(widget, SLOT(lastPage()))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionBack = makeAction(tr("&Backward"))
+  actionBack = makeAction(tr("&Backward", "Go|"))
     << QIcon(":/images/icon_back.png")
     << tr("Backward in history.");
 
-  actionForw = makeAction(tr("&Forward"))
+  actionForw = makeAction(tr("&Forward", "Go|"))
     << QIcon(":/images/icon_forw.png")
     << tr("Forward in history.");
 
-  actionRotateLeft = makeAction(tr("Rotate &Left"))
+  actionRotateLeft = makeAction(tr("Rotate &Left", "Rotate|"))
     << QIcon(":/images/icon_rotateleft.png")
     << tr("Rotate page image counter-clockwise.")
     << Trigger(widget, SLOT(rotateLeft()))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionRotateRight = makeAction(tr("Rotate &Right"))
+  actionRotateRight = makeAction(tr("Rotate &Right", "Rotate|"))
     << QIcon(":/images/icon_rotateright.png")
     << tr("Rotate page image clockwise.")
     << Trigger(widget, SLOT(rotateRight()))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionRotate0 = makeAction(tr("Rotate &0\260"), false)
+  actionRotate0 = makeAction(tr("Rotate &0\260", "Rotate|"), false)
     << tr("Set natural page orientation.")
     << QVariant(0)
     << Trigger(this, SLOT(performRotation()))
     << *rotationActionGroup;
 
-  actionRotate90 = makeAction(tr("Rotate &90\260"), false)
+  actionRotate90 = makeAction(tr("Rotate &90\260", "Rotate|"), false)
     << tr("Turn page on its left side.")
     << QVariant(1)
     << Trigger(this, SLOT(performRotation()))
     << *rotationActionGroup;
 
-  actionRotate180 = makeAction(tr("Rotate &180\260"), false)
+  actionRotate180 = makeAction(tr("Rotate &180\260", "Rotate|"), false)
     << tr("Turn page upside-down.")
     << QVariant(2)
     << Trigger(this, SLOT(performRotation()))
     << *rotationActionGroup;
 
-  actionRotate270 = makeAction(tr("Rotate &270\260"), false)
+  actionRotate270 = makeAction(tr("Rotate &270\260", "Rotate|"), false)
     << tr("Turn page on its right side.")
     << QVariant(3)
     << Trigger(this, SLOT(performRotation()))
     << *rotationActionGroup;
   
-  actionInformation = makeAction(tr("&Information..."))
-    << QKeySequence("Ctrl+I")
+  actionInformation = makeAction(tr("&Information...", "Edit|"))
+    << QKeySequence(tr("Ctrl+I", "Edit|Information"))
     << tr("Show information about the document encoding and structure")
     << Trigger(this, SLOT(performInformation()));
 
-  actionMetadata = makeAction(tr("&Metadata..."))
-    << QKeySequence("Ctrl+M")
+  actionMetadata = makeAction(tr("&Metadata...", "Edit|"))
+    << QKeySequence(tr("Ctrl+M", "Edit|Metadata"))
     << tr("Show the document and page meta data.")
     << Trigger(this, SLOT(performMetadata()));
 
@@ -542,71 +542,71 @@ QDjView::createActions()
     << tr("Show information about this program.")
     << Trigger(this, SLOT(performAbout()));
 
-  actionDisplayColor = makeAction(tr("&Color", "Display|Color"), false)
+  actionDisplayColor = makeAction(tr("&Color", "Display|"), false)
     << tr("Display everything.")
     << Trigger(widget, SLOT(displayModeColor()))
     << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
 
-  actionDisplayBW = makeAction(tr("&Stencil", "Display|BW"), false)
+  actionDisplayBW = makeAction(tr("&Stencil", "Display|"), false)
     << tr("Only display the document bitonal stencil.")
     << Trigger(widget, SLOT(displayModeStencil()))
     << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
 
   actionDisplayForeground 
-    = makeAction(tr("&Foreground", "Display|Foreground"), false)
+    = makeAction(tr("&Foreground", "Display|"), false)
     << tr("Only display the foreground layer.")
     << Trigger(widget, SLOT(displayModeForeground()))
     << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
 
   actionDisplayBackground
-    = makeAction(tr("&Background", "Display|Background"), false)
+    = makeAction(tr("&Background", "Display|"), false)
     << tr("Only display the background layer.")
     << Trigger(widget, SLOT(displayModeBackground()))
     << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
   
-  actionPreferences = makeAction(tr("Prefere&nces...")) 
+  actionPreferences = makeAction(tr("Prefere&nces...", "Settings|")) 
     << QIcon(":/images/icon_prefs.png")
     << tr("Show the preferences dialog.");
 
   actionViewSideBar = sideBar->toggleViewAction() 
-    << tr("Show &side bar")
-    << QKeySequence("F9")
+    << tr("Show &side bar", "Settings|")
+    << QKeySequence(tr("F9", "Settings|Show sidebar"))
     << QIcon(":/images/icon_sidebar.png")
     << tr("Show/hide the side bar.")
     << Trigger(this, SLOT(updateActionsLater()));
 
   actionViewToolBar = toolBar->toggleViewAction()
-    << tr("Show &tool bar")
-    << QKeySequence("F10")
+    << tr("Show &tool bar", "Settings|")
+    << QKeySequence(tr("F10", "Settings|Show toolbar"))
     << tr("Show/hide the standard tool bar.")
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionViewStatusBar = makeAction(tr("Show stat&us bar"), true)
+  actionViewStatusBar = makeAction(tr("Show stat&us bar", "Settings|"), true)
     << tr("Show/hide the status bar.")
     << Trigger(statusBar,SLOT(setVisible(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
 
   actionViewFullScreen 
-    = makeAction(tr("F&ull Screen","View|FullScreen"), false)
-    << QKeySequence("F11")
+    = makeAction(tr("F&ull Screen","View|"), false)
+    << QKeySequence(tr("F11","View|FullScreen"))
     << QIcon(":/images/icon_fullscreen.png")
     << tr("Toggle full screen mode.")
     << Trigger(this, SLOT(performViewFullScreen(bool)));
 
-  actionLayoutContinuous = makeAction(tr("&Continuous","Layout"), false)
+  actionLayoutContinuous = makeAction(tr("&Continuous", "Layout|"), false)
     << QIcon(":/images/icon_continuous.png")
-    << QKeySequence("F4")
+    << QKeySequence(tr("F4", "Layout|Continuous"))
     << tr("Toggle continuous layout mode.")
     << Trigger(widget, SLOT(setContinuous(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionLayoutSideBySide = makeAction(tr("Side &by side","Layout"), false)
+  actionLayoutSideBySide = makeAction(tr("Side &by side", "Layout|"), false)
     << QIcon(":/images/icon_sidebyside.png")
-    << QKeySequence("F5")
+    << QKeySequence(tr("F5", "Layout|SideBySide"))
     << tr("Toggle side-by-side layout mode.")
     << Trigger(widget, SLOT(setSideBySide(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
