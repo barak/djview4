@@ -414,7 +414,7 @@ Options fréquentes:
     <message>
         <source>Rotate &amp;Left</source>
         <comment>Rotate|</comment>
-        <translation>Pivote à &amp;Gauche</translation>
+        <translation>Pivoter à &amp;Gauche</translation>
     </message>
     <message>
         <source>Rotate page image counter-clockwise.</source>
@@ -423,7 +423,7 @@ Options fréquentes:
     <message>
         <source>Rotate &amp;Right</source>
         <comment>Rotate|</comment>
-        <translation>Pivote à &amp;Droite</translation>
+        <translation>Pivoter à &amp;Droite</translation>
     </message>
     <message>
         <source>Rotate page image clockwise.</source>
@@ -432,7 +432,7 @@ Options fréquentes:
     <message>
         <source>Rotate &amp;0&#xb0;</source>
         <comment>Rotate|</comment>
-        <translation>Pivote &amp;0°</translation>
+        <translation>Pivoter &amp;0°</translation>
     </message>
     <message>
         <source>Set natural page orientation.</source>
@@ -441,7 +441,7 @@ Options fréquentes:
     <message>
         <source>Rotate &amp;90&#xb0;</source>
         <comment>Rotate|</comment>
-        <translation>Pivote &amp;90°</translation>
+        <translation>Pivoter à &amp;90°</translation>
     </message>
     <message>
         <source>Turn page on its left side.</source>
@@ -450,7 +450,7 @@ Options fréquentes:
     <message>
         <source>Rotate &amp;180&#xb0;</source>
         <comment>Rotate|</comment>
-        <translation>Pivote &amp;180°</translation>
+        <translation>Pivoter à &amp;180°</translation>
     </message>
     <message>
         <source>Turn page upside-down.</source>
@@ -459,7 +459,7 @@ Options fréquentes:
     <message>
         <source>Rotate &amp;270&#xb0;</source>
         <comment>Rotate|</comment>
-        <translation>Pivote &amp;270°</translation>
+        <translation>Pivoter à &amp;270°</translation>
     </message>
     <message>
         <source>Turn page on its right side.</source>
