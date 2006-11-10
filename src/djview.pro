@@ -69,3 +69,6 @@ x11 {
   HEADERS += qdjviewplugin.h
   SOURCES += qdjviewplugin.cpp
 }
+
+
+TRANSLATIONS += djview_fr.ts

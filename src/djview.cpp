@@ -34,6 +34,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QLibraryInfo>
+#include <QLocale>
 #include <QRegExp>
 #include <QString>
 #include <QStringList>
@@ -97,22 +98,33 @@ message(QStringList sl)
 static void 
 usage()
 {
-  message(QApplication::tr(
-           "Usage: djview [options] [filename-or-http-url]\n\n"
-           "Common options include:\n"
-           " -help             Prints this message.\n"
-           " -verbose          Prints all warning messages.\n"
-           " -display <xdpy>   Select the X11 display <xdpy>.\n"
-           " -geometry <xgeom> Select the initial window geometry.\n"
-           " -font <xlfd>      Select the X11 name of the main font.\n"
-           " -name <xname>     Select the X11 application class name.\n"
-           " -style <qtstyle>  Select the QT user interface style.\n"
-           " -fullscreen, -fs  Start djview in full screen mode.\n"
-           " -page=<page>      Jump to page <pagename>.\n"
-           " -zoom=<zoom>      Set zoom factor.\n"
-           " -continuous=<yn>  Set continuous layout.\n"
-           " -sidebyside=<yn>  Set side-by-side layout.\n"
-           "\n"), false );
+  QString msg = QApplication::tr
+    ("Usage: djview [options] [filename-or-url]\n"
+     "Common options include:\n"
+     "-help\tPrints this message.\n"
+     "-verbose\tPrints all warning messages.\n"
+     "-display <xdpy>\tSelect the X11 display <xdpy>.\n"
+     "-geometry <xgeom>\tSelect the initial window geometry.\n"
+     "-font <xlfd>\tSelect the X11 name of the main font.\n"
+     "-style <qtstyle>\tSelect the QT user interface style.\n"
+     "-fullscreen, -fs\tStart djview in full screen mode.\n"
+     "-page=<page>\tJump to page <page>.\n"
+     "-zoom=<zoom>\tSet zoom factor.\n"
+     "-continuous=<yn>\tSet continuous layout.\n"
+     "-sidebyside=<yn>\tSet side-by-side layout.\n" );
+  
+  // align tabs
+  QStringList opts = msg.split("\n");
+  int tab = 0;
+  foreach (QString s, opts)
+    tab = qMax(tab, s.indexOf("\t"));
+  foreach (QString s, opts)
+    {
+      int pos = s.indexOf("\t");
+      if (pos >= 0)
+        s = QString(" %1  %2").arg(s.left(pos), -tab).arg(s.mid(pos+1));
+      message(s, false);
+    }
   exit(10);
 }
 
@@ -136,7 +148,7 @@ setupApplication()
   // preferred languages
   QStringList langs; 
   QString varLanguage = ::getenv("LANGUAGE");
-  QString varLcMessages = ::setlocale(LC_MESSAGES, NULL);
+  QString varLcMessages = QLocale::system().name();
   if (varLanguage.size())
     langs += varLanguage.toLower().split(":", QString::SkipEmptyParts);
   if (varLcMessages.size())
@@ -154,19 +166,19 @@ setupApplication()
   addDirectory(dirs, dirPath + "/../share/djvu/djview4/translations");
   addDirectory(dirs, dirPath + "/../share/djview4/translations");
 #ifdef PREFIX_NAME
-  addDirectory(dirs, QString(PREFIX_NAME) + "/share/djvu/djview4/translations");
-  addDirectory(dirs, QString(PREFIX_NAME) + "/share/djview4/translations");
+  QString prefix = PREFIX_NAME;
+  addDirectory(dirs, prefix + "/share/djvu/djview4/translations");
+  addDirectory(dirs, prefix + "/share/djview4/translations");
 #endif
   addDirectory(dirs, "/usr/share/djvu/djview4/translations");
   addDirectory(dirs, "/usr/share/djview4/translations");
   addDirectory(dirs, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-               
+  
   // load translators
   foreach (QString lang, langs)
     {
       foreach (QString directory, dirs)
         {
-          qDebug() << directory << lang;
           if (qtTrans->isEmpty())
             qtTrans->load("qt_" + lang, directory);
           if (djviewTrans->isEmpty())
