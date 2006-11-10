@@ -452,7 +452,7 @@ QDjView::createActions()
     << *zoomActionGroup;
 
   actionZoom50 = makeAction(tr("&50%", "Zoom|"), false)
-    << tr("Magnify 0%")
+    << tr("Magnify 50%")
     << QVariant(50)
     << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
@@ -527,7 +527,7 @@ QDjView::createActions()
   
   actionInformation = makeAction(tr("&Information...", "Edit|"))
     << QKeySequence(tr("Ctrl+I", "Edit|Information"))
-    << tr("Show information about the document encoding and structure")
+    << tr("Show information about the document encoding and structure.")
     << Trigger(this, SLOT(performInformation()));
 
   actionMetadata = makeAction(tr("&Metadata...", "Edit|"))
@@ -938,13 +938,13 @@ QDjView::createWhatsThis()
             >> actionNavNext >> actionNavLast
             >> pageCombo;
 
-  Help(tr("<html><b>Document and page infromation.</b><br> "
+  Help(tr("<html><b>Document and page information.</b><br> "
           "Display a dialog window for viewing "
           "encoding information pertaining to the document "
           "or to a specific page."))
             >> actionInformation;
   
-  Help(tr("<html><b>Document and page infromation.</b><br> "
+  Help(tr("<html><b>Document and page metadata.</b><br> "
           "Display a dialog window for viewing metadata "
           "pertaining to the document "
           "or to a specific page."))
@@ -2443,7 +2443,7 @@ QDjView::saveTextFile(QString text, QString filename)
       if (file.error() == QFile::OpenError && errno > 0)
         message = strerror(errno);
       QMessageBox::critical(this, caption,
-                            tr("Cannot write file '%1'\n%2.")
+                            tr("Cannot write file '%1'.\n%2.")
                             .arg(QFileInfo(filename).fileName())
                             .arg(message) );
       file.remove();
@@ -2832,7 +2832,7 @@ QDjView::pointerEnter(const Position&, miniexp_t)
   else
     message = tr("Link: %1").arg(link);
   if (!target.isEmpty())
-    message = message + " (in other window.)";
+    message = message + tr(" (in other window.)");
   
   statusMessage(message);
 }
