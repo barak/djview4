@@ -2,8 +2,52 @@ This cvs repository contains a QT4 djvu viewer under development.
 It is intended to replace the djview program in djvulibre-3.5.
 It depends only on the public djvulibre api ddjvuapi.h and miniexp.h.
 
-Go directory src.
-Use qmake (qt4) to generate a makefile.
-Compile and run.
-Many features are still missing....
+
+Prerequisites
+- Qt-4.1
+- djvulibre-3.5.18  (or pre18, latest CVS version)
+
+Compiling
+$ cd djview/src
+$ qmake-qt4
+$ make
+$ djview filename
+
+Using it as a plugin.
+- Assuming you already have the djvulibre-3.5 plugin working,
+  the following trick makes it call this version of djview
+  instead of the default one.
+
+$ export NPX_DJVIEW=`pwd`/djview
+$ firefox
+
+
+Hightlights:
+- entirely based on the public library api (ddjvuapi)
+- continuous scrolling of pages
+- side-by-side display of pages
+- ability to specify a url to the djview command
+- all plugin and cgi options available from the command line
+- all silly annotations implemented
+- display thumbnails as a grid
+- display outlines
+- page names supported (see djvused command set-page-title) 
+- metadata dialog (see djvused command set-meta)
+- implemented as reusable Qt widgets
+
+Todo before 1st release.
+- find functionality
+- print dialog
+- preference dialog
+
+Welcome help
+- translation files
+
+Ideas for later releases.
+- animation hints when jumping to specific locations
+- saving djvu documents as indirect files.
+- export dialog
+
+
+
 
