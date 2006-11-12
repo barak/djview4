@@ -917,6 +917,8 @@ QDjViewSaveDialog::browse()
   QString filters = "DjVu files (*.djvu *.djv);;All files (*)";
   fname = QFileDialog::getSaveFileName(this, caption, fname, filters, 0,
                                        QFileDialog::DontConfirmOverwrite);
+  if (fname.section("/",-1).lastIndexOf(".") < 0)
+    fname += ".djvu";
   d->ui.fileNameEdit->setText(fname);
 }
 
