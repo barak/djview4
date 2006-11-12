@@ -2,38 +2,38 @@
 <context>
     <name>QApplication</name>
     <message>
+        <source>Options &apos;fix&apos; is deprecated.</source>
+        <translation>L&apos;option «-fix» n&apos;est plus utilisée.</translation>
+    </message>
+    <message>
         <source>Usage: djview [options] [filename-or-url]
 Common options include:
--help<byte value="x9"/>Prints this message.
--verbose<byte value="x9"/>Prints all warning messages.
--display &lt;xdpy&gt;<byte value="x9"/>Select the X11 display &lt;xdpy&gt;.
--geometry &lt;xgeom&gt;<byte value="x9"/>Select the initial window geometry.
--font &lt;xlfd&gt;<byte value="x9"/>Select the X11 name of the main font.
--style &lt;qtstyle&gt;<byte value="x9"/>Select the QT user interface style.
--fullscreen, -fs<byte value="x9"/>Start djview in full screen mode.
--page=&lt;page&gt;<byte value="x9"/>Jump to page &lt;page&gt;.
--zoom=&lt;zoom&gt;<byte value="x9"/>Set zoom factor.
--continuous=&lt;yn&gt;<byte value="x9"/>Set continuous layout.
--sidebyside=&lt;yn&gt;<byte value="x9"/>Set side-by-side layout.
+-help~~~Prints this message.
+-verbose~~~Prints all warning messages.
+-display &lt;xdpy&gt;~~~Select the X11 display &lt;xdpy&gt;.
+-geometry &lt;xgeom&gt;~~~Select the initial window geometry.
+-font &lt;xlfd&gt;~~~Select the X11 name of the main font.
+-style &lt;qtstyle&gt;~~~Select the QT user interface style.
+-fullscreen, -fs~~~Start djview in full screen mode.
+-page=&lt;page&gt;~~~Jump to page &lt;page&gt;.
+-zoom=&lt;zoom&gt;~~~Set zoom factor.
+-continuous=&lt;yn&gt;~~~Set continuous layout.
+-sidebyside=&lt;yn&gt;~~~Set side-by-side layout.
 </source>
         <translation>Utilisation: djview [options] [fichier-ou-url]
 Options fréquentes:
--help<byte value="x9"/>Affiche ce message.
--verbose<byte value="x9"/>Affiche tous les messages d&apos;erreur.
--display &lt;xdpy&gt;<byte value="x9"/>Sélectionne le terminal X windows &lt;xdpy&gt;.
--geometry &lt;xgeom&gt;<byte value="x9"/>Spécifie la position et la taille de la première fenêtre.
--font &lt;xlfd&gt;<byte value="x9"/>Sélectionne la police X windows &lt;xlfd&gt;.
--style &lt;qtstyle&gt;<byte value="x9"/>Sélectionne le style d&apos;interface Qt.
--fullscreen, -fs<byte value="x9"/>Démarre djview en mode plein écran.
--page=&lt;page&gt;<byte value="x9"/>Va directement vers la page &lt;page&gt;.
--zoom=&lt;zoom&gt;<byte value="x9"/>Sélectionne un facteur de zoom.
--continuous=&lt;yn&gt;<byte value="x9"/>Sélectionne l&apos;affichage continu des pages.
--sidebyside=&lt;yn&gt;<byte value="x9"/>Sélectionne l&apos;affichage cote-à-cote des pages.
+-help~~~Affiche ce message.
+-verbose~~~Affiche tous les messages d&apos;erreur.
+-display &lt;xdpy&gt;~~~Sélectionne le terminal X windows &lt;xdpy&gt;.
+-geometry &lt;xgeom&gt;~~~Spécifie la position et la taille de la première fenêtre.
+-font &lt;xlfd&gt;~~~Sélectionne la police X windows &lt;xlfd&gt;.
+-style &lt;qtstyle&gt;~~~Sélectionne le style d&apos;interface Qt.
+-fullscreen, -fs~~~Démarre djview en mode plein écran.
+-page=&lt;page&gt;~~~Va directement vers la page &lt;page&gt;.
+-zoom=&lt;zoom&gt;~~~Sélectionne un facteur de zoom.
+-continuous=&lt;yn&gt;~~~Sélectionne l&apos;affichage continu des pages.
+-sidebyside=&lt;yn&gt;~~~Sélectionne l&apos;affichage cote-à-cote des pages.
 </translation>
-    </message>
-    <message>
-        <source>Options &apos;fix&apos; is deprecated.</source>
-        <translation>L&apos;option «-fix» n&apos;est plus utilisée.</translation>
     </message>
 </context>
 <context>

@@ -101,26 +101,26 @@ usage()
   QString msg = QApplication::tr
     ("Usage: djview [options] [filename-or-url]\n"
      "Common options include:\n"
-     "-help\tPrints this message.\n"
-     "-verbose\tPrints all warning messages.\n"
-     "-display <xdpy>\tSelect the X11 display <xdpy>.\n"
-     "-geometry <xgeom>\tSelect the initial window geometry.\n"
-     "-font <xlfd>\tSelect the X11 name of the main font.\n"
-     "-style <qtstyle>\tSelect the QT user interface style.\n"
-     "-fullscreen, -fs\tStart djview in full screen mode.\n"
-     "-page=<page>\tJump to page <page>.\n"
-     "-zoom=<zoom>\tSet zoom factor.\n"
-     "-continuous=<yn>\tSet continuous layout.\n"
-     "-sidebyside=<yn>\tSet side-by-side layout.\n" );
+     "-help~~~Prints this message.\n"
+     "-verbose~~~Prints all warning messages.\n"
+     "-display <xdpy>~~~Select the X11 display <xdpy>.\n"
+     "-geometry <xgeom>~~~Select the initial window geometry.\n"
+     "-font <xlfd>~~~Select the X11 name of the main font.\n"
+     "-style <qtstyle>~~~Select the QT user interface style.\n"
+     "-fullscreen, -fs~~~Start djview in full screen mode.\n"
+     "-page=<page>~~~Jump to page <page>.\n"
+     "-zoom=<zoom>~~~Set zoom factor.\n"
+     "-continuous=<yn>~~~Set continuous layout.\n"
+     "-sidebyside=<yn>~~~Set side-by-side layout.\n" );
   
   // align tabs
   QStringList opts = msg.split("\n");
   int tab = 0;
   foreach (QString s, opts)
-    tab = qMax(tab, s.indexOf("\t"));
+    tab = qMax(tab, s.indexOf("~~~"));
   foreach (QString s, opts)
     {
-      int pos = s.indexOf("\t");
+      int pos = s.indexOf("~~~");
       if (pos >= 0)
         s = QString(" %1  %2").arg(s.left(pos), -tab).arg(s.mid(pos+1));
       message(s, false);
