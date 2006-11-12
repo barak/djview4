@@ -7,13 +7,14 @@ HOW TO CREATE NEW TRANSLATION FILES FOR DJVIEW.
 - Determine the language code for your language.
   Sometimes language codes have suffixes in capital letters
   for describing variants. But we always use lowercase.
-  For instance we use 'zh_cn' or 'zh_tw' for the two variants
-  of chinese. In the following explanation we assume 'de' for german.
+  For instance, use 'zh_cn' or 'zh_tw' for the two variants of chinese. 
+  In the following explanation we assume 'de' for german.
 
+- Go to directory 'src'
+        $ cd src
 
-- Add a line 
+- Add the following line into file 'djview.pro'
         TRANSLATIONS += djview_de.ts 
-  into file djview.pro.
 
 - Run the Qt program 'lupdate'
         $ lupdate djview.pro
