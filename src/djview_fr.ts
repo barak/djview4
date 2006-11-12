@@ -704,11 +704,11 @@ Options fréquentes:
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Page information.&lt;/b&gt;&lt;br/&gt; Display information about the page located under the cursor: the sequential page number, the page size in pixels, and the page resolution in dots per inch. &lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Information sur la page.&lt;/b&gt;&lt;br/&gt; Affiche quelques informations sur la page située sous le curseur de la souris: le numéro de page, la taille de la page en pixels, et sa résolution en points par pouce (dpi).&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Informations sur la page.&lt;/b&gt;&lt;br/&gt; Affiche quelques informations sur la page située sous le pointeur: le numéro de page, la taille de la page en pixels, et sa résolution en points par pouce.&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Cursor information.&lt;/b&gt;&lt;br/&gt; Display the position of the mouse cursor expressed in page coordinates. &lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Information de position.&lt;/b&gt;&lt;br/&gt; Affiche la position du curseur de la souris exprimée dans les coordonnées de la page. &lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Position du pointeur.&lt;/b&gt;&lt;br/&gt; Affiche la position du pointeur, exprimée dans les coordonnées de la page. &lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Document viewing area.&lt;/b&gt;&lt;br/&gt; This is the main display area for the DjVu document. &lt;ul&gt;&lt;li&gt;Arrows and page keys to navigate the document.&lt;/li&gt;&lt;li&gt;Space and BackSpace to read the document.&lt;/li&gt;&lt;li&gt;Keys &lt;tt&gt;+&lt;/tt&gt; &lt;tt&gt;-&lt;/tt&gt; &lt;tt&gt;[&lt;/tt&gt; &lt;tt&gt;]&lt;/tt&gt; to zoom or rotate the document.&lt;/li&gt;&lt;li&gt;Left Mouse Button for panning and selecting links.&lt;/li&gt;&lt;li&gt;%3 for displaying the contextual menu.&lt;/li&gt;&lt;li&gt;%1 Left Mouse Button for selecting text or images.&lt;/li&gt;&lt;li&gt;%2 for popping the magnification lens.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</source>
@@ -1038,11 +1038,11 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailled information in the &apos;File&apos; tab. Double click a component file to show the corresponding page in the main window.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Information sur le document&lt;/b&gt;&lt;br&gt;Ce panneau montre les informations d&apos;encodage sur le document et les fichiers qui le composent. Sélectionnez un fichier pour obtenir des information détaillées dans l&apos;onglet «Fichier». Double-cliquez un fichier pour montrer la page correspondante dans la zone de visualisation principale.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Informations sur le document&lt;/b&gt;&lt;br&gt;Ce panneau montre les informations d&apos;encodage sur le document et les fichiers qui le composent. Sélectionnez un fichier pour obtenir des information détaillées dans l&apos;onglet «Fichier». Double-cliquez un fichier pour montrer la page correspondante dans la zone de visualisation principale.&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;File and page information&lt;/b&gt;&lt;br&gt;This panel shows the structure of the DjVu data corresponding to the component file or the page selected in the &apos;Document&apos; tab. The arrow buttons let you navigate to the previous or next component file.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Information sur un fichier&lt;/b&gt;&lt;br&gt;Ce panneau montre la structure des données DjVu correspondant au fichier ou à la page sélectionnée dans l&apos;onglet «Document». Les flèches vous permettent de naviguer vers le fichier précédent ou suivant.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Informations sur un fichier&lt;/b&gt;&lt;br&gt;Ce panneau montre la structure des données DjVu correspondant au fichier ou à la page sélectionnée dans l&apos;onglet «Document». Les flèches vous permettent de naviguer vers le fichier précédent ou suivant.&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Waiting for data...</source>
@@ -1197,7 +1197,7 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <source>Outline data is corrupted</source>
-        <translation>Information sur les chapitres illisible</translation>
+        <translation>L'information de structure en chapitres est illisible</translation>
     </message>
     <message>
         <source>Pages</source>
