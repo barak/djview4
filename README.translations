@@ -1,0 +1,43 @@
+
+
+HOW TO CREATE NEW TRANSLATION FILES FOR DJVIEW.
+-----------------------------------------------
+
+
+- Determine the language code for your language.
+  Sometimes language codes have suffixes in capital letters
+  for describing variants. But we always use lowercase.
+  For instance we use 'zh_cn' or 'zh_tw' for the two variants
+  of chinese. In the following explanation we assume 'de' for german.
+
+
+- Add a line 
+        TRANSLATIONS += djview_de.ts 
+  into file djview.pro.
+
+- Run the Qt program 'lupdate'
+        $ lupdate djview.pro
+
+- A file named djview_de.ts must have been created.
+  You must edit the translations using the Qt program 'linguist'.
+        $ linguist djview_de.ts
+  See the linguist documentation in the Qt documentation.
+  Alternatively you can use 'kbabel' to edit the ts file.
+
+- Run the Qt program 'lrelease'
+        $ lrelease djview.pro
+
+- You should have now a file named 'djview_de.qm'.
+  To test your translations, type
+        $ LANGUAGE=de ./djview
+
+- Once you are satisfied, 
+  send me your translation file 
+  by email (leonb@users.sourceforge.net)
+
+
+Thanks.
+
+
+
+
