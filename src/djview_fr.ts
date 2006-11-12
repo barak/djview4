@@ -2,10 +2,6 @@
 <context>
     <name>QApplication</name>
     <message>
-        <source>Options &apos;fix&apos; is deprecated.</source>
-        <translation>L&apos;option «-fix» n&apos;est plus utilisée.</translation>
-    </message>
-    <message>
         <source>Usage: djview [options] [filename-or-url]
 Common options include:
 -help~~~Prints this message.
@@ -34,6 +30,10 @@ Options fréquentes:
 -continuous=&lt;yn&gt;~~~Sélectionne l&apos;affichage continu des pages.
 -sidebyside=&lt;yn&gt;~~~Sélectionne l&apos;affichage cote-à-cote des pages.
 </translation>
+    </message>
+    <message>
+        <source>Option &apos;-fix&apos; is deprecated.</source>
+        <translation>L&apos;option «-fix» n&apos;est plus utilisée.</translation>
     </message>
 </context>
 <context>
@@ -106,12 +106,12 @@ Options fréquentes:
     <message>
         <source>Foreground</source>
         <comment>modeCombo</comment>
-        <translation>Avant-Plan</translation>
+        <translation>Avant-plan</translation>
     </message>
     <message>
         <source>Background</source>
         <comment>modeCombo</comment>
-        <translation>Arrière Plan</translation>
+        <translation>Arrière-plan</translation>
     </message>
     <message>
         <source>&amp;New</source>
@@ -269,7 +269,7 @@ Options fréquentes:
     </message>
     <message>
         <source>Increase the magnification.</source>
-        <translation>Augmente l&apos;aggrandissement de l&apos;image.</translation>
+        <translation>Augmente l&apos;agrandissement de l&apos;image.</translation>
     </message>
     <message>
         <source>Zoom &amp;Out</source>
@@ -278,7 +278,7 @@ Options fréquentes:
     </message>
     <message>
         <source>Decrease the magnification.</source>
-        <translation>Réduit l&apos;aggrandissement de l&apos;image.</translation>
+        <translation>Réduit l&apos;agrandissement de l&apos;image.</translation>
     </message>
     <message>
         <source>Fit &amp;Width</source>
@@ -468,7 +468,7 @@ Options fréquentes:
     <message>
         <source>&amp;Information...</source>
         <comment>Edit|</comment>
-        <translation>&amp;Information...</translation>
+        <translation>&amp;Informations...</translation>
     </message>
     <message>
         <source>Ctrl+I</source>
@@ -478,7 +478,7 @@ Options fréquentes:
     <message>
         <source>&amp;Metadata...</source>
         <comment>Edit|</comment>
-        <translation>&amp;Meta Informations...</translation>
+        <translation>&amp;Méta informations...</translation>
     </message>
     <message>
         <source>Ctrl+M</source>
@@ -487,7 +487,7 @@ Options fréquentes:
     </message>
     <message>
         <source>Show the document and page meta data.</source>
-        <translation>Montre les informations supplementaires sur le document et ses pages.</translation>
+        <translation>Montre les informations supplémentaires sur le document et ses pages.</translation>
     </message>
     <message>
         <source>&amp;About DjView...</source>
@@ -495,7 +495,7 @@ Options fréquentes:
     </message>
     <message>
         <source>Show information about this program.</source>
-        <translation>Montre les information à propos de ce programme.</translation>
+        <translation>Montre les informations à propos de ce programme.</translation>
     </message>
     <message>
         <source>&amp;Color</source>
@@ -518,20 +518,20 @@ Options fréquentes:
     <message>
         <source>&amp;Foreground</source>
         <comment>Display|</comment>
-        <translation>A&amp;vant Plan</translation>
+        <translation>A&amp;vant-plan</translation>
     </message>
     <message>
         <source>Only display the foreground layer.</source>
-        <translation>N&apos;affiche que l&apos;avant plan de chaque image.</translation>
+        <translation>N&apos;affiche que l&apos;avant-plan de chaque image.</translation>
     </message>
     <message>
         <source>&amp;Background</source>
         <comment>Display|</comment>
-        <translation>A&amp;rrière Plan</translation>
+        <translation>A&amp;rrière-plan</translation>
     </message>
     <message>
         <source>Only display the background layer.</source>
-        <translation>N&apos;affiche que l&apos;arrière plan de chaque image.</translation>
+        <translation>N&apos;affiche que l&apos;arrière-plan de chaque image.</translation>
     </message>
     <message>
         <source>Prefere&amp;nces...</source>
@@ -559,7 +559,7 @@ Options fréquentes:
     <message>
         <source>Show &amp;tool bar</source>
         <comment>Settings|</comment>
-        <translation>&amp;Barre d&apos;Outils</translation>
+        <translation>&amp;Barre d&apos;outils</translation>
     </message>
     <message>
         <source>F10</source>
@@ -573,7 +573,7 @@ Options fréquentes:
     <message>
         <source>Show stat&amp;us bar</source>
         <comment>Settings|</comment>
-        <translation>Ligne d&apos;É&amp;tat</translation>
+        <translation>Ligne d&apos;é&amp;tat</translation>
     </message>
     <message>
         <source>Show/hide the status bar.</source>
@@ -591,7 +591,7 @@ Options fréquentes:
     </message>
     <message>
         <source>Toggle full screen mode.</source>
-        <translation>Sélectionne le mode plein-écran.</translation>
+        <translation>Sélectionne le mode plein écran.</translation>
     </message>
     <message>
         <source>&amp;Continuous</source>
@@ -629,7 +629,7 @@ Options fréquentes:
     <message>
         <source>&amp;Edit</source>
         <comment>Edit|</comment>
-        <translation>&amp;Edition</translation>
+        <translation>&amp;Édition</translation>
     </message>
     <message>
         <source>&amp;View</source>
@@ -708,11 +708,11 @@ Options fréquentes:
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Cursor information.&lt;/b&gt;&lt;br/&gt; Display the position of the mouse cursor expressed in page coordinates. &lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Information de position.&lt;/b&gt;&lt;br/&gt; Affiche la position du curseur de la souris exprimée dans les coordonées de la page. &lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Information de position.&lt;/b&gt;&lt;br/&gt; Affiche la position du curseur de la souris exprimée dans les coordonnées de la page. &lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Document viewing area.&lt;/b&gt;&lt;br/&gt; This is the main display area for the DjVu document. &lt;ul&gt;&lt;li&gt;Arrows and page keys to navigate the document.&lt;/li&gt;&lt;li&gt;Space and BackSpace to read the document.&lt;/li&gt;&lt;li&gt;Keys &lt;tt&gt;+&lt;/tt&gt; &lt;tt&gt;-&lt;/tt&gt; &lt;tt&gt;[&lt;/tt&gt; &lt;tt&gt;]&lt;/tt&gt; to zoom or rotate the document.&lt;/li&gt;&lt;li&gt;Left Mouse Button for panning and selecting links.&lt;/li&gt;&lt;li&gt;%3 for displaying the contextual menu.&lt;/li&gt;&lt;li&gt;%1 Left Mouse Button for selecting text or images.&lt;/li&gt;&lt;li&gt;%2 for popping the magnification lens.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Zone de visualisation du document.&lt;/b&gt;&lt;br/&gt; Ceci est la zone de visualisation principale pour le document DjVu. &lt;ul&gt;&lt;li&gt;Flèches et touches de pagination pour naviguer à l&apos;intérieur du document.&lt;/li&gt;&lt;li&gt;Touches Espace et Retour pour lire le document en sequence.&lt;/li&gt;&lt;li&gt;Touches &lt;tt&gt;+&lt;/tt&gt; &lt;tt&gt;-&lt;/tt&gt; &lt;tt&gt;[&lt;/tt&gt; &lt;tt&gt;]&lt;/tt&gt; pour grossir ou pivoter les images.&lt;/li&gt;&lt;li&gt;Bouton gauche de la souris pour déplacer l&apos;image et sélectionner des liens.&lt;/li&gt;&lt;li&gt;%3 pour le menu contextuel.&lt;/li&gt;&lt;li&gt;%1 et bouton gauche de la souris pour sélectionner texte ou images.&lt;/li&gt;&lt;li&gt;%2 pour montrer la loupe.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Zone de visualisation du document.&lt;/b&gt;&lt;br/&gt; Ceci est la zone de visualisation principale pour le document DjVu. &lt;ul&gt;&lt;li&gt;Flèches et touches de pagination pour naviguer à l&apos;intérieur du document.&lt;/li&gt;&lt;li&gt;Touches Espace et Retour pour lire le document en séquence.&lt;/li&gt;&lt;li&gt;Touches &lt;tt&gt;+&lt;/tt&gt; &lt;tt&gt;-&lt;/tt&gt; &lt;tt&gt;[&lt;/tt&gt; &lt;tt&gt;]&lt;/tt&gt; pour grossir ou pivoter les images.&lt;/li&gt;&lt;li&gt;Bouton gauche de la souris pour déplacer l&apos;image et sélectionner des liens.&lt;/li&gt;&lt;li&gt;%3 pour le menu contextuel.&lt;/li&gt;&lt;li&gt;%1 et bouton gauche de la souris pour sélectionner texte ou images.&lt;/li&gt;&lt;li&gt;%2 pour montrer la loupe.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Document viewing area.&lt;/b&gt;&lt;br/&gt; This is the main display area for the DjVu document. But you must first open a DjVu document to see anything.&lt;/html&gt;</source>
@@ -776,7 +776,7 @@ Options fréquentes:
     </message>
     <message>
         <source>Cannot find page numbered: %1</source>
-        <translation>Impossible de trouver la page numerotée «%1»</translation>
+        <translation>Impossible de trouver la page numérotée «%1»</translation>
     </message>
     <message>
         <source>Cannot find page named: %1</source>
@@ -884,7 +884,7 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <source>Cannot resolve link &apos;%1&apos;</source>
-        <translation>Impossinle d&apos;interpreter le lien «%1»</translation>
+        <translation>Impossible d&apos;interpréter le lien «%1»</translation>
     </message>
     <message>
         <source>Cannot spawn a browser for url &apos;%1&apos;</source>
@@ -904,7 +904,7 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <source>Copy image (%1x%2 pixels)</source>
-        <translation>Copier l&apos;image (%1x%2 pixels)</translation>
+        <translation>Copier l&apos;image (%1x%2)</translation>
     </message>
     <message>
         <source>Save image as...</source>
@@ -933,27 +933,19 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <source>DjView Information</source>
-        <translation>DjView Information</translation>
+        <translation>DjView Informations</translation>
     </message>
     <message>
         <source>DjView Metadata</source>
-        <translation>DjView Meta Information</translation>
+        <translation>DjView Méta informations</translation>
     </message>
     <message>
         <source>Magnify 50%</source>
-        <translation>Aggrandissement à 50%</translation>
+        <translation>Grossissement à 50%</translation>
     </message>
     <message>
         <source>Show information about the document encoding and structure.</source>
         <translation>Montre les informations sur l&apos;encodage du document et sa structure.</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;b&gt;Document and page information.&lt;/b&gt;&lt;br&gt; Display a dialog window for viewing encoding information pertaining to the document or to a specific page.</source>
-        <translation>&lt;html&gt;&lt;b&gt;Informations sur le document et la  page.&lt;/b&gt;&lt;br&gt; Affiche un panneau montrant les informations d&apos;encodage qui se rapportent au document ou à une de ses pages.</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;b&gt;Document and page metadata.&lt;/b&gt;&lt;br&gt; Display a dialog window for viewing metadata pertaining to the document or to a specific page.</source>
-        <translation>&lt;html&gt;&lt;b&gt;Méta-Informations sur le document et la  page.&lt;/b&gt;&lt;br&gt; Affiche un panneau montrant les informations supplémentaires qui se rapportent au document ou à une de ses pages.</translation>
     </message>
     <message>
         <source> (in other window.)</source>
@@ -970,6 +962,14 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     <message>
         <source>Toolbar option &apos;%1&apos; is not recognized.</source>
         <translation>L&apos;option de barre d&apos;outils «%1» n&apos;est pas reconnue.</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;Document and page information.&lt;/b&gt;&lt;br&gt; Display a dialog window for viewing encoding information pertaining to the document or to a specific page.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Informations sur le document et la  page.&lt;/b&gt;&lt;br&gt; Affiche un panneau montrant les informations d&apos;encodage qui se rapportent au document ou à une de ses pages.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;Document and page metadata.&lt;/b&gt;&lt;br&gt; Display a dialog window for viewing metadata pertaining to the document or to a specific page.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Méta informations sur le document et la page.&lt;/b&gt;&lt;br&gt; Affiche un panneau montrant les informations supplémentaires qui se rapportent au document ou à une de ses pages.&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1038,11 +1038,11 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailled information in the &apos;File&apos; tab. Double click a component file to show the corresponding page in the main window.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Information sur le document&lt;/b&gt;&lt;br&gt;Ce panneau montre les informations d&apos;encodage sur le document et les fichiers qui le composent. Selectionnez un fichier pour obtenir des information détaillées dans l&apos;onglet «Fichier». Double-clickez un fichier pour montrer la page correspondante dans la zone de visualiation principale.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Information sur le document&lt;/b&gt;&lt;br&gt;Ce panneau montre les informations d&apos;encodage sur le document et les fichiers qui le composent. Sélectionnez un fichier pour obtenir des information détaillées dans l&apos;onglet «Fichier». Double-cliquez un fichier pour montrer la page correspondante dans la zone de visualisation principale.&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;File and page information&lt;/b&gt;&lt;br&gt;This panel shows the structure of the DjVu data corresponding to the component file or the page selected in the &apos;Document&apos; tab. The arrow buttons let you navigate to the previous or next component file.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Information sur un fichier&lt;/b&gt;&lt;br&gt;Ce panneau montre la structure des données DjVu correspondant au fichier ou à la page selectionnée dans l&apos;onglet «Document». Les fleches vous permettent de naviguer vers le fichier précédent ou suivant.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Information sur un fichier&lt;/b&gt;&lt;br&gt;Ce panneau montre la structure des données DjVu correspondant au fichier ou à la page sélectionnée dans l&apos;onglet «Document». Les flèches vous permettent de naviguer vers le fichier précédent ou suivant.&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Waiting for data...</source>
@@ -1158,11 +1158,11 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Document metadata&lt;/b&gt;&lt;br&gt;This panel displays metadata pertaining to the document, such as author, title, references, etc. This information can be saved into the document with program &lt;tt&gt;djvused&lt;/tt&gt;: use the commands &lt;tt&gt;create-shared-ant&lt;/tt&gt; and &lt;tt&gt;set-meta&lt;/tt&gt;.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Meta-Information sur le document&lt;/b&gt;&lt;br&gt;Ce panneau montre les informations supplémentaires sur le document: auteur, titre, références, etc. Ces informations peuvent être ajoutées au document en utilisant les commandes &lt;tt&gt;create-shared-ant&lt;/tt&gt; and &lt;tt&gt;set-meta&lt;/tt&gt; du programme &lt;tt&gt;djvused&lt;/tt&gt;.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Méta informations sur le document&lt;/b&gt;&lt;br&gt;Ce panneau montre les informations supplémentaires sur le document: auteur, titre, références, etc. Ces informations peuvent être ajoutées au document en utilisant les commandes &lt;tt&gt;create-shared-ant&lt;/tt&gt; and &lt;tt&gt;set-meta&lt;/tt&gt; du programme &lt;tt&gt;djvused&lt;/tt&gt;.&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Page metadata&lt;/b&gt;&lt;br&gt;This panel displays metadata pertaining to a specific page. Page specific metadata override document metadata. This information can be saved into the document with program &lt;tt&gt;djvused&lt;/tt&gt;: use command &lt;tt&gt;select&lt;/tt&gt; to select the page and command &lt;tt&gt;set-meta&lt;/tt&gt; to specify the metadata entries.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Meta-Information sur le document&lt;/b&gt;&lt;br&gt;Ce panneau montre les informations supplémentaires sur la page sélectionnée. Ces informations ont priorité sur celles se rapportant au document dans son ensemble. Elles peuvent être ajoutées en utilisant les commandes &lt;tt&gt;select&lt;/tt&gt; and &lt;tt&gt;set-meta&lt;/tt&gt; du programme &lt;tt&gt;djvused&lt;/tt&gt;.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Méta informations sur le document&lt;/b&gt;&lt;br&gt;Ce panneau montre les informations supplémentaires sur la page sélectionnée. Ces informations ont priorité sur celles se rapportant au document dans son ensemble. Elles peuvent être ajoutées en utilisant les commandes &lt;tt&gt;select&lt;/tt&gt; and &lt;tt&gt;set-meta&lt;/tt&gt; du programme &lt;tt&gt;djvused&lt;/tt&gt;.&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Dialog</source>
@@ -1193,7 +1193,7 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     <name>QDjViewOutline</name>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Document outline.&lt;/b&gt;&lt;br/&gt; This panel display the document outline, or the page names when the outline is not available, Double-click any entry to jump to the selected page.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Document outline.&lt;/b&gt;&lt;br/&gt; This panel display the document outline, or the page names when the outline is not available, Double-click any entry to jump to the selected page.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Chapitres.&lt;/b&gt;&lt;br/&gt; Ce panneau montre la structure en chapitres enregistrée dans le document. Lorsque cette information n&apos;est pas disponible, les noms de pages sont affichés. Double-cliquez une entrée pour voir la page correspondante.&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Outline data is corrupted</source>
@@ -1246,23 +1246,11 @@ Voulez-vous le remplacer?</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation>&amp;Annuller</translation>
+        <translation>&amp;Annuler</translation>
     </message>
     <message>
         <source>Directory is not empty</source>
         <translation>Répertoire existant</translation>
-    </message>
-    <message>
-        <source>This file belongs to a non empty directory.
-Saving an indirect document creates many
-files in this directory.
-Do you want to continue and risk overwriting
-the contents of this directory?</source>
-        <translation>Ce fichier appartient à un répertoire déjà peuplé.
-Enregistrer un document indirect va créer de 
-multiple fichiers dans ce répertoire.
-Voulez vous continuer et prendre le risque de
-remplacer un fichier existant dans ce répertoire?</translation>
     </message>
     <message>
         <source>Con&amp;tinue</source>
@@ -1274,11 +1262,11 @@ remplacer un fichier existant dans ce répertoire?</translation>
     </message>
     <message>
         <source>Save job creation failed!</source>
-        <translation>L&apos;operation d&apos;enregistrement a echoué!</translation>
+        <translation>L&apos;operation d&apos;enregistrement a échoué!</translation>
     </message>
     <message>
         <source>This job has failed.</source>
-        <translation>Cette opération a echoué.</translation>
+        <translation>Cette opération a échoué.</translation>
     </message>
     <message>
         <source>This job has been interrupted.</source>
@@ -1339,6 +1327,10 @@ remplacer un fichier existant dans ce répertoire?</translation>
     <message>
         <source>Stop</source>
         <translation>Stop</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt; This file belongs to a non empty directory. Saving an indirect document creates many files in this directory. Do you want to continue and risk overwriting the contents of this directory? &lt;/html&gt;</source>
+        <translation>&lt;html&gt; Ce fichier appartient à un répertoire déjà peuplé. Enregistrer un document indirect va créer de multiple fichiers dans ce répertoire. Voulez vous continuer et prendre le risque de remplacer un fichier existant dans ce répertoire? &lt;/html&gt;</translation>
     </message>
 </context>
 <context>

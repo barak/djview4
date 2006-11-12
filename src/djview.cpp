@@ -251,7 +251,7 @@ main(int argc, char *argv[])
       else if (arg == "quiet")
         verbose = false;
       else if (arg == "fix")
-        message(QApplication::tr("Options 'fix' is deprecated."));
+        message(QApplication::tr("Option '-fix' is deprecated."));
       else 
         message(main->parseArgument(arg));
       argc --;

@@ -941,13 +941,13 @@ QDjView::createWhatsThis()
   Help(tr("<html><b>Document and page information.</b><br> "
           "Display a dialog window for viewing "
           "encoding information pertaining to the document "
-          "or to a specific page."))
+          "or to a specific page.</html>"))
             >> actionInformation;
   
   Help(tr("<html><b>Document and page metadata.</b><br> "
           "Display a dialog window for viewing metadata "
           "pertaining to the document "
-          "or to a specific page."))
+          "or to a specific page.</html>"))
             >> actionMetadata;
 
   Help(tr("<html><b>Continuous layout.</b><br/> "

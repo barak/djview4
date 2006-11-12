@@ -941,11 +941,11 @@ QDjViewSaveDialog::save()
   if (d->ui.indirectButton->isChecked() &&
       !dir.entryList(QDir::AllEntries|QDir::NoDotAndDotDot).isEmpty() &&
       QMessageBox::question(this, tr("Directory is not empty"),
-                            tr("This file belongs to a non empty directory.\n"
-                               "Saving an indirect document creates many\n"
-                               "files in this directory.\n"
-                               "Do you want to continue and risk overwriting\n"
-                               "the contents of this directory?"),
+                            tr("<html> This file belongs to a non empty "
+                               "directory. Saving an indirect document "
+                               "creates many files in this directory. "
+                               "Do you want to continue and risk overwriting "
+                               "the contents of this directory? </html>"),
                             tr("Con&tinue"),
                             tr("&Cancel") ) )
     return;
