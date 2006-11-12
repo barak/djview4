@@ -122,7 +122,7 @@ usage()
     {
       int pos = s.indexOf("~~~");
       if (pos >= 0)
-        s = QString(" %1  %2").arg(s.left(pos), -tab).arg(s.mid(pos+1));
+        s = QString(" %1  %2").arg(s.left(pos), -tab).arg(s.mid(pos+3));
       message(s, false);
     }
   exit(10);
