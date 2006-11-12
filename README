@@ -11,7 +11,7 @@ Compiling
 $ cd djview/src
 $ qmake-qt4
 $ make
-$ djview filename
+$ ./djview filename
 
 Using it as a plugin.
 - Assuming you already have the djvulibre-3.5 plugin working,
