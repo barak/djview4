@@ -31,13 +31,13 @@ Options fréquentes:
 -sidebyside=&lt;yn&gt;<byte value="x9"/>Sélectionne l&apos;affichage cote-à-cote des pages.
 </translation>
     </message>
+    <message>
+        <source>Options &apos;fix&apos; is deprecated.</source>
+        <translation>L&apos;option «-fix» n&apos;est plus utilisée.</translation>
+    </message>
 </context>
 <context>
     <name>QDjView</name>
-    <message>
-        <source>Options &apos;fix&apos; is deprecated</source>
-        <translation>L&apos;option «-fix» n&apos;est plus utilisée</translation>
-    </message>
     <message>
         <source>cannot open &apos;%1&apos;.</source>
         <translation>impossible d&apos;ouvrir «%1».
@@ -719,20 +719,8 @@ Options fréquentes:
         <translation>&lt;html&gt;&lt;b&gt;Zone de visualisation du document.&lt;/b&gt;&lt;br/&gt; Ceci est la zone de visualisation principale pour le document DjVu. Mais vous devez d&apos;abord ouvrir un document DjVu pour voir quoi que ce soit.&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Option &apos;%1&apos; requires boolean argument</source>
-        <translation>L&apos;option «%1» demande un argument «yes» or «no»</translation>
-    </message>
-    <message>
-        <source>Illegal value &apos;%2&apos; for option &apos;%1&apos;</source>
-        <translation>L&apos;argument «%2» pour l&apos;option «%1» est invalide </translation>
-    </message>
-    <message>
         <source>Toolbar option &apos;%1&apos; is not implemented.</source>
         <translation>L&apos;option de barre d&apos;outils «%1» n&apos;est pas supportée.</translation>
-    </message>
-    <message>
-        <source>Toolbar option &apos;%1&apos; is not recognized</source>
-        <translation>L&apos;option de barre d&apos;outils «%1» n&apos;est pas reconnue</translation>
     </message>
     <message>
         <source>Option &apos;%1&apos; requires a standalone viewer.</source>
@@ -824,12 +812,6 @@ Options fréquentes:
     <message>
         <source>All files</source>
         <translation>Tous les fichiers</translation>
-    </message>
-    <message>
-        <source>Cannot write file &apos;%1&apos;
-%2.</source>
-        <translation type="obsolete">Impossible d&apos;écrire le fichier «%1».
-%2.</translation>
     </message>
     <message>
         <source>Save image</source>
@@ -976,6 +958,18 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     <message>
         <source> (in other window.)</source>
         <translation> (dans une autre fenêtre.)</translation>
+    </message>
+    <message>
+        <source>Option &apos;%1&apos; requires boolean argument.</source>
+        <translation>L&apos;option «%1» demande un argument booléen.</translation>
+    </message>
+    <message>
+        <source>Illegal value &apos;%2&apos; for option &apos;%1&apos;.</source>
+        <translation>L&apos;argument «%2» pour l&apos;option «%1» est invalide.</translation>
+    </message>
+    <message>
+        <source>Toolbar option &apos;%1&apos; is not recognized.</source>
+        <translation>L&apos;option de barre d&apos;outils «%1» n&apos;est pas reconnue.</translation>
     </message>
 </context>
 <context>

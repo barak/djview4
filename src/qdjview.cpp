@@ -1206,14 +1206,14 @@ static bool
 string_is_on(QString val)
 {
   QString v = val.toLower();
-  return v == "yes" || v == "on" || v == "true";
+  return v == "yes" || v == "on" || v == "true" || v == "1";
 }
 
 static bool
 string_is_off(QString val)
 {
   QString v = val.toLower();
-  return v == "no" || v == "off" || v == "false";
+  return v == "no" || v == "off" || v == "false" || v == "0";
 }
 
 static bool
@@ -1225,14 +1225,14 @@ parse_boolean(QString, QString val, QList<QString> &errors, bool &answer)
   answer = true;
   if (string_is_on(val) || val.isNull())
     return true;
-  errors << QDjView::tr("Option '%1' requires boolean argument").arg(val);
+  errors << QDjView::tr("Option '%1' requires boolean argument.").arg(val);
   return false;
 }
 
 static void
 illegal_value(QString key, QString value, QList<QString> &errors)
 {
-  errors << QDjView::tr("Illegal value '%2' for option '%1'")
+  errors << QDjView::tr("Illegal value '%2' for option '%1'.")
     .arg(key).arg(value);
 }
 
@@ -1292,9 +1292,9 @@ QDjView::parseToolBarOption(QString option, QStringList &errors)
       if (npos < 0) 
         npos = len;
       QString key = str.mid(pos, npos-pos).trimmed();
-      if ((key=="no" || key=="false") && !plus && !minus)
+      if (string_is_off(key) && !plus && !minus)
         options &= ~QDjViewPrefs::SHOW_TOOLBAR;
-      else if ((key=="yes" || key=="true") && !plus && !minus)
+      else if (string_is_on(key) && !plus && !minus)
         options |= QDjViewPrefs::SHOW_TOOLBAR;
       else if (key=="bottom" && !plus && !minus) {
         options |= QDjViewPrefs::SHOW_TOOLBAR;
@@ -1350,7 +1350,7 @@ QDjView::parseToolBarOption(QString option, QStringList &errors)
       else if (key=="help")
         set_reset(tools, plus, minus, QDjViewPrefs::TOOL_WHATSTHIS);
       else if (key!="")
-        errors << tr("Toolbar option '%1' is not recognized").arg(key);
+        errors << tr("Toolbar option '%1' is not recognized.").arg(key);
       // handle + or -
       if (npos < len)
         {

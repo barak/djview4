@@ -454,14 +454,14 @@ static bool
 string_is_on(QString val)
 {
   QString v = val.toLower();
-  return v == "yes" || v == "on" || v == "true";
+  return v == "yes" || v == "on" || v == "true" || v == "1";
 }
 
 static bool
 string_is_off(QString val)
 {
   QString v = val.toLower();
-  return v == "no" || v == "off" || v == "false";
+  return v == "no" || v == "off" || v == "false" || v == "0";
 }
 
 

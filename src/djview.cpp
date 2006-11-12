@@ -144,15 +144,20 @@ setupApplication()
   QCoreApplication *app = QCoreApplication::instance();
   QTranslator *qtTrans = new QTranslator(app);
   QTranslator *djviewTrans = new QTranslator(app);
-
+  
   // preferred languages
   QStringList langs; 
   QString varLanguage = ::getenv("LANGUAGE");
-  QString varLcMessages = QLocale::system().name();
   if (varLanguage.size())
     langs += varLanguage.toLower().split(":", QString::SkipEmptyParts);
+#ifdef LC_ALL
+  QString varLcMessages = ::setlocale(LC_MESSAGES, 0);
   if (varLcMessages.size())
     langs += varLcMessages;
+#endif
+  QString qtLocale =  QLocale::system().name();
+  if (qtLocale.size())
+    langs += qtLocale;
 
   // potential directories
   QStringList dirs;
@@ -199,11 +204,14 @@ setupApplication()
 int 
 main(int argc, char *argv[])
 {
-  setlocale(LC_ALL, "");
-  setlocale(LC_NUMERIC, "C");
+  // Locale
+#ifdef LC_ALL
+  ::setlocale(LC_ALL, "");
+  ::setlocale(LC_NUMERIC, "C");
+#endif
 
+  // Message verbosity
   qtDefaultHandler = qInstallMsgHandler(qtMessageHandler);
-
 #if QT_VERSION < 0x40100
   verbose = true;
   qWarning("Using Qt < 4.1.0 with prejudice.");
@@ -213,17 +221,19 @@ main(int argc, char *argv[])
   if (s && strcmp(s,"0"))
     verbose = true;
 #endif
+
+  // Plugin mode
 #ifdef Q_WS_X11
   for (int i=1; i<argc; i++)
     if (!strcmp(argv[i],"-netscape") || !strcmp(argv[i],"--netscape"))
       { // run as plugin
-        
         verbose = true;
         QDjViewPlugin dispatcher(argv[0]);
         return dispatcher.exec();
       }
 #endif
-  
+
+  // Start
   QDjVuContext djvuContext(argv[0]);
   QApplication app(argc, argv);
   setupApplication();
@@ -241,7 +251,7 @@ main(int argc, char *argv[])
       else if (arg == "quiet")
         verbose = false;
       else if (arg == "fix")
-        message(QDjView::tr("Options 'fix' is deprecated"));
+        message(QApplication::tr("Options 'fix' is deprecated."));
       else 
         message(main->parseArgument(arg));
       argc --;
