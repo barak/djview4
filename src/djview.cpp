@@ -157,8 +157,8 @@ setupApplication()
 #endif
   QString qtLocale =  QLocale::system().name();
   if (qtLocale.size())
-    langs += qtLocale;
-
+    langs += qtLocale.toLower();
+  
   // potential directories
   QStringList dirs;
   QDir dir = app->applicationDirPath();
