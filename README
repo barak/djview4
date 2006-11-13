@@ -24,6 +24,9 @@ $ firefox
 
 Hightlights:
 - entirely based on the public library api (ddjvuapi)
+- entirely written in portable Qt4.
+- has been reported to work with Qt/Mac.
+- should work with Qt/Windows as well.
 - continuous scrolling of pages
 - side-by-side display of pages
 - ability to specify a url to the djview command
