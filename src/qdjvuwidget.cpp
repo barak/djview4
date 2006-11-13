@@ -4107,6 +4107,7 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
           rotateRight(); 
           return;
         case Qt::Key_Plus: 
+        case Qt::Key_Equal: 
           priv->updateCurrentPoint(priv->cursorPos);
           zoomIn(); 
           return;
