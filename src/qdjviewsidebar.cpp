@@ -788,6 +788,17 @@ class QDjViewFind::Model : public QAbstractListModel
   Q_OBJECT
 public:
   Model(QDjViewFind*);
+  // model stuff
+public:
+  virtual int rowCount(const QModelIndex &parent) const;
+  virtual QVariant data(const QModelIndex &index, int role) const;
+  void clear();
+  int  findPage(int pageno);
+  bool selectPage(int pageno);
+  void addPage(int pageno, int hits);
+private:
+  struct RowInfo { int pageno; int hits; QString name; };
+  QList<RowInfo> pages;
   // private data stuff
 public:
   void startFind(bool);
@@ -820,17 +831,6 @@ private:
   bool working;
   bool pending;
   QString find;
-  // model stuff
-public:
-  virtual int rowCount(const QModelIndex &parent) const;
-  virtual QVariant data(const QModelIndex &index, int role) const;
-  void clear();
-  int  findPage(int pageno);
-  bool selectPage(int pageno);
-  void addPage(int pageno, int hits);
-private:
-  struct RowInfo { int pageno; int hits; QString name; };
-  QList<RowInfo> pages;
 };
 
 
@@ -947,7 +947,10 @@ QDjViewFind::Model::addPage(int pageno, int hits)
   RowInfo info;
   info.pageno = pageno;
   info.hits = hits;
-  info.name = tr("Page %1 (%2)").arg(name).arg(hits);
+  if (hits <= 1)
+    info.name = tr("Page %1 (%2 hit)").arg(name).arg(hits);
+  else
+    info.name = tr("Page %1 (%2 hits)").arg(name).arg(hits);
   int lo = findPage(pageno);
   if (lo < pages.size() && pages[lo].pageno == pageno)
     {
@@ -1068,8 +1071,10 @@ QDjViewFind::Model::stopFind()
 void 
 QDjViewFind::Model::pageinfo()
 {
-  if (working && ! workTimer->isActive())
-    workTimer->start();
+  if (working)
+    if (pending || widget->isVisible())
+      if (!workTimer->isActive())
+        workTimer->start();
 }
 
 
