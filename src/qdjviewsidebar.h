@@ -39,6 +39,7 @@ class QItemSelectionModel;
 class QLineEdit;
 class QListView;
 class QMenu;
+class QPushButton;
 class QTreeWidget;
 class QTreeWidgetItem;
 
@@ -134,12 +135,13 @@ protected:
   void contextMenuEvent(QContextMenuEvent *event);
 private:
   class Model;
-  QDjView             *djview;
-  Model               *model;
-  QListView           *view;
-  QItemSelectionModel *selection;
-  QMenu               *menu;
-  QLineEdit           *edit;
+  QDjView      *djview;
+  Model        *model;
+  QListView    *view;
+  QMenu        *menu;
+  QLineEdit    *edit;
+  QPushButton  *upButton;
+  QPushButton  *downButton;
 };
 
 

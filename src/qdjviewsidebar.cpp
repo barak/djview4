@@ -288,12 +288,8 @@ class QDjViewThumbnails::Model : public QAbstractListModel
 public:
   ~Model();
   Model(QDjViewThumbnails*);
-  virtual QModelIndex index(int row, 
-                            int column = 0, 
-                            const QModelIndex &p = QModelIndex()) const;
   virtual int rowCount(const QModelIndex &parent) const;
   virtual QVariant data(const QModelIndex &index, int role) const;
-  virtual int flags(QModelIndex &index) const;
   int getSize() { return size; }
   int getSmart() { return smart; }
 public slots:
@@ -405,13 +401,6 @@ QDjViewThumbnails::Model::Model(QDjViewThumbnails *widget)
   // update
   if (djview->pageNum() > 0)
     documentReady(djview->getDocument());
-}
-
-
-QModelIndex 
-QDjViewThumbnails::Model::index(int row, int, const QModelIndex&) const
-{
-  return createIndex(row, 0);
 }
 
 
@@ -625,11 +614,6 @@ QDjViewThumbnails::Model::data(const QModelIndex &index, int role) const
 }
 
 
-int 
-QDjViewThumbnails::Model::flags(QModelIndex&) const
-{
-  return Qt::ItemIsEnabled|Qt::ItemIsSelectable;
-}
 
 
 
@@ -795,6 +779,8 @@ QDjViewThumbnails::contextMenuEvent(QContextMenuEvent *event)
 
 // ----------------------------------------
 // QDJVIEWFIND::MODEL
+// This class mixes the listview model
+// and private data for qdjviewfind
 
 
 class QDjViewFind::Model : public QAbstractListModel
@@ -802,25 +788,49 @@ class QDjViewFind::Model : public QAbstractListModel
   Q_OBJECT
 public:
   Model(QDjViewFind*);
-  virtual QModelIndex index(int row, int column = 0, 
-                            const QModelIndex &p = QModelIndex()) const;
-  virtual int rowCount(const QModelIndex &parent) const;
-  virtual QVariant data(const QModelIndex &index, int role) const;
-  virtual int flags(QModelIndex &index) const;
+  // private data stuff
+public:
+  void startFind(bool);
+  void stopFind();
+protected:
+  virtual bool eventFilter(QObject*, QEvent*);
 public slots:
   void documentClosed(QDjVuDocument*);
   void documentReady(QDjVuDocument*);
+  void animTimeout();
+  void workTimeout();
   void pageChanged(int);
-  void textChanged(QString);
+  void textChanged();
   void pageinfo();
 private:
   friend class QDjViewFind;
   QDjViewFind *widget;
   QDjView *djview;
+  QTimer *animTimer;
+  QTimer *workTimer;
+  QItemSelectionModel *selection;
+  QPushButton *animButton;
+  QIcon animIcon;
+  QIcon findIcon;
+  int curPage;
+  int curHit;
   bool searchBackwards;
   bool caseSensitive;
   bool wordOnly;
-
+  bool working;
+  bool pending;
+  QString find;
+  // model stuff
+public:
+  virtual int rowCount(const QModelIndex &parent) const;
+  virtual QVariant data(const QModelIndex &index, int role) const;
+  void clear();
+  int  findPage(int pageno);
+  bool selectPage(int pageno);
+  void addPage(int pageno, int hits);
+private:
+  struct RowInfo { int pageno; int hits; QString name; };
+  QList<RowInfo> pages;
 };
 
 
@@ -828,44 +838,165 @@ QDjViewFind::Model::Model(QDjViewFind *widget)
   : QAbstractListModel(widget),
     widget(widget), 
     djview(widget->djview),
+    selection(0),
+    animButton(0),
+    curPage(0),
+    curHit(0),
     searchBackwards(false),
     caseSensitive(false),
-    wordOnly(true)
+    wordOnly(true),
+    working(false),
+    pending(false)
 {
-}
-
-
-QModelIndex 
-QDjViewFind::Model::index(int row, int, const QModelIndex&) const
-{
-  return createIndex(row, 0);
+  selection = new QItemSelectionModel(this);
+  animTimer = new QTimer(this);
+  workTimer = new QTimer(this);
+  workTimer->setSingleShot(true);
+  connect(animTimer, SIGNAL(timeout()), this, SLOT(animTimeout()));
+  connect(workTimer, SIGNAL(timeout()), this, SLOT(workTimeout()));
+  findIcon = QIcon(":/images/icon_empty.png");
 }
 
 
 int 
-QDjViewFind::Model::rowCount(const QModelIndex &parent) const
+QDjViewFind::Model::rowCount(const QModelIndex&) const
 {
-  return 0;
+  return pages.size();
 }
 
 
 QVariant 
 QDjViewFind::Model::data(const QModelIndex &index, int role) const
 {
+  if (index.isValid())
+    {
+      int row = index.row();
+      if (row>=0 && row<pages.size())
+        {
+          const RowInfo &info = pages[row];
+          switch(role)
+            {
+            case Qt::DisplayRole:
+              return info.name;
+            case Qt::ToolTipRole:
+              if (info.hits <= 1)
+                return tr("%1 hit").arg(info.hits);
+              else
+                return tr("%1 hits").arg(info.hits);
+            default:
+              break;
+            }
+        }
+    }
   return QVariant();
 }
 
 
-int 
-QDjViewFind::Model::flags(QModelIndex &index) const
+void
+QDjViewFind::Model::clear()
 {
-  return 0;
+  int nrows = pages.size();
+  if (nrows > 0)
+    {
+      beginRemoveRows(QModelIndex(), 0, nrows-1);
+      pages.clear();
+      endRemoveRows();
+    }
+}
+
+
+int
+QDjViewFind::Model::findPage(int pageno)
+{
+  int lo = 0;
+  int hi = pages.size();
+  while (lo < hi)
+    {
+      int k = (lo + hi - 1) / 2;
+      if (pageno > pages[k].pageno)
+        lo = k + 1;
+      else if (pageno < pages[k].pageno)
+        hi = k;
+      else
+        lo = hi = k;
+    }
+  return lo;
+}
+
+
+bool
+QDjViewFind::Model::selectPage(int pageno)
+{
+  int lo = findPage(pageno);
+  QModelIndex mi = index(lo);
+  if (lo < pages.size() && pages[lo].pageno == pageno)
+    {
+      if (!selection->isSelected(mi))
+        selection->select(mi, QItemSelectionModel::ClearAndSelect);
+      return true;
+    }
+  selection->select(mi, QItemSelectionModel::Clear);
+  return false;
+}
+
+
+void
+QDjViewFind::Model::addPage(int pageno, int hits)
+{
+  QString name = djview->pageName(pageno);
+  RowInfo info;
+  info.pageno = pageno;
+  info.hits = hits;
+  info.name = tr("Page %1 (%2)").arg(name).arg(hits);
+  int lo = findPage(pageno);
+  if (lo < pages.size() && pages[lo].pageno == pageno)
+    {
+      pages[lo] = info;
+      QModelIndex mi = index(lo);
+      emit dataChanged(mi, mi);
+    }
+  else
+    {
+      beginInsertRows(QModelIndex(), lo, lo);
+      pages.insert(lo, info);
+      endInsertRows();
+      if (pageno == djview->getDjVuWidget()->page())
+        selectPage(pageno);
+    }
+}
+
+
+bool 
+QDjViewFind::Model::eventFilter(QObject*, QEvent *event)
+{
+  switch (event->type())
+    {
+    case QEvent::Hide:
+    case QEvent::Show:
+      if (! widget->isVisible())
+        {
+          animTimer->stop();
+          workTimer->stop();
+        }
+      else if (working)
+        {
+          animTimer->start();
+          workTimer->start();
+        }
+    default:
+      break;
+    }
+  return false;
 }
 
 
 void 
 QDjViewFind::Model::documentClosed(QDjVuDocument*)
 {
+  stopFind();
+  clear();
+  curPage = 0;
+  curHit = 0;
 }
 
 
@@ -876,23 +1007,95 @@ QDjViewFind::Model::documentReady(QDjVuDocument*)
 
 
 void 
-QDjViewFind::Model::pageChanged(int n)
+QDjViewFind::Model::workTimeout()
 {
-  qDebug() << "find page changed" << n;
+  // do some work
+  if (working)
+    {
+      // TODO: insert something smarter here
+      stopFind();
+    }
+  // restart timer
+  if (working)
+    if (pending || widget->isVisible())
+      workTimer->start();
 }
 
 
 void 
-QDjViewFind::Model::textChanged(QString s)
+QDjViewFind::Model::animTimeout()
 {
-  qDebug() << "find text changed" << s;
+  if (animButton && !animIcon.isNull())
+    {
+      if (animButton->icon().serialNumber() == findIcon.serialNumber())
+        animButton->setIcon(animIcon);
+      else
+        animButton->setIcon(findIcon);
+    }
+}
+
+
+void 
+QDjViewFind::Model::startFind(bool backwards)
+{
+  stopFind();
+  searchBackwards = backwards;
+  if (! find.isEmpty() /* && documentReady */)
+    {
+      animButton = (backwards) ? widget->upButton : widget->downButton;
+      animIcon = animButton->icon();
+      animTimer->start(500);
+      workTimer->start(0);
+      working = pending = true;
+    }
+}
+
+
+void 
+QDjViewFind::Model::stopFind()
+{
+  animTimer->stop();
+  workTimer->stop();
+  if (animButton)
+    {
+      animButton->setIcon(animIcon);
+      animButton = 0;
+    }
+  working = pending = false;
 }
 
 
 void 
 QDjViewFind::Model::pageinfo()
 {
+  if (working && ! workTimer->isActive())
+    workTimer->start();
 }
+
+
+void 
+QDjViewFind::Model::pageChanged(int pageno)
+{
+  if (pageno > curPage)
+    curHit = 0;
+  else if (pageno < curPage)
+    curHit = -1;
+  curPage = pageno;
+  pending = false;
+}
+
+
+void 
+QDjViewFind::Model::textChanged()
+{
+  clear();
+  find = widget->text();
+  startFind(searchBackwards);
+}
+
+
+
+
 
 
 
@@ -908,14 +1111,13 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   : QWidget(djview), 
     djview(djview), 
     model(0),
-    view(0),
-    selection(0)
+    view(0)
 {
   model = new Model(this);
-  selection = new QItemSelectionModel(model);
+  installEventFilter(model);
   view = new QListView(this);
   view->setModel(model);
-  view->setSelectionModel(selection);
+  view->setSelectionModel(model->selection);
   view->setDragEnabled(false);
   view->setEditTriggers(QAbstractItemView::NoEditTriggers);
   view->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -945,11 +1147,11 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   vlayout->addWidget(tools);
   QBoxLayout *hlayout = new QHBoxLayout;
   vlayout->addLayout(hlayout);
-  QPushButton *upButton = new QPushButton(this);
+  upButton = new QPushButton(this);
   upButton->setIcon(QIcon(":/images/icon_up.png"));
   upButton->setToolTip(tr("Find Previous (Shift+F3) "));
   hlayout->addWidget(upButton);
-  QPushButton *downButton = new QPushButton(this);
+  downButton = new QPushButton(this);
   downButton->setIcon(QIcon(":/images/icon_down.png"));
   downButton->setToolTip(tr("Find Next (F3) "));
   hlayout->addWidget(downButton);
@@ -971,7 +1173,7 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   connect(djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
           this, SLOT(pageChanged(int)));
   connect(edit, SIGNAL(textChanged(QString)),
-          model, SLOT(textChanged(QString)));
+          model, SLOT(textChanged()));
   connect(edit, SIGNAL(returnPressed()),
           this, SLOT(findAgain()));
   connect(eraseAction, SIGNAL(triggered()), 
@@ -1047,7 +1249,7 @@ QDjViewFind::setCaseSensitive(bool b)
   if (b != model->caseSensitive)
     {
       model->caseSensitive = b;
-      model->textChanged(text());
+      model->textChanged();
     }
 }
 
@@ -1058,7 +1260,7 @@ QDjViewFind::setWordOnly(bool b)
   if (b != model->wordOnly)
     {
       model->wordOnly = b;
-      model->textChanged(text());
+      model->textChanged();
     }
 }
 
@@ -1068,9 +1270,7 @@ QDjViewFind::findNext()
 {
   if (text().isEmpty())
     djview->find();
-  
-  model->searchBackwards = false;
-  qDebug() << "findNext";
+  model->startFind(false);
 }
 
 
@@ -1079,9 +1279,7 @@ QDjViewFind::findPrev()
 {
   if (text().isEmpty())
     djview->find();
-  
-  model->searchBackwards = true;
-  qDebug() << "findPrev";
+  model->startFind(true);
 }
 
 
@@ -1094,16 +1292,15 @@ QDjViewFind::findAgain()
     findNext();
 }
 
+
 void 
 QDjViewFind::pageChanged(int pageno)
 {
   if (pageno>=0 && pageno<djview->pageNum())
     {
-      QModelIndex mi = model->index(pageno);
-      if (! selection->isSelected(mi))
-        selection->select(mi, QItemSelectionModel::ClearAndSelect);
-      view->scrollTo(mi);
       model->pageChanged(pageno);
+      if (model->selectPage(pageno))
+        view->scrollTo(model->index(model->findPage(pageno)));
     }
 }
 
