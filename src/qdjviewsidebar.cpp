@@ -829,7 +829,7 @@ private:
   bool caseSensitive;
   bool wordOnly;
   bool working;
-  bool pending;
+  int  pending;
   QString find;
 };
 
@@ -846,7 +846,7 @@ QDjViewFind::Model::Model(QDjViewFind *widget)
     caseSensitive(false),
     wordOnly(true),
     working(false),
-    pending(false)
+    pending(0)
 {
   selection = new QItemSelectionModel(this);
   animTimer = new QTimer(this);
@@ -1020,8 +1020,8 @@ QDjViewFind::Model::workTimeout()
     }
   // restart timer
   if (working)
-    if (pending || widget->isVisible())
-      workTimer->start();
+    if (pending>0 || widget->isVisible())
+      workTimer->start(0);
 }
 
 
@@ -1041,6 +1041,15 @@ QDjViewFind::Model::animTimeout()
 void 
 QDjViewFind::Model::startFind(bool backwards)
 {
+  if (working)
+    {
+      if (searchBackwards == backwards)
+        pending += 1;
+      else
+        pending -= 1;
+      if (pending > 0)
+        return;
+    }
   stopFind();
   searchBackwards = backwards;
   if (! find.isEmpty() /* && documentReady */)
@@ -1048,8 +1057,9 @@ QDjViewFind::Model::startFind(bool backwards)
       animButton = (backwards) ? widget->upButton : widget->downButton;
       animIcon = animButton->icon();
       animTimer->start(500);
-      workTimer->start(0);
-      working = pending = true;
+      workTimer->start(250);
+      working = true;
+      pending = 1;
     }
 }
 
@@ -1064,7 +1074,8 @@ QDjViewFind::Model::stopFind()
       animButton->setIcon(animIcon);
       animButton = 0;
     }
-  working = pending = false;
+  working = false;
+  pending = 0;
 }
 
 
@@ -1072,9 +1083,9 @@ void
 QDjViewFind::Model::pageinfo()
 {
   if (working)
-    if (pending || widget->isVisible())
+    if (pending>0 || widget->isVisible())
       if (!workTimer->isActive())
-        workTimer->start();
+        workTimer->start(0);
 }
 
 
@@ -1086,13 +1097,14 @@ QDjViewFind::Model::pageChanged(int pageno)
   else if (pageno < curPage)
     curHit = -1;
   curPage = pageno;
-  pending = false;
+  pending = 0;
 }
 
 
 void 
 QDjViewFind::Model::textChanged()
 {
+  stopFind();
   clear();
   find = widget->text();
   startFind(searchBackwards);
