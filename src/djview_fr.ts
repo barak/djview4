@@ -1070,7 +1070,7 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <source>File #%1 - </source>
-        <translation> Fichier n° %1 -</translation>
+        <translation>Fichier n° %1 - </translation>
     </message>
     <message>
         <source>Single DjVu page</source>
@@ -1114,7 +1114,7 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <source> Shared </source>
-        <translation>  Partagé</translation>
+        <translation> Partagé </translation>
     </message>
     <message>
         <source>Dialog</source>
@@ -1197,7 +1197,7 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <source>Outline data is corrupted</source>
-        <translation>L'information de structure en chapitres est illisible</translation>
+        <translation>L&apos;information de structure en chapitres est illisible</translation>
     </message>
     <message>
         <source>Pages</source>
