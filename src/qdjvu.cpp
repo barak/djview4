@@ -651,7 +651,7 @@ QDjVuDocument::getPageAnnotations(int pageno, bool start)
   minivar_t expr = priv->pageAnnotations[pageno];
   if (expr != miniexp_dummy)
     return expr;
-  if (! (start && ddjvu_document_check_pagedata(*this, pageno)))
+  if (! (start || ddjvu_document_check_pagedata(*this, pageno)))
     return expr;
   expr = ddjvu_document_get_pageanno(document, pageno);
   ddjvu_miniexp_release(document, expr);
@@ -677,7 +677,7 @@ QDjVuDocument::getPageText(int pageno, bool start)
   minivar_t expr = priv->pageText[pageno];
   if (expr != miniexp_dummy)
     return expr;
-  if (! (start && ddjvu_document_check_pagedata(*this, pageno)))
+  if (! (start || ddjvu_document_check_pagedata(*this, pageno)))
     return expr;
   expr = ddjvu_document_get_pagetext(document, pageno, 0);
   ddjvu_miniexp_release(document, expr);
