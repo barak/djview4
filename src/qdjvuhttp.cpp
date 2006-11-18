@@ -216,16 +216,21 @@ QDjVuHttpDocument::response(const QHttpResponseHeader &resp)
               if (isValid())
                 return;
             }
-        // HTTP errors
+        // HTTP and Content-Type errors
+        QString msg;
+        QString type = resp.contentType();
+        if (type.startsWith("text/"))
+          msg = tr("Received %1 data while retrieving %2.",
+                   "%1 is a mime type").arg(type);
         if (status != 200 && status != 203)
+          msg = tr("Received http status %1 while retrieving %2.",
+                   "%1 is an http status code").arg(status);
+        if (! msg.isEmpty())
           {
             if (conn.streamid >= 0)
               ddjvu_stream_close(*this, conn.streamid, false);
             conn.streamid = -1;
-            QString msg = tr("Received HTTP Status %1 while retrieving '%2'.")
-              .arg(status)
-              .arg(url.toString());
-            emit error(msg, __FILE__, __LINE__);
+            emit error(msg.arg(url.toString()), __FILE__, __LINE__);
           }
         return;
       }
