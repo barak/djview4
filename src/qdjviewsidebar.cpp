@@ -1125,11 +1125,11 @@ miniexp_search_text(miniexp_t exp, QRegExp regex)
   while ((match = regex.indexIn(text, offset)) >= 0)
     {
       QList<miniexp_t> hit;
-      QMap<int,miniexp_t>::const_iterator pos;
       int endmatch = match + regex.matchedLength();
-      for(pos = positions.lowerBound(match);
-          pos!=positions.end() && pos.key() < endmatch;
-          ++pos)
+      QMap<int,miniexp_t>::const_iterator pos = positions.lowerBound(match);
+      while (pos != positions.begin() && pos.key() > match)
+        --pos;
+      for (; pos!=positions.end() && pos.key() < endmatch; ++pos)
         hit += pos.value();
       hits += hit;
       offset = endmatch;
@@ -1165,10 +1165,12 @@ QDjViewFind::Model::doHighlights(int pageno)
           QRect rect;
           miniexp_t exp;
           foreach(exp, pageHit)
-            if (miniexp_get_rect(exp, rect))
-              djvu->addHighlight(pageno, rect.x(), rect.y(),
-                                 rect.width(), rect.height(),
-                                 color );
+            {
+              if (miniexp_get_rect(exp, rect))
+                djvu->addHighlight(pageno, rect.x(), rect.y(),
+                                   rect.width(), rect.height(),
+                                   color );
+            }
         }
     }
 }
