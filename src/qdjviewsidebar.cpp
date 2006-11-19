@@ -44,6 +44,7 @@
 #include <QPixmap>
 #include <QRegExp>
 #include <QResizeEvent>
+#include <QStackedLayout>
 #include <QStringList>
 #include <QTimer>
 #include <QToolBar>
@@ -62,8 +63,9 @@
 
 
 
-// ----------------------------------------
+// =======================================
 // QDJVIEWOUTLINE
+// =======================================
 
 
 
@@ -266,9 +268,11 @@ QDjViewOutline::itemActivated(QTreeWidgetItem *item)
 
 
 
+// =======================================
+// QDJVIEWTHUMBNAILS
+// =======================================
 
-// ----------------------------------------
-// QDJVIEWTHUMBNAILS SUBCLASSES
+
 
 
 class QDjViewThumbnails::View : public QListView
@@ -779,10 +783,12 @@ QDjViewThumbnails::contextMenuEvent(QContextMenuEvent *event)
 
 
 
-// ----------------------------------------
-// QDJVIEWFIND::MODEL
-// This class mixes the listview model
-// and private data for qdjviewfind
+
+
+
+// =======================================
+// QDJVIEWFIND
+// =======================================
 
 
 class QDjViewFind::Model : public QAbstractListModel
@@ -840,6 +846,12 @@ private:
   bool wordOnly;
   bool working;
 };
+
+
+// ----------------------------------------
+// QDJVIEWFIND::MODEL
+// This class mixes the listview model
+// and private data for qdjviewfind
 
 
 QDjViewFind::Model::Model(QDjViewFind *widget)
@@ -1010,6 +1022,10 @@ QDjViewFind::Model::documentClosed(QDjVuDocument *doc)
   curWork = 0;
   curPage = 0;
   curHit = 0;
+  widget->eraseText();
+  widget->edit->setEnabled(false);
+  widget->label->setText(QString());
+  widget->stack->setCurrentIndex(0);
 }
 
 
@@ -1020,7 +1036,10 @@ QDjViewFind::Model::documentReady(QDjVuDocument *doc)
   curWork = djview->getDjVuWidget()->page();
   curPage = curWork;
   curHit = -1;
-  widget->setEnabled(true);
+  widget->eraseText();
+  widget->edit->setEnabled(true);
+  widget->label->setText(QString());
+  widget->stack->setCurrentIndex(0);
   if (doc)
     {
       connect(doc, SIGNAL(pageinfo()), this, SLOT(pageinfo()));
@@ -1188,15 +1207,19 @@ QDjViewFind::Model::workTimeout()
       if (curWork == startingPoint)
         {
           stopFind();
-          if (!somePagesWithText)
+          if (! pages.size())
             {
-              widget->eraseText();
-              widget->setEnabled(false);
-              djview->addToErrorDialog(
-                 tr("Impossible to search this document<br>"
-                    "because no text information is available."));
-              djview->raiseErrorDialog(QMessageBox::Information, 
-                 tr("Searching DjVu document..."));
+              QString msg = tr("No hits!");
+              if (! somePagesWithText)
+                {
+                  widget->eraseText();
+                  widget->edit->setEnabled(false);
+                  msg = tr("<html>Document is not searchable. "
+                           "No page contains information "
+                           "about its textual content.</html>");
+                }
+              widget->stack->setCurrentWidget(widget->label);
+              widget->label->setText(msg);
             }
         }
     }
@@ -1236,6 +1259,8 @@ QDjViewFind::Model::startFind(bool backwards)
   searchBackwards = backwards;
   if (! find.isEmpty() && djview->pageNum() > 0)
     {
+      widget->label->setText(QString());
+      widget->stack->setCurrentIndex(0);
       animButton = (backwards) ? widget->upButton : widget->downButton;
       animIcon = animButton->icon();
       animTimer->start(250);
@@ -1297,6 +1322,8 @@ QDjViewFind::Model::textChanged()
   stopFind();
   clear();
   QString s = widget->text();
+  widget->label->setText(QString());
+  widget->stack->setCurrentIndex(0);
   if (s.isEmpty())
     {
       find = QRegExp();
@@ -1318,14 +1345,6 @@ QDjViewFind::Model::textChanged()
 
 
 
-
-
-
-
-
-
-
-
 // ----------------------------------------
 // QDJVIEWFIND
 
@@ -1338,6 +1357,7 @@ QDjViewFind::QDjViewFind(QDjView *djview)
 {
   model = new Model(this);
   installEventFilter(model);
+
   view = new QListView(this);
   view->setModel(model);
   view->setSelectionModel(model->selection);
@@ -1384,10 +1404,19 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   optionButton->setFlat(true);
   optionButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
   hlayout->addWidget(optionButton);
+  stack = new QStackedLayout();
   view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   view->setFrameShadow(QFrame::Sunken);
   view->setFrameShape(QFrame::StyledPanel);
-  vlayout->addWidget(view);  
+  stack->addWidget(view);
+  label = new QLabel(this);
+  label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  label->setAlignment(Qt::AlignCenter);
+  label->setWordWrap(true);
+  label->setFrameShadow(QFrame::Sunken);
+  label->setFrameShape(QFrame::StyledPanel);
+  stack->addWidget(label);
+  vlayout->addLayout(stack);
   
   connect(djview, SIGNAL(documentClosed(QDjVuDocument*)),
           model, SLOT(documentClosed(QDjVuDocument*)) );

@@ -36,10 +36,12 @@
 class QAction;
 class QContextMenuEvent;
 class QItemSelectionModel;
+class QLabel;
 class QLineEdit;
 class QListView;
 class QMenu;
 class QPushButton;
+class QStackedLayout;
 class QTreeWidget;
 class QTreeWidgetItem;
 
@@ -135,13 +137,15 @@ protected:
   void contextMenuEvent(QContextMenuEvent *event);
 private:
   class Model;
-  QDjView      *djview;
-  Model        *model;
-  QListView    *view;
-  QMenu        *menu;
-  QLineEdit    *edit;
-  QPushButton  *upButton;
-  QPushButton  *downButton;
+  QDjView        *djview;
+  Model          *model;
+  QListView      *view;
+  QMenu          *menu;
+  QLineEdit      *edit;
+  QPushButton    *upButton;
+  QPushButton    *downButton;
+  QStackedLayout *stack;
+  QLabel         *label;
 };
 
 
