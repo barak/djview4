@@ -2242,6 +2242,7 @@ QDjView::find(QString find)
 {
   if (! find.isEmpty())
     findWidget->setText(find);
+  findWidget->findNext();
 }
 
 

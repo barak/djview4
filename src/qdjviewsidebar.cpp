@@ -846,11 +846,11 @@ private:
   int curWork;
   int curPage;
   int curHit;
-  int pending;
   bool searchBackwards;
   bool caseSensitive;
   bool wordOnly;
   bool working;
+  bool pending;
 };
 
 
@@ -866,11 +866,11 @@ QDjViewFind::Model::Model(QDjViewFind *widget)
     animButton(0),
     curPage(0),
     curHit(0),
-    pending(0),
     searchBackwards(false),
     caseSensitive(false),
     wordOnly(true),
-    working(false)
+    working(false),
+    pending(false)
 {
   selection = new QItemSelectionModel(this);
   animTimer = new QTimer(this);
@@ -907,6 +907,8 @@ QDjViewFind::Model::data(const QModelIndex &index, int role) const
                 return tr("%1 hit").arg(info.hits);
               else
                 return tr("%1 hits").arg(info.hits);
+            case Qt::WhatsThisRole:
+              return widget->whatsThis();
             default:
               break;
             }
@@ -1019,8 +1021,9 @@ QDjViewFind::Model::documentClosed(QDjVuDocument *doc)
   clear();
   curWork = 0;
   curPage = 0;
-  curHit = 0;
+  curHit = -1;
   searchBackwards = false;
+  pending = false;
   widget->eraseText();
   widget->edit->setEnabled(false);
   widget->label->setText(QString());
@@ -1031,7 +1034,6 @@ QDjViewFind::Model::documentClosed(QDjVuDocument *doc)
 void 
 QDjViewFind::Model::documentReady(QDjVuDocument *doc)
 {
-  clear();
   curWork = djview->getDjVuWidget()->page();
   curPage = curWork;
   curHit = -1;
@@ -1149,6 +1151,7 @@ QDjViewFind::Model::clear()
   for (pos=hits.begin(); pos!=hits.end(); ++pos)
     if (pos.value().size() > 0)
       djvuWidget->clearHighlights(pos.key());
+  pending = false;
   hits.clear();
   modelClear();
 }
@@ -1183,7 +1186,7 @@ void
 QDjViewFind::Model::doPending()
 {
   QDjVuWidget *djvu = djview->getDjVuWidget();
-  while (pending>0 && hits.contains(curPage) && pages.size()>0)
+  while (pending && hits.contains(curPage) && pages.size()>0)
     {
       Hits pageHits = hits[curPage];
       int nhits = pageHits.size();
@@ -1202,7 +1205,7 @@ QDjViewFind::Model::doPending()
       if (curHit >= 0 && curHit < nhits)
         {
           // jump to position
-          pending --;
+          pending = false;
           Hit hit = pageHits[curHit];
           QRect rect;
           if (hit.size() > 0 && miniexp_get_rect(hit[0], rect))
@@ -1232,7 +1235,7 @@ QDjViewFind::Model::doPending()
             }
         }
     }
-  if (pending <= 0)
+  if (! pending)
     djview->statusMessage(QString());
 }
 
@@ -1258,10 +1261,10 @@ QDjViewFind::Model::workTimeout()
           if (exp == miniexp_dummy)
             {
               // data not present
-              if (pending>0)
+              if (pending)
                 djview->statusMessage(tr("Searching page %1 (waiting for data.)")
                                       .arg(name) );
-              if (pending>0 || widget->isVisible())
+              if (pending || widget->isVisible())
                 doc->getPageText(curWork, true);                
               // timer will be reactivated by pageinfo()
               return;
@@ -1269,7 +1272,7 @@ QDjViewFind::Model::workTimeout()
           if (exp != miniexp_nil)
             {
               somePagesWithText = true;
-              if (pending > 0)
+              if (pending)
                 djview->statusMessage(tr("Searching page %1.").arg(name));
               Hits pageHits = miniexp_search_text(exp, find);
               hits[curWork] = pageHits;
@@ -1343,12 +1346,13 @@ QDjViewFind::Model::nextHit(bool backwards)
 {
   if (working && backwards != searchBackwards)
     {
+      pending = false;
       startFind(backwards);
     }
-  else if (! find.isEmpty())
+  searchBackwards = backwards;
+  if (! find.isEmpty())
     {
-      searchBackwards = backwards;
-      pending = qMin(5, pending+1);
+      pending = true;
       doPending();
       if (working && pending>0 && !workTimer->isActive())
         workTimer->start(0);
@@ -1371,7 +1375,6 @@ QDjViewFind::Model::startFind(bool backwards, int delay)
       workTimer->start(delay);
       curWork = djview->getDjVuWidget()->page();
       working = true;
-      pending = 1;
     }
 }
 
@@ -1387,7 +1390,6 @@ QDjViewFind::Model::stopFind()
       animButton = 0;
     }
   working = false;
-  pending = 0;
 }
 
 
@@ -1412,9 +1414,12 @@ void
 QDjViewFind::Model::pageChanged(int pageno)
 {
   if (pageno != curPage)
-    curHit = -1;
-  curPage = curWork = pageno;
-  pending = 0;
+    {
+      curHit = -1;
+      curPage = pageno;
+      pending = false;
+    }
+  curWork = pageno;
 }
 
 
@@ -1555,6 +1560,16 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   connect(downButton, SIGNAL(clicked()), 
           this, SLOT(findNext()));
   
+  setWhatsThis(tr("<html><b>Finding text.</b><br/> "
+                  "Search hits appear progressively as soon as you type "
+                  "a search string. Typing enter jumps to the next hit. "
+                  "To move to the previous or next hit, you can also use "
+                  "the arrow buttons, the menu entries, the shortcut "
+                  "keys F3 or Shift-F3, or double click a page name. "
+                  "Use the \"Options\" menu to search words only or "
+                  "to specify the case sensitivity."
+                  "</html>"));
+
   if (djview->getDocument())
     model->documentReady(djview->getDocument());
 }
