@@ -793,6 +793,8 @@ QDjViewThumbnails::contextMenuEvent(QContextMenuEvent *event)
 
 class QDjViewFind::Model : public QAbstractListModel
 {
+  // This class implements the listview model.
+  // But the bulk contains private data for qdjviewfind!
   Q_OBJECT
 public:
   Model(QDjViewFind*);
@@ -854,8 +856,6 @@ private:
 
 // ----------------------------------------
 // QDJVIEWFIND::MODEL
-// This class mixes the listview model
-// and private data for qdjviewfind
 
 
 QDjViewFind::Model::Model(QDjViewFind *widget)
