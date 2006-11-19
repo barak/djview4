@@ -646,9 +646,6 @@ QDjView::createMenus()
   editMenu->addAction(actionFind);
   editMenu->addAction(actionFindNext);
   editMenu->addAction(actionFindPrev);
-  editMenu->addSeparator();
-  editMenu->addAction(actionInformation);
-  editMenu->addAction(actionMetadata);
   QMenu *viewMenu = menuBar->addMenu(tr("&View", "View|"));
   QMenu *zoomMenu = viewMenu->addMenu(tr("&Zoom","View|Zoom"));
   zoomMenu->addAction(actionZoomIn);
@@ -680,6 +677,9 @@ QDjView::createMenus()
   viewMenu->addSeparator();
   viewMenu->addAction(actionLayoutContinuous);
   viewMenu->addAction(actionLayoutSideBySide);
+  viewMenu->addSeparator();
+  viewMenu->addAction(actionInformation);
+  viewMenu->addAction(actionMetadata);
   if (viewerMode == STANDALONE)
     viewMenu->addSeparator();
   if (viewerMode == STANDALONE)

@@ -28,7 +28,7 @@ Options fréquentes:
 -page=&lt;page&gt;~~~Va directement vers la page &lt;page&gt;.
 -zoom=&lt;zoom&gt;~~~Sélectionne un facteur de zoom.
 -continuous=&lt;yn&gt;~~~Sélectionne l&apos;affichage continu des pages.
--sidebyside=&lt;yn&gt;~~~Sélectionne l&apos;affichage cote-à-cote des pages.
+-sidebyside=&lt;yn&gt;~~~Sélectionne l&apos;affichage côte-à-côte des pages.
 </translation>
     </message>
     <message>
@@ -610,7 +610,7 @@ Options fréquentes:
     <message>
         <source>Side &amp;by side</source>
         <comment>Layout|</comment>
-        <translation>Pages &amp;Cote à Cote</translation>
+        <translation>Pages Cô&amp;te à Côte</translation>
     </message>
     <message>
         <source>F5</source>
@@ -619,7 +619,7 @@ Options fréquentes:
     </message>
     <message>
         <source>Toggle side-by-side layout mode.</source>
-        <translation>Sélectionne l&apos;affichage des pages cote à cote.</translation>
+        <translation>Sélectionne l&apos;affichage des pages côte à côte.</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -700,7 +700,7 @@ Options fréquentes:
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Side by side layout.&lt;/b&gt;&lt;br/&gt; Display pairs of pages side by side inside the scrollable document viewing area.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Affichage cote-à-cote.&lt;/b&gt;&lt;br/&gt; Affiche les paires de pages cote-à-cote dans la zone de visualisation du document.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Affichage côte-à-côte.&lt;/b&gt;&lt;br/&gt; Affiche les paires de pages côte-à-côte dans la zone de visualisation du document.&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Page information.&lt;/b&gt;&lt;br/&gt; Display information about the page located under the cursor: the sequential page number, the page size in pixels, and the page resolution in dots per inch. &lt;/html&gt;</source>
@@ -991,7 +991,7 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <source>Case sensitive</source>
-        <translation>Même casse de texte</translation>
+        <translation>Même casse</translation>
     </message>
     <message>
         <source>Words only</source>
@@ -999,7 +999,7 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <source>Find Previous (Shift+F3) </source>
-        <translation> Précédent (Shift+F3)</translation>
+        <translation> Précédent (Maj+F3)</translation>
     </message>
     <message>
         <source>Find Next (F3) </source>
@@ -1008,6 +1008,45 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     <message>
         <source>Options</source>
         <translation>Options</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;Finding text.&lt;/b&gt;&lt;br/&gt; Search hits appear progressively as soon as you type a search string. Typing enter jumps to the next hit. To move to the previous or next hit, you can also use the arrow buttons or the shortcuts F3 or Shift-F3. You can also double click a page name. Use the &quot;Options&quot; menu to search words only or to specify the case sensitivity.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Recherche de texte.&lt;/b&gt;&lt;br/&gt; Les occurrences du texte à rechercher apparaissent progressivement pendant sa saisie. La touche «Entrée» montre la prochaine occurrence. Pour aller à l&apos;occurrence précédente ou suivante, utilisez les boutons fléchés ou les touches «F3» et «Maj+F3». Vous pouvez aussi double cliquer un nom de page. Le menu «Options» permet de chercher des mots entiers ou de spécifier la casse.&lt;/html&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>QDjViewFind::Model</name>
+    <message>
+        <source>%1 hit</source>
+        <translation>%1 occurrence</translation>
+    </message>
+    <message>
+        <source>%1 hits</source>
+        <translation>%1 occurrences</translation>
+    </message>
+    <message>
+        <source>Page %1 (%2 hit)</source>
+        <translation>Page %1 (%2 fois)</translation>
+    </message>
+    <message>
+        <source>Page %1 (%2 hits)</source>
+        <translation>Page %1 (%2 fois)</translation>
+    </message>
+    <message>
+        <source>Searching page %1 (waiting for data.)</source>
+        <translation>Page %1 (attente des données.)</translation>
+    </message>
+    <message>
+        <source>Searching page %1.</source>
+        <translation>Page %1.</translation>
+    </message>
+    <message>
+        <source>No hits!</source>
+        <translation>Rien!</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;Document is not searchable. No page contains information about its textual content.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;Recherche de texte impossible. Ce document ne contient pas d&apos;information sur le texte.&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1384,12 +1423,18 @@ Voulez-vous le remplacer?</translation>
         <translation>Chargement de «%1»</translation>
     </message>
     <message>
-        <source>Received HTTP Status %1 while retrieving &apos;%2&apos;.</source>
-        <translation>Le code d&apos;état HTTP %1 a été reçu pendant le chargement de «%2».</translation>
-    </message>
-    <message>
         <source>%1 while retrieving &apos;%2&apos;.</source>
         <translation>%1 pendant le chargement de «%2».</translation>
+    </message>
+    <message>
+        <source>Received %1 data while retrieving %2.</source>
+        <comment>%1 is a mime type</comment>
+        <translation>La requête %2 a produit des données de type %1.</translation>
+    </message>
+    <message>
+        <source>Received http status %1 while retrieving %2.</source>
+        <comment>%1 is an http status code</comment>
+        <translation>La requête %2 a produit le code d&apos;erreur http %1.</translation>
     </message>
 </context>
 </TS>
