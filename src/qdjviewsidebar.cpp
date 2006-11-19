@@ -1254,7 +1254,8 @@ QDjViewFind::Model::workTimeout()
             {
               // data not present
               if (pending>0)
-                djview->statusMessage(tr("Searching page %1.").arg(name));
+                djview->statusMessage(tr("Searching page %1 (waiting for data.)")
+                                      .arg(name) );
               if (pending>0 || widget->isVisible())
                 doc->getPageText(curWork, true);                
               // timer will be reactivated by pageinfo()
