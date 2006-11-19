@@ -1132,7 +1132,10 @@ miniexp_search_text(miniexp_t exp, QRegExp regex)
       for (; pos!=positions.end() && pos.key() < endmatch; ++pos)
         hit += pos.value();
       hits += hit;
-      offset = endmatch;
+      if (pos != positions.end())
+        offset = pos.key();
+      else
+        break;
     }
   return hits;
 }
