@@ -224,7 +224,6 @@ protected:
   QString           pendingUrl;
   QString           pendingPage;
   QList<StringPair> pendingHilite;
-  QList<StringPair> pendingSearch;
   QString           pendingFind;
   // delayed updates
   bool  updateActionsScheduled;

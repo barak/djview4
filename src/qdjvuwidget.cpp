@@ -862,6 +862,7 @@ void
 QDjVuPrivate::makeLayout()
 {
   // save position
+  int futureLayoutChange = 0;
   if (docReady && !(layoutChange & CHANGE_VIEW))
     {
       movePoint = currentPoint;
@@ -1151,13 +1152,14 @@ QDjVuPrivate::makeLayout()
                 dp.rx() += p->rect.width() - 1;
               if (movePos.anchorBottom)
                 dp.ry() += p->rect.height() - 1;
-              if (movePos.inPage)
+              if (movePos.inPage && p->dpi)
+                dp =  p->mapper.mapped(movePos.posPage);
+              else if (movePos.inPage)
                 {
-                  QRect pr(0, 0, p->width, p->height);
-                  dp =  p->mapper.mapped(movePos.posPage);
-                  if (p->dpi <= 0)
-                    qWarning("makeLayout: invalid pagePos"
-                             "(unknown page geometry)");
+                  // page geometry is still unknown.
+                  // we have to come back later.
+                  futureLayoutChange = CHANGE_VIEW;
+                  dp = p->rect.topLeft();
                 }
               visibleRect.moveTo(dp - movePoint);
             }
@@ -1344,6 +1346,7 @@ QDjVuPrivate::makeLayout()
     }
   // deschedule
   layoutChange &= ~SCHEDULED;      
+  layoutChange |= futureLayoutChange;
 }
 
 // Make all page requests

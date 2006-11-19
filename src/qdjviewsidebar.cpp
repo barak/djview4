@@ -809,7 +809,8 @@ private:
   QList<RowInfo> pages;
   // private data stuff
 public:
-  void startFind(bool);
+  void nextHit(bool backwards);
+  void startFind(bool backwards, int delay=0);
   void stopFind();
   typedef QList<miniexp_t> Hit;
   typedef QList<Hit> Hits;
@@ -821,6 +822,7 @@ public slots:
   void documentReady(QDjVuDocument*);
   void clear();
   void doHighlights(int pageno);
+  void doPending();
   void workTimeout();
   void animTimeout();
   void makeSelectionVisible();
@@ -1175,11 +1177,68 @@ QDjViewFind::Model::doHighlights(int pageno)
 
 
 void 
+QDjViewFind::Model::doPending()
+{
+  QDjVuWidget *djvu = djview->getDjVuWidget();
+  while (pending>0 && hits.contains(curPage) && pages.size()>0)
+    {
+      Hits pageHits = hits[curPage];
+      int nhits = pageHits.size();
+      if (searchBackwards)
+        {
+          if (curHit < 0 || curHit >= nhits)
+            curHit = nhits;
+          curHit--;
+        }
+      else
+        {
+          if (curHit < 0 || curHit >= nhits)
+            curHit = -1;
+          curHit++;
+        }
+      if (curHit >= 0 && curHit < nhits)
+        {
+          // jump to position
+          pending --;
+          Hit hit = pageHits[curHit];
+          QRect rect;
+          if (hit.size() > 0 && miniexp_get_rect(hit[0], rect))
+            {
+              QDjVuWidget::Position pos;
+              pos.pageNo = curPage;
+              pos.posPage = rect.center();
+              pos.inPage = true;
+              djvu->setPosition(pos, djvu->viewport()->rect().center());
+            }
+        }
+      else
+        {
+          // next page
+          curHit = -1;
+          if (searchBackwards)
+            {
+              curPage -= 1;
+              if (curPage < 0)
+                curPage = djview->pageNum() - 1;
+            }
+          else
+            {
+              curPage += 1;
+              if (curPage >= djview->pageNum())
+                curPage = 0;
+            }
+        }
+    }
+}
+
+
+void 
 QDjViewFind::Model::workTimeout()
 {
   // do some work
   int startingPoint = curWork;
   bool somePagesWithText = false;
+  doPending();
   while (working)
     {
       if (hits.contains(curWork))
@@ -1206,7 +1265,7 @@ QDjViewFind::Model::workTimeout()
                 {
                   modelAdd(curWork, pageHits.size());
                   doHighlights(curWork);
-                  // performPendings();
+                  doPending();
                   makeSelectionVisible();
                 }
               // enough
@@ -1268,7 +1327,22 @@ QDjViewFind::Model::animTimeout()
 
 
 void 
-QDjViewFind::Model::startFind(bool backwards)
+QDjViewFind::Model::nextHit(bool backwards)
+{
+  if (working && backwards != searchBackwards)
+    {
+      startFind(backwards);
+    }
+  else
+    {
+      searchBackwards = backwards;
+      pending = qMin(5, pending+1);
+      doPending();
+    }
+}
+
+void 
+QDjViewFind::Model::startFind(bool backwards, int delay)
 {
   if (working)
     {
@@ -1277,7 +1351,10 @@ QDjViewFind::Model::startFind(bool backwards)
       else
         pending -= 1;
       if (pending > 0)
-        return;
+        {
+          doPending();
+          return;
+        }
     }
   stopFind();
   searchBackwards = backwards;
@@ -1288,7 +1365,7 @@ QDjViewFind::Model::startFind(bool backwards)
       animButton = (backwards) ? widget->upButton : widget->downButton;
       animIcon = animButton->icon();
       animTimer->start(250);
-      workTimer->start(500);
+      workTimer->start(delay);
       curWork = djview->getDjVuWidget()->page();
       working = true;
       pending = 1;
@@ -1363,7 +1440,7 @@ QDjViewFind::Model::textChanged()
         find.setCaseSensitivity(Qt::CaseSensitive);
       else
         find.setCaseSensitivity(Qt::CaseInsensitive);
-      startFind(searchBackwards);
+      startFind(searchBackwards, 250);
     }
 }
 
@@ -1560,7 +1637,8 @@ QDjViewFind::findNext()
 {
   if (text().isEmpty())
     djview->find();
-  model->startFind(false);
+  else
+    model->nextHit(false);
 }
 
 
@@ -1569,7 +1647,8 @@ QDjViewFind::findPrev()
 {
   if (text().isEmpty())
     djview->find();
-  model->startFind(true);
+  else
+    model->nextHit(true);
 }
 
 

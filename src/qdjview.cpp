@@ -1553,11 +1553,6 @@ QDjView::parseArgument(QString key, QString value)
       pendingHilite << StringPair(pendingPage, value);
       performPendingLater();
     }
-  else if (key == "search")       // new for djview4
-    {
-      pendingSearch << StringPair(pendingPage, value);
-      performPendingLater();
-    }
   else if (key == "rotate")
     {
       if (value == "0")
@@ -1604,7 +1599,7 @@ QDjView::parseArgument(QString key, QString value)
       if (! showSideBar(value+",outline"))
         illegal_value(key, value, errors);
     }
-  else if (key == "find")
+  else if (key == "find" || key == "search") // new for djview4
     {
       showSideBar("find");
       pendingFind = value;
@@ -2728,7 +2723,6 @@ QDjView::performPending()
       pendingUrl.clear();
       pendingPage.clear();
       pendingHilite.clear();
-      pendingSearch.clear();
       open(url);
     }
   else if (! documentPages.isEmpty())
@@ -2757,11 +2751,6 @@ QDjView::performPending()
                 }
             }
           pendingHilite.clear();
-        }
-      if (pendingSearch.size() > 0)
-        {
-          // TODO: hilite search terms
-          pendingSearch.clear();
         }
       if (pendingFind.size() > 0)
         {
