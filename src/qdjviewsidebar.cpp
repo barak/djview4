@@ -36,11 +36,13 @@
 #include <QLineEdit>
 #include <QList>
 #include <QListView>
+#include <QMap>
 #include <QMenu>
 #include <QPainter>
 #include <QPainterPath>
 #include <QPushButton>
 #include <QPixmap>
+#include <QRegExp>
 #include <QResizeEvent>
 #include <QStringList>
 #include <QTimer>
@@ -792,10 +794,10 @@ public:
 public:
   virtual int rowCount(const QModelIndex &parent) const;
   virtual QVariant data(const QModelIndex &index, int role) const;
-  void clear();
-  int  findPage(int pageno);
-  bool selectPage(int pageno);
-  void addPage(int pageno, int hits);
+  void modelClear();
+  int  modelFind(int pageno);
+  bool modelSelect(int pageno);
+  void modelAdd(int pageno, int hits);
 private:
   struct RowInfo { int pageno; int hits; QString name; };
   QList<RowInfo> pages;
@@ -803,13 +805,18 @@ private:
 public:
   void startFind(bool);
   void stopFind();
+  typedef QList<miniexp_t> Hit;
+  typedef QList<Hit> Hits;
+  QMap<int, Hits> hits;
 protected:
   virtual bool eventFilter(QObject*, QEvent*);
 public slots:
   void documentClosed(QDjVuDocument*);
   void documentReady(QDjVuDocument*);
-  void animTimeout();
+  void clear();
   void workTimeout();
+  void animTimeout();
+  void makeSelectionVisible();
   void pageChanged(int);
   void textChanged();
   void pageinfo();
@@ -823,14 +830,15 @@ private:
   QPushButton *animButton;
   QIcon animIcon;
   QIcon findIcon;
+  QRegExp find;
+  int curWork;
   int curPage;
   int curHit;
+  int pending;
   bool searchBackwards;
   bool caseSensitive;
   bool wordOnly;
   bool working;
-  int  pending;
-  QString find;
 };
 
 
@@ -842,11 +850,11 @@ QDjViewFind::Model::Model(QDjViewFind *widget)
     animButton(0),
     curPage(0),
     curHit(0),
+    pending(0),
     searchBackwards(false),
     caseSensitive(false),
     wordOnly(true),
-    working(false),
-    pending(0)
+    working(false)
 {
   selection = new QItemSelectionModel(this);
   animTimer = new QTimer(this);
@@ -893,7 +901,7 @@ QDjViewFind::Model::data(const QModelIndex &index, int role) const
 
 
 void
-QDjViewFind::Model::clear()
+QDjViewFind::Model::modelClear()
 {
   int nrows = pages.size();
   if (nrows > 0)
@@ -906,7 +914,7 @@ QDjViewFind::Model::clear()
 
 
 int
-QDjViewFind::Model::findPage(int pageno)
+QDjViewFind::Model::modelFind(int pageno)
 {
   int lo = 0;
   int hi = pages.size();
@@ -925,9 +933,9 @@ QDjViewFind::Model::findPage(int pageno)
 
 
 bool
-QDjViewFind::Model::selectPage(int pageno)
+QDjViewFind::Model::modelSelect(int pageno)
 {
-  int lo = findPage(pageno);
+  int lo = modelFind(pageno);
   QModelIndex mi = index(lo);
   if (lo < pages.size() && pages[lo].pageno == pageno)
     {
@@ -941,7 +949,7 @@ QDjViewFind::Model::selectPage(int pageno)
 
 
 void
-QDjViewFind::Model::addPage(int pageno, int hits)
+QDjViewFind::Model::modelAdd(int pageno, int hits)
 {
   QString name = djview->pageName(pageno);
   RowInfo info;
@@ -951,7 +959,7 @@ QDjViewFind::Model::addPage(int pageno, int hits)
     info.name = tr("Page %1 (%2 hit)").arg(name).arg(hits);
   else
     info.name = tr("Page %1 (%2 hits)").arg(name).arg(hits);
-  int lo = findPage(pageno);
+  int lo = modelFind(pageno);
   if (lo < pages.size() && pages[lo].pageno == pageno)
     {
       pages[lo] = info;
@@ -964,7 +972,7 @@ QDjViewFind::Model::addPage(int pageno, int hits)
       pages.insert(lo, info);
       endInsertRows();
       if (pageno == djview->getDjVuWidget()->page())
-        selectPage(pageno);
+        modelSelect(pageno);
     }
 }
 
@@ -994,18 +1002,132 @@ QDjViewFind::Model::eventFilter(QObject*, QEvent *event)
 
 
 void 
-QDjViewFind::Model::documentClosed(QDjVuDocument*)
+QDjViewFind::Model::documentClosed(QDjVuDocument *doc)
 {
+  disconnect(doc, 0, this, 0);
   stopFind();
   clear();
+  curWork = 0;
   curPage = 0;
   curHit = 0;
 }
 
 
 void 
-QDjViewFind::Model::documentReady(QDjVuDocument*)
+QDjViewFind::Model::documentReady(QDjVuDocument *doc)
 {
+  clear();
+  curWork = djview->getDjVuWidget()->page();
+  curPage = curWork;
+  curHit = -1;
+  widget->setEnabled(true);
+  if (doc)
+    {
+      connect(doc, SIGNAL(pageinfo()), this, SLOT(pageinfo()));
+      startFind(searchBackwards);
+    }
+}
+
+
+static bool
+miniexp_get_int(miniexp_t &r, int &x)
+{
+  if (! miniexp_numberp(miniexp_car(r)))
+    return false;
+  x = miniexp_to_int(miniexp_car(r));
+  r = miniexp_cdr(r);
+  return true;
+}
+
+
+static bool
+miniexp_get_rect(miniexp_t &r, QRect &rect)
+{
+  int x1,y1,x2,y2;
+  if (! (miniexp_get_int(r, x1) && miniexp_get_int(r, y1) &&
+         miniexp_get_int(r, x2) && miniexp_get_int(r, y2) ))
+    return false;
+  if (x2<x1 || y2<y1)
+    return false;
+  rect.setCoords(x1, y1, x2, y2);
+  return true;
+}
+
+
+static bool
+miniexp_get_text(miniexp_t exp, 
+                 QString &result, QMap<int,miniexp_t> &positions,
+                 QList<miniexp_t> nospace, QString &comma)
+{
+  miniexp_t type = miniexp_car(exp);
+  miniexp_t r = exp = miniexp_cdr(exp);
+  if (! miniexp_symbolp(type))
+    return false;
+  QRect rect;
+  if (! miniexp_get_rect(r, rect))
+    return false;
+  miniexp_t s = miniexp_car(r);
+  if (miniexp_stringp(s) && !miniexp_cdr(r))
+    {
+      result = result + comma + QString::fromUtf8(miniexp_to_str(s));
+      positions[result.size()] = exp;
+      if (comma.isEmpty() && !nospace.contains(type))
+        comma = " ";
+      return true;
+    }
+  while(miniexp_consp(s))
+    {
+      miniexp_get_text(s, result, positions, nospace, comma);
+      r = miniexp_cdr(r);
+      s = miniexp_car(r);
+    }
+  if (r) 
+    return false;
+  if (comma.isEmpty() && !nospace.contains(type))
+    comma = " ";
+  return true;
+}
+
+
+static QList<QList<miniexp_t> >
+miniexp_search_text(miniexp_t exp, QRegExp regex)
+{
+  QList<QList<miniexp_t> > hits;
+  QString text;
+  QMap<int, miniexp_t> positions;
+  // build string
+  QList<miniexp_t> nospace;
+  QString comma;
+  nospace << miniexp_symbol("char");
+  if (! miniexp_get_text(exp, text, positions, nospace, comma))
+    return hits;
+  // search hits
+  int offset = 0;
+  int match;
+  while ((match = regex.indexIn(text, offset)) >= 0)
+    {
+      QList<miniexp_t> hit;
+      QMap<int,miniexp_t>::const_iterator pos;
+      int endmatch = match + regex.matchedLength();
+      for (pos = positions.lowerBound(match); pos.key() < endmatch; ++pos)
+        hit += pos.value();
+      hits += hit;
+      offset = endmatch;
+    }
+  return hits;
+}
+
+
+void 
+QDjViewFind::Model::clear()
+{
+  QDjVuWidget *djvuWidget = djview->getDjVuWidget();
+  QMap<int,Hits>::const_iterator pos;
+  for (pos=hits.begin(); pos!=hits.end(); ++pos)
+    if (pos.value().size() > 0)
+      djvuWidget->clearHighlights(pos.key());
+  hits.clear();
+  modelClear();
 }
 
 
@@ -1013,10 +1135,70 @@ void
 QDjViewFind::Model::workTimeout()
 {
   // do some work
-  if (working)
+  int startingPoint = curWork;
+  bool somePagesWithText = false;
+  while (working)
     {
-      // TODO: insert something smarter here
-      stopFind();
+      if (hits.contains(curWork))
+        {
+          somePagesWithText = true;
+        }
+      else
+        {
+          QString name = djview->pageName(curWork);
+          djview->statusMessage(tr("Searching page %1.").arg(name));
+          QDjVuDocument *doc = djview->getDocument();
+          miniexp_t exp = doc->getPageText(curWork);
+          if (exp == miniexp_dummy)
+            // data not present
+            // stop without restarting timer
+            // timer will be reactivated by pageinfo()
+            return;
+          if (exp != miniexp_nil)
+            {
+              somePagesWithText = true;
+              Hits pageHits = miniexp_search_text(exp, find);
+              hits[curWork] = pageHits;
+              if (pageHits.size() > 0)
+                {
+                  modelAdd(curWork, pageHits.size());
+                  // performHightlights(curWork);
+                  // performPendings();
+                  makeSelectionVisible();
+                }
+              // enough
+              break;
+            }
+        }
+      // next page
+      int pageNum = djview->pageNum();
+      if (searchBackwards)
+        {
+          if (curWork <= 0)
+            curWork = pageNum;
+          curWork -= 1;
+        }
+      else
+        {
+          curWork += 1;
+          if (curWork >= pageNum)
+            curWork = 0;
+        }
+      // finished?
+      if (curWork == startingPoint)
+        {
+          stopFind();
+          if (!somePagesWithText)
+            {
+              widget->eraseText();
+              widget->setEnabled(false);
+              djview->addToErrorDialog(
+                 tr("Impossible to search this document<br>"
+                    "because no text information is available."));
+              djview->raiseErrorDialog(QMessageBox::Information, 
+                 tr("Searching DjVu document..."));
+            }
+        }
     }
   // restart timer
   if (working)
@@ -1052,12 +1234,13 @@ QDjViewFind::Model::startFind(bool backwards)
     }
   stopFind();
   searchBackwards = backwards;
-  if (! find.isEmpty() /* && documentReady */)
+  if (! find.isEmpty() && djview->pageNum() > 0)
     {
       animButton = (backwards) ? widget->upButton : widget->downButton;
       animIcon = animButton->icon();
-      animTimer->start(500);
-      workTimer->start(250);
+      animTimer->start(250);
+      workTimer->start(500);
+      curWork = djview->getDjVuWidget()->page();
       working = true;
       pending = 1;
     }
@@ -1090,13 +1273,20 @@ QDjViewFind::Model::pageinfo()
 
 
 void 
+QDjViewFind::Model::makeSelectionVisible()
+{
+  QModelIndexList s = selection->selectedIndexes();
+  if (s.size() > 0)
+    widget->view->scrollTo(s[0]);
+}
+
+
+void 
 QDjViewFind::Model::pageChanged(int pageno)
 {
-  if (pageno > curPage)
-    curHit = 0;
-  else if (pageno < curPage)
+  if (pageno != curPage)
     curHit = -1;
-  curPage = pageno;
+  curPage = curWork = pageno;
   pending = 0;
 }
 
@@ -1106,8 +1296,24 @@ QDjViewFind::Model::textChanged()
 {
   stopFind();
   clear();
-  find = widget->text();
-  startFind(searchBackwards);
+  QString s = widget->text();
+  if (s.isEmpty())
+    {
+      find = QRegExp();
+    }
+  else
+    {
+      s = QRegExp::escape(widget->text());
+      s.replace(QRegExp("\\s+"), " ");
+      if (wordOnly)
+        s = "\\b" + s + "\\b";
+      find = QRegExp(s);
+      if (caseSensitive)
+        find.setCaseSensitivity(Qt::CaseSensitive);
+      else
+        find.setCaseSensitivity(Qt::CaseInsensitive);
+      startFind(searchBackwards);
+    }
 }
 
 
@@ -1316,8 +1522,8 @@ QDjViewFind::pageChanged(int pageno)
   if (pageno>=0 && pageno<djview->pageNum())
     {
       model->pageChanged(pageno);
-      if (model->selectPage(pageno))
-        view->scrollTo(model->index(model->findPage(pageno)));
+      if (model->modelSelect(pageno))
+        model->makeSelectionVisible();
     }
 }
 

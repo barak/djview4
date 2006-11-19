@@ -55,8 +55,8 @@ public:
 public slots:
   void clear(); 
   void refresh(); 
-  void pageChanged(int pageno);
 protected slots:
+  void pageChanged(int pageno);
   void itemActivated(QTreeWidgetItem *item);
 private:
   QDjView *djview;
@@ -83,11 +83,11 @@ public:
   int size();
   bool smart();
 public slots:
-  void pageChanged(int pageno);
   void setSize(int);
   void setSmart(bool);
 protected slots:
   void setSize();
+  void pageChanged(int pageno);
   void activated(const QModelIndex &index);
 protected:
   void contextMenuEvent(QContextMenuEvent *event);
