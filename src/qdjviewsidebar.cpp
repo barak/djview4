@@ -1642,7 +1642,7 @@ void
 QDjViewFind::findPrev()
 {
   if (text().isEmpty())
-    djview->find();
+    djview->showSideBar("find");
   model->nextHit(true);
 }
 
