@@ -1599,11 +1599,6 @@ QDjView::parseArgument(QString key, QString value)
       if (! showSideBar(value+",outline"))
         illegal_value(key, value, errors);
     }
-  else if (key == "find") // new for djview4
-    {
-      showSideBar("find");
-      pendingFind = value;
-    }
   else if (key == "search") // new for djview4
     {
       pendingFind = value;
