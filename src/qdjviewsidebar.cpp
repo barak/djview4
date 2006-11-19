@@ -998,14 +998,8 @@ QDjViewFind::Model::eventFilter(QObject*, QEvent *event)
 {
   switch (event->type())
     {
-    case QEvent::Hide:
     case QEvent::Show:
-      if (! widget->isVisible())
-        {
-          animTimer->stop();
-          workTimer->stop();
-        }
-      else if (working)
+      if (working)
         {
           animTimer->start();
           workTimer->start();
@@ -1250,12 +1244,15 @@ QDjViewFind::Model::workTimeout()
           QString name = djview->pageName(curWork);
           djview->statusMessage(tr("Searching page %1.").arg(name));
           QDjVuDocument *doc = djview->getDocument();
-          miniexp_t exp = doc->getPageText(curWork);
+          miniexp_t exp = doc->getPageText(curWork, false);
           if (exp == miniexp_dummy)
-            // data not present
-            // stop without restarting timer
-            // timer will be reactivated by pageinfo()
-            return;
+            {
+              // data not present
+              if (pending>0 || widget->isVisible())
+                doc->getPageText(curWork, true);                
+              // timer will be reactivated by pageinfo()
+              return;
+            }
           if (exp != miniexp_nil)
             {
               somePagesWithText = true;
@@ -1308,8 +1305,7 @@ QDjViewFind::Model::workTimeout()
     }
   // restart timer
   if (working)
-    if (pending>0 || widget->isVisible())
-      workTimer->start(0);
+    workTimer->start(0);
 }
 
 
@@ -1333,29 +1329,20 @@ QDjViewFind::Model::nextHit(bool backwards)
     {
       startFind(backwards);
     }
-  else
+  else if (! find.isEmpty())
     {
       searchBackwards = backwards;
       pending = qMin(5, pending+1);
       doPending();
+      if (working && pending>0 && !workTimer->isActive())
+        workTimer->start(0);
     }
 }
+
 
 void 
 QDjViewFind::Model::startFind(bool backwards, int delay)
 {
-  if (working)
-    {
-      if (searchBackwards == backwards)
-        pending += 1;
-      else
-        pending -= 1;
-      if (pending > 0)
-        {
-          doPending();
-          return;
-        }
-    }
   stopFind();
   searchBackwards = backwards;
   if (! find.isEmpty() && djview->pageNum() > 0)
@@ -1391,10 +1378,8 @@ QDjViewFind::Model::stopFind()
 void 
 QDjViewFind::Model::pageinfo()
 {
-  if (working)
-    if (pending>0 || widget->isVisible())
-      if (!workTimer->isActive())
-        workTimer->start(0);
+  if (working && !workTimer->isActive())
+    workTimer->start(0);
 }
 
 
@@ -1570,7 +1555,8 @@ QDjViewFind::contextMenuEvent(QContextMenuEvent *event)
 void
 QDjViewFind::takeFocus(Qt::FocusReason reason)
 {
-  edit->setFocus(reason);
+  if (edit->isVisible())
+    edit->setFocus(reason);
 }
 
 
@@ -1636,9 +1622,8 @@ void
 QDjViewFind::findNext()
 {
   if (text().isEmpty())
-    djview->find();
-  else
-    model->nextHit(false);
+    djview->showSideBar("find");
+  model->nextHit(false);
 }
 
 
@@ -1647,8 +1632,7 @@ QDjViewFind::findPrev()
 {
   if (text().isEmpty())
     djview->find();
-  else
-    model->nextHit(true);
+  model->nextHit(true);
 }
 
 

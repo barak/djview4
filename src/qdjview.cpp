@@ -1599,9 +1599,13 @@ QDjView::parseArgument(QString key, QString value)
       if (! showSideBar(value+",outline"))
         illegal_value(key, value, errors);
     }
-  else if (key == "find" || key == "search") // new for djview4
+  else if (key == "find") // new for djview4
     {
       showSideBar("find");
+      pendingFind = value;
+    }
+  else if (key == "search") // new for djview4
+    {
       pendingFind = value;
     }
   else if (key == "src" && viewerMode != STANDALONE)
@@ -2144,6 +2148,8 @@ QDjView::showSideBar(Qt::DockWidgetAreas areas, int tab)
   // Tab
   if (tab >= 0 && tab < sideToolBox->count())
     sideToolBox->setCurrentIndex(tab);
+  if (tab == 2 && findWidget)
+    findWidget->takeFocus(Qt::ShortcutFocusReason);
   // Okay
   return true;
 }
@@ -2235,16 +2241,12 @@ QDjView::save()
 }
 
 
-/*! Pops up the find interface with text \a find. */
+/*! Start searching string \a find. */
 void 
 QDjView::find(QString find)
 {
-  if (! find.isNull())
-    findWidget->setText(find);
-  showSideBar("find");
-  findWidget->takeFocus(Qt::ShortcutFocusReason);
   if (! find.isEmpty())
-    findWidget->findNext();
+    findWidget->setText(find);
 }
 
 

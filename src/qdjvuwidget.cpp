@@ -3144,7 +3144,7 @@ QDjVuWidget::clearHighlights(int pageno)
         if (! p->mapAreas[j].expr)
           {
             MapArea &area = p->mapAreas[j];
-            if (priv->pageMap.contains(pageno))
+            if (priv->pageMap.contains(pageno) && p->dpi>0)
               area.update(viewport(), p->mapper, priv->visibleRect.topLeft());
             priv->pixelCache.clear();
             p->mapAreas.removeAt(j);
@@ -3171,7 +3171,7 @@ QDjVuWidget::addHighlight(int pageno, int x, int y, int w, int h, QColor color)
       area.borderType = miniexp_nil;
       p->mapAreas << area;
       priv->pixelCache.clear();
-      if (priv->pageMap.contains(pageno))
+      if (priv->pageMap.contains(pageno) && p->dpi>0)
         area.update(viewport(), p->mapper, priv->visibleRect.topLeft());
     }
 }
