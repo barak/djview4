@@ -1599,7 +1599,7 @@ QDjView::parseArgument(QString key, QString value)
       if (! showSideBar(value+",outline"))
         illegal_value(key, value, errors);
     }
-  else if (key == "search") // new for djview4
+  else if (key == "find") // new for djview4
     {
       pendingFind = value;
     }
@@ -1611,7 +1611,7 @@ QDjView::parseArgument(QString key, QString value)
       if (! pendingUrl.isEmpty())
         performPendingLater();
     }
-  else if (key == "logo" || key == "textsel")
+  else if (key == "logo" || key == "textsel" || key == "search")
     {
       QString msg = tr("Option '%1' is not implemented.").arg(key);
       qWarning((const char*)msg.toLocal8Bit());
