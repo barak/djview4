@@ -2248,6 +2248,8 @@ QDjView::find(QString find)
     findWidget->setText(find);
   showSideBar("find");
   findWidget->takeFocus(Qt::ShortcutFocusReason);
+  if (! find.isEmpty())
+    findWidget->findNext();
 }
 
 
@@ -2761,7 +2763,7 @@ QDjView::performPending()
           // TODO: hilite search terms
           pendingSearch.clear();
         }
-      if (pendingFind.size())
+      if (pendingFind.size() > 0)
         {
           find(pendingFind);
           pendingFind.clear();

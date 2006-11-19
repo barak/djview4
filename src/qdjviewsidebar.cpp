@@ -820,12 +820,14 @@ public slots:
   void documentClosed(QDjVuDocument*);
   void documentReady(QDjVuDocument*);
   void clear();
+  void doHighlights(int pageno);
   void workTimeout();
   void animTimeout();
   void makeSelectionVisible();
   void pageChanged(int);
   void textChanged();
   void pageinfo();
+  void itemActivated(const QModelIndex&);
 private:
   friend class QDjViewFind;
   QDjViewFind *widget;
@@ -1036,14 +1038,10 @@ QDjViewFind::Model::documentReady(QDjVuDocument *doc)
   curWork = djview->getDjVuWidget()->page();
   curPage = curWork;
   curHit = -1;
-  widget->eraseText();
-  widget->edit->setEnabled(true);
-  widget->label->setText(QString());
-  widget->stack->setCurrentIndex(0);
   if (doc)
     {
+      widget->edit->setEnabled(true);
       connect(doc, SIGNAL(pageinfo()), this, SLOT(pageinfo()));
-      startFind(searchBackwards);
     }
 }
 
@@ -1088,8 +1086,9 @@ miniexp_get_text(miniexp_t exp,
   miniexp_t s = miniexp_car(r);
   if (miniexp_stringp(s) && !miniexp_cdr(r))
     {
-      result = result + comma + QString::fromUtf8(miniexp_to_str(s));
+      result += comma;
       positions[result.size()] = exp;
+      result += QString::fromUtf8(miniexp_to_str(s));
       if (comma.isEmpty() && !nospace.contains(type))
         comma = " ";
       return true;
@@ -1128,7 +1127,9 @@ miniexp_search_text(miniexp_t exp, QRegExp regex)
       QList<miniexp_t> hit;
       QMap<int,miniexp_t>::const_iterator pos;
       int endmatch = match + regex.matchedLength();
-      for (pos = positions.lowerBound(match); pos.key() < endmatch; ++pos)
+      for(pos = positions.lowerBound(match);
+          pos!=positions.end() && pos.key() < endmatch;
+          ++pos)
         hit += pos.value();
       hits += hit;
       offset = endmatch;
@@ -1147,6 +1148,29 @@ QDjViewFind::Model::clear()
       djvuWidget->clearHighlights(pos.key());
   hits.clear();
   modelClear();
+}
+
+
+void 
+QDjViewFind::Model::doHighlights(int pageno)
+{
+  if (hits.contains(pageno))
+    {
+      QColor color = Qt::blue;
+      QDjVuWidget *djvu = djview->getDjVuWidget();
+      Hit pageHit;
+      color.setAlpha(96);
+      foreach(pageHit, hits[pageno])
+        {
+          QRect rect;
+          miniexp_t exp;
+          foreach(exp, pageHit)
+            if (miniexp_get_rect(exp, rect))
+              djvu->addHighlight(pageno, rect.x(), rect.y(),
+                                 rect.width(), rect.height(),
+                                 color );
+        }
+    }
 }
 
 
@@ -1181,7 +1205,7 @@ QDjViewFind::Model::workTimeout()
               if (pageHits.size() > 0)
                 {
                   modelAdd(curWork, pageHits.size());
-                  // performHightlights(curWork);
+                  doHighlights(curWork);
                   // performPendings();
                   makeSelectionVisible();
                 }
@@ -1344,6 +1368,18 @@ QDjViewFind::Model::textChanged()
 }
 
 
+void 
+QDjViewFind::Model::itemActivated(const QModelIndex &mi)
+{
+  if (mi.isValid())
+    {
+      int row = mi.row();
+      if (row>=0 && row<pages.size())
+        djview->goToPage(pages[row].pageno);
+    }
+}
+
+
 
 // ----------------------------------------
 // QDJVIEWFIND
@@ -1422,6 +1458,8 @@ QDjViewFind::QDjViewFind(QDjView *djview)
           model, SLOT(documentClosed(QDjVuDocument*)) );
   connect(djview, SIGNAL(documentReady(QDjVuDocument*)),
           model, SLOT(documentReady(QDjVuDocument*)) );
+  connect(view, SIGNAL(activated(const QModelIndex&)),
+          model, SLOT(itemActivated(const QModelIndex&)));
   connect(djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
           this, SLOT(pageChanged(int)));
   connect(edit, SIGNAL(textChanged(QString)),
