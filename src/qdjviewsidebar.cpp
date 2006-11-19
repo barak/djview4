@@ -1020,6 +1020,7 @@ QDjViewFind::Model::documentClosed(QDjVuDocument *doc)
   curWork = 0;
   curPage = 0;
   curHit = 0;
+  searchBackwards = false;
   widget->eraseText();
   widget->edit->setEnabled(false);
   widget->label->setText(QString());
@@ -1038,6 +1039,9 @@ QDjViewFind::Model::documentReady(QDjVuDocument *doc)
     {
       widget->edit->setEnabled(true);
       connect(doc, SIGNAL(pageinfo()), this, SLOT(pageinfo()));
+      connect(doc, SIGNAL(idle()), this, SLOT(pageinfo()));
+      if (! find.isEmpty())
+        startFind(false);
     }
 }
 
@@ -1223,6 +1227,8 @@ QDjViewFind::Model::doPending()
             }
         }
     }
+  if (pending <= 0)
+    djview->statusMessage(QString());
 }
 
 
@@ -1242,12 +1248,13 @@ QDjViewFind::Model::workTimeout()
       else
         {
           QString name = djview->pageName(curWork);
-          djview->statusMessage(tr("Searching page %1.").arg(name));
           QDjVuDocument *doc = djview->getDocument();
           miniexp_t exp = doc->getPageText(curWork, false);
           if (exp == miniexp_dummy)
             {
               // data not present
+              if (pending>0)
+                djview->statusMessage(tr("Searching page %1.").arg(name));
               if (pending>0 || widget->isVisible())
                 doc->getPageText(curWork, true);                
               // timer will be reactivated by pageinfo()
@@ -1256,6 +1263,8 @@ QDjViewFind::Model::workTimeout()
           if (exp != miniexp_nil)
             {
               somePagesWithText = true;
+              if (pending > 0)
+                djview->statusMessage(tr("Searching page %1.").arg(name));
               Hits pageHits = miniexp_search_text(exp, find);
               hits[curWork] = pageHits;
               if (pageHits.size() > 0)
@@ -1287,6 +1296,7 @@ QDjViewFind::Model::workTimeout()
       if (curWork == startingPoint)
         {
           stopFind();
+          djview->statusMessage(QString());
           if (! pages.size())
             {
               QString msg = tr("No hits!");
