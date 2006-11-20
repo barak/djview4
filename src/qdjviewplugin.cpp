@@ -370,17 +370,14 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
       QWidget *w = static_cast<QWidget*>(o);
       switch( e->type() )
         {
-        default:
+          // Send keyboard events to window under the cursor.
+          // - browsers handle plugin focus rather differently...
+        case QEvent::Enter:
+          if (w->isWindow() && !dispatcher->xembedFlag)
+            dispatcher->application->setActiveWindow(w);
           break;
-          // Activate on mouse click
-          // - activation might be improved by deriving
-          //   class QApplication and overriding x11Event().
-        case QEvent::MouseButtonPress:
-          if (! dispatcher->xembedFlag)
-            if (! w->isActiveWindow())
-              w->activateWindow();
-          break;
-          // Set property for transient windows
+          // Try to fix transient windows properties.
+          // - this does not work too well...
         case QEvent::Show:
           if (w->windowFlags() & Qt::Window)
             QApplication::postEvent(w, new QEvent(QEvent::User));
@@ -388,6 +385,8 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
         case QEvent::User:
           if (w->windowFlags() & Qt::Window)
             x11SetTransientForHint(w);
+          break;
+        default:
           break;
         }
     }
