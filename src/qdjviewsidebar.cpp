@@ -1269,12 +1269,14 @@ QDjViewFind::Model::workTimeout()
               // timer will be reactivated by pageinfo()
               return;
             }
+          Hits pageHits;
+          hits[curWork] = pageHits;
           if (exp != miniexp_nil)
             {
               somePagesWithText = true;
               if (pending)
                 djview->statusMessage(tr("Searching page %1.").arg(name));
-              Hits pageHits = miniexp_search_text(exp, find);
+              pageHits = miniexp_search_text(exp, find);
               hits[curWork] = pageHits;
               if (pageHits.size() > 0)
                 {
