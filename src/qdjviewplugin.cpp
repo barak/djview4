@@ -373,7 +373,11 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
           // Send keyboard events to last clicked window.
         case QEvent::MouseButtonPress:
           if (!dispatcher->xembedFlag)
-            dispatcher->application->setActiveWindow(w->window());
+            {
+              QWidget *window = w->window();
+              if (window->objectName() == "djvu_shell")
+                dispatcher->application->setActiveWindow(window);
+            }
           break;
           // Try to fix transient windows properties.
           // - this does not work too well...
@@ -873,7 +877,7 @@ QDjViewPlugin::cmdAttachWindow()
         {
           QX11EmbedWidget *embed = new QX11EmbedWidget();
           shell = embed;
-          shell->setObjectName("djvu_shell");
+          shell->setObjectName("djvu_xembed");
           shell->setGeometry(0, 0, width, height);
           embed->embedInto(window);
         }
