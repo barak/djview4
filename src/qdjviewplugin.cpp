@@ -372,8 +372,8 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
         {
           // Send keyboard events to last clicked window.
         case QEvent::MouseButtonPress:
-          if (w->isWindow() && !dispatcher->xembedFlag)
-            dispatcher->application->setActiveWindow(w);
+          if (!dispatcher->xembedFlag)
+            dispatcher->application->setActiveWindow(w->window());
           break;
           // Try to fix transient windows properties.
           // - this does not work too well...
