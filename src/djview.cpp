@@ -180,21 +180,23 @@ setupApplication()
   addDirectory(dirs, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
   
   // load translators
+  bool qtTransValid = false;
+  bool djviewTransValid = false;
   foreach (QString lang, langs)
     {
       foreach (QString directory, dirs)
         {
-          if (qtTrans->isEmpty())
-            qtTrans->load("qt_" + lang, directory);
-          if (djviewTrans->isEmpty())
-            djviewTrans->load("djview_" + lang, directory);
+          if (! qtTransValid)
+            qtTransValid = qtTrans->load("qt_" + lang, directory);
+          if (! djviewTransValid)
+            djviewTransValid= djviewTrans->load("djview_" + lang, directory);
         }
     }
-
+  
   // install tranlators
-  if (! qtTrans->isEmpty())
+  if (qtTransValid)
     app->installTranslator(qtTrans);
-  if (! djviewTrans->isEmpty())
+  if (djviewTransValid)
     app->installTranslator(djviewTrans);
 }
 
