@@ -370,9 +370,8 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
       QWidget *w = static_cast<QWidget*>(o);
       switch( e->type() )
         {
-          // Send keyboard events to window under the cursor.
-          // - browsers handle plugin focus rather differently...
-        case QEvent::Enter:
+          // Send keyboard events to last clicked window.
+        case QEvent::MouseButtonPress:
           if (w->isWindow() && !dispatcher->xembedFlag)
             dispatcher->application->setActiveWindow(w);
           break;
