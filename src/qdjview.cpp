@@ -2213,11 +2213,17 @@ QDjView::showSideBar(QString args)
 void
 QDjView::print()
 {
-  // TODO
-  QString caption = makeCaption(tr("Print DjVu", "dialog caption"));
-  QMessageBox::warning(this, caption,
-                       tr("Print dialog is not yet implemented"));
+  QDjViewPrintDialog *pd = printDialog;
+  if (! pd)
+    {
+      printDialog = pd = new QDjViewPrintDialog(this);
+      pd->setAttribute(Qt::WA_DeleteOnClose);
+      pd->setWindowTitle(makeCaption(tr("Print","dialog caption")));
+    }
+  pd->show();
+  pd->raise();
 }
+
 
 
 /*! Pops up a save dialog */

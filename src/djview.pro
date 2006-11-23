@@ -62,6 +62,7 @@ FORMS += qdjviewerrordialog.ui
 FORMS += qdjviewinfodialog.ui 
 FORMS += qdjviewmetadialog.ui 
 FORMS += qdjviewsavedialog.ui 
+FORMS += qdjviewprintdialog.ui 
 
 SOURCES += djview.cpp
 

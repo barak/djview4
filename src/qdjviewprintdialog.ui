@@ -9,7 +9,7 @@
     <x>0</x>
     <y>0</y>
     <width>513</width>
-    <height>356</height>
+    <height>372</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -526,10 +526,10 @@
                <string> as many sheets as needed.</string>
               </property>
               <property name="suffix" >
-               <string> at most </string>
+               <string> heets</string>
               </property>
               <property name="prefix" >
-               <string> sheet(s).</string>
+               <string>at most </string>
               </property>
               <property name="maximum" >
                <number>1000</number>
@@ -723,60 +723,87 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
+    <widget class="QStackedWidget" name="stackedWidget" >
+     <property name="currentIndex" >
       <number>0</number>
      </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QCheckBox" name="saveSettingsCheckBox" >
-       <property name="text" >
-        <string>&amp;Remember settings</string>
+     <widget class="QWidget" name="page" >
+      <layout class="QHBoxLayout" >
+       <property name="margin" >
+        <number>9</number>
        </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
+       <property name="spacing" >
+        <number>6</number>
        </property>
-       <property name="sizeHint" >
-        <size>
-         <width>32</width>
-         <height>32</height>
-        </size>
+       <item>
+        <widget class="QCheckBox" name="saveSettingsCheckBox" >
+         <property name="text" >
+          <string>&amp;Remember settings</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>61</width>
+           <height>32</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="saveButton" >
+         <property name="text" >
+          <string>&amp;Ok</string>
+         </property>
+         <property name="autoDefault" >
+          <bool>true</bool>
+         </property>
+         <property name="default" >
+          <bool>true</bool>
+         </property>
+         <property name="flat" >
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="cancelButton" >
+         <property name="text" >
+          <string>&amp;Cancel</string>
+         </property>
+         <property name="autoDefault" >
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="widget" >
+      <layout class="QHBoxLayout" >
+       <property name="margin" >
+        <number>9</number>
        </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="saveButton" >
-       <property name="text" >
-        <string>&amp;Ok</string>
+       <property name="spacing" >
+        <number>6</number>
        </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-       <property name="default" >
-        <bool>true</bool>
-       </property>
-       <property name="flat" >
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton" >
-       <property name="text" >
-        <string>&amp;Cancel</string>
-       </property>
-       <property name="autoDefault" >
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
+       <item>
+        <widget class="QProgressBar" name="progressBar" />
+       </item>
+       <item>
+        <widget class="QPushButton" name="stopButton" >
+         <property name="text" >
+          <string>Stop</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
    </item>
   </layout>
  </widget>

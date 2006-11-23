@@ -212,7 +212,7 @@
        <item>
         <widget class="QPushButton" name="saveButton" >
          <property name="text" >
-          <string>&amp;Save</string>
+          <string>&amp;Ok</string>
          </property>
          <property name="autoDefault" >
           <bool>true</bool>
@@ -246,8 +246,7 @@
         <number>6</number>
        </property>
        <item>
-        <widget class="QProgressBar" name="progressBar" >
-        </widget>
+        <widget class="QProgressBar" name="progressBar" />
        </item>
        <item>
         <widget class="QPushButton" name="stopButton" >

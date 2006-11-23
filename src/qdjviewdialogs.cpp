@@ -36,6 +36,8 @@
 #include <QMap>
 #include <QMessageBox>
 #include <QObject>
+#include <QPainter>
+#include <QPrinter>
 #include <QRegExp>
 #include <QScrollBar>
 #include <QShortcut>
@@ -638,7 +640,8 @@ metadataFromAnnotations(miniexp_t p)
                   miniexp_symbolp(miniexp_car(a)) &&
                   miniexp_stringp(miniexp_cadr(a)) )
                 {
-                  QString k = QString::fromUtf8(miniexp_to_name(miniexp_car(a)));
+                  QString k;
+                  k = QString::fromUtf8(miniexp_to_name(miniexp_car(a)));
                   m[k] = QString::fromUtf8(miniexp_to_str(miniexp_cadr(a)));
                 }
             }
@@ -1068,6 +1071,38 @@ QDjViewSaveDialog::done(int result)
   d->output = 0;
   QDialog::done(result);
 }
+
+
+
+
+// =======================================
+// QDJVIEWPRINTDIALOG
+// =======================================
+
+
+#include "ui_qdjviewprintdialog.h"
+
+struct QDjViewPrintDialog::Private {
+  Ui::QDjViewPrintDialog ui;
+  QDjView *djview;
+  QPrinter printer;
+};
+
+
+QDjViewPrintDialog::~QDjViewPrintDialog()
+{
+  delete d;
+}
+
+QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
+  : d(new Private)
+{
+  d->djview = djview;
+  d->ui.setupUi(this);
+}
+
+
+
 
 
 

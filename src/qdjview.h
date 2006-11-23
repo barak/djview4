@@ -194,6 +194,7 @@ protected:
   QPointer<QDjViewInfoDialog>  infoDialog;
   QPointer<QDjViewMetaDialog>  metaDialog;
   QPointer<QDjViewSaveDialog>  saveDialog;
+  QPointer<QDjViewPrintDialog> printDialog;
   // widgets
   QLabel             *splash;
   QDjVuWidget        *widget;

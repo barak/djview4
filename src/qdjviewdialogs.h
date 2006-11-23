@@ -135,7 +135,16 @@ private:
 // ----------- QDJVIEWPRINTDIALOG
 
 
-
+class QDjViewPrintDialog : public QDialog
+{
+  Q_OBJECT
+public:
+  ~QDjViewPrintDialog();
+  QDjViewPrintDialog(QDjView *djview);
+private:
+  struct Private;
+  Private *d;
+};
 
 
 
