@@ -141,6 +141,15 @@ class QDjViewPrintDialog : public QDialog
 public:
   ~QDjViewPrintDialog();
   QDjViewPrintDialog(QDjView *djview);
+protected slots:
+  void refresh();
+  void progress(int percent);
+  void print();
+  void printDjVu();
+  void printNative();
+  void stop();
+  void error(QString message, QString filename, int lineno);
+  virtual void done(int);
 private:
   struct Private;
   Private *d;

@@ -1063,7 +1063,7 @@ void
 QDjViewSaveDialog::done(int result)
 {
   if (d->job)
-    stop();
+    ddjvu_job_stop(*d->job);
   if (d->output && result == QDialog::Rejected)
     QFile(d->ui.fileNameEdit->text()).remove();
   if (d->output)
@@ -1085,12 +1085,19 @@ QDjViewSaveDialog::done(int result)
 struct QDjViewPrintDialog::Private {
   Ui::QDjViewPrintDialog ui;
   QDjView *djview;
-  QPrinter printer;
+  QPrinter *printer;
+  QDjVuDocument *document;
+  QDjVuJob *job;
+  QDjVuPage *page;
+  QDjViewErrorDialog *errdialog;
+  FILE *output;
+  bool stop;
 };
 
 
 QDjViewPrintDialog::~QDjViewPrintDialog()
 {
+  delete d->printer;
   delete d;
 }
 
@@ -1098,11 +1105,143 @@ QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
   : d(new Private)
 {
   d->djview = djview;
+  d->printer = new QPrinter(QPrinter::HighResolution);
+  d->document = 0;
+  d->job = 0;
+  d->page = 0;
+  d->output = 0;
+  d->stop = false;
   d->ui.setupUi(this);
+
+  connect(d->djview, SIGNAL(documentClosed(QDjVuDocument*)),
+          this, SLOT(reject()) );
+  connect(d->djview, SIGNAL(documentReady(QDjVuDocument*)),
+          this, SLOT(refresh()) );
+  connect(d->ui.fromPageCombo, SIGNAL(activated(int)),
+          d->ui.pageRangeButton, SLOT(click()) );
+  connect(d->ui.toPageCombo, SIGNAL(activated(int)),
+          d->ui.pageRangeButton, SLOT(click()) );
+  connect(d->ui.fromPageCombo, SIGNAL(activated(int)),
+          this, SLOT(refresh()) );
+  connect(d->ui.toPageCombo, SIGNAL(activated(int)),
+          this, SLOT(refresh()) );
+  connect(d->ui.cancelButton, SIGNAL(clicked() ),
+          this, SLOT(reject()) );
+  connect(d->ui.printButton, SIGNAL(clicked() ),
+          this, SLOT(print()) );
+
+  refresh();
 }
 
 
+void 
+QDjViewPrintDialog::refresh()
+{
+  int npages = d->djview->pageNum();
+  if (!d->document && npages>0)
+    {
+      d->document = d->djview->getDocument();
+    }
+  
+#if QT_VERSION < 0x40100
+  d->ui.pdfButton.setEnabled(false);
+#endif
+  
+}
 
+
+void 
+QDjViewPrintDialog::progress(int percent)
+{
+  d->ui.progressBar->setValue(percent);
+  if (d->job)
+    {
+      ddjvu_status_t status = ddjvu_job_status(*d->job);
+      switch(status)
+        {
+        case DDJVU_JOB_OK:
+          accept();
+          break;
+        case DDJVU_JOB_FAILED:
+          error(tr("This job has failed."), __FILE__, __LINE__);
+          break;
+        case DDJVU_JOB_STOPPED:
+          error(tr("This job has been interrupted."), __FILE__, __LINE__);
+          break;
+        default:
+          break;
+        }
+    }
+  if (d->stop)
+    reject();
+}
+
+
+void 
+QDjViewPrintDialog::print()
+{
+  // start printing in whatever format
+}
+
+
+void 
+QDjViewPrintDialog::printDjVu()
+{
+  // print one more page in native format
+}
+
+
+void 
+QDjViewPrintDialog::printNative()
+{
+  if (d->stop)
+    reject();
+  // print one more page in native format
+}
+
+
+void 
+QDjViewPrintDialog::stop()
+{
+  if (d->job)
+    ddjvu_job_stop(*d->job);
+  d->stop = true;
+  d->ui.stopButton->setEnabled(false);
+}
+
+
+void 
+QDjViewPrintDialog::error(QString message, QString filename, int lineno)
+{
+  if (! d->errdialog)
+    {
+      d->errdialog = new QDjViewErrorDialog(this);
+      QString caption = d->djview->makeCaption(tr("Printing DjVu file..."));
+      d->errdialog->prepare(QMessageBox::Critical, caption);
+      connect(d->errdialog, SIGNAL(closing()), this, SLOT(reject()));
+#if QT_VERSION >= 0x040100
+      d->errdialog->setWindowModality(Qt::WindowModal);
+#else
+      d->errdialog->setModal(true);
+#endif
+    }
+  d->errdialog->error(message, filename, lineno);
+  d->errdialog->show();
+}
+
+
+void 
+QDjViewPrintDialog::done(int result)
+{
+  if (d->job) 
+    ddjvu_job_stop(*d->job);
+  if (d->output && result == QDialog::Rejected)
+    { /* remove printed file */ }
+  if (d->output)
+    fclose(d->output);
+  d->output = 0;
+  QDialog::done(result);
+}
 
 
 

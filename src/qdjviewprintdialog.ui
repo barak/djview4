@@ -25,9 +25,9 @@
    <item>
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>0</number>
+      <number>1</number>
      </property>
-     <widget class="QWidget" name="widget" >
+     <widget class="QWidget" name="mainWidget" >
       <attribute name="title" >
        <string>Main</string>
       </attribute>
@@ -47,7 +47,7 @@
           <number>6</number>
          </property>
          <item>
-          <widget class="QGroupBox" name="groupBox" >
+          <widget class="QGroupBox" name="whatGroupBox" >
            <property name="title" >
             <string>Print</string>
            </property>
@@ -94,7 +94,7 @@
                <widget class="QComboBox" name="fromPageCombo" />
               </item>
               <item>
-               <widget class="QLabel" name="label" >
+               <widget class="QLabel" name="toLabel" >
                 <property name="text" >
                  <string>to</string>
                 </property>
@@ -125,7 +125,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox" >
+          <widget class="QGroupBox" name="copiesGroupBox" >
            <property name="title" >
             <string>Copies</string>
            </property>
@@ -200,9 +200,9 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="widget" >
+     <widget class="QWidget" name="formatWidget" >
       <attribute name="title" >
-       <string>PostScript</string>
+       <string>Output</string>
       </attribute>
       <layout class="QVBoxLayout" >
        <property name="margin" >
@@ -212,29 +212,36 @@
         <number>6</number>
        </property>
        <item>
-        <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
+        <widget class="QGroupBox" name="formatGroupBox" >
+         <property name="title" >
+          <string>Output file format</string>
          </property>
-         <property name="spacing" >
-          <number>6</number>
-         </property>
-         <item>
-          <widget class="QGroupBox" name="groupBox" >
-           <property name="title" >
-            <string>PostScript file format</string>
-           </property>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
            <layout class="QVBoxLayout" >
             <property name="margin" >
-             <number>9</number>
+             <number>0</number>
             </property>
             <property name="spacing" >
              <number>6</number>
             </property>
             <item>
+             <widget class="QLabel" name="djvuLabel" >
+              <property name="text" >
+               <string>DjVu optimized formats:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QRadioButton" name="psButton" >
               <property name="text" >
-               <string>PostScript File (*.ps)</string>
+               <string>PostScript (*.ps)</string>
               </property>
               <property name="checked" >
                <bool>true</bool>
@@ -244,7 +251,96 @@
             <item>
              <widget class="QRadioButton" name="epsButton" >
               <property name="text" >
-               <string>Encapsulated PostScript File (*.eps)</string>
+               <string>Encapsulated PostScript (*.eps)</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType" >
+             <enum>QSizePolicy::Maximum</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>5</width>
+              <height>5</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="genericLabel" >
+              <property name="text" >
+               <string>Generic formats:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="nativeButton" >
+              <property name="text" >
+               <string>Native (*.prn)</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="pdfButton" >
+              <property name="text" >
+               <string>PDF (*.pdf)</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="QGroupBox" name="levelGroupBox" >
+           <property name="title" >
+            <string>Postscript language level</string>
+           </property>
+           <layout class="QVBoxLayout" >
+            <property name="margin" >
+             <number>9</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QRadioButton" name="level2Button" >
+              <property name="text" >
+               <string>Level 2 (most compatible)</string>
+              </property>
+              <property name="checked" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="level3Button" >
+              <property name="text" >
+               <string>Level 3 (for modern printers)</string>
               </property>
              </widget>
             </item>
@@ -252,7 +348,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox" >
+          <widget class="QGroupBox" name="colorGroupBox" >
            <property name="title" >
             <string>Color model</string>
            </property>
@@ -285,45 +381,9 @@
          </item>
         </layout>
        </item>
-       <item>
-        <widget class="QGroupBox" name="groupBox" >
-         <property name="title" >
-          <string>Postscript language level</string>
-         </property>
-         <layout class="QVBoxLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item>
-           <widget class="QRadioButton" name="level1Button" >
-            <property name="text" >
-             <string>Level 1 (obsolete)</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="level2Button" >
-            <property name="text" >
-             <string>Level 2 (most compatible)</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="level3Button" >
-            <property name="text" >
-             <string>Level 3 (faster on modern printers)</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="widget" >
+     <widget class="QWidget" name="positionWidget" >
       <attribute name="title" >
        <string>Position</string>
       </attribute>
@@ -343,7 +403,7 @@
           <number>6</number>
          </property>
          <item>
-          <widget class="QGroupBox" name="groupBox" >
+          <widget class="QGroupBox" name="scalingGroupBox" >
            <property name="title" >
             <string>Scaling</string>
            </property>
@@ -404,7 +464,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox" >
+          <widget class="QGroupBox" name="orientationGroupBox" >
            <property name="title" >
             <string>Orientation</string>
            </property>
@@ -445,7 +505,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox" >
+        <widget class="QGroupBox" name="marksGroupBox" >
          <property name="title" >
           <string>Marks</string>
          </property>
@@ -475,7 +535,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="widget" >
+     <widget class="QWidget" name="bookletWidget" >
       <attribute name="title" >
        <string>Booklet</string>
       </attribute>
@@ -487,7 +547,7 @@
         <number>6</number>
        </property>
        <item>
-        <widget class="QGroupBox" name="groupBox" >
+        <widget class="QGroupBox" name="bookletGroupBox" >
          <property name="title" >
           <string>Booklet options</string>
          </property>
@@ -514,14 +574,14 @@
              <number>6</number>
             </property>
             <item>
-             <widget class="QLabel" name="label" >
+             <widget class="QLabel" name="sheetsLabel" >
               <property name="text" >
                <string>Each booklet contains </string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QSpinBox" name="bookletSheetsSpinBox" >
+             <widget class="QSpinBox" name="sheetsSpinBox" >
               <property name="specialValueText" >
                <string> as many sheets as needed.</string>
               </property>
@@ -560,14 +620,14 @@
              <number>6</number>
             </property>
             <item>
-             <widget class="QLabel" name="label" >
+             <widget class="QLabel" name="rectoVersoLabel" >
               <property name="text" >
                <string>Print </string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBox" >
+             <widget class="QComboBox" name="rectoVersoCombo" >
               <property name="minimumSize" >
                <size>
                 <width>160</width>
@@ -610,7 +670,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox" >
+        <widget class="QGroupBox" name="advancedBookletGroupBox" >
          <property name="title" >
           <string>Advanced booklet options</string>
          </property>
@@ -630,14 +690,14 @@
              <number>6</number>
             </property>
             <item>
-             <widget class="QLabel" name="label" >
+             <widget class="QLabel" name="rectoVersoShiftLabel" >
               <property name="text" >
                <string>Shift rectos and versos by </string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QSpinBox" name="spinBox" >
+             <widget class="QSpinBox" name="rectoVersoShiftSpinBox" >
               <property name="suffix" >
                <string> points.</string>
               </property>
@@ -667,14 +727,14 @@
              <number>6</number>
             </property>
             <item>
-             <widget class="QLabel" name="label" >
+             <widget class="QLabel" name="centerMarginLabel" >
               <property name="text" >
                <string>Center margins:</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QSpinBox" name="spinBox_2" >
+             <widget class="QSpinBox" name="centerMarginSpinBox" >
               <property name="suffix" >
                <string> points</string>
               </property>
@@ -684,14 +744,14 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label" >
+             <widget class="QLabel" name="centerIncreaseLabel" >
               <property name="text" >
                <string> plus </string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QSpinBox" name="spinBox_3" >
+             <widget class="QSpinBox" name="centerIncreaseSpinBox" >
               <property name="suffix" >
                <string>/100</string>
               </property>
@@ -707,7 +767,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label" >
+             <widget class="QLabel" name="perSheetLabel" >
               <property name="text" >
                <string> per sheet.</string>
               </property>
@@ -727,7 +787,7 @@
      <property name="currentIndex" >
       <number>0</number>
      </property>
-     <widget class="QWidget" name="page" >
+     <widget class="QWidget" name="okCancelWidget" >
       <layout class="QHBoxLayout" >
        <property name="margin" >
         <number>9</number>
@@ -756,7 +816,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="saveButton" >
+        <widget class="QPushButton" name="printButton" >
          <property name="text" >
           <string>&amp;Ok</string>
          </property>
@@ -783,7 +843,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="widget" >
+     <widget class="QWidget" name="progressStopWidget" >
       <layout class="QHBoxLayout" >
        <property name="margin" >
         <number>9</number>
@@ -809,54 +869,5 @@
  </widget>
  <pixmapfunction></pixmapfunction>
  <resources/>
- <connections>
-  <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
-   <receiver>QDjViewPrintDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>466</x>
-     <y>333</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>514</x>
-     <y>-3</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>fromPageCombo</sender>
-   <signal>activated(int)</signal>
-   <receiver>pageRangeButton</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>148</x>
-     <y>164</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>69</x>
-     <y>164</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>toPageCombo</sender>
-   <signal>activated(int)</signal>
-   <receiver>pageRangeButton</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>261</x>
-     <y>156</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>71</x>
-     <y>150</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
