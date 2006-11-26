@@ -1337,7 +1337,12 @@ QDjViewPrintDialog::refresh()
       d->ui.printButton->setEnabled(okfile||okprinter);
       d->ui.cancelButton->setEnabled(true);
       d->ui.stopButton->setEnabled(false);
-  
+      
+      d->ui.collateCheckBox->setEnabled(okprinter && !okfile);
+      d->ui.numCopiesSpinBox->setEnabled(okprinter && !okfile);
+      if (okfile)
+        d->ui.numCopiesSpinBox->setValue(1);
+      
       bool onepage = (npages == 1);
       if (d->ui.currentPageButton->isChecked())
         onepage = true;
@@ -1412,7 +1417,20 @@ QDjViewPrintDialog::progress(int percent)
 void 
 QDjViewPrintDialog::print()
 {
+  // should not happen
+  if (d->job || d->page)
+    return;
   // start printing in whatever format
+  updatePrinter();
+  if (d->ui.psButton->isChecked() ||
+      d->ui.epsButton->isChecked() )
+    {
+      printDjVu();
+    }
+  else
+    {
+      QTimer::singleShot(0, this, SLOT(printNative()));
+    }
 }
 
 
@@ -1420,6 +1438,8 @@ void
 QDjViewPrintDialog::printDjVu()
 {
   // print one more page in native format
+  error(tr("djvu output not yet implemented"),
+        __FILE__, __LINE__);
 }
 
 
@@ -1429,6 +1449,8 @@ QDjViewPrintDialog::printNative()
   if (d->stop)
     reject();
   // print one more page in native format
+  error(tr("native/pdf output not yet implemented"),
+        __FILE__, __LINE__);
 }
 
 
