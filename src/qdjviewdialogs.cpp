@@ -31,6 +31,7 @@
 #include <QFileInfo>
 #include <QFont>
 #include <QHeaderView>
+#include <QItemDelegate>
 #include <QKeySequence>
 #include <QList>
 #include <QMap>
@@ -38,6 +39,7 @@
 #include <QObject>
 #include <QPainter>
 #include <QPrinter>
+#include <QPrintDialog>
 #include <QRegExp>
 #include <QScrollBar>
 #include <QShortcut>
@@ -1060,10 +1062,23 @@ QDjViewSaveDialog::error(QString message, QString filename, int lineno)
 
 
 void 
+QDjViewSaveDialog::closeEvent(QCloseEvent *event)
+{
+  if (d->job)
+    {
+      stop();
+      event->ignore();
+      return;
+    }
+  QDialog::closeEvent(event);
+}
+
+
+void 
 QDjViewSaveDialog::done(int result)
 {
   if (d->job)
-    ddjvu_job_stop(*d->job);
+    stop();
   if (d->output && result == QDialog::Rejected)
     QFile(d->ui.fileNameEdit->text()).remove();
   if (d->output)
@@ -1085,10 +1100,11 @@ QDjViewSaveDialog::done(int result)
 struct QDjViewPrintDialog::Private {
   Ui::QDjViewPrintDialog ui;
   QDjView *djview;
-  QPrinter *printer;
   QDjVuDocument *document;
   QDjVuJob *job;
   QDjVuPage *page;
+  QPrinter *printer;
+  QPrintDialog *printdialog;
   QDjViewErrorDialog *errdialog;
   FILE *output;
   bool stop;
@@ -1105,31 +1121,176 @@ QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
   : d(new Private)
 {
   d->djview = djview;
-  d->printer = new QPrinter(QPrinter::HighResolution);
   d->document = 0;
   d->job = 0;
   d->page = 0;
+  d->printer = 0;
+  d->printdialog = 0;
+  d->errdialog = 0;
   d->output = 0;
   d->stop = false;
   d->ui.setupUi(this);
-
+  
+  d->printer = new QPrinter();
+  d->printdialog = new QPrintDialog(d->printer, this);
+  d->printdialog->addEnabledOption(QPrintDialog::PrintToFile);
+  d->printdialog->addEnabledOption(QPrintDialog::PrintSelection);
+  d->printdialog->addEnabledOption(QPrintDialog::PrintCollateCopies);
+  
   connect(d->djview, SIGNAL(documentClosed(QDjVuDocument*)),
           this, SLOT(reject()) );
   connect(d->djview, SIGNAL(documentReady(QDjVuDocument*)),
           this, SLOT(refresh()) );
+
+  connect(d->ui.psButton, SIGNAL(clicked()), this, SLOT(refresh()));
+  connect(d->ui.epsButton, SIGNAL(clicked()), this, SLOT(refresh()));
+  connect(d->ui.nativeButton, SIGNAL(clicked()), this, SLOT(refresh()));
+  connect(d->ui.pdfButton, SIGNAL(clicked()), this, SLOT(refresh()));
+  connect(d->ui.bookletCheckBox, SIGNAL(clicked()), this, SLOT(refresh()));
+  connect(d->ui.documentButton, SIGNAL(clicked()), this, SLOT(refresh()));
+  connect(d->ui.currentPageButton, SIGNAL(clicked()), this, SLOT(refresh()));
+  connect(d->ui.pageRangeButton, SIGNAL(clicked()), this, SLOT(refresh()));
+  connect(d->ui.fromPageCombo, SIGNAL(activated(int)), this, SLOT(refresh()));
+  connect(d->ui.toPageCombo, SIGNAL(activated(int)), this, SLOT(refresh()));
   connect(d->ui.fromPageCombo, SIGNAL(activated(int)),
           d->ui.pageRangeButton, SLOT(click()) );
   connect(d->ui.toPageCombo, SIGNAL(activated(int)),
           d->ui.pageRangeButton, SLOT(click()) );
-  connect(d->ui.fromPageCombo, SIGNAL(activated(int)),
-          this, SLOT(refresh()) );
-  connect(d->ui.toPageCombo, SIGNAL(activated(int)),
-          this, SLOT(refresh()) );
+  connect(d->ui.zoomSpinBox, SIGNAL(valueChanged(int)),
+          d->ui.zoomButton, SLOT(click()) );
+  connect(d->ui.changePrinterButton, SIGNAL(clicked()),
+          this, SLOT(choosePrinter()) );
   connect(d->ui.cancelButton, SIGNAL(clicked() ),
           this, SLOT(reject()) );
   connect(d->ui.printButton, SIGNAL(clicked() ),
           this, SLOT(print()) );
 
+  refresh();
+}
+
+
+
+bool 
+QDjViewPrintDialog::isPrinterPostScript()
+{
+  if (! d->printer->outputFileName().isEmpty())
+    return true;
+#ifdef Q_WS_WIN
+  // TODO:
+  // Use EnumPrinter to get a PRINTER_INFO_2 structure.
+  // Check that the driver is the postscript driver.
+  return false;
+#else
+  return true;
+#endif
+}
+
+
+void 
+QDjViewPrintDialog::updatePrinter()
+{
+  int npages = d->djview->pageNum();
+  d->printer->setCollateCopies(d->ui.collateCheckBox->isChecked());
+  d->printer->setCreator("djview");
+  d->printer->setDocName(d->djview->getShortFileName());
+  d->printer->setNumCopies(d->ui.numCopiesSpinBox->value());
+  if (d->ui.landscapeButton->isChecked())
+    d->printer->setOrientation(QPrinter::Landscape);
+  else
+    d->printer->setOrientation(QPrinter::Portrait);
+  if (d->ui.colorButton->isChecked())
+    d->printer->setColorMode(QPrinter::Color);
+  else
+    d->printer->setColorMode(QPrinter::GrayScale);
+  int fPage = d->ui.fromPageCombo->currentIndex();
+  int lPage = d->ui.toPageCombo->currentIndex();
+  if (d->ui.currentPageButton->isChecked())
+    { fPage = lPage = d->djview->getDjVuWidget()->page(); }
+  if (d->ui.documentButton->isChecked())
+    { fPage = 0; lPage = npages - 1; }
+  if (fPage>lPage && d->ui.pageRangeButton->isChecked())
+    d->printer->setPageOrder(QPrinter::LastPageFirst);
+  else
+    d->printer->setPageOrder(QPrinter::FirstPageFirst);
+  d->printdialog->setMinMax(1, npages);
+  d->printdialog->setFromTo(qMin(fPage,lPage)+1, qMax(fPage,lPage)+1);
+  if (d->ui.pageRangeButton->isChecked() 
+      && (qMin(fPage,lPage)!=0 || qMax(fPage,lPage)!=npages-1) ) 
+    d->printdialog->setPrintRange(QPrintDialog::PageRange);
+  else if (d->ui.currentPageButton->isChecked())
+    d->printdialog->setPrintRange(QPrintDialog::Selection);
+  else
+    d->printdialog->setPrintRange(QPrintDialog::AllPages);
+#if QT_VERSION >= 0x40100
+  if (d->ui.pdfButton->isChecked())
+    d->printer->setOutputFormat(QPrinter::PdfFormat);
+  else
+    d->printer->setOutputFormat(QPrinter::NativeFormat);
+#endif
+}
+
+
+void 
+QDjViewPrintDialog::choosePrinter()
+{
+  // standard print dialog
+  updatePrinter();
+  d->printdialog->exec();
+  this->raise();
+  // update ui
+  int npages = d->djview->pageNum();
+  int fPage = d->ui.fromPageCombo->currentIndex();
+  int lPage = d->ui.toPageCombo->currentIndex();
+  QPrinter::PageOrder order = d->printer->pageOrder();
+  QPrintDialog::PrintRange range = d->printdialog->printRange();
+  d->ui.documentButton->setChecked(range == QPrintDialog::AllPages);
+  d->ui.currentPageButton->setChecked(range == QPrintDialog::Selection);
+  d->ui.pageRangeButton->setChecked(range == QPrintDialog::PageRange);
+  if (range == QPrintDialog::PageRange)
+    {
+      fPage = d->printdialog->fromPage()-1;
+      lPage = d->printdialog->toPage()-1;
+      fPage = qBound(0, fPage, npages-1);
+      lPage = qBound(0, lPage, npages-1);
+      if ((order == QPrinter::FirstPageFirst) && (fPage > lPage))
+        qSwap(fPage, lPage);
+      if ((order == QPrinter::LastPageFirst) && (fPage < lPage))
+        qSwap(fPage, lPage);
+      d->ui.fromPageCombo->setCurrentIndex(fPage);
+      d->ui.toPageCombo->setCurrentIndex(lPage);
+    }
+  if (d->ui.documentButton->isChecked())
+    if (order == QPrinter::LastPageFirst)
+      {
+        d->ui.pageRangeButton->setChecked(true);
+        d->ui.fromPageCombo->setCurrentIndex(npages-1);
+        d->ui.toPageCombo->setCurrentIndex(0);
+      }
+  d->ui.collateCheckBox->setChecked(d->printer->collateCopies());
+  d->ui.numCopiesSpinBox->setValue(d->printer->numCopies());
+  if (! d->ui.autoOrientButton->isChecked())
+    {
+      QPrinter::Orientation orient = d->printer->orientation();
+      d->ui.portraitButton->setChecked(orient == QPrinter::Portrait);
+      d->ui.landscapeButton->setChecked(orient == QPrinter::Landscape);
+    }
+  QPrinter::ColorMode color = d->printer->colorMode();
+  d->ui.colorButton->setChecked(color == QPrinter::Color);
+  d->ui.grayScaleButton->setChecked(color == QPrinter::GrayScale);
+  QString printerName = d->printer->printerName();
+  QString fileName = d->printer->outputFileName();
+  QString msg;
+  if (! fileName.isEmpty())
+    msg = tr("File: %1").arg(fileName);
+  else if (! printerName.isEmpty())
+    msg = tr("Printer: %1").arg(printerName);
+  else
+    msg = tr("No destination");
+  QFontMetrics metric(d->ui.destinationLabel->font());
+  int width = qMax(358, d->ui.destinationLabel->width()) - 8;
+  msg = QItemDelegate::elidedText(metric, width, Qt::ElideMiddle, msg);
+  d->ui.destinationLabel->setText(msg);
+  // finalize
   refresh();
 }
 
@@ -1141,12 +1302,83 @@ QDjViewPrintDialog::refresh()
   if (!d->document && npages>0)
     {
       d->document = d->djview->getDocument();
+      d->djview->fillPageCombo(d->ui.fromPageCombo);
+      d->ui.fromPageCombo->setCurrentIndex(0);
+      d->djview->fillPageCombo(d->ui.toPageCombo);
+      d->ui.toPageCombo->setCurrentIndex(npages-1);
     }
+
+  if (! d->document)
+    {
+      d->ui.stackedWidget->setCurrentIndex(0);
+      d->ui.tabWidget->setEnabled(false);
+      d->ui.printButton->setEnabled(false);
+      d->ui.cancelButton->setEnabled(true);
+      d->ui.stopButton->setEnabled(false);
+      return;
+    }
+  else if (d->job || d->page)
+    {
+      d->ui.stackedWidget->setCurrentIndex(1);
+      d->ui.tabWidget->setEnabled(false);
+      d->ui.printButton->setEnabled(false);
+      d->ui.cancelButton->setEnabled(false);
+      d->ui.stopButton->setEnabled(true);
+      return;
+    }
+  else
+    {
+      bool okfile = !d->printer->outputFileName().isEmpty();
+      bool okprinter = !d->printer->printerName().isEmpty();
+      bool okps = isPrinterPostScript();
+
+      d->ui.stackedWidget->setCurrentIndex(0);
+      d->ui.tabWidget->setEnabled(true);
+      d->ui.printButton->setEnabled(okfile||okprinter);
+      d->ui.cancelButton->setEnabled(true);
+      d->ui.stopButton->setEnabled(false);
   
-#if QT_VERSION < 0x40100
-  d->ui.pdfButton.setEnabled(false);
+      bool onepage = (npages == 1);
+      if (d->ui.currentPageButton->isChecked())
+        onepage = true;
+      if (d->ui.pageRangeButton->isChecked() &&
+          d->ui.fromPageCombo->currentIndex() 
+          == d->ui.toPageCombo->currentIndex())
+        onepage = true;
+      d->ui.psButton->setEnabled(okps);
+      if (! (okps))
+        d->ui.psButton->setChecked(false);
+      d->ui.epsButton->setEnabled(okps && okfile && onepage);
+      if (! (okps && okfile && onepage))
+        d->ui.epsButton->setChecked(false);
+#if QT_VERSION >= 0x40100
+      d->ui.pdfButton->setEnabled(okfile);
+      if (! (okfile))
+        d->ui.pdfButton->setChecked(false);
+#else
+      d->ui.pdfButton->setEnabled(false);
 #endif
-  
+      if (! (okfile))
+        d->ui.pdfButton->setChecked(false);
+      bool psmode = false;
+      if (d->ui.psButton->isChecked() ||
+          d->ui.epsButton->isChecked() )
+        psmode = true;
+      d->ui.levelGroupBox->setEnabled(okps && psmode);
+      d->ui.marksGroupBox->setEnabled(okps && psmode);
+      d->ui.autoOrientButton->setEnabled(okps && psmode);
+      d->ui.bookletWidget->setEnabled(okps && psmode);
+      d->ui.bookletCheckBox->setEnabled(okps);
+      if (! okps)
+        d->ui.bookletCheckBox->setChecked(false);
+      bool booklet = d->ui.bookletCheckBox->isChecked();
+      QObject *o;
+      QWidget *w;
+      foreach(o, d->ui.bookletGroupBox->children())
+        if ((w = qobject_cast<QWidget*>(o)) && (w != d->ui.bookletCheckBox))
+          w->setEnabled(booklet && okps);
+      d->ui.advancedBookletGroupBox->setEnabled(booklet && okps);
+    }
 }
 
 
@@ -1205,6 +1437,8 @@ QDjViewPrintDialog::stop()
 {
   if (d->job)
     ddjvu_job_stop(*d->job);
+  if (d->page)
+    d->printer->abort();
   d->stop = true;
   d->ui.stopButton->setEnabled(false);
 }
@@ -1231,10 +1465,23 @@ QDjViewPrintDialog::error(QString message, QString filename, int lineno)
 
 
 void 
+QDjViewPrintDialog::closeEvent(QCloseEvent *event)
+{
+  if (d->job || d->page)
+    {
+      stop();
+      event->ignore();
+      return;
+    }
+  QDialog::closeEvent(event);
+}
+
+
+void 
 QDjViewPrintDialog::done(int result)
 {
-  if (d->job) 
-    ddjvu_job_stop(*d->job);
+  if (d->job || d->page) 
+    stop();
   if (d->output && result == QDialog::Rejected)
     { /* remove printed file */ }
   if (d->output)

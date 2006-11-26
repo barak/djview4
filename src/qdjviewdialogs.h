@@ -23,10 +23,11 @@
 #include <QDialog>
 #include <QLabel>
 #include <QMessageBox>
+#include <QString>
 #include <QWidget>
 
 class QDjView;
-
+class QCloseEvent;
 
 // ----------- QDJVIEWERRORDIALOG
 
@@ -125,6 +126,7 @@ protected slots:
   void stop();
   void error(QString message, QString filename, int lineno);
   virtual void done(int);
+  virtual void closeEvent(QCloseEvent *event);
 private:
   struct Private;
   Private *d;
@@ -143,6 +145,7 @@ public:
   QDjViewPrintDialog(QDjView *djview);
 protected slots:
   void refresh();
+  void choosePrinter();
   void progress(int percent);
   void print();
   void printDjVu();
@@ -150,7 +153,10 @@ protected slots:
   void stop();
   void error(QString message, QString filename, int lineno);
   virtual void done(int);
+  virtual void closeEvent(QCloseEvent *event);
 private:
+  bool isPrinterPostScript();
+  void updatePrinter();
   struct Private;
   Private *d;
 };
