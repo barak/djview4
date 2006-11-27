@@ -1967,7 +1967,7 @@ QDjView::open(QString filename)
     {
       delete doc;
       addToErrorDialog(tr("Cannot open file '%1'.").arg(filename));
-      raiseErrorDialog(QMessageBox::Critical, tr("Opening DjVu file..."));
+      raiseErrorDialog(QMessageBox::Critical, tr("Opening DjVu file"));
       return false;
     }
   QFileInfo fileinfo(filename);
@@ -1995,7 +1995,7 @@ QDjView::open(QUrl url)
     {
       delete doc;
       addToErrorDialog(tr("Cannot open URL '%1'.").arg(url.toString()));
-      raiseErrorDialog(QMessageBox::Critical, tr("Opening DjVu document..."));
+      raiseErrorDialog(QMessageBox::Critical, tr("Opening DjVu document"));
       return false;
     }
   open(doc, url);
@@ -2441,7 +2441,7 @@ QDjView::makeCaption(QString caption)
 {
   QString f = getShortFileName();
   if (! caption.isEmpty() && ! f.isEmpty())
-    caption = caption + " - [" + f + "]";
+    caption = caption + " - " + f;
   return caption;
 }
 
@@ -2686,7 +2686,7 @@ QDjView::errorCondition(int pageno)
   else
     message = tr("Cannot decode document.");
   addToErrorDialog(message);
-  raiseErrorDialog(QMessageBox::Warning, tr("Decoding DjVu document..."));
+  raiseErrorDialog(QMessageBox::Warning, tr("Decoding DjVu document"));
 }
 
 

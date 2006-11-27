@@ -26,8 +26,15 @@
 #include <QString>
 #include <QWidget>
 
-class QDjView;
+#include <libdjvu/miniexp.h>
+#include <libdjvu/ddjvuapi.h>
+
 class QCloseEvent;
+class QDjView;
+class QDjVuDocument;
+class QDjVuJob;
+
+
 
 // ----------- QDJVIEWERRORDIALOG
 
@@ -109,24 +116,59 @@ private:
 
 
 
+// ----------- QDJVIEWJOBDIALOG
+
+
+class QDjViewJobDialog : public QDialog
+{
+  Q_OBJECT
+public:
+  QDjViewJobDialog(QDjView *djview);
+protected slots:
+  void start();
+  void stop();
+  void refresh();
+  void progress(int);
+  void done(int);
+  void error(QString message, QString filename, int lineno);
+protected:
+  virtual void closeEvent(QCloseEvent *event);
+  virtual void hookStart() = 0;
+  virtual void hookStop();
+  virtual void hookDocument();
+  virtual void hookRefresh();
+  virtual void hookProgress(int);
+  virtual void hookCleanup(int);
+  QDjView            *djview;
+  QDjVuDocument      *document;
+  QDjVuJob           *job;
+  QDjViewErrorDialog *errorDialog;
+  QString             errorCaption;
+  ddjvu_status_t      status;
+
+};
+
+
+
+
 // ----------- QDJVIEWSAVEDIALOG
 
 
-class QDjViewSaveDialog : public QDialog
+class QDjViewSaveDialog : public QDjViewJobDialog
 {
   Q_OBJECT
 public:
   ~QDjViewSaveDialog();
   QDjViewSaveDialog(QDjView *djview);
 protected slots:
-  void refresh();
   void browse();
-  void save();
-  void progress(int percent);
-  void stop();
-  void error(QString message, QString filename, int lineno);
-  virtual void done(int);
-  virtual void closeEvent(QCloseEvent *event);
+protected:
+  virtual void hookStart();
+  virtual void hookStop();
+  virtual void hookDocument();
+  virtual void hookRefresh();
+  virtual void hookProgress(int);
+  virtual void hookCleanup(int);
 private:
   struct Private;
   Private *d;
