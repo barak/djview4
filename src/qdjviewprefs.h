@@ -124,9 +124,7 @@ public:
   int        pixelCacheSize;    //!< Size of the pixel cache.
   int        lensSize;          //!< Size of the magnification lens.
   int        lensPower;         //!< Power of the magnification lens.
-  double     printerGamma;      //!< Gamma value for the printer.
   QString    browserProgram;    //!< Preferred web browser.
-
   Qt::KeyboardModifiers modifiersForLens;   //!< Keys for the lens. 
   Qt::KeyboardModifiers modifiersForSelect; //!< Keys for selecting.
   Qt::KeyboardModifiers modifiersForLinks;  //!< Keys for showing the links.
@@ -134,6 +132,28 @@ public:
   // Thumbnail preferences
   int        thumbnailSize;
   bool       thumbnailSmart;
+
+  // Search preferences
+  bool       searchWordsOnly;
+  bool       searchCaseSensitive;
+
+  // Print/export preferences
+  double     printerGamma;      //!< Gamma value for the printer.
+  QString    printerName;       //!< Name of the printer
+  QString    printFile;         //!< Output file for print data
+  bool       printFitPage;      //!< Scale image to page size
+  int        printZoom;         //!< Zoom factor
+  bool       printColor;        //!< Print in color when available
+  bool       printFrame;        //!< Print a frame around the page
+  bool       printCropMarks;    //!< Print crop marks
+  bool       printAutoOrient;   //!< Autoselect portrait or landscape 
+  bool       printPortrait;     //!< Portrait (vs landscape)
+  int        printLevel;        //!< Postscript language level
+  bool       bookletMode;       //!< Booklet mode enabled
+  int        bookletMax;        //!< Max sheets per booklet
+  int        bookletAlign;      //!< Recto/verso shift
+  int        bookletFold;       //!< Center margin size (points)
+  int        bookletXFold;      //!< Center margin increase (points*1000)
   
 public:
   static QDjViewPrefs *create(void);

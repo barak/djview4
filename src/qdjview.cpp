@@ -1179,6 +1179,10 @@ QDjView::applyPreferences(void)
   // Thumbnail preferences
   thumbnailWidget->setSize(prefs->thumbnailSize);
   thumbnailWidget->setSmart(prefs->thumbnailSmart);
+  
+  // Search preferences
+  findWidget->setWordOnly(prefs->searchWordsOnly);
+  findWidget->setCaseSensitive(prefs->searchCaseSensitive);
 
   // Special preferences for embedded plugins
   if (viewerMode == EMBEDDED_PLUGIN)
@@ -2242,12 +2246,36 @@ QDjView::save()
 }
 
 
-/*! Start searching string \a find. */
-void 
+/*! Start searching string \a find. 
+    String might be terminated with a slash
+    followed by letters "w" (words only),
+    "W" (not words only), "c" (case sensitive),
+    or "C" (case insentitive). */
+
+void
 QDjView::find(QString find)
 {
   if (! find.isEmpty())
-    findWidget->setText(find);
+    {
+      QRegExp options("/[wWcC]*$");
+      if (find.contains(options))
+        {
+          for (int i=find.lastIndexOf("/"); i<find.size(); i++)
+            {
+              int c = find[i].toAscii();
+              if (c == 'c')
+                findWidget->setCaseSensitive(true); 
+              else if (c == 'C')
+                findWidget->setCaseSensitive(false); 
+              else if (c == 'w')
+                findWidget->setWordOnly(true); 
+              else if (c == 'W')
+                findWidget->setWordOnly(false); 
+            }
+          find = find.remove(options);
+        }
+      findWidget->setText(find);
+    }
   findWidget->findNext();
 }
 
@@ -2595,6 +2623,8 @@ QDjView::closeEvent(QCloseEvent *event)
   updateSaved(getSavedPrefs());
   prefs->thumbnailSize = thumbnailWidget->size();
   prefs->thumbnailSmart = thumbnailWidget->smart();
+  prefs->searchWordsOnly = findWidget->wordOnly();
+  prefs->searchCaseSensitive = findWidget->caseSensitive();
   prefs->save();
   // continue closing the window
   event->accept();

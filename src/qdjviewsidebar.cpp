@@ -1493,10 +1493,10 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   
   QAction *eraseAction = new QAction(tr("Erase text"), this);
   eraseAction->setIcon(QIcon(":/images/icon_erase.png"));
-  QAction *caseSensitiveAction = new QAction(tr("Case sensitive"), this);
+  caseSensitiveAction = new QAction(tr("Case sensitive"), this);
   caseSensitiveAction->setCheckable(true);
   caseSensitiveAction->setChecked(model->caseSensitive);
-  QAction *wordOnlyAction = new QAction(tr("Words only"), this);
+  wordOnlyAction = new QAction(tr("Words only"), this);
   wordOnlyAction->setCheckable(true);
   wordOnlyAction->setChecked(model->wordOnly);
   menu = new QMenu(this);
@@ -1634,6 +1634,7 @@ QDjViewFind::setCaseSensitive(bool b)
 {
   if (b != model->caseSensitive)
     {
+      caseSensitiveAction->setChecked(b);
       model->caseSensitive = b;
       model->textChanged();
     }
@@ -1645,6 +1646,7 @@ QDjViewFind::setWordOnly(bool b)
 {
   if (b != model->wordOnly)
     {
+      wordOnlyAction->setChecked(b);
       model->wordOnly = b;
       model->textChanged();
     }

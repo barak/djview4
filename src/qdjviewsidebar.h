@@ -146,6 +146,8 @@ private:
   QPushButton    *downButton;
   QStackedLayout *stack;
   QLabel         *label;
+  QAction        *caseSensitiveAction;
+  QAction        *wordOnlyAction;
 };
 
 
