@@ -145,19 +145,26 @@ QDjVuContext::handle(ddjvu_message_t *msg)
       if (q && q->handle(msg))
         return true;
     }
+  if (msg->m_any.job)
+    {
+      ddjvu_job_t *djob = 0;
+      ddjvu_job_t *pjob = 0;
+      if (msg->m_any.document)
+        djob = ddjvu_document_job(msg->m_any.document);
+      if (msg->m_any.page)
+        pjob = ddjvu_page_job(msg->m_any.page);
+      if (msg->m_any.job != djob && msg->m_any.job != pjob)
+        {
+          QObject *p = (QObject*)ddjvu_job_get_user_data(msg->m_any.job);
+          QDjVuJob *q = (p) ? qobject_cast<QDjVuJob*>(p) : 0;
+          if (q && q->handle(msg))
+            return true;
+        }
+    }
   if (msg->m_any.document)
     {
       QObject *p = (QObject*)ddjvu_document_get_user_data(msg->m_any.document);
       QDjVuDocument *q = (p) ? qobject_cast<QDjVuDocument*>(p) : 0;
-      if (q && q->handle(msg))
-        return true;
-    }
-  if (msg->m_any.job &&
-      msg->m_any.job != (ddjvu_job_t*)msg->m_any.page &&
-      msg->m_any.job != (ddjvu_job_t*)msg->m_any.document )
-    {
-      QObject *p = (QObject*)ddjvu_job_get_user_data(msg->m_any.job);
-      QDjVuJob *q = (p) ? qobject_cast<QDjVuJob*>(p) : 0;
       if (q && q->handle(msg))
         return true;
     }

@@ -2328,7 +2328,7 @@ QDjView::pageName(int pageno, bool titleonly)
     return QString();
   // generate a name from the page number
   if (hasNumericalPageTitle)
-    return QString("#%1").arg(pageno + 1);
+    return QString("%1").arg(pageno + 1);
   return QString("%1").arg(pageno + 1);
 }
 
@@ -2855,7 +2855,7 @@ QDjView::pointerEnter(const Position&, miniexp_t)
           : tr("Go: %1 page backward.");
       message = message.arg(n);
     }
-  else if (link.startsWith("#="))
+  else if (link.startsWith("#$"))
     message = tr("Go: page %1.").arg(link.mid(2));
   else if (link.startsWith("#"))
     message = tr("Go: page %1.").arg(link.mid(1));
@@ -2908,7 +2908,7 @@ QDjView::pointerClick(const Position &pos, miniexp_t)
           break;
       url.setQueryItems(query);
       url.addQueryItem("djvuopts", "");
-      url.addQueryItem("page", QString("#%1").arg(pageNumber(link)+1));
+      url.addQueryItem("page", QString("#$%1").arg(pageNumber(link)+1));
     }
   else
     {

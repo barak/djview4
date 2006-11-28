@@ -72,7 +72,8 @@ class QDjView : public QMainWindow
 
   QDjView(QDjVuContext &context, 
           ViewerMode mode=STANDALONE, QWidget *parent=0);
-  
+
+  QDjVuContext       &getDjVuContext()      { return djvuContext; }
   QDjVuWidget        *getDjVuWidget()       { return widget; }
   QDjViewErrorDialog *getErrorDialog()      { return errorDialog; }
   QDjVuDocument      *getDocument()         { return document; } 

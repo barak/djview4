@@ -1075,8 +1075,17 @@ QDjViewSaveDialog::hookStart()
                             tr("A file with this name already exists.\n"
                                "Do you want to overwrite it?"),
                             tr("&Overwrite"),
-                            tr("&Cancel") ) )
+                            tr("&Cancel") ))
     return;
+  if (info.exists() &&
+      djview->getDocumentFileName().size() > 0 &&
+      info == QFileInfo(djview->getDocumentFileName()))
+    {
+      QMessageBox::critical(this, tr("Overwriting current file!"),
+                            tr("Overwriting the current file "
+                               "is not allowed!" ) );
+      return;
+    }
 #if QT_VERSION >= 0x40100
   if (d->ui.indirectButton->isChecked() &&
       !dir.entryList(QDir::AllEntries|QDir::NoDotAndDotDot).isEmpty() &&
@@ -1161,6 +1170,8 @@ QDjViewSaveDialog::hookCleanup(int result)
   if (d->output)
     fclose(d->output);
   d->output = 0;
+  if (djview)
+    ddjvu_cache_clear(djview->getDjVuContext());
 }
 
 
