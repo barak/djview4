@@ -2334,11 +2334,13 @@ QDjView::pageName(int pageno, bool titleonly)
 
 
 /*! Return a page number for the page named \a name.
-  Names starting with the "#" character are interpreted
-  using the same rules as hyperlinks. In particular,
-  names of the form \a "#+n" and \a "#-n" express
+  Names of the form the "#+n", "#-n" express
   relative displacement from the current page
-  or the page specified by argument \a from. */
+  or the page specified by argument \a from.
+  Names of the form "#$n" or "$n" express an absolute 
+  page number starting from 1.  Other names
+  are matched against page titles, page numbers,
+  page names, and page ids. */
 
 int
 QDjView::pageNumber(QString name, int from)
@@ -2348,19 +2350,22 @@ QDjView::pageNumber(QString name, int from)
     return -1;
   if (from < 0)
     from = widget->page();
-  // Handle names starting with hash mark
-  if (name.startsWith("#") &&
-      name.contains(QRegExp("^#[-+]?\\d+$")))
+  if (name.startsWith("#") && 
+      name.contains(QRegExp("^#[-+$]\\d+$")))
     {
+      int num = name.mid(2).toInt();
       if (name[1]=='+')
-        return qMin(from + name.mid(2).toInt(), pagenum-1);
+        num = from + 1 + num;
       else if (name[1]=='-')
-        return qMax(from - name.mid(2).toInt(), 0);
-      else
-        return qBound(1, name.mid(1).toInt(), pagenum) - 1;
+        num = from + 1 - num;
+      return qBound(1, num, pagenum) - 1;
     }
-  else if (name.startsWith("#="))
-    name = name.mid(2);
+  else if (name.startsWith("$") &&
+           name.contains(QRegExp("^\\$\\d+$")) )
+    {
+      int num = name.mid(1).toInt();
+      return qBound(1, num, pagenum) - 1;
+    }
   else if (name.startsWith("#"))
     name = name.mid(1);
   // Search exact name starting from current page
