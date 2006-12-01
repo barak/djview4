@@ -2072,7 +2072,7 @@ QDjView::addToErrorDialog(QString message)
 void
 QDjView::raiseErrorDialog(QMessageBox::Icon icon, QString caption)
 {
-  errorDialog->prepare(icon, makeCaption(caption));
+  errorDialog->prepare(icon, caption);
   errorDialog->show();
   errorDialog->raise();
   errorDialog->activateWindow();
@@ -2084,7 +2084,7 @@ QDjView::raiseErrorDialog(QMessageBox::Icon icon, QString caption)
 int
 QDjView::execErrorDialog(QMessageBox::Icon icon, QString caption)
 {
-  errorDialog->prepare(icon, makeCaption(caption));
+  errorDialog->prepare(icon, caption);
   return errorDialog->exec();
 }
 
@@ -2222,7 +2222,7 @@ QDjView::print()
     {
       printDialog = pd = new QDjViewPrintDialog(this);
       pd->setAttribute(Qt::WA_DeleteOnClose);
-      pd->setWindowTitle(makeCaption(tr("Print","dialog caption")));
+      pd->setWindowTitle(tr("Print - DjView", "dialog caption"));
     }
   pd->show();
   pd->raise();
@@ -2239,7 +2239,7 @@ QDjView::save()
     {
       saveDialog = sd = new QDjViewSaveDialog(this);
       sd->setAttribute(Qt::WA_DeleteOnClose);
-      sd->setWindowTitle(makeCaption(tr("Save","dialog caption")));
+      sd->setWindowTitle(tr("Save - DjView", "dialog caption"));
     }
   sd->show();
   sd->raise();
@@ -2438,19 +2438,6 @@ QDjView::copyWindow(void)
 }
 
 
-/*! Compute a suitable caption for the titles
-  of ancillary windows. */
-
-QString 
-QDjView::makeCaption(QString caption)
-{
-  QString f = getShortFileName();
-  if (! caption.isEmpty() && ! f.isEmpty())
-    caption = caption + " - " + f;
-  return caption;
-}
-
-
 /*! Save \a text info the specified file.
   When argument \a filename is omitted, 
   a file dialog is presented to the user. */
@@ -2459,11 +2446,12 @@ bool
 QDjView::saveTextFile(QString text, QString filename)
 {
   // obtain filename
-  QString caption = makeCaption(tr("Save text", "dialog caption"));
   if (filename.isEmpty())
     {
-      QString filters = tr("Text files")+" (*.txt);;" 
-                      + tr("All files") + " (*)";
+      QString filters;
+      filters += tr("Text files", "save filter")+" (*.txt);;";
+      filters += tr("All files", "save filter") + " (*)";
+      QString caption = tr("Save Text - DjView", "dialog caption");
       filename = QFileDialog::getSaveFileName(this, caption, "", filters);
       if (filename.isEmpty())
         return false;
@@ -2476,7 +2464,8 @@ QDjView::saveTextFile(QString text, QString filename)
       QString message = file.errorString();
       if (file.error() == QFile::OpenError && errno > 0)
         message = strerror(errno);
-      QMessageBox::critical(this, caption,
+      QMessageBox::critical(this, 
+                            tr("Error - DjView", "dialog caption"),
                             tr("Cannot write file '%1'.\n%2.")
                             .arg(QFileInfo(filename).fileName())
                             .arg(message) );
@@ -2498,14 +2487,15 @@ bool
 QDjView::saveImageFile(QImage image, QString filename)
 {
   // obtain filename with suitable suffix
-  QString caption = makeCaption(tr("Save image", "dialog caption"));
   if (filename.isEmpty())
     {
       QStringList patterns;
       foreach(QByteArray format, QImageWriter::supportedImageFormats())
         patterns << "*." + QString(format).toLower();
-      QString filters = tr("All supported files") + " (%1);;"
-                      + tr("All files") + " (*)";
+      QString filters;
+      filters += tr("All supported files", "save filter") + " (%1);;";
+      filters += tr("All files", "save filter") + " (*)";
+      QString caption = tr("Save Image - DjView", "dialog caption");
       filters = filters.arg(patterns.join(" "));
       filename = QFileDialog::getSaveFileName(this, caption, "", filters);
       if (filename.isEmpty())
@@ -2515,7 +2505,8 @@ QDjView::saveImageFile(QImage image, QString filename)
   QString suffix = QFileInfo(filename).suffix();
   if (suffix.isEmpty())
     {
-      QMessageBox::critical(this, caption,
+      QMessageBox::critical(this, 
+                            tr("Error - DjView", "dialog caption"),
                             tr("Cannot determine file format.\n"
                                "Filename '%1' has no suffix.")
                             .arg(QFileInfo(filename).fileName()) );
@@ -2532,7 +2523,8 @@ QDjView::saveImageFile(QImage image, QString filename)
         message = tr("Image format %1 not supported.").arg(suffix.toUpper());
       else if (file.error() == QFile::OpenError && errno > 0)
         message = strerror(errno);
-      QMessageBox::critical(this, caption,
+      QMessageBox::critical(this,
+                            tr("Error - DjView", "dialog caption"),
                             tr("Cannot write file '%1'.\n%2.")
                             .arg(QFileInfo(filename).fileName())
                             .arg(message) );
@@ -3126,7 +3118,7 @@ QDjView::performInformation(void)
     return;
   if (! infoDialog)
     infoDialog = new QDjViewInfoDialog(this);
-  infoDialog->setWindowTitle(makeCaption(tr("DjView Information")));
+  infoDialog->setWindowTitle(tr("Information - DjView", "dialog caption"));
   infoDialog->setPage(widget->page());
   infoDialog->refresh();
   infoDialog->raise();
@@ -3141,7 +3133,7 @@ QDjView::performMetadata(void)
     return;
   if (! metaDialog)
     metaDialog = new QDjViewMetaDialog(this);
-  metaDialog->setWindowTitle(makeCaption(tr("DjView Metadata")));
+  metaDialog->setWindowTitle(tr("Metadata - DjView", "dialog caption"));
   metaDialog->setPage(widget->page());
   metaDialog->refresh();
   metaDialog->raise();

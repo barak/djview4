@@ -125,8 +125,9 @@ QDjViewErrorDialog::prepare(QMessageBox::Icon icon, QString caption)
 {
   if (icon != QMessageBox::NoIcon)
     d->ui.iconLabel->setPixmap(QMessageBox::standardIcon(icon));
-  if (!caption.isEmpty())
-    setWindowTitle(caption);
+  if (caption.isEmpty())
+    caption = tr("Error - DjView", "dialog caption");
+  setWindowTitle(caption);
 }
 
 void 
@@ -820,7 +821,6 @@ QDjViewJobDialog::QDjViewJobDialog(QDjView *djview)
     document(0), 
     job(0),
     errorDialog(0),
-    errorCaption(tr("Running job...")),
     status(DDJVU_JOB_NOTSTARTED)
 {
   QTimer::singleShot(0, this, SLOT(refresh()));
@@ -932,8 +932,7 @@ QDjViewJobDialog::error(QString message, QString filename, int lineno)
   if (! errorDialog)
     {
       errorDialog = new QDjViewErrorDialog(this);
-      QString caption = djview->makeCaption(errorCaption);
-      errorDialog->prepare(QMessageBox::Critical, caption);
+      errorDialog->prepare(QMessageBox::Critical, errorCaption);
       connect(errorDialog, SIGNAL(closing()), this, SLOT(reject()));
 #if QT_VERSION >= 0x040100
       errorDialog->setWindowModality(Qt::WindowModal);
@@ -983,7 +982,7 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *parent)
 {
   d->output = 0;
   d->ui.setupUi(this);
-  errorCaption = tr("Saving DjVu file");
+  errorCaption = tr("Save Error - DjView", "dialog caption");
   connect(d->ui.browseButton, SIGNAL(clicked()), this, SLOT(browse()));
   connect(d->ui.cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
   connect(d->ui.saveButton, SIGNAL(clicked()), this, SLOT(start()));
@@ -1052,10 +1051,13 @@ QDjViewSaveDialog::hookRefresh()
 void 
 QDjViewSaveDialog::browse()
 {
-  QString caption = djview->makeCaption(tr("Save", "dialog caption"));
   QString fname = d->ui.fileNameEdit->text();
-  QString filters = "DjVu files (*.djvu *.djv);;All files (*)";
-  fname = QFileDialog::getSaveFileName(this, caption, fname, filters, 0,
+  QString filters;
+  filters += tr("DjVu files", "save filter")+" (*.djvu *.djv);;";
+  filters += tr("All files", "save filter") + " (*)";
+  fname = QFileDialog::getSaveFileName(this, 
+                                       tr("Save - DjView", "dialog caption"),
+                                       fname, filters, 0,
                                        QFileDialog::DontConfirmOverwrite);
   if (fname.section("/",-1).lastIndexOf(".") < 0)
     fname += ".djvu";
@@ -1071,7 +1073,8 @@ QDjViewSaveDialog::hookStart()
   QDir dir = info.dir();
   status = DDJVU_JOB_NOTSTARTED;
   if (info.exists() &&
-      QMessageBox::question(this, tr("Overwrite file?"),
+      QMessageBox::question(this, 
+                            tr("Question - DjView", "dialog caption"),
                             tr("A file with this name already exists.\n"
                                "Do you want to overwrite it?"),
                             tr("&Overwrite"),
@@ -1081,7 +1084,8 @@ QDjViewSaveDialog::hookStart()
       djview->getDocumentFileName().size() > 0 &&
       info == QFileInfo(djview->getDocumentFileName()))
     {
-      QMessageBox::critical(this, tr("Overwriting current file!"),
+      QMessageBox::critical(this, 
+                            tr("Error - DjView", "dialog caption"),
                             tr("Overwriting the current file "
                                "is not allowed!" ) );
       return;
@@ -1089,7 +1093,8 @@ QDjViewSaveDialog::hookStart()
 #if QT_VERSION >= 0x40100
   if (d->ui.indirectButton->isChecked() &&
       !dir.entryList(QDir::AllEntries|QDir::NoDotAndDotDot).isEmpty() &&
-      QMessageBox::question(this, tr("Directory is not empty"),
+      QMessageBox::question(this,
+                            tr("Question - DjView", "dialog caption"),
                             tr("<html> This file belongs to a non empty "
                                "directory. Saving an indirect document "
                                "creates many files in this directory. "
@@ -1559,7 +1564,7 @@ QDjViewPrintDialog::error(QString message, QString filename, int lineno)
   if (! d->errdialog)
     {
       d->errdialog = new QDjViewErrorDialog(this);
-      QString caption = d->djview->makeCaption(tr("Printing DjVu file"));
+      QString caption = tr("Print Error - DjView", "dialog caption");
       d->errdialog->prepare(QMessageBox::Critical, caption);
       connect(d->errdialog, SIGNAL(closing()), this, SLOT(reject()));
 #if QT_VERSION >= 0x040100

@@ -89,7 +89,6 @@ class QDjView : public QMainWindow
   int         pageNum(void);
   QString     pageName(int pageno, bool titleonly=false);
   int         pageNumber(QString name, int from = -1);
-  QString     makeCaption(QString);
   QDjView    *copyWindow(void);
   bool        saveTextFile(QString text, QString filename=QString());
   bool        saveImageFile(QImage image, QString filename=QString());
