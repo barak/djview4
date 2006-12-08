@@ -822,16 +822,19 @@ QDjViewMetaDialog::copy()
 // =======================================
 
 
+
 class QDjViewExporter : public QObject
 {
   Q_OBJECT
 public:
-  QDjViewExporter(QObject *parent, QDjVuDocument *document);
-  virtual void run() = 0;
+  QDjViewExporter(QObject *parent, QDjView *djview);
+  virtual void run(QWidget *widget) = 0;
+  virtual void stop();
   virtual ddjvu_status_t status();
-  virtual void execDialog(QWidget *parent);
+  virtual void execDialog(QWidget *widget);
   virtual bool canExportOnePage()           { return true; }
   virtual bool canExportPageRange()         { return true; }
+  virtual bool canExecDialog()              { return false; }
   virtual void setFileName(QString s)       { fileName = s; }
   virtual void setPrinterName(QString s)    { printerName = s; }
   virtual void setPages(int f, int t)       { fromPage = f; toPage = t; }
@@ -840,7 +843,7 @@ signals:
   void error(QString, QString, int);
   void info(QString);
 protected:
-  QDjVuDocument *document;
+  QDjView *djview;
   QString fileName;
   QString printerName;
   int fromPage;
@@ -848,16 +851,22 @@ protected:
 };
 
 
-QDjViewExporter::QDjViewExporter(QObject *parent, QDjVuDocument *document)
+QDjViewExporter::QDjViewExporter(QObject *parent, QDjView *djview)
   : QObject(parent),
-    document(document),
+    djview(djview),
     fromPage(0),
-    toPage(0)
+    toPage(-1)
 {
 }
 
 void 
 QDjViewExporter::execDialog(QWidget*)
+{
+}
+
+
+void
+QDjViewExporter::stop()
 {
 }
 
@@ -868,6 +877,153 @@ QDjViewExporter::status()
   return DDJVU_JOB_NOTSTARTED;
 }
 
+
+
+// -------------------
+// QDJVIEWDJVUEXPORTER
+
+
+class QDjViewDjVuExporter : public QDjViewExporter
+{
+  Q_OBJECT
+public:
+  QDjViewDjVuExporter(QWidget *parent, QDjView *djview, bool indirect);
+  virtual void run(QWidget *widget);
+  virtual void stop();
+  virtual ddjvu_status_t status();
+protected:
+  QDjVuJob *job;
+  FILE *output;
+  bool indirect;
+  bool failed;
+};
+
+
+QDjViewDjVuExporter::QDjViewDjVuExporter(QWidget *parent, 
+                                         QDjView *djview, 
+                                         bool indirect)
+  : QDjViewExporter(parent, djview),
+    job(0), 
+    output(0),
+    indirect(indirect), 
+    failed(false)
+{
+}
+
+
+void 
+QDjViewDjVuExporter::run(QWidget *widget)
+{
+  QFileInfo info(fileName);
+  QDir dir = info.dir();
+  if (info.exists() &&
+      QMessageBox::question(widget, 
+                            tr("Question - DjView", "dialog caption"),
+                            tr("A file with this name already exists.\n"
+                               "Do you want to overwrite it?"),
+                            tr("&Overwrite"),
+                            tr("&Cancel") ))
+    return;
+  if (info.exists() &&
+      djview->getDocumentFileName().size() > 0 &&
+      info == QFileInfo(djview->getDocumentFileName()))
+    {
+      QMessageBox::critical(widget, 
+                            tr("Error - DjView", "dialog caption"),
+                            tr("Overwriting the current file "
+                               "is not allowed!" ) );
+      return;
+    }
+#if QT_VERSION >= 0x40100
+  if (indirect &&
+      ! dir.entryList(QDir::AllEntries|QDir::NoDotAndDotDot).isEmpty() &&
+      QMessageBox::question(widget,
+                            tr("Question - DjView", "dialog caption"),
+                            tr("<html> This file belongs to a non empty "
+                               "directory. Saving an indirect document "
+                               "creates many files in this directory. "
+                               "Do you want to continue and risk overwriting "
+                               "the contents of this directory? </html>"),
+                            tr("Con&tinue"),
+                            tr("&Cancel") ) )
+    return;
+#endif
+  QDjVuDocument *document = djview->getDocument();
+  int pagenum = djview->pageNum();
+  if (document==0 || pagenum <= 0)
+    return;
+
+  if (toPage <= 0)
+    toPage += pagenum;
+  if (fromPage <= 0)
+    fromPage += pagenum;
+  toPage = qBound(0, toPage, pagenum-1);
+  fromPage = qBound(0, fromPage, pagenum-1);
+  QByteArray pagespec;
+  if (fromPage == toPage)
+    pagespec = QString("--pages=%1")
+      .arg(fromPage+1).toLocal8Bit();
+  else if (qMin(fromPage, toPage)>0 || qMax(fromPage, toPage)<pagenum-1)
+    pagespec = QString("--pages=%1-%2")
+      .arg(fromPage+1).arg(toPage+1).toLocal8Bit();
+
+  QByteArray namespec;
+  if (indirect)
+    namespec = "--indirect=" + QFile::encodeName(fileName);
+
+  int argc = 0;
+  const char *argv[2];
+  if (! namespec.isEmpty())
+    argv[argc++] = namespec.data();
+  if (! pagespec.isEmpty())
+    argv[argc++] = pagespec.data();
+  
+  QByteArray fname = QFile::encodeName(fileName);
+  ::remove(fname.data());
+  output = ::fopen(fname.data(), "w");
+  if (! output)
+    {
+      failed = true;
+      QString message = tr("System error: %1").arg(strerror(errno));
+      emit error(message, __FILE__, __LINE__);
+      return;
+    }
+  ddjvu_job_t *pjob;
+  pjob = ddjvu_document_save(*document, output, argc, argv);
+  if (! pjob)
+    {
+      failed = true;
+      QString message = tr("Save job creation failed!");
+      emit error(message, __FILE__, __LINE__);
+      return;
+    }
+  job = new QDjVuJob(pjob, this);
+  connect(job, SIGNAL(error(QString,QString,int)),
+          this, SIGNAL(error(QString,QString,int)) );
+  connect(job, SIGNAL(progress(int)),
+          this, SIGNAL(progress(int)) );
+  emit progress(0);
+}
+
+
+void 
+QDjViewDjVuExporter::stop()
+{
+  if (job && status() == DDJVU_JOB_STARTED)
+    ddjvu_job_stop(*job);
+}
+
+
+ddjvu_status_t 
+QDjViewDjVuExporter::status()
+{
+  if (job)
+    return ddjvu_job_status(*job);
+  else if (failed)
+    return DDJVU_JOB_FAILED;
+  else
+    return DDJVU_JOB_NOTSTARTED;
+}
 
 
 
