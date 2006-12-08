@@ -53,6 +53,7 @@
 #include <libdjvu/ddjvuapi.h>
 
 #include "qdjview.h"
+#include "qdjviewprefs.h"
 #include "qdjviewdialogs.h"
 #include "qdjvuwidget.h"
 #include "qdjvu.h"
@@ -152,7 +153,6 @@ struct QDjViewInfoDialog::Private {
   Ui::QDjViewInfoDialog ui;
   QDjView *djview;
   QDjVuDocument *document;
-  QDjVuPage *page;
   QList<ddjvu_fileinfo_t> files;
   int fileno;
   int pageno;
@@ -162,7 +162,6 @@ struct QDjViewInfoDialog::Private {
 
 QDjViewInfoDialog::~QDjViewInfoDialog()
 {
-  delete d->page;
   delete d;
 }
 
@@ -172,12 +171,15 @@ QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
 {
   d->djview = parent;
   d->document = 0;
-  d->page = 0;
   d->fileno = 0;
   d->pageno = -1;
   d->done = false;
-  
   d->ui.setupUi(this);
+
+  QDjViewPrefs *prefs = QDjViewPrefs::instance();
+  int index = prefs->infoDialogTab;
+  if (index >= 0 && index < d->ui.tabWidget->count())
+    d->ui.tabWidget->setCurrentIndex(index);
   
   QFont font = d->ui.fileText->font();
   font.setFixedPitch(true);
@@ -338,8 +340,6 @@ QDjViewInfoDialog::setFile(int fileno)
           fileno < d->files.size() &&
           fileno != d->fileno )
         {
-          delete d->page;
-          d->page = 0;
           d->fileno = fileno;
           d->pageno = d->files[fileno].pageno;
           d->done = false;
@@ -386,11 +386,10 @@ QDjViewInfoDialog::clear()
   hide();
   if (d->document)
     disconnect(d->document, 0, this, 0);
-  if (d->page)
-    delete d->page;
   d->files.clear();
   d->document = 0;
-  d->page = 0;
+  QDjViewPrefs *prefs = QDjViewPrefs::instance();
+  prefs->infoDialogTab = d->ui.tabWidget->currentIndex();
 }
 
 void 
@@ -565,6 +564,13 @@ QDjViewMetaDialog::QDjViewMetaDialog(QDjView *parent)
   d->docAnno = miniexp_dummy;
   d->pageAnno = miniexp_dummy;
   d->ui.setupUi(this);
+  
+  // get preferences
+  QDjViewPrefs *prefs = QDjViewPrefs::instance();
+  int index = prefs->metaDialogTab;
+  if (index >= 0 && index < d->ui.tabWidget->count())
+    d->ui.tabWidget->setCurrentIndex(index);
+
   // make ctrl+c work
   new QShortcut(QKeySequence(tr("Ctrl+C","copy")), this, SLOT(copy()));
   // tweaks
@@ -783,6 +789,8 @@ void
 QDjViewMetaDialog::clear()
 {
   hide();
+  if (d->document)
+    disconnect(d->document, 0, this, 0);
   d->document = 0;
   d->pageno = 0;
   d->docAnno = miniexp_dummy;
@@ -792,6 +800,8 @@ QDjViewMetaDialog::clear()
   d->ui.docTable->setRowCount(0);
   d->ui.pageTable->setRowCount(0);
   d->ui.jumpButton->setEnabled(false);
+  QDjViewPrefs *prefs = QDjViewPrefs::instance();
+  prefs->infoDialogTab = d->ui.tabWidget->currentIndex();
 }
 
 void 
@@ -803,6 +813,59 @@ QDjViewMetaDialog::copy()
   QList<QTableWidgetItem*> selected = table->selectedItems();
   if (selected.size() == 1)
     QApplication::clipboard()->setText(selected[0]->text());
+}
+
+
+
+// =======================================
+// QDJVIEWEXPORTER
+// =======================================
+
+
+class QDjViewExporter : public QObject
+{
+  Q_OBJECT
+public:
+  QDjViewExporter(QObject *parent, QDjVuDocument *document);
+  virtual void run() = 0;
+  virtual ddjvu_status_t status();
+  virtual void execDialog(QWidget *parent);
+  virtual bool canExportOnePage()           { return true; }
+  virtual bool canExportPageRange()         { return true; }
+  virtual void setFileName(QString s)       { fileName = s; }
+  virtual void setPrinterName(QString s)    { printerName = s; }
+  virtual void setPages(int f, int t)       { fromPage = f; toPage = t; }
+signals:
+  void progress(int i);
+  void error(QString, QString, int);
+  void info(QString);
+protected:
+  QDjVuDocument *document;
+  QString fileName;
+  QString printerName;
+  int fromPage;
+  int toPage;
+};
+
+
+QDjViewExporter::QDjViewExporter(QObject *parent, QDjVuDocument *document)
+  : QObject(parent),
+    document(document),
+    fromPage(0),
+    toPage(0)
+{
+}
+
+void 
+QDjViewExporter::execDialog(QWidget*)
+{
+}
+
+
+ddjvu_status_t 
+QDjViewExporter::status()
+{
+  return DDJVU_JOB_NOTSTARTED;
 }
 
 
@@ -1603,6 +1666,17 @@ QDjViewPrintDialog::done(int result)
   d->output = 0;
   QDialog::done(result);
 }
+
+
+
+
+
+
+// ----------------------------------------
+// MOC
+
+#include "qdjviewdialogs.moc"
+
 
 
 

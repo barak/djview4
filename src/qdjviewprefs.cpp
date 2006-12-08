@@ -81,10 +81,11 @@ QDjViewPrefs::defaultOptions
 
 static QPointer<QDjViewPrefs> preferences;
 
-/*! Create the single preference object. */
+
+/*! Returns the single preference object. */
 
 QDjViewPrefs *
-QDjViewPrefs::create(void)
+QDjViewPrefs::instance(void)
 {
   QMutex mutex;
   QMutexLocker locker(&mutex);
@@ -122,20 +123,9 @@ QDjViewPrefs::QDjViewPrefs(void)
     thumbnailSmart(true),
     searchWordsOnly(true),
     searchCaseSensitive(false),
-    printerGamma(0.0),
-    printFitPage(true),
-    printZoom(100),
-    printColor(true),
-    printFrame(false),
-    printCropMarks(false),
-    printAutoOrient(true),
-    printPortrait(false),
-    printLevel(2),
-    bookletMode(false),
-    bookletMax(0),
-    bookletAlign(0),
-    bookletFold(18),
-    bookletXFold(400)
+    infoDialogTab(0),
+    metaDialogTab(0),
+    printerGamma(0.0)
 {
   Options mss = (SHOW_MENUBAR|SHOW_STATUSBAR|SHOW_SIDEBAR);
   forFullScreen.options &= ~(mss|SHOW_SCROLLBARS|SHOW_TOOLBAR|SHOW_SIDEBAR);
@@ -326,39 +316,17 @@ QDjViewPrefs::load(void)
     searchWordsOnly = s.value("searchWordsOnly").toBool();
   if (s.contains("searchCaseSensitive"))
     searchCaseSensitive = s.value("searchCaseSensitive").toBool();
-
+  
+  if (s.contains("infoDialogTab"))
+    infoDialogTab = s.value("infoDialogTab").toInt();
+  if (s.contains("metaDialogTab"))
+    metaDialogTab = s.value("metaDialogTab").toInt();
   if (s.contains("printerGamma"))
     printerGamma = s.value("printerGamma").toDouble();
   if (s.contains("printerName"))
     printerName = s.value("printerName").toString();
   if (s.contains("printFile"))
     printFile = s.value("printFile").toString();
-  if (s.contains("printFitPage"))
-    printFitPage = s.value("printFitPage").toBool();
-  if (s.contains("printZoom"))
-    printZoom = s.value("printZoom").toInt();
-  if (s.contains("printColor"))
-    printColor = s.value("printColor").toBool();
-  if (s.contains("printFrame"))
-    printFrame = s.value("printFrame").toBool();
-  if (s.contains("printCropMarks"))
-    printCropMarks = s.value("printCropMarks").toBool();
-  if (s.contains("printAutoOrient"))
-    printAutoOrient = s.value("printAutoOrient").toBool();
-  if (s.contains("printPortrait"))
-    printPortrait = s.value("printPortrait").toBool();
-  if (s.contains("printLevel"))
-    printLevel = s.value("printLevel").toInt();
-  if (s.contains("bookletMode"))
-    bookletMode = s.value("bookletMode").toBool();
-  if (s.contains("bookletMax"))
-    bookletMax = s.value("bookletMax").toInt();
-  if (s.contains("bookletAlign"))
-    bookletAlign = s.value("bookletAlign").toInt();
-  if (s.contains("bookletFold"))
-    bookletFold = s.value("bookletFold").toInt();
-  if (s.contains("bookletXFold"))
-    bookletXFold = s.value("bookletXFold").toInt();
 }
 
 
@@ -406,23 +374,12 @@ QDjViewPrefs::save(void)
 
   s.setValue("searchWordsOnly", searchWordsOnly);
   s.setValue("searchCaseSensitive", searchCaseSensitive);
-
+  
+  s.setValue("infoDialogTab", infoDialogTab);
+  s.setValue("metaDialogTab", metaDialogTab);
   s.setValue("printerGamma", printerGamma);
   s.setValue("printerName", printerName);
   s.setValue("printFile", printFile);
-  s.setValue("printFitPage", printFitPage);
-  s.setValue("printZoom", printZoom);
-  s.setValue("printColor", printColor);
-  s.setValue("printFrame", printFrame);
-  s.setValue("printCropMarks", printCropMarks);
-  s.setValue("printAutoOrient", printAutoOrient);
-  s.setValue("printPortrait", printPortrait);
-  s.setValue("printLevel", printLevel);
-  s.setValue("bookletMode", bookletMode);
-  s.setValue("bookletMax", bookletMax);
-  s.setValue("bookletAlign", bookletAlign);
-  s.setValue("bookletFold", bookletFold);
-  s.setValue("bookletXFold", bookletXFold);
 }
 
 

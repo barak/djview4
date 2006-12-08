@@ -129,34 +129,21 @@ public:
   Qt::KeyboardModifiers modifiersForSelect; //!< Keys for selecting.
   Qt::KeyboardModifiers modifiersForLinks;  //!< Keys for showing the links.
   
-  // Thumbnail preferences
+  // Sidebar preferences
   int        thumbnailSize;
   bool       thumbnailSmart;
-
-  // Search preferences
   bool       searchWordsOnly;
   bool       searchCaseSensitive;
 
-  // Print/export preferences
+  // Dialog preferences
+  int        infoDialogTab;     //!< Active tab in info dialog.
+  int        metaDialogTab;     //!< Active tab in meta dialog.
   double     printerGamma;      //!< Gamma value for the printer.
   QString    printerName;       //!< Name of the printer
   QString    printFile;         //!< Output file for print data
-  bool       printFitPage;      //!< Scale image to page size
-  int        printZoom;         //!< Zoom factor
-  bool       printColor;        //!< Print in color when available
-  bool       printFrame;        //!< Print a frame around the page
-  bool       printCropMarks;    //!< Print crop marks
-  bool       printAutoOrient;   //!< Autoselect portrait or landscape 
-  bool       printPortrait;     //!< Portrait (vs landscape)
-  int        printLevel;        //!< Postscript language level
-  bool       bookletMode;       //!< Booklet mode enabled
-  int        bookletMax;        //!< Max sheets per booklet
-  int        bookletAlign;      //!< Recto/verso shift
-  int        bookletFold;       //!< Center margin size (points)
-  int        bookletXFold;      //!< Center margin increase (points*1000)
   
 public:
-  static QDjViewPrefs *create(void);
+  static QDjViewPrefs *instance(void);
   void load(void);
   void save(void);
 

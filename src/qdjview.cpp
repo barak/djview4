@@ -1727,7 +1727,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 
   // Basic preferences
 
-  prefs = QDjViewPrefs::create();
+  prefs = QDjViewPrefs::instance();
   options = QDjViewPrefs::defaultOptions;
   tools = prefs->tools;
   toolsCached = 0;
