@@ -1059,7 +1059,7 @@ QDjViewDjVuExporter::status()
 
 
 // --------------------
-// QDJVIEWPRINTEREXPORTER
+// QDJVIEWPRNEXPORTER
 
 
 
@@ -1069,7 +1069,7 @@ QDjViewDjVuExporter::status()
 
 
 // -------------------
-// QDJVIEWPNMEXPORTER
+// QDJVIEWIMGEXPORTER
 
 
 
@@ -1144,9 +1144,9 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *djview)
               tr("DjVu file (*.djvu *.djv)"), ".djvu",
               new QDjViewDjVuExporter(this, d->djview, false));
 
-  addExporter(tr("DjVu Indirect Document"),
-              tr("DjVu file (*.djvu *.djv)"), ".djvu",
-              new QDjViewDjVuExporter(this, d->djview, true));
+  // addExporter(tr("DjVu Indirect Document"),
+  //             tr("DjVu file (*.djvu *.djv)"), ".djvu",
+  //             new QDjViewDjVuExporter(this, d->djview, true));
 
   refresh();
 }
