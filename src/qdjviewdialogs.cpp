@@ -1177,6 +1177,7 @@ QDjViewSaveDialog::refresh()
   bool nofmt = true;
   bool noopt = true;
   bool nopag = true;
+  d->exporterIndex = d->ui.formatCombo->currentIndex();
   QDjViewExporter *exporter = currentExporter();
   if (exporter)
     {
