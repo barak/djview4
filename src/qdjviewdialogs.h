@@ -30,9 +30,16 @@
 #include <libdjvu/ddjvuapi.h>
 
 class QCloseEvent;
+class QComboBox;
 class QDjView;
+class QDjViewExporter;
 class QDjVuDocument;
 class QDjVuJob;
+class QProgressBar;
+class QPushButton;
+class QRadioButton;
+
+
 
 
 
@@ -116,60 +123,29 @@ private:
 
 
 
-// ----------- QDJVIEWJOBDIALOG
-
-
-class QDjViewJobDialog : public QDialog
-{
-  Q_OBJECT
-public:
-  QDjViewJobDialog(QDjView *djview);
-protected slots:
-  void start();
-  void stop();
-  void refresh();
-  void progress(int);
-  void done(int);
-  void error(QString message, QString filename, int lineno);
-protected:
-  virtual void closeEvent(QCloseEvent *event);
-  virtual void hookStart() = 0;
-  virtual void hookStop();
-  virtual void hookDocument();
-  virtual void hookRefresh();
-  virtual void hookProgress(int);
-  virtual void hookCleanup(int);
-  QDjView            *djview;
-  QDjVuDocument      *document;
-  QDjVuJob           *job;
-  QDjViewErrorDialog *errorDialog;
-  QString             errorCaption;
-  ddjvu_status_t      status;
-
-};
-
-
-
 
 // ----------- QDJVIEWSAVEDIALOG
 
 
-class QDjViewSaveDialog : public QDjViewJobDialog
+class QDjViewSaveDialog : public QDialog
 {
   Q_OBJECT
 public:
-  ~QDjViewSaveDialog();
   QDjViewSaveDialog(QDjView *djview);
 protected slots:
+  void refresh();
+  void clear();
+  void start();
+  void progress(int);
+  void stop();
   void browse();
+  void properties();
+  virtual void done(int);
 protected:
-  virtual void hookStart();
-  virtual void hookStop();
-  virtual void hookDocument();
-  virtual void hookRefresh();
-  virtual void hookProgress(int);
-  virtual void hookCleanup(int);
-private:
+  virtual void closeEvent(QCloseEvent *event);
+  QDjViewExporter *currentExporter();
+  int addExporter(QString name, QString filter, QString extension, 
+                  QDjViewExporter *exporter);
   struct Private;
   Private *d;
 };
