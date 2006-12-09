@@ -101,32 +101,31 @@ QDjVuContext::callback(ddjvu_context_t *, void *closure)
   QDjVuContext *qcontext = (QDjVuContext*)closure;
   if (! qcontext->flag)
     {
+      qcontext->flag = true;
       QCoreApplication *qApp = QCoreApplication::instance();
       QEvent *qevent = new QEvent(QEvent::User);
       qApp->postEvent(qcontext, qevent);
-      qcontext->flag = true;
     }
 }
+
 
 bool
 QDjVuContext::event(QEvent *event)
 {
   if (event->type() == QEvent::User)
     {
+      flag = false;
       ddjvu_message_t *message;
       while ((message = ddjvu_message_peek(context)))
         {
-          while ((message = ddjvu_message_peek(context)))
-            {
-              handle(message);
-              ddjvu_message_pop(context);
-            }
-          flag = false;
+          handle(message);
+          ddjvu_message_pop(context);
         }
       return true;
     }
   return QObject::event(event);
 }
+
 
 /*! Processes DDJVUAPI messages.
     The Qt message loop automatically passes all DDJVUAPI messages 

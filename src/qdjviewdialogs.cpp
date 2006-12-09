@@ -827,7 +827,6 @@ class QDjViewExporter : public QObject
 {
   Q_OBJECT
 public:
-  ~QDjViewExporter();
   QDjViewExporter(QDialog *parent, QDjView *djview);
   virtual bool canExportOnePage()         { return true; }
   virtual bool canExportPageRange()       { return true; }
@@ -854,15 +853,6 @@ protected:
   int                 fromPage;
   int                 toPage;
 };
-
-
-QDjViewExporter::~QDjViewExporter()
-{
-  ddjvu_status_t s = status();
-  if (! fileName.isEmpty())
-    if (s != DDJVU_JOB_NOTSTARTED && s != DDJVU_JOB_OK)
-      ::remove(QFile::encodeName(fileName).data());
-}
 
 
 QDjViewExporter::QDjViewExporter(QDialog *parent, QDjView *djview)
@@ -950,13 +940,23 @@ QDjViewDjVuExporter::QDjViewDjVuExporter(QDialog *parent, QDjView *djview,
 
 QDjViewDjVuExporter::~QDjViewDjVuExporter()
 {
-  if (job && status()== DDJVU_JOB_STARTED)
-    ddjvu_job_stop(*job);
-  if (djview)
-    ddjvu_cache_clear(djview->getDjVuContext());
   if (output)
     ::fclose(output);
   output = 0;
+  if (djview)
+    ddjvu_cache_clear(djview->getDjVuContext());
+  switch(status())
+    {
+    case DDJVU_JOB_STARTED:
+      if (job)
+        ddjvu_job_stop(*job);
+    case DDJVU_JOB_FAILED:
+    case DDJVU_JOB_STOPPED:
+      if (! fileName.isEmpty())
+        ::remove(QFile::encodeName(fileName).data());
+    default:
+      break;
+    }
 }
  
 
@@ -1106,6 +1106,7 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *djview)
 
   d->djview = djview;
   d->document = 0;
+  d->stopping = false;
   d->exporterIndex = 0;
 
   d->ui.setupUi(this);
