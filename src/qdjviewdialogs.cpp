@@ -967,31 +967,10 @@ QDjViewDjVuExporter::run()
   int pagenum = djview->pageNum();
   if (document==0 || pagenum <= 0 || fileName.isEmpty())
     return;
-
-  QFileInfo info(fileName);
-  if (info.exists() &&
-      QMessageBox::question(parent, 
-                            tr("Question - DjView", "dialog caption"),
-                            tr("A file with this name already exists.\n"
-                               "Do you want to replace it?"),
-                            tr("&Overwrite"),
-                            tr("&Cancel") ))
-    return;
-  if (info.exists() &&
-      djview->getDocumentFileName().size() > 0 &&
-      info == QFileInfo(djview->getDocumentFileName()))
-    {
-      QMessageBox::critical(parent, 
-                            tr("Error - DjView", "dialog caption"),
-                            tr("Overwriting the current file "
-                               "is not allowed!" ) );
-      return;
-    }
 #if QT_VERSION >= 0x40100
-  QDir dir = info.dir();
-  if (indirect &&
-      ! info.dir().entryList(QDir::AllEntries|QDir::NoDotAndDotDot).isEmpty()
-      &&
+  QFileInfo info(fileName);
+  QDir::Filters filters = QDir::AllEntries|QDir::NoDotAndDotDot;
+  if (indirect && !info.dir().entryList(filters).isEmpty() &&
       QMessageBox::question(parent,
                             tr("Question - DjView", "dialog caption"),
                             tr("<html> This file belongs to a non empty "
@@ -1003,11 +982,6 @@ QDjViewDjVuExporter::run()
                             tr("&Cancel") ) )
     return;
 #endif
-
-  if (toPage <= 0)
-    toPage += pagenum;
-  if (fromPage <= 0)
-    fromPage += pagenum;
   toPage = qBound(0, toPage, pagenum-1);
   fromPage = qBound(0, fromPage, pagenum-1);
   QByteArray pagespec;
@@ -1017,7 +991,7 @@ QDjViewDjVuExporter::run()
   else if (qMin(fromPage, toPage)>0 || qMax(fromPage, toPage)<pagenum-1)
     pagespec = QString("--pages=%1-%2")
       .arg(fromPage+1).arg(toPage+1).toLocal8Bit();
-
+  
   QByteArray namespec;
   if (indirect)
     namespec = "--indirect=" + QFile::encodeName(fileName);
@@ -1050,7 +1024,7 @@ QDjViewDjVuExporter::run()
     }
   job = new QDjVuJob(pjob, this);
   connect(job, SIGNAL(error(QString,QString,int)),
-          this, SIGNAL(error(QString,QString,int)) );
+          this, SLOT(error(QString,QString,int)) );
   connect(job, SIGNAL(progress(int)),
           this, SIGNAL(progress(int)) );
   emit progress(0);
@@ -1281,6 +1255,7 @@ QDjViewSaveDialog::start()
   QDjViewExporter *exporter = currentExporter();
   if (exporter)
     {
+      int lastPage = d->djview->pageNum()-1;
       int curPage = d->djview->getDjVuWidget()->page();
       int fromPage = d->ui.fromPageCombo->currentIndex();
       int toPage = d->ui.toPageCombo->currentIndex();
@@ -1290,7 +1265,7 @@ QDjViewSaveDialog::start()
       else if (d->ui.pageRangeButton->isChecked())
         exporter->setPageRange(fromPage, toPage);
       else
-        exporter->setPageRange(0, -1);
+        exporter->setPageRange(0, lastPage);
       // ignition!
       exporter->run();
     }
