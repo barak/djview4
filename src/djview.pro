@@ -61,6 +61,9 @@ RESOURCES += qdjview.qrc
 FORMS += qdjviewerrordialog.ui
 FORMS += qdjviewinfodialog.ui 
 FORMS += qdjviewmetadialog.ui 
+FORMS += qdjviewexportps1.ui
+FORMS += qdjviewexportps2.ui
+FORMS += qdjviewexportps3.ui
 FORMS += qdjviewsavedialog.ui 
 FORMS += qdjviewprintdialog.ui 
 

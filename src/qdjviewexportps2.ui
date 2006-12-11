@@ -1,0 +1,156 @@
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>QDjViewExportPS2</class>
+ <widget class="QWidget" name="QDjViewExportPS2" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>344</width>
+    <height>157</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QGroupBox" name="scalingGroupBox" >
+       <property name="title" >
+        <string>Scaling</string>
+       </property>
+       <layout class="QVBoxLayout" >
+        <property name="margin" >
+         <number>9</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QRadioButton" name="scaleToFitButton" >
+          <property name="text" >
+           <string>Scale to &amp;fit the page</string>
+          </property>
+          <property name="checked" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QRadioButton" name="zoomButton" >
+            <property name="text" >
+             <string>&amp;Zoom</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="zoomSpinBox" >
+            <property name="specialValueText" >
+             <string/>
+            </property>
+            <property name="suffix" >
+             <string> %</string>
+            </property>
+            <property name="maximum" >
+             <number>1000</number>
+            </property>
+            <property name="minimum" >
+             <number>10</number>
+            </property>
+            <property name="singleStep" >
+             <number>10</number>
+            </property>
+            <property name="value" >
+             <number>100</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="orientationGroupBox" >
+       <property name="title" >
+        <string>Orientation</string>
+       </property>
+       <layout class="QVBoxLayout" >
+        <property name="margin" >
+         <number>9</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QCheckBox" name="autoOrientCheckBox" >
+          <property name="text" >
+           <string>Automatic</string>
+          </property>
+          <property name="checked" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="portraitButton" >
+          <property name="text" >
+           <string>&amp;Portrait</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="landscapeButton" >
+          <property name="text" >
+           <string>&amp;Landscape</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <pixmapfunction></pixmapfunction>
+ <resources/>
+ <connections/>
+</ui>

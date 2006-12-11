@@ -30,6 +30,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFont>
+#include <QHBoxLayout>
 #include <QHeaderView>
 #include <QItemDelegate>
 #include <QKeySequence>
@@ -40,13 +41,16 @@
 #include <QPainter>
 #include <QPrinter>
 #include <QPrintDialog>
+#include <QPushButton>
 #include <QRegExp>
 #include <QScrollBar>
 #include <QShortcut>
 #include <QString>
 #include <QTableWidget>
 #include <QTableWidgetItem>
+#include <QTabWidget>
 #include <QTimer>
+#include <QVBoxLayout>
 #include <QtAlgorithms>
 
 #include <libdjvu/miniexp.h>
@@ -830,16 +834,16 @@ public:
   QDjViewExporter(QDialog *parent, QDjView *djview);
   virtual bool canExportOnePage()         { return true; }
   virtual bool canExportPageRange()       { return true; }
-  virtual bool canExecDialog()            { return false; }
   virtual void setFileName(QString s)     { fileName = s; }
   virtual void setPrinterName(QString s)  { printerName = s; }
   virtual void setPageRange(int f, int t) { fromPage = f; toPage = t; }
   virtual void setErrorCaption(QString s) { errorCaption = s; }
+  virtual int      propertyPages()        { return 0; }
+  virtual QWidget* propertyPage(int)      { return 0; }
   virtual ddjvu_status_t status();
 public slots:
   virtual void run() = 0;
   virtual void stop();
-  virtual void execDialog();
   virtual void error(QString, QString, int);
 signals:
   void progress(int i);
@@ -875,12 +879,6 @@ QDjViewExporter::status()
 
 void
 QDjViewExporter::stop()
-{
-}
-
-
-void 
-QDjViewExporter::execDialog()
 {
 }
 
@@ -1057,6 +1055,126 @@ QDjViewDjVuExporter::status()
 // QDJVIEWPSEXPORTER
 
 
+#include "ui_qdjviewexportps1.h"
+#include "ui_qdjviewexportps2.h"
+#include "ui_qdjviewexportps3.h"
+
+
+class QDjViewPSExporter : public QDjViewExporter
+{
+  Q_OBJECT
+public:
+  ~QDjViewPSExporter();
+  QDjViewPSExporter(QDialog *parent, QDjView *djview, 
+                    QString group, bool eps=false);
+  virtual void run();
+  virtual void stop();
+  virtual ddjvu_status_t status();
+  virtual QWidget* propertyPage(int);
+  virtual bool canExportOnePage()    { return true; }
+  virtual bool canExportPageRange()  { return !encapsulated; }
+  virtual int propertyPages()        { return encapsulated ? 1 : 3; }
+protected:
+  QDjVuJob *job;
+  FILE *output;
+  bool failed;
+  bool encapsulated;
+  QString group;
+  QPointer<QWidget> page1;
+  QPointer<QWidget> page2;
+  QPointer<QWidget> page3;
+  Ui::QDjViewExportPS1 ui1;
+  Ui::QDjViewExportPS2 ui2;
+  Ui::QDjViewExportPS3 ui3;
+};
+
+
+QDjViewPSExporter::~QDjViewPSExporter()
+{
+  // save properties
+  // delete property pages
+  delete page1;
+  delete page2;
+  delete page3;
+  // cleanup output
+  if (output)
+    ::fclose(output);
+  output = 0;
+  switch(status())
+    {
+    case DDJVU_JOB_STARTED:
+      if (job)
+        ddjvu_job_stop(*job);
+    case DDJVU_JOB_FAILED:
+    case DDJVU_JOB_STOPPED:
+      if (! fileName.isEmpty())
+        ::remove(QFile::encodeName(fileName).data());
+    default:
+      break;
+    }
+}
+
+
+QDjViewPSExporter::QDjViewPSExporter(QDialog *parent, QDjView *djview, 
+                                     QString group, bool eps)
+  : QDjViewExporter(parent, djview),
+    job(0), 
+    output(0),
+    failed(false),
+    encapsulated(eps),
+    group(group)
+{
+  page1 = new QWidget();
+  page2 = new QWidget();
+  page3 = new QWidget();
+  ui1.setupUi(page1);
+  ui2.setupUi(page2);
+  ui3.setupUi(page3);
+  page1->setObjectName(tr("PostScript","tab caption"));
+  page2->setObjectName(tr("Position","tab caption"));
+  page3->setObjectName(tr("Booklet","tab caption"));
+}
+
+
+void 
+QDjViewPSExporter::run()
+{
+}
+
+
+void 
+QDjViewPSExporter::stop()
+{
+  if (job && status() == DDJVU_JOB_STARTED)
+    ddjvu_job_stop(*job);
+}
+
+
+ddjvu_status_t 
+QDjViewPSExporter::status()
+{
+  if (job)
+    return ddjvu_job_status(*job);
+  else if (failed)
+    return DDJVU_JOB_FAILED;
+  else
+    return DDJVU_JOB_NOTSTARTED;
+}
+
+
+QWidget* 
+QDjViewPSExporter::propertyPage(int n)
+{
+  if (n == 0)
+    return page1;
+  else if (n == 1)
+    return page2;
+  else if (n == 2)
+    return page3;
+  return 0;
+}
+
+
 
 // --------------------
 // QDJVIEWPRNEXPORTER
@@ -1120,8 +1238,6 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *djview)
           this, SLOT(stop()));
   connect(d->ui.browseButton, SIGNAL(clicked()), 
           this, SLOT(browse()));
-  connect(d->ui.propButton, SIGNAL(clicked()), 
-          this, SLOT(properties()));
   connect(d->ui.formatCombo, SIGNAL(activated(int)), 
           this, SLOT(refresh()));
   connect(d->ui.fileNameEdit, SIGNAL(textChanged(QString)), 
@@ -1142,13 +1258,20 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *djview)
                   "be set for this format.</html>"));
 
   addExporter(tr("DjVu Bundled Document"),
-              tr("DjVu file (*.djvu *.djv)"), ".djvu",
+              tr("DjVu File (*.djvu *.djv)"), ".djvu",
               new QDjViewDjVuExporter(this, d->djview, false));
-
-  // addExporter(tr("DjVu Indirect Document"),
-  //             tr("DjVu file (*.djvu *.djv)"), ".djvu",
-  //             new QDjViewDjVuExporter(this, d->djview, true));
-
+#if 0
+  addExporter(tr("DjVu Indirect Document"),
+              tr("DjVu File (*.djvu *.djv)"), ".djvu",
+              new QDjViewDjVuExporter(this, d->djview, true));
+#endif
+  addExporter(tr("PostScript"),
+              tr("PostScript File (*.ps)"), ".ps",
+              new QDjViewPSExporter(this, d->djview, "ExportPS", false));
+  addExporter(tr("Encapsulated PostScript"),
+              tr("Encapsulated PostScript File (*.eps)"), ".eps",
+              new QDjViewPSExporter(this, d->djview, "ExportEPS", true));
+  
   refresh();
 }
 
@@ -1178,15 +1301,33 @@ QDjViewSaveDialog::refresh()
   bool nofmt = true;
   bool noopt = true;
   bool nopag = true;
+  int oldIndex = d->exporterIndex;
   d->exporterIndex = d->ui.formatCombo->currentIndex();
   QDjViewExporter *exporter = currentExporter();
+  if (exporter && d->exporterIndex != oldIndex)
+    {
+      // update tabs
+      while (d->ui.tabWidget->count() > 1)
+        d->ui.tabWidget->removeTab(1);
+      QWidget *w;
+      for (int i=0; i<exporter->propertyPages(); i++)
+        if ((w = exporter->propertyPage(i)))
+          d->ui.tabWidget->addTab(w, w->objectName());
+      // update filename
+      QString fname = d->ui.fileNameEdit->text();
+      QString ext = d->exporterExtensions[d->exporterIndex]; 
+      QFileInfo finfo(fname);
+      if (!finfo.completeSuffix().isEmpty() && !ext.isEmpty())
+        fname = QFileInfo(finfo.dir(), finfo.baseName() + ext).filePath();
+      d->ui.fileNameEdit->setText(fname);
+    }
   if (exporter)
     {
       nofmt = false;
       if (exporter->status()>=DDJVU_JOB_STARTED)
         nojob = false;
-      if (exporter->canExecDialog())
-        noopt = true;
+      if (exporter->propertyPages() > 0)
+        noopt = false;
       disconnect(d->ui.fromPageCombo, 0, d->ui.toPageCombo, 0);
       d->ui.documentButton->setEnabled(true);
       d->ui.toPageCombo->setEnabled(true);
@@ -1214,7 +1355,6 @@ QDjViewSaveDialog::refresh()
   d->ui.destinationGroupBox->setEnabled(nojob && !nodoc);
   d->ui.saveGroupBox->setEnabled(nojob && !nodoc && !nofmt && !nopag);
   d->ui.okButton->setEnabled(nojob && !nodoc && !notxt && !nofmt);
-  d->ui.propButton->setEnabled(nojob && !nodoc && !noopt);
   d->ui.cancelButton->setEnabled(nojob);
   d->ui.stopButton->setEnabled(!nojob);
   d->ui.stackedWidget->setCurrentIndex(nojob ? 0 : 1);
@@ -1329,18 +1469,11 @@ QDjViewSaveDialog::browse()
                                        tr("Save - DjView", "dialog caption"),
                                        fname, filters, 0,
                                        QFileDialog::DontConfirmOverwrite);
-  if (fname.section("/",-1).lastIndexOf(".") < 0)
-    fname += d->exporterExtensions[d->exporterIndex];
+  QFileInfo finfo(fname);
+  QString ext = d->exporterExtensions[d->exporterIndex]; 
+  if (finfo.completeSuffix().isEmpty() && !ext.isEmpty())
+    fname = QFileInfo(finfo.dir(), finfo.baseName() + ext).filePath();
   d->ui.fileNameEdit->setText(fname);
-}
-
-
-void 
-QDjViewSaveDialog::properties()
-{
-  QDjViewExporter *exporter = currentExporter();
-  if (exporter && exporter->canExecDialog())
-    exporter->execDialog();
 }
 
 
@@ -1400,6 +1533,8 @@ QDjViewSaveDialog::addExporter(QString name, QString filter, QString extension,
   d->exporterFilters += filter;
   d->exporters += exporter;
   connect(exporter, SIGNAL(progress(int)), this, SLOT(progress(int)));
+  exporter->setObjectName(name);
+  exporter->setErrorCaption(tr("Save Error - DjView", "dialog caption"));
   return index;
 }
 

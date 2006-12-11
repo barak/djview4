@@ -139,7 +139,6 @@ protected slots:
   void progress(int);
   void stop();
   void browse();
-  void properties();
   virtual void done(int);
 protected:
   virtual void closeEvent(QCloseEvent *event);
