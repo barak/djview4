@@ -1205,14 +1205,6 @@ QDjViewPSExporter::QDjViewPSExporter(QDialog *parent, QDjView *djview,
 
 
 void 
-QDjViewPSExporter::setPrinter(QPrinter *p)
-{
-  printerName = p->printerName();
-  // MORE TODO
-}
-
-
-void 
 QDjViewPSExporter::refresh()
 {
   if (encapsulated)
@@ -1229,8 +1221,17 @@ QDjViewPSExporter::refresh()
 
 
 void 
+QDjViewPSExporter::setPrinter(QPrinter *p)
+{
+  printerName = p->printerName();
+  // TODO
+}
+
+
+void 
 QDjViewPSExporter::run()
 {
+  // TODO
 }
 
 
