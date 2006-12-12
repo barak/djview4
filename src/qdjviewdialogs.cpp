@@ -23,6 +23,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QCloseEvent>
+#include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
 #include <QDialog>
@@ -1017,6 +1018,12 @@ QDjViewDjVuExporter::run()
   if (! pjob)
     {
       failed = true;
+      // error messages went to the document
+      connect(document, SIGNAL(error(QString,QString,int)),
+              this, SLOT(error(QString,QString,int)) );
+      qApp->sendEvent(&djview->getDjVuContext(), new QEvent(QEvent::User));
+      connect(document, 0, this, 0);
+      // main error message
       QString message = tr("Save job creation failed!");
       error(message, __FILE__, __LINE__);
       return;
