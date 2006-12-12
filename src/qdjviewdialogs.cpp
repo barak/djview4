@@ -44,6 +44,7 @@
 #include <QPushButton>
 #include <QRegExp>
 #include <QScrollBar>
+#include <QSettings>
 #include <QShortcut>
 #include <QString>
 #include <QTableWidget>
@@ -835,7 +836,7 @@ public:
   virtual bool canExportOnePage()         { return true; }
   virtual bool canExportPageRange()       { return true; }
   virtual void setFileName(QString s)     { fileName = s; }
-  virtual void setPrinterName(QString s)  { printerName = s; }
+  virtual void setPrinter(QPrinter*)      { }
   virtual void setPageRange(int f, int t) { fromPage = f; toPage = t; }
   virtual void setErrorCaption(QString s) { errorCaption = s; }
   virtual int      propertyPages()        { return 0; }
@@ -853,7 +854,6 @@ protected:
   QDjViewErrorDialog *errorDialog;
   QString             errorCaption;
   QString             fileName;
-  QString             printerName;
   int                 fromPage;
   int                 toPage;
 };
@@ -974,8 +974,9 @@ QDjViewDjVuExporter::run()
                             tr("<html> This file belongs to a non empty "
                                "directory. Saving an indirect document "
                                "creates many files in this directory. "
-                               "Do you want to continue and risk overwriting "
-                               "the contents of this directory? </html>"),
+                               "Do you want to continue and risk "
+                               "overwriting files in this directory?"
+                               "</html>"),
                             tr("Con&tinue"),
                             tr("&Cancel") ) )
     return;
@@ -1070,16 +1071,20 @@ public:
   virtual void run();
   virtual void stop();
   virtual ddjvu_status_t status();
+  virtual void setPrinter(QPrinter *p);
   virtual QWidget* propertyPage(int);
   virtual bool canExportOnePage()    { return true; }
   virtual bool canExportPageRange()  { return !encapsulated; }
   virtual int propertyPages()        { return encapsulated ? 1 : 3; }
+public slots:
+  void refresh();
 protected:
   QDjVuJob *job;
   FILE *output;
   bool failed;
   bool encapsulated;
   QString group;
+  QString printerName;
   QPointer<QWidget> page1;
   QPointer<QWidget> page2;
   QPointer<QWidget> page3;
@@ -1092,6 +1097,22 @@ protected:
 QDjViewPSExporter::~QDjViewPSExporter()
 {
   // save properties
+  QSettings s(DJVIEW_ORG, DJVIEW_APP);
+  s.beginGroup("Export-" + group);
+  s.setValue("color", ui1.colorButton->isChecked());
+  s.setValue("frame", ui1.frameCheckBox->isChecked());
+  s.setValue("cropMarks", ui1.cropMarksCheckBox->isChecked());
+  s.setValue("psLevel", ui1.levelSpinBox->value());
+  s.setValue("autoOrient", ui2.autoOrientCheckBox->isChecked());
+  s.setValue("landscape", ui2.landscapeButton->isChecked());
+  int zoom = ui2.zoomSpinBox->value();
+  s.setValue("zoom", QVariant(ui2.zoomButton->isChecked() ? zoom : 0));
+  s.setValue("booklet", ui3.bookletCheckBox->isChecked());
+  s.setValue("bookletSheets", ui3.sheetsSpinBox->value());
+  s.setValue("bookletRectoVerso", ui3.rectoVersoCombo->currentIndex());
+  s.setValue("bookletShift", ui3.rectoVersoShiftSpinBox->value());
+  s.setValue("bookletCenter", ui3.centerMarginSpinBox->value());
+  s.setValue("bookletCenterAdd", ui3.centerIncreaseSpinBox->value());
   // delete property pages
   delete page1;
   delete page2;
@@ -1124,6 +1145,7 @@ QDjViewPSExporter::QDjViewPSExporter(QDialog *parent, QDjView *djview,
     encapsulated(eps),
     group(group)
 {
+  // create pages
   page1 = new QWidget();
   page2 = new QWidget();
   page3 = new QWidget();
@@ -1133,6 +1155,69 @@ QDjViewPSExporter::QDjViewPSExporter(QDialog *parent, QDjView *djview,
   page1->setObjectName(tr("PostScript","tab caption"));
   page2->setObjectName(tr("Position","tab caption"));
   page3->setObjectName(tr("Booklet","tab caption"));
+  // load settings (ui1)
+  QSettings s(DJVIEW_ORG, DJVIEW_APP);
+  s.beginGroup("Export-" + group);
+  bool color = s.value("color", true).toBool();
+  ui1.colorButton->setChecked(color);
+  ui1.grayScaleButton->setChecked(!color);
+  ui1.frameCheckBox->setChecked(s.value("frame", false).toBool());
+  ui1.cropMarksCheckBox->setChecked(s.value("cropMarks", false).toBool());
+  int level = s.value("psLevel", 3).toInt();
+  ui1.levelSpinBox->setValue(qBound(1,level,3));
+  // load settings (ui2)  
+  ui2.autoOrientCheckBox->setChecked(s.value("autoOrient", true).toBool());
+  bool landscape = s.value("landscape",false).toBool();
+  ui2.portraitButton->setChecked(!landscape);
+  ui2.landscapeButton->setChecked(landscape);
+  int zoom = s.value("zoom",0).toInt();
+  ui2.scaleToFitButton->setChecked(zoom == 0);
+  ui2.zoomButton->setChecked(zoom!=0);
+  ui2.zoomSpinBox->setValue(zoom ? qBound(10,zoom,1000) : 100);
+  // load settings (ui3)  
+  ui3.bookletCheckBox->setChecked(s.value("booklet", false).toBool());
+  ui3.sheetsSpinBox->setValue(s.value("bookletSheets", 0).toInt());
+  int rectoVerso = qBound(0, s.value("bookletRectoVerso",0).toInt(), 2);
+  ui3.rectoVersoCombo->setCurrentIndex(rectoVerso);
+  int rectoVersoShift = qBound(-72, s.value("bookletShift",0).toInt(), 72);
+  ui3.rectoVersoShiftSpinBox->setValue(rectoVersoShift);
+  int centerMargin = qBound(0, s.value("bookletCenter", 18).toInt(), 144);
+  ui3.centerMarginSpinBox->setValue(centerMargin);
+  int centerIncrease = qBound(0, s.value("bookletCenterAdd", 40).toInt(), 200);
+  ui3.centerIncreaseSpinBox->setValue(centerIncrease);
+  // connect stuff
+  connect(ui2.autoOrientCheckBox, SIGNAL(clicked()), 
+          this, SLOT(refresh()) );
+  connect(ui3.bookletCheckBox, SIGNAL(clicked()), 
+          this, SLOT(refresh()) );
+  connect(ui2.zoomSpinBox, SIGNAL(valueChanged(int)), 
+          ui2.zoomButton, SLOT(click()) );
+  // adjust ui
+  refresh();
+}
+
+
+void 
+QDjViewPSExporter::setPrinter(QPrinter *p)
+{
+  printerName = p->printerName();
+  // MORE TODO
+}
+
+
+void 
+QDjViewPSExporter::refresh()
+{
+  if (encapsulated)
+    {
+      ui1.cropMarksCheckBox->setEnabled(false);
+      ui1.cropMarksCheckBox->setChecked(false);
+    }
+  bool autoOrient = ui2.autoOrientCheckBox->isChecked();
+  ui2.portraitButton->setEnabled(!autoOrient);
+  ui2.landscapeButton->setEnabled(!autoOrient);
+  bool booklet = ui3.bookletCheckBox->isChecked();
+  ui3.bookletGroupBox->setEnabled(booklet);
 }
 
 
@@ -1267,10 +1352,10 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *djview)
 #endif
   addExporter(tr("PostScript"),
               tr("PostScript File (*.ps)"), ".ps",
-              new QDjViewPSExporter(this, d->djview, "ExportPS", false));
+              new QDjViewPSExporter(this, d->djview, "PS", false));
   addExporter(tr("Encapsulated PostScript"),
               tr("Encapsulated PostScript File (*.eps)"), ".eps",
-              new QDjViewPSExporter(this, d->djview, "ExportEPS", true));
+              new QDjViewPSExporter(this, d->djview, "EPS", true));
   
   refresh();
 }
