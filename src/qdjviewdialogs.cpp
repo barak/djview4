@@ -1345,11 +1345,9 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *djview)
   addExporter(tr("DjVu Bundled Document"),
               tr("DjVu File (*.djvu *.djv)"), ".djvu",
               new QDjViewDjVuExporter(this, d->djview, false));
-#if 0
   addExporter(tr("DjVu Indirect Document"),
               tr("DjVu File (*.djvu *.djv)"), ".djvu",
               new QDjViewDjVuExporter(this, d->djview, true));
-#endif
   addExporter(tr("PostScript"),
               tr("PostScript File (*.ps)"), ".ps",
               new QDjViewPSExporter(this, d->djview, "PS", false));
