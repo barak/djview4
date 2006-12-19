@@ -162,22 +162,20 @@ public:
   QDjViewPrintDialog(QDjView *djview);
 protected slots:
   void refresh();
-  void choosePrinter();
-  void progress(int percent);
-  void print();
-  void printDjVu();
-  void printNative();
+  void clear();
+  void start();
+  void progress(int);
   void stop();
-  void error(QString message, QString filename, int lineno);
+  void choose();
   virtual void done(int);
+protected:
   virtual void closeEvent(QCloseEvent *event);
-private:
+  void setCurrentExporter();
   bool isPrinterPostScript();
-  void updatePrinter();
+  bool isPrinterValid();
   struct Private;
   Private *d;
 };
-
 
 
 #endif

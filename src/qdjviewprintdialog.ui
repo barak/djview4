@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>513</width>
-    <height>372</height>
+    <width>493</width>
+    <height>340</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -27,9 +27,9 @@
      <property name="currentIndex" >
       <number>0</number>
      </property>
-     <widget class="QWidget" name="mainWidget" >
+     <widget class="QWidget" name="printTab" >
       <attribute name="title" >
-       <string>Main</string>
+       <string>Print</string>
       </attribute>
       <layout class="QVBoxLayout" >
        <property name="margin" >
@@ -47,7 +47,7 @@
           <number>6</number>
          </property>
          <item>
-          <widget class="QGroupBox" name="whatGroupBox" >
+          <widget class="QGroupBox" name="printGroupBox" >
            <property name="title" >
             <string>Print</string>
            </property>
@@ -153,13 +153,20 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QCheckBox" name="reverseCheckBox" >
+              <property name="text" >
+               <string>Print in reverse</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
          </item>
         </layout>
        </item>
        <item>
-        <widget class="QGroupBox" name="mainGroupBox" >
+        <widget class="QGroupBox" name="destinationGroupBox" >
          <property name="title" >
           <string>Destination</string>
          </property>
@@ -189,7 +196,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="changePrinterButton" >
+           <widget class="QPushButton" name="chooseButton" >
             <property name="text" >
              <string>C&amp;hange</string>
             </property>
@@ -197,589 +204,6 @@
              <bool>false</bool>
             </property>
            </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="formatWidget" >
-      <attribute name="title" >
-       <string>Output</string>
-      </attribute>
-      <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item>
-        <widget class="QGroupBox" name="formatGroupBox" >
-         <property name="title" >
-          <string>Output file format</string>
-         </property>
-         <layout class="QHBoxLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item>
-           <layout class="QVBoxLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="djvuLabel" >
-              <property name="text" >
-               <string>DjVu optimized formats:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="psButton" >
-              <property name="text" >
-               <string>PostScript (*.ps)</string>
-              </property>
-              <property name="checked" >
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="epsButton" >
-              <property name="text" >
-               <string>Encapsulated PostScript (*.eps)</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType" >
-             <enum>QSizePolicy::Maximum</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>5</width>
-              <height>5</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="genericLabel" >
-              <property name="text" >
-               <string>Generic formats:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="nativeButton" >
-              <property name="text" >
-               <string>Native (*.prn)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="pdfButton" >
-              <property name="text" >
-               <string>PDF (*.pdf)</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
-         </property>
-         <property name="spacing" >
-          <number>6</number>
-         </property>
-         <item>
-          <widget class="QGroupBox" name="levelGroupBox" >
-           <property name="title" >
-            <string>Postscript language level</string>
-           </property>
-           <layout class="QVBoxLayout" >
-            <property name="margin" >
-             <number>9</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QRadioButton" name="level2Button" >
-              <property name="text" >
-               <string>Level 2 (most compatible)</string>
-              </property>
-              <property name="checked" >
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="level3Button" >
-              <property name="text" >
-               <string>Level 3 (for modern printers)</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="colorGroupBox" >
-           <property name="title" >
-            <string>Color model</string>
-           </property>
-           <layout class="QVBoxLayout" >
-            <property name="margin" >
-             <number>9</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QRadioButton" name="colorButton" >
-              <property name="text" >
-               <string>&amp;Color</string>
-              </property>
-              <property name="checked" >
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="grayScaleButton" >
-              <property name="text" >
-               <string>&amp;GrayScale</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="positionWidget" >
-      <attribute name="title" >
-       <string>Position</string>
-      </attribute>
-      <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item>
-        <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
-         </property>
-         <property name="spacing" >
-          <number>6</number>
-         </property>
-         <item>
-          <widget class="QGroupBox" name="scalingGroupBox" >
-           <property name="title" >
-            <string>Scaling</string>
-           </property>
-           <layout class="QVBoxLayout" >
-            <property name="margin" >
-             <number>9</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QRadioButton" name="scaleToFitButton" >
-              <property name="text" >
-               <string>Scale to &amp;fit the page</string>
-              </property>
-              <property name="checked" >
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" >
-              <property name="margin" >
-               <number>0</number>
-              </property>
-              <property name="spacing" >
-               <number>6</number>
-              </property>
-              <item>
-               <widget class="QRadioButton" name="zoomButton" >
-                <property name="text" >
-                 <string>&amp;Zoom</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QSpinBox" name="zoomSpinBox" >
-                <property name="specialValueText" >
-                 <string/>
-                </property>
-                <property name="suffix" >
-                 <string> %</string>
-                </property>
-                <property name="maximum" >
-                 <number>1000</number>
-                </property>
-                <property name="minimum" >
-                 <number>10</number>
-                </property>
-                <property name="singleStep" >
-                 <number>10</number>
-                </property>
-                <property name="value" >
-                 <number>100</number>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="orientationGroupBox" >
-           <property name="title" >
-            <string>Orientation</string>
-           </property>
-           <layout class="QVBoxLayout" >
-            <property name="margin" >
-             <number>9</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QRadioButton" name="autoOrientButton" >
-              <property name="text" >
-               <string>&amp;Auto</string>
-              </property>
-              <property name="checked" >
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="portraitButton" >
-              <property name="text" >
-               <string>&amp;Portrait</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="landscapeButton" >
-              <property name="text" >
-               <string>&amp;Landscape</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="marksGroupBox" >
-         <property name="title" >
-          <string>Marks</string>
-         </property>
-         <layout class="QVBoxLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item>
-           <widget class="QCheckBox" name="frameCheckBox" >
-            <property name="text" >
-             <string>Print image &amp;frame</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="cropMarksCheckBox" >
-            <property name="text" >
-             <string>Print crop &amp;marks</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="bookletWidget" >
-      <attribute name="title" >
-       <string>Booklet</string>
-      </attribute>
-      <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item>
-        <widget class="QGroupBox" name="bookletGroupBox" >
-         <property name="title" >
-          <string>Booklet options</string>
-         </property>
-         <layout class="QVBoxLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item>
-           <widget class="QCheckBox" name="bookletCheckBox" >
-            <property name="text" >
-             <string>Print sheets suitable for folding a booklet.</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="sheetsLabel" >
-              <property name="text" >
-               <string>Each booklet contains </string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="sheetsSpinBox" >
-              <property name="specialValueText" >
-               <string> as many sheets as needed.</string>
-              </property>
-              <property name="suffix" >
-               <string> heets</string>
-              </property>
-              <property name="prefix" >
-               <string>at most </string>
-              </property>
-              <property name="maximum" >
-               <number>1000</number>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer>
-              <property name="orientation" >
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" >
-               <size>
-                <width>10</width>
-                <height>10</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="rectoVersoLabel" >
-              <property name="text" >
-               <string>Print </string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="rectoVersoCombo" >
-              <property name="minimumSize" >
-               <size>
-                <width>160</width>
-                <height>10</height>
-               </size>
-              </property>
-              <item>
-               <property name="text" >
-                <string>rectos and versos.</string>
-               </property>
-              </item>
-              <item>
-               <property name="text" >
-                <string>rectos only.</string>
-               </property>
-              </item>
-              <item>
-               <property name="text" >
-                <string>versos only.</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item>
-             <spacer>
-              <property name="orientation" >
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" >
-               <size>
-                <width>10</width>
-                <height>10</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="advancedBookletGroupBox" >
-         <property name="title" >
-          <string>Advanced booklet options</string>
-         </property>
-         <layout class="QVBoxLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item>
-           <layout class="QHBoxLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="rectoVersoShiftLabel" >
-              <property name="text" >
-               <string>Shift rectos and versos by </string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="rectoVersoShiftSpinBox" >
-              <property name="suffix" >
-               <string> points.</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer>
-              <property name="orientation" >
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" >
-               <size>
-                <width>10</width>
-                <height>10</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="centerMarginLabel" >
-              <property name="text" >
-               <string>Center margins:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="centerMarginSpinBox" >
-              <property name="suffix" >
-               <string> points</string>
-              </property>
-              <property name="value" >
-               <number>18</number>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="centerIncreaseLabel" >
-              <property name="text" >
-               <string> plus </string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="centerIncreaseSpinBox" >
-              <property name="suffix" >
-               <string>/100</string>
-              </property>
-              <property name="maximum" >
-               <number>256</number>
-              </property>
-              <property name="singleStep" >
-               <number>10</number>
-              </property>
-              <property name="value" >
-               <number>40</number>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="perSheetLabel" >
-              <property name="text" >
-               <string> per sheet.</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
           </item>
          </layout>
         </widget>
@@ -802,13 +226,6 @@
         <number>6</number>
        </property>
        <item>
-        <widget class="QCheckBox" name="saveSettingsCheckBox" >
-         <property name="text" >
-          <string>&amp;Remember settings</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <spacer>
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
@@ -822,7 +239,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="printButton" >
+        <widget class="QPushButton" name="okButton" >
          <property name="text" >
           <string>&amp;Ok</string>
          </property>

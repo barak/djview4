@@ -125,7 +125,9 @@ QDjViewPrefs::QDjViewPrefs(void)
     searchCaseSensitive(false),
     infoDialogTab(0),
     metaDialogTab(0),
-    printerGamma(0.0)
+    printerGamma(0.0),
+    printReverse(false),
+    printCollate(true)
 {
   Options mss = (SHOW_MENUBAR|SHOW_STATUSBAR|SHOW_SIDEBAR);
   forFullScreen.options &= ~(mss|SHOW_SCROLLBARS|SHOW_TOOLBAR|SHOW_SIDEBAR);
@@ -326,6 +328,10 @@ QDjViewPrefs::load(void)
     printerName = s.value("printerName").toString();
   if (s.contains("printFile"))
     printFile = s.value("printFile").toString();
+  if (s.contains("printCollate"))
+    printCollate = s.value("printCollate").toBool();
+  if (s.contains("printReverse"))
+    printCollate = s.value("printReverse").toBool();
 }
 
 
@@ -379,6 +385,8 @@ QDjViewPrefs::save(void)
   s.setValue("printerGamma", printerGamma);
   s.setValue("printerName", printerName);
   s.setValue("printFile", printFile);
+  s.setValue("printCollate", printCollate);
+  s.setValue("printReverse", printReverse);
 }
 
 

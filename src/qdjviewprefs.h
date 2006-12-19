@@ -141,6 +141,8 @@ public:
   double     printerGamma;      //!< Gamma value for the printer.
   QString    printerName;       //!< Name of the printer
   QString    printFile;         //!< Output file for print data
+  bool       printReverse;      //!< Print revere flag
+  bool       printCollate;      //!< Print collate flag
   
 public:
   static QDjViewPrefs *instance(void);
@@ -165,3 +167,4 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QDjViewPrefs::Tools)
    c++-font-lock-extra-types: ( "\\sw+_t" "[A-Z]\\sw*[a-z]\\sw*" "qlonglong" )
    End:
    ------------------------------------------------------------- */
+  
