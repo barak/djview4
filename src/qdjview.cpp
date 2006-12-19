@@ -362,9 +362,6 @@ QDjView::createActions()
     << tr("Save the DjVu document.")
     << Trigger(this, SLOT(save()));
 
-  actionExport = makeAction(tr("&Export as...", "File|"))
-    << tr("Export the DjVu document under another format.");
-
   actionPrint = makeAction(tr("&Print...", "File|"))
     << QKeySequence(tr("Ctrl+P", "File|Print"))
     << QIcon(":/images/icon_print.png")
@@ -633,7 +630,6 @@ QDjView::createMenus()
   if (viewerMode == STANDALONE)
     fileMenu->addSeparator();
   fileMenu->addAction(actionSave);
-  fileMenu->addAction(actionExport);
   fileMenu->addAction(actionPrint);
   if (viewerMode == STANDALONE)
     fileMenu->addSeparator();
@@ -742,7 +738,6 @@ QDjView::createMenus()
   contextMenu->addAction(actionMetadata);
   contextMenu->addSeparator();
   contextMenu->addAction(actionSave);
-  contextMenu->addAction(actionExport);
   contextMenu->addAction(actionPrint);
   contextMenu->addSeparator();
   contextMenu->addAction(actionViewSideBar);
@@ -773,13 +768,11 @@ QDjView::updateActions()
     action->setEnabled(true);
 
   // Some actions are not yet implemented
-  actionExport->setVisible(false);
   actionBack->setVisible(false);
   actionForw->setVisible(false);
   
   // Some actions are explicitly disabled
   actionSave->setEnabled(savingAllowed);
-  actionExport->setEnabled(savingAllowed);
   actionPrint->setEnabled(printingAllowed);
   
   // Some actions are only available in standalone mode

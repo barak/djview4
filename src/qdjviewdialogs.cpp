@@ -244,7 +244,7 @@ QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
                       "its component files. Select a component file "
                       "to display detailled information in the 'File' "
                       "tab. Double click a component file to show "
-                      "the corresponding page in the main window."
+                      "the corresponding page in the main window. "
                       "</html>"));
   QWidget *wf = d->ui.tabFile;
   wf->setWhatsThis(tr("<html><b>File and page information</b><br>"
@@ -1172,6 +1172,7 @@ QDjViewPSExporter::QDjViewPSExporter(QDialog *parent, QDjView *djview,
   page1->setObjectName(tr("PostScript","tab caption"));
   page2->setObjectName(tr("Position","tab caption"));
   page3->setObjectName(tr("Booklet","tab caption"));
+
   // load settings (ui1)
   QSettings s(DJVIEW_ORG, DJVIEW_APP);
   s.beginGroup("Export-" + group);
@@ -1182,6 +1183,7 @@ QDjViewPSExporter::QDjViewPSExporter(QDialog *parent, QDjView *djview,
   ui1.cropMarksCheckBox->setChecked(s.value("cropMarks", false).toBool());
   int level = s.value("psLevel", 3).toInt();
   ui1.levelSpinBox->setValue(qBound(1,level,3));
+
   // load settings (ui2)  
   ui2.autoOrientCheckBox->setChecked(s.value("autoOrient", true).toBool());
   bool landscape = s.value("landscape",false).toBool();
@@ -1191,6 +1193,7 @@ QDjViewPSExporter::QDjViewPSExporter(QDialog *parent, QDjView *djview,
   ui2.scaleToFitButton->setChecked(zoom == 0);
   ui2.zoomButton->setChecked(zoom!=0);
   ui2.zoomSpinBox->setValue(zoom ? qBound(25,zoom,2400) : 100);
+
   // load settings (ui3)  
   ui3.bookletCheckBox->setChecked(s.value("booklet", false).toBool());
   ui3.sheetsSpinBox->setValue(s.value("bookletSheets", 0).toInt());
@@ -1202,6 +1205,7 @@ QDjViewPSExporter::QDjViewPSExporter(QDialog *parent, QDjView *djview,
   ui3.centerMarginSpinBox->setValue(centerMargin);
   int centerIncrease = qBound(0, s.value("bookletCenterAdd", 40).toInt(), 200);
   ui3.centerIncreaseSpinBox->setValue(centerIncrease);
+
   // connect stuff
   connect(ui2.autoOrientCheckBox, SIGNAL(clicked()), 
           this, SLOT(refresh()) );
@@ -1209,6 +1213,40 @@ QDjViewPSExporter::QDjViewPSExporter(QDialog *parent, QDjView *djview,
           this, SLOT(refresh()) );
   connect(ui2.zoomSpinBox, SIGNAL(valueChanged(int)), 
           ui2.zoomButton, SLOT(click()) );
+
+  // whatsthis
+  page1->setWhatsThis(tr("<html><b>PostScript options.</b><br>"
+                         "The color option enables color printing. "
+                         "Document pages can be decorated with frame "
+                         "and crop marks. "
+                         "PostScript language level 1 is only useful "
+                         "with very old printers. Level 2 works with most "
+                         "printers. Level 3 print color document faster "
+                         "on recent printers.</html>") );
+
+  page2->setWhatsThis(tr("<html><b>Position and scaling.</b><br>"
+                         "Option <i>scale to fit</i> accomodates "
+                         "whatever paper size your printer uses. "
+                         "Zoom factor 100% reproduces the initial "
+                         "document size. Automatic orientation chooses "
+                         "portrait or landscape on a page per page basis. "
+                         "</html>") )
+;
+  page3->setWhatsThis(tr("<html><b>Producing booklets.</b><br>"
+                         "The booklet mode prints the selected "
+                         "pages as sheets suitable for folding one or several "
+                         "booklets. Several booklets might be produced when "
+                         "a maximum number of sheets per booklet is "
+                         "specified. You can either use a duplex printer or "
+                         "print rectos and versos separately.<p> "
+                         "Shifting rectos and versos is useful "
+                         "with poorly aligned duplex printers. "
+                         "The center margins determine how much "
+                         "space is left between the pages to fold the "
+                         "sheets. This space slowly increases from the "
+                         "inner sheet to the outer sheet."
+                         "</html>") );
+  
   // adjust ui
   refresh();
 }
@@ -1323,6 +1361,7 @@ QDjViewPSExporter::openFile()
       signal(SIGPIPE, SIG_IGN);
 # endif
 #endif
+
       // Prepare lp/lpr arguments
       QByteArray pname = printerName.toLocal8Bit();
       char *lpargs[8];
@@ -1340,6 +1379,7 @@ QDjViewPSExporter::openFile()
           lprargs[2] = pname.data();
           lprargs[3] = 0;
         }
+
       // Open pipe for lp/lpr.
       int fds[2];
       if (pipe(fds) == 0)
@@ -1419,6 +1459,7 @@ QDjViewPSExporter::run()
   openFile();
   if (! output)
     return;
+
   // Prepare arguments
   QList<QByteArray> args;
   if (copies > 1)
@@ -1471,11 +1512,13 @@ QDjViewPSExporter::run()
     }
   if (encapsulated)
     args << QByteArray("--format=eps");
+
   // Convert arguments
   int argc = args.count();
   QVector<const char*> argv(argc);
   for (int i=0; i<argc; i++)
     argv[i] = args[i].constData();
+
   // Start print job
   ddjvu_job_t *pjob;
   pjob = ddjvu_document_print(*document, output, argc, argv.data());
@@ -1611,7 +1654,7 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *djview)
   connect(djview, SIGNAL(documentReady(QDjVuDocument*)),
           this, SLOT(refresh()));
 
-  setWhatsThis(tr("<html><b>Saving DjVu data.</b><br/> "
+  setWhatsThis(tr("<html><b>Saving.</b><br/> "
                   "You can save the whole document or a page range "
                   "under a variety of formats. Selecting certain "
                   "formats creates additional dialog pages for "
@@ -1954,9 +1997,9 @@ QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
   connect(djview, SIGNAL(documentReady(QDjVuDocument*)),
           this, SLOT(refresh()));
 
-  setWhatsThis(tr("<html><b>Printing DjVu data.</b><br/> "
+  setWhatsThis(tr("<html><b>Printing.</b><br/> "
                   "You can print the whole document or a page range. "
-                  "Use the \"Choose\" button to select a print "
+                  "Use the 'Choose' button to select a print "
                   "destination and specify printer options. "
                   "Additional dialog tabs might appear "
                   "to specify conversion options.</html>"));

@@ -240,7 +240,6 @@ protected:
   QAction *actionClose;
   QAction *actionQuit;
   QAction *actionSave;
-  QAction *actionExport;
   QAction *actionPrint;
   QAction *actionFind;
   QAction *actionFindNext;

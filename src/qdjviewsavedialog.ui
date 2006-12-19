@@ -4,6 +4,14 @@
  <exportmacro></exportmacro>
  <class>QDjViewSaveDialog</class>
  <widget class="QDialog" name="QDjViewSaveDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>409</width>
+    <height>370</height>
+   </rect>
+  </property>
   <property name="windowTitle" >
    <string>Dialog</string>
   </property>

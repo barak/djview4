@@ -184,15 +184,6 @@ Options fréquentes:
         <translation>Enregistre le document DjVu.</translation>
     </message>
     <message>
-        <source>&amp;Export as...</source>
-        <comment>File|</comment>
-        <translation>&amp;Exporter...</translation>
-    </message>
-    <message>
-        <source>Export the DjVu document under another format.</source>
-        <translation>Exporte le document DjVu sous un autre format.</translation>
-    </message>
-    <message>
         <source>&amp;Print...</source>
         <comment>File|</comment>
         <translation>&amp;Imprimer...</translation>
@@ -759,20 +750,12 @@ Options fréquentes:
         <translation>Impossible d&apos;ouvrir le fichier «%1».</translation>
     </message>
     <message>
-        <source>Opening DjVu file...</source>
-        <translation>Pendant l&apos;ouverture d&apos;un fichier DjVu...</translation>
-    </message>
-    <message>
         <source>Djview - %1[*]</source>
         <translation>Djview - %1[*]</translation>
     </message>
     <message>
         <source>Cannot open URL &apos;%1&apos;.</source>
         <translation>Impossible d&apos;ouvrir l&apos;URL «%1».</translation>
-    </message>
-    <message>
-        <source>Opening DjVu document...</source>
-        <translation>Pendant l&apos;ouverture d&apos;un document DjVu...</translation>
     </message>
     <message>
         <source>Cannot find page numbered: %1</source>
@@ -785,42 +768,6 @@ Options fréquentes:
     <message>
         <source>Unrecognized sidebar options &apos;%1&apos;.</source>
         <translation>L&apos;option de panneau latéral «%1» n&apos;est pas reconnue.</translation>
-    </message>
-    <message>
-        <source>Print DjVu</source>
-        <comment>dialog caption</comment>
-        <translation>Impression</translation>
-    </message>
-    <message>
-        <source>Print dialog is not yet implemented</source>
-        <translation>Le panneau d&apos;impression n&apos;est pas encore codé</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <comment>dialog caption</comment>
-        <translation>Enregistrement</translation>
-    </message>
-    <message>
-        <source>Save text</source>
-        <comment>dialog caption</comment>
-        <translation>Enregistrement de texte</translation>
-    </message>
-    <message>
-        <source>Text files</source>
-        <translation>Fichiers texte</translation>
-    </message>
-    <message>
-        <source>All files</source>
-        <translation>Tous les fichiers</translation>
-    </message>
-    <message>
-        <source>Save image</source>
-        <comment>dialog caption</comment>
-        <translation>Enregistrement d&apos;une image</translation>
-    </message>
-    <message>
-        <source>All supported files</source>
-        <translation>Tous les fichiers supportés</translation>
     </message>
     <message>
         <source>Cannot determine file format.
@@ -845,10 +792,6 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     <message>
         <source>Cannot decode document.</source>
         <translation>Impossible de décoder le document.</translation>
-    </message>
-    <message>
-        <source>Decoding DjVu document...</source>
-        <translation>Pendant le décodage du document...</translation>
     </message>
     <message>
         <source> P%1 %2x%3 %4dpi </source>
@@ -932,14 +875,6 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
         <translation>Fichiers DjVu</translation>
     </message>
     <message>
-        <source>DjView Information</source>
-        <translation>DjView Informations</translation>
-    </message>
-    <message>
-        <source>DjView Metadata</source>
-        <translation>DjView Méta informations</translation>
-    </message>
-    <message>
         <source>Magnify 50%</source>
         <translation>Grossissement à 50%</translation>
     </message>
@@ -971,6 +906,96 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
         <source>&lt;html&gt;&lt;b&gt;Document and page metadata.&lt;/b&gt;&lt;br&gt; Display a dialog window for viewing metadata pertaining to the document or to a specific page.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Méta informations sur le document et la page.&lt;/b&gt;&lt;br&gt; Affiche un panneau montrant les informations supplémentaires qui se rapportent au document ou à une de ses pages.&lt;/html&gt;</translation>
     </message>
+    <message>
+        <source>Opening DjVu file</source>
+        <translation>Ouverture de fichier DjVu</translation>
+    </message>
+    <message>
+        <source>Opening DjVu document</source>
+        <translation>Ouverture de document DjVu</translation>
+    </message>
+    <message>
+        <source>Print - DjView</source>
+        <comment>dialog caption</comment>
+        <translation>Imprimer - DjView</translation>
+    </message>
+    <message>
+        <source>Save - DjView</source>
+        <comment>dialog caption</comment>
+        <translation>Sauver - DjView</translation>
+    </message>
+    <message>
+        <source>Text files</source>
+        <comment>save filter</comment>
+        <translation>Fichiers texte</translation>
+    </message>
+    <message>
+        <source>All files</source>
+        <comment>save filter</comment>
+        <translation>Tous les fichiers</translation>
+    </message>
+    <message>
+        <source>Save Text - DjView</source>
+        <comment>dialog caption</comment>
+        <translation>Sauver le texte - DjView</translation>
+    </message>
+    <message>
+        <source>Error - DjView</source>
+        <comment>dialog caption</comment>
+        <translation>Erreur - DjView</translation>
+    </message>
+    <message>
+        <source>All supported files</source>
+        <comment>save filter</comment>
+        <translation>Tous les fichiers supportés</translation>
+    </message>
+    <message>
+        <source>Save Image - DjView</source>
+        <comment>dialog caption</comment>
+        <translation>Enregistrement de l&apos;image - DjView</translation>
+    </message>
+    <message>
+        <source>Decoding DjVu document</source>
+        <translation>Décodage de document DjVu</translation>
+    </message>
+    <message>
+        <source>Information - DjView</source>
+        <comment>dialog caption</comment>
+        <translation>Information - DjView</translation>
+    </message>
+    <message>
+        <source>Metadata - DjView</source>
+        <comment>dialog caption</comment>
+        <translation>Meta-information - DjView</translation>
+    </message>
+</context>
+<context>
+    <name>QDjViewDjVuExporter</name>
+    <message>
+        <source>Question - DjView</source>
+        <comment>dialog caption</comment>
+        <translation>Question - DjView</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt; This file belongs to a non empty directory. Saving an indirect document creates many files in this directory. Do you want to continue and risk overwriting files in this directory?&lt;/html&gt;</source>
+        <translation>&lt;html&gt; Ce fichier appartient à un répertoire qui n&apos;est pas vide. La sauvegarde d&apos;un document DjVu indirect crée de nombreux fichiers dans ce répertoire. Voulez-vous continuer et prendre le risque de remplacer des fichiers dans ce répertoire?&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Con&amp;tinue</source>
+        <translation>Con&amp;tinuer</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Annuler</translation>
+    </message>
+    <message>
+        <source>System error: %1</source>
+        <translation>Erreur système: %1</translation>
+    </message>
+    <message>
+        <source>Save job creation failed!</source>
+        <translation>L&apos;operation d&apos;enregistrement a échoué!</translation>
+    </message>
 </context>
 <context>
     <name>QDjViewErrorDialog</name>
@@ -981,6 +1006,160 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     <message>
         <source>&amp;Ok</source>
         <translation>&amp;Ok</translation>
+    </message>
+    <message>
+        <source>Error - DjView</source>
+        <comment>dialog caption</comment>
+        <translation>Erreur - DjView</translation>
+    </message>
+</context>
+<context>
+    <name>QDjViewExportPS1</name>
+    <message>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation>Couleur</translation>
+    </message>
+    <message>
+        <source>&amp;Color</source>
+        <translation>&amp;Couleur</translation>
+    </message>
+    <message>
+        <source>&amp;GrayScale</source>
+        <translation>Niveaux de &amp;gris</translation>
+    </message>
+    <message>
+        <source>Marks</source>
+        <translation>Marques</translation>
+    </message>
+    <message>
+        <source>Print image &amp;frame</source>
+        <translation>Imprimer un &amp;cadre</translation>
+    </message>
+    <message>
+        <source>Print crop &amp;marks</source>
+        <translation>Imprimer des marques de &amp;découpe</translation>
+    </message>
+    <message>
+        <source>PostScript</source>
+        <translation>PostScript</translation>
+    </message>
+    <message>
+        <source>Language Level</source>
+        <translation>Niveau PostScript</translation>
+    </message>
+</context>
+<context>
+    <name>QDjViewExportPS2</name>
+    <message>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <source>Scaling</source>
+        <translation>Agrandissement</translation>
+    </message>
+    <message>
+        <source>Scale to &amp;fit the page</source>
+        <translation>Agrandir à la &amp;page</translation>
+    </message>
+    <message>
+        <source>&amp;Zoom</source>
+        <translation>&amp;Zoom</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation> %</translation>
+    </message>
+    <message>
+        <source>Orientation</source>
+        <translation>Orientation</translation>
+    </message>
+    <message>
+        <source>Automatic</source>
+        <translation>Automatique</translation>
+    </message>
+    <message>
+        <source>&amp;Portrait</source>
+        <translation>&amp;Portrait</translation>
+    </message>
+    <message>
+        <source>&amp;Landscape</source>
+        <translation>P&amp;aysage</translation>
+    </message>
+</context>
+<context>
+    <name>QDjViewExportPS3</name>
+    <message>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <source>Print sheets suitable for folding a booklet.</source>
+        <translation>Imprimer des feuillets à plier en fascicule.</translation>
+    </message>
+    <message>
+        <source>Advanced</source>
+        <translation>Options avancées</translation>
+    </message>
+    <message>
+        <source>Sheets per booklet: </source>
+        <translation>Pages par fascicule: </translation>
+    </message>
+    <message>
+        <source>Unlimited</source>
+        <translation>non limité</translation>
+    </message>
+    <message>
+        <source>at most </source>
+        <translation>au plus </translation>
+    </message>
+    <message>
+        <source>Print </source>
+        <translation>Imprimer </translation>
+    </message>
+    <message>
+        <source>rectos and versos.</source>
+        <translation>les rectos et versos.</translation>
+    </message>
+    <message>
+        <source>rectos only.</source>
+        <translation>les rectos seulement.</translation>
+    </message>
+    <message>
+        <source>versos only.</source>
+        <translation>les versos seulement.</translation>
+    </message>
+    <message>
+        <source>Shift rectos and versos by </source>
+        <translation>Décaler les versos de</translation>
+    </message>
+    <message>
+        <source> points.</source>
+        <translation> points.</translation>
+    </message>
+    <message>
+        <source>Center:</source>
+        <translation>Marge centrale:</translation>
+    </message>
+    <message>
+        <source> points</source>
+        <translation> points</translation>
+    </message>
+    <message>
+        <source>/100</source>
+        <translation>/100</translation>
+    </message>
+    <message>
+        <source>plus</source>
+        <translation>plus</translation>
+    </message>
+    <message>
+        <source>per page.</source>
+        <translation>par page.</translation>
     </message>
 </context>
 <context>
@@ -1074,10 +1253,6 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     <message>
         <source>Page Title</source>
         <translation>Titre</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailled information in the &apos;File&apos; tab. Double click a component file to show the corresponding page in the main window.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Informations sur le document&lt;/b&gt;&lt;br&gt;Ce panneau montre les informations d&apos;encodage sur le document et les fichiers qui le composent. Sélectionnez un fichier pour obtenir des information détaillées dans l&apos;onglet «Fichier». Double-cliquez un fichier pour montrer la page correspondante dans la zone de visualisation principale.&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;File and page information&lt;/b&gt;&lt;br&gt;This panel shows the structure of the DjVu data corresponding to the component file or the page selected in the &apos;Document&apos; tab. The arrow buttons let you navigate to the previous or next component file.&lt;/html&gt;</source>
@@ -1179,6 +1354,10 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
         <source>&amp;Close</source>
         <translation>&amp;Fermer</translation>
     </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailled information in the &apos;File&apos; tab. Double click a component file to show the corresponding page in the main window. &lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Information sur le document&lt;/b&gt;&lt;br&gt;Ce panneau montre les informations sur le document et les fichiers qui le composent. Sélectionnez un nom de fichier pour afficher ses informations sous l&apos;index «Fichier». Double-cliquez un nom de fichier pour montrer la page correspondante &lt;/html&gt;</translation>
+    </message>
 </context>
 <context>
     <name>QDjViewMetaDialog</name>
@@ -1252,6 +1431,48 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
 </context>
 <context>
+    <name>QDjViewPSExporter</name>
+    <message>
+        <source>PostScript</source>
+        <comment>tab caption</comment>
+        <translation>PostScript</translation>
+    </message>
+    <message>
+        <source>Position</source>
+        <comment>tab caption</comment>
+        <translation>Position</translation>
+    </message>
+    <message>
+        <source>Booklet</source>
+        <comment>tab caption</comment>
+        <translation>Fascicule</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;PostScript options.&lt;/b&gt;&lt;br&gt;The color option enables color printing. Document pages can be decorated with frame and crop marks. PostScript language level 1 is only useful with very old printers. Level 2 works with most printers. Level 3 print color document faster on recent printers.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Options PostScript.&lt;/b&gt;&lt;br&gt;L&apos;option «couleur» autorise l&apos;impression en couleur. Les pages imprimées peuvent être décorées avec un cadre ou des marques de découpage. Le niveau PostScript 1 est utile pour les très vieilles imprimantes. Le niveau 2 fonctionne avec la plupart des imprimantes en service. Le niveau 3 imprime les documents en couleur plus rapidement sur des imprimantes récentes.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;Position and scaling.&lt;/b&gt;&lt;br&gt;Option &lt;i&gt;scale to fit&lt;/i&gt; accomodates whatever paper size your printer uses. Zoom factor 100% reproduces the initial document size. Automatic orientation chooses portrait or landscape on a page per page basis. &lt;/html&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;Producing booklets.&lt;/b&gt;&lt;br&gt;The booklet mode prints the selected pages as sheets suitable for folding one or several booklets. Several booklets might be produced when a maximum number of sheets per booklet is specified. You can either use a duplex printer or print rectos and versos separately.&lt;p&gt; Shifting rectos and versos is useful with poorly aligned duplex printers. The center margins determine how much space is left between the pages to fold the sheets. This space slowly increases from the inner sheet to the outer sheet.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Production de fascicules.&lt;/b&gt;&lt;br&gt;Le mode fascicule permet d&apos;imprimer des feuillets à plier en un ou plusieurs fascicules. Plusieurs fascicules sont nécessaires lorsqu&apos;un nombre maximum de feuillets est spécifié. Vous pouvez utiliser une imprimante recto-verso ou imprimer séparément les rectos et les versos&lt;p&gt; Décaler les versos est utile pour les imprimantes recto-versos mal alignées. La marge centrale peut être modifiée et augmente lors de la progression du feuillet intérieur vers le feuillet extérieur.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>System error: %1</source>
+        <translation>Erreur système: %1</translation>
+    </message>
+    <message>
+        <source>Unknown error</source>
+        <translation>Erreur inconnue</translation>
+    </message>
+    <message>
+        <source>Save job creation failed!</source>
+        <translation>L&apos;operation d&apos;enregistrement a échoué!</translation>
+    </message>
+</context>
+<context>
     <name>QDjViewPlugin::Document</name>
     <message>
         <source>Requesting %1.</source>
@@ -1259,61 +1480,101 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
 </context>
 <context>
-    <name>QDjViewSaveDialog</name>
+    <name>QDjViewPrintDialog</name>
     <message>
-        <source>&lt;html&gt;&lt;b&gt;Saving DjVu data.&lt;/b&gt;&lt;br/&gt; You can save the whole document or a page range. The bundled format conveniently saves all the pages into a single file. The indirect format spreads them into several files for efficient web serving. &lt;br&gt;&lt;i&gt;Saving in indirect format does not work yet!&lt;/i&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Enregistrer un document DjVu.&lt;/b&gt;&lt;br/&gt; Vous pouvez enregistrer tout le document ou une sélection de pages. Le format «fichier unique» ou «bundled» enregistre toutes les pages dans un même fichier bien pratique. Le format «indirect» repartit les pages dans plusieurs fichiers, ce qui est efficace pour un serveur web. &lt;br&gt;&lt;i&gt;L&apos;enregistrement en format «indirect» ne marche pas encore!&lt;/i&gt;&lt;/html&gt;</translation>
+        <source>Dialog</source>
+        <translation>Dialogue</translation>
     </message>
     <message>
-        <source>Save</source>
-        <comment>dialog caption</comment>
-        <translation>Enregistrement</translation>
+        <source>Print</source>
+        <translation>Imprimer</translation>
     </message>
     <message>
-        <source>Overwrite file?</source>
-        <translation>Remplacer le fichier?</translation>
+        <source>&amp;Document</source>
+        <translation>&amp;Document</translation>
     </message>
     <message>
-        <source>A file with this name already exists.
-Do you want to overwrite it?</source>
-        <translation>Un fichier portant ce nom existe déjà.
-Voulez-vous le remplacer?</translation>
+        <source>C&amp;urrent page</source>
+        <translation>Page &amp;courante</translation>
     </message>
     <message>
-        <source>&amp;Overwrite</source>
-        <translation>&amp;Remplacer</translation>
+        <source>&amp;Pages</source>
+        <translation>&amp;Pages</translation>
+    </message>
+    <message>
+        <source>to</source>
+        <translation>à</translation>
+    </message>
+    <message>
+        <source>Copies</source>
+        <translation>Copies</translation>
+    </message>
+    <message>
+        <source>1 copy</source>
+        <translation>1 copie</translation>
+    </message>
+    <message>
+        <source> copies</source>
+        <translation> copies</translation>
+    </message>
+    <message>
+        <source>Co&amp;llate</source>
+        <translation>Trier &amp;les copies</translation>
+    </message>
+    <message>
+        <source>Print in reverse</source>
+        <translation>Dernière page d&apos;abord</translation>
+    </message>
+    <message>
+        <source>Destination</source>
+        <translation>Destination</translation>
+    </message>
+    <message>
+        <source>No destination</source>
+        <translation>Pas de destination</translation>
+    </message>
+    <message>
+        <source>C&amp;hange</source>
+        <translation>C&amp;hanger</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation>&amp;Ok</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
         <translation>&amp;Annuler</translation>
     </message>
     <message>
-        <source>Directory is not empty</source>
-        <translation>Répertoire existant</translation>
+        <source>Stop</source>
+        <translation>Stop</translation>
     </message>
     <message>
-        <source>Con&amp;tinue</source>
-        <translation>Con&amp;tinuer</translation>
+        <source>File: %1</source>
+        <translation>Fichier: %1</translation>
     </message>
     <message>
-        <source>System error: %1</source>
-        <translation>Erreur système: %1</translation>
+        <source>Printer: %1</source>
+        <translation>Imprimante: %1</translation>
     </message>
     <message>
-        <source>Save job creation failed!</source>
-        <translation>L&apos;operation d&apos;enregistrement a échoué!</translation>
-    </message>
-    <message>
-        <source>This job has failed.</source>
+        <source>This operation has failed.</source>
         <translation>Cette opération a échoué.</translation>
     </message>
     <message>
-        <source>This job has been interrupted.</source>
+        <source>This operation has been interrupted.</source>
         <translation>Cette opération a été interrompue.</translation>
     </message>
     <message>
-        <source>Saving DjVu file...</source>
-        <translation>Pendant l&apos;enregistrement du fichier DjVu...</translation>
+        <source>&lt;html&gt;&lt;b&gt;Printing.&lt;/b&gt;&lt;br/&gt; You can print the whole document or a page range. Use the &apos;Choose&apos; button to select a print destination and specify printer options. Additional dialog tabs might appear to specify conversion options.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Impression.&lt;/b&gt;&lt;br/&gt; Vous pouvez imprimer le document entier ou un intervalle de pages. Utilisez le bouton «Choisir» pour sélectionner une destination d&apos;impression. Des index supplémentaires permettent alors de spécifier les options de conversion. &lt;/html&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>QDjViewSaveDialog</name>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Annuler</translation>
     </message>
     <message>
         <source>Dialog</source>
@@ -1340,36 +1601,99 @@ Voulez-vous le remplacer?</translation>
         <translation>à</translation>
     </message>
     <message>
-        <source>Format</source>
-        <translation>Format</translation>
-    </message>
-    <message>
-        <source>&amp;Bundled</source>
-        <translation>&amp;Fichier unique</translation>
-    </message>
-    <message>
-        <source>&amp;Indirect</source>
-        <translation>&amp;Indirect</translation>
-    </message>
-    <message>
         <source>Destination</source>
         <translation>Destination</translation>
-    </message>
-    <message>
-        <source>&amp;Browse</source>
-        <translation>&amp;Choisir</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation>&amp;Enregistrer</translation>
     </message>
     <message>
         <source>Stop</source>
         <translation>Stop</translation>
     </message>
     <message>
-        <source>&lt;html&gt; This file belongs to a non empty directory. Saving an indirect document creates many files in this directory. Do you want to continue and risk overwriting the contents of this directory? &lt;/html&gt;</source>
-        <translation>&lt;html&gt; Ce fichier appartient à un répertoire déjà peuplé. Enregistrer un document indirect va créer de multiple fichiers dans ce répertoire. Voulez vous continuer et prendre le risque de remplacer un fichier existant dans ce répertoire? &lt;/html&gt;</translation>
+        <source>Format:</source>
+        <translation>Format:</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation>&amp;Ok</translation>
+    </message>
+    <message>
+        <source>DjVu Bundled Document</source>
+        <translation>Document DjVu «bundled»</translation>
+    </message>
+    <message>
+        <source>DjVu File (*.djvu *.djv)</source>
+        <translation>Fichier DjVu (*.djvu *.djv)</translation>
+    </message>
+    <message>
+        <source>DjVu Indirect Document</source>
+        <translation>Document DjVu «indirect»</translation>
+    </message>
+    <message>
+        <source>PostScript</source>
+        <translation>PostScript</translation>
+    </message>
+    <message>
+        <source>PostScript File (*.ps)</source>
+        <translation>Fichier PostScript (*.ps)</translation>
+    </message>
+    <message>
+        <source>Encapsulated PostScript</source>
+        <translation>PostScript Encapsulé</translation>
+    </message>
+    <message>
+        <source>Encapsulated PostScript File (*.eps)</source>
+        <translation>Fichier PostScript Encapsulé (*.eps)</translation>
+    </message>
+    <message>
+        <source>Error - DjView</source>
+        <comment>dialog caption</comment>
+        <translation>Erreur - DjView</translation>
+    </message>
+    <message>
+        <source>Overwriting the current file is not allowed!</source>
+        <translation>Impossible de remplacer le fichier DjVu courant!</translation>
+    </message>
+    <message>
+        <source>Question - DjView</source>
+        <comment>dialog caption</comment>
+        <translation>Question - DjView</translation>
+    </message>
+    <message>
+        <source>A file with this name already exists.
+Do you want to replace it?</source>
+        <translation>Ce fichier existe déjà.
+Voulez-vous le remplacer?</translation>
+    </message>
+    <message>
+        <source>&amp;Replace</source>
+        <translation>&amp;Remplacer</translation>
+    </message>
+    <message>
+        <source>This operation has failed.</source>
+        <translation>Cette opération a échoué.</translation>
+    </message>
+    <message>
+        <source>This operation has been interrupted.</source>
+        <translation>Cette opération a été interrompue.</translation>
+    </message>
+    <message>
+        <source>All files</source>
+        <comment>save filter</comment>
+        <translation>Tous les fichiers</translation>
+    </message>
+    <message>
+        <source>Save - DjView</source>
+        <comment>dialog caption</comment>
+        <translation>Enregistrer - DjView</translation>
+    </message>
+    <message>
+        <source>Save Error - DjView</source>
+        <comment>dialog caption</comment>
+        <translation>Erreur d&apos;enregistrement - DjView</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;Saving.&lt;/b&gt;&lt;br/&gt; You can save the whole document or a page range under a variety of formats. Selecting certain formats creates additional dialog pages for specifying format options.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Enregistrer.&lt;/b&gt;&lt;br/&gt; Vous pouvez enregistrer le document entier ou un intervalle de pages sous divers formats. Certain formats font apparaître des pages supplémentaires permettant de spécifier les options de conversion.&lt;/html&gt;</translation>
     </message>
 </context>
 <context>

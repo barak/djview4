@@ -8,7 +8,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>397</width>
+    <width>417</width>
     <height>230</height>
    </rect>
   </property>
@@ -213,7 +213,7 @@
         <item>
          <widget class="QLabel" name="centerIncreaseLabel" >
           <property name="text" >
-           <string>increasing by</string>
+           <string>plus</string>
           </property>
          </widget>
         </item>
@@ -230,6 +230,13 @@
           </property>
           <property name="value" >
            <number>40</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="perPageLabel" >
+          <property name="text" >
+           <string>per page.</string>
           </property>
          </widget>
         </item>
