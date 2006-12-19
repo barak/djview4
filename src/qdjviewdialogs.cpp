@@ -23,6 +23,8 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <stdlib.h>
+#include <limits.h>
 
 #include <QApplication>
 #include <QClipboard>
@@ -1298,7 +1300,7 @@ QDjViewPSExporter::openFile()
 {
   closeFile();
 
-  if (! printerName.isEmpty())
+  if (fileName.isEmpty())
     {
 #if Q_WS_WIN
       // TODO: tempfile?
@@ -1326,13 +1328,18 @@ QDjViewPSExporter::openFile()
       char *lpargs[8];
       char *lprargs[8];
       lpargs[0] = "lp";
-      lpargs[1] = "-d";
-      lpargs[2] = pname.data();
-      lpargs[3] = 0;
+      lpargs[1] = 0;
       lprargs[0] = "lpr";
-      lprargs[1] = "-P";
-      lprargs[2] = pname.data();
-      lprargs[3] = 0;
+      lprargs[1] = 0;
+      if (! printerName.isEmpty())
+        {
+          lpargs[1] = "-d";
+          lpargs[2] = pname.data();
+          lpargs[3] = 0;
+          lprargs[1] = "-P";
+          lprargs[2] = pname.data();
+          lprargs[3] = 0;
+        }
       // Open pipe for lp/lpr.
       int fds[2];
       if (pipe(fds) == 0)
@@ -1340,7 +1347,20 @@ QDjViewPSExporter::openFile()
           int pid = fork();
           if (pid == 0)
             {
-              // Child process
+              // Rehash file descriptors
+#if defined(_SC_OPEN_MAX)
+              int nfd = (int)sysconf(_SC_OPEN_MAX);
+#elif defined(_POSIX_OPEN_MAX)
+              int nfd = (int)_POSIX_OPEN_MAX;
+#elif defined(OPEN_MAX)
+              int nfd = (int)OPEN_MAX;
+#else
+              int nfd = 256;
+#endif
+              ::close(0);
+              ::dup(fds[0]);
+              for (int i=1; i<nfd; i++)
+                ::close(i);
               if (fork() == 0)
                 {
                   // Try lp and lpr
@@ -1359,7 +1379,7 @@ QDjViewPSExporter::openFile()
               ::exit(0);
             }
           ::close(fds[0]);
-          output = fdopen(fds[1], "w+");
+          output = fdopen(fds[1], "w");
           if (pid >= 0)
             ::waitpid(pid, 0, 0);
           else
@@ -1392,7 +1412,7 @@ QDjViewPSExporter::run()
   QDjViewPrefs *prefs = QDjViewPrefs::instance();
   QDjVuDocument *document = djview->getDocument();
   int pagenum = djview->pageNum();
-  if (document==0 || pagenum <= 0 || fileName.isEmpty())
+  if (document==0 || pagenum <= 0)
     return;
   int tpg = qBound(0, toPage, pagenum-1);
   int fpg = qBound(0, fromPage, pagenum-1);
@@ -2025,6 +2045,7 @@ QDjViewPrintDialog::setCurrentExporter()
 #endif
         d->exporter = new QDjViewPSExporter(this, d->djview, gps);
       d->exporter->setPrinter(d->printer);
+      connect(d->exporter, SIGNAL(progress(int)), this, SLOT(progress(int)));
     }
   // update ui pages
   if (d->exporter)
@@ -2182,6 +2203,27 @@ QDjViewPrintDialog::clear()
 void 
 QDjViewPrintDialog::start()
 {
+  // start conversion
+  if (d->exporter)
+    {
+      int npages = d->djview->pageNum();
+      int fPage = d->ui.fromPageCombo->currentIndex();
+      int lPage = d->ui.toPageCombo->currentIndex();
+      int cPage = d->djview->getDjVuWidget()->page();
+      if (d->ui.currentPageButton->isChecked())
+        fPage =lPage = cPage;
+      if (d->ui.documentButton->isChecked())
+        { fPage = 0; lPage = npages-1; }
+      if (d->ui.reverseCheckBox->isChecked() ^ (fPage > lPage))
+        qSwap(fPage, lPage);
+      d->exporter->setPrinter(d->printer);
+      d->exporter->setPageRange(fPage, lPage);
+      d->printer->setNumCopies(d->ui.numCopiesSpinBox->value());
+      d->printer->setCollateCopies(d->ui.collateCheckBox->isChecked());
+      d->exporter->run();
+    }
+  // refresh ui
+  refresh();
 }
 
 
