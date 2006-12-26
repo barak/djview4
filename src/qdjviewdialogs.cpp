@@ -846,6 +846,7 @@ public:
   virtual void setFileName(QString s)     { fileName = s; }
   virtual void setPrinter(QPrinter*)      { }
   virtual void iniPrinter(QPrinter*)      { }
+  virtual void resetOptions()             { }
   virtual void setPageRange(int f, int t) { fromPage = f; toPage = t; }
   virtual void setErrorCaption(QString s) { errorCaption = s; }
   virtual int      propertyPages()        { return 0; }
@@ -1083,6 +1084,7 @@ public:
   virtual void run();
   virtual void stop();
   virtual ddjvu_status_t status();
+  virtual void resetOptions();
   virtual void setFileName(QString s);
   virtual void setPrinter(QPrinter *p);
   virtual void iniPrinter(QPrinter *p);
@@ -1149,6 +1151,26 @@ QDjViewPSExporter::~QDjViewPSExporter()
     default:
       break;
     }
+}
+
+
+void 
+QDjViewPSExporter::resetOptions()
+{
+  ui1.colorButton->setChecked(true);
+  ui1.frameCheckBox->setChecked(false);
+  ui1.cropMarksCheckBox->setChecked(false);
+  ui1.levelSpinBox->setValue(3);
+  ui2.autoOrientCheckBox->setChecked(true);
+  ui2.scaleToFitButton->setChecked(true);
+  ui2.zoomSpinBox->setValue(100);
+  ui3.bookletCheckBox->setChecked(false);
+  ui3.sheetsSpinBox->setValue(0);
+  ui3.rectoVersoCombo->setCurrentIndex(0);
+  ui3.rectoVersoShiftSpinBox->setValue(0);
+  ui3.centerMarginSpinBox->setValue(18);
+  ui3.centerIncreaseSpinBox->setValue(40);
+  refresh();
 }
 
 
@@ -1643,6 +1665,8 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *djview)
           this, SLOT(browse()));
   connect(d->ui.formatCombo, SIGNAL(activated(int)), 
           this, SLOT(refresh()));
+  connect(d->ui.resetButton, SIGNAL(clicked()), 
+          this, SLOT(reset()));
   connect(d->ui.fileNameEdit, SIGNAL(textChanged(QString)), 
           this, SLOT(refresh()));
   connect(d->ui.fromPageCombo, SIGNAL(activated(int)),
@@ -1755,6 +1779,7 @@ QDjViewSaveDialog::refresh()
     }
   d->ui.destinationGroupBox->setEnabled(nojob && !nodoc);
   d->ui.saveGroupBox->setEnabled(nojob && !nodoc && !nofmt && !nopag);
+  d->ui.resetButton->setEnabled(nojob && !nodoc && !noopt);
   d->ui.okButton->setEnabled(nojob && !nodoc && !notxt && !nofmt);
   d->ui.cancelButton->setEnabled(nojob);
   d->ui.stopButton->setEnabled(!nojob);
@@ -1767,6 +1792,16 @@ QDjViewSaveDialog::clear()
 {
   d->stopping = true;
   reject();
+}
+
+
+void 
+QDjViewSaveDialog::reset()
+{
+  QDjViewExporter *exporter = currentExporter();
+  if (exporter) 
+    exporter->resetOptions();
+  refresh();
 }
 
 
@@ -1987,6 +2022,8 @@ QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
           this, SLOT(stop()));
   connect(d->ui.chooseButton, SIGNAL(clicked()), 
           this, SLOT(choose()));
+  connect(d->ui.resetButton, SIGNAL(clicked()), 
+          this, SLOT(reset()));
 
   connect(d->ui.fromPageCombo, SIGNAL(activated(int)),
           d->ui.pageRangeButton, SLOT(click()) );
@@ -2228,6 +2265,7 @@ QDjViewPrintDialog::refresh()
   d->ui.destinationGroupBox->setEnabled(nojob && !nodoc);
   d->ui.printGroupBox->setEnabled(nojob && !nodoc && !noexp && !nopag);
   d->ui.copiesGroupBox->setEnabled(nojob && !nodoc && !noexp && !nopag);
+  d->ui.resetButton->setEnabled(nojob && !nodoc);
   d->ui.okButton->setEnabled(nojob && !nodoc && !noexp);
   d->ui.cancelButton->setEnabled(nojob);
   d->ui.stopButton->setEnabled(!nojob);
@@ -2240,6 +2278,18 @@ QDjViewPrintDialog::clear()
 {
   d->stopping = true;
   reject();
+}
+
+
+void 
+QDjViewPrintDialog::reset()
+{
+  if (d->exporter) 
+    d->exporter->resetOptions();
+  d->ui.numCopiesSpinBox->setValue(1);
+  d->ui.collateCheckBox->setChecked(true);
+  d->ui.reverseCheckBox->setChecked(false);
+  refresh();
 }
 
 

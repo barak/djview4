@@ -21,11 +21,17 @@
 
 #include <Qt>
 #include <QByteArray>
+#include <QDialog>
 #include <QFlags>
+#include <QFrame>
 #include <QObject>
+#include <QPainter>
 #include <QSettings>
 #include <QSize>
 #include <QString>
+#include <QUrl>
+#include <QVariant>
+#include <QWidget>
 
 
 #ifndef DJVIEW_ORG
@@ -38,6 +44,8 @@
 # define DJVIEW_VERSION 0x40000
 #endif
 
+
+// Global preferences
 
 class QDjViewPrefs : public QObject
 {
@@ -125,6 +133,7 @@ public:
   int        lensSize;          //!< Size of the magnification lens.
   int        lensPower;         //!< Power of the magnification lens.
   QString    browserProgram;    //!< Preferred web browser.
+  QUrl       proxyUrl;          //!< Proxy information.
   Qt::KeyboardModifiers modifiersForLens;   //!< Keys for the lens. 
   Qt::KeyboardModifiers modifiersForSelect; //!< Keys for selecting.
   Qt::KeyboardModifiers modifiersForLinks;  //!< Keys for showing the links.
@@ -146,8 +155,14 @@ public:
   
 public:
   static QDjViewPrefs *instance(void);
-  void load(void);
-  void save(void);
+
+public slots:
+  void load();
+  void save();
+  void update();
+
+signals:
+  void updated();
 
 private:
   QDjViewPrefs(void);
@@ -158,6 +173,30 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDjViewPrefs::Options)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDjViewPrefs::Tools)
+
+
+
+
+// Widget for showing gamma correction
+
+class QDjViewGammaWidget : public QFrame
+{
+  Q_OBJECT
+public:
+  QDjViewGammaWidget(QWidget *parent = 0);
+  double gamma() const;
+public slots:
+  void setGamma(double);
+  void setGammaTimesTen(int);
+protected:
+  virtual QSize sizeHint() const;
+  virtual void paintEvent(QPaintEvent *event);
+private:
+  void paintRect(QPainter &painter, QRect r, bool strip);
+  double g;
+};
+
+
 
 
 #endif

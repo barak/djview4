@@ -23,7 +23,9 @@
 #include <QMetaObject>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QPainter>
 #include <QPointer>
+#include <QRect>
 #include <QSettings>
 #include <QStringList>
 #include <QVariant>
@@ -31,6 +33,12 @@
 #include "qdjviewprefs.h"
 #include "qdjview.h"
 
+#include <math.h>
+
+
+// ========================================
+// QDJVIEWPREFS
+// ========================================
 
 
 /*! \class QDjViewPrefs
@@ -298,6 +306,8 @@ QDjViewPrefs::load(void)
     lensPower = s.value("lensPower").toInt();
   if (s.contains("browserProgram"))
     browserProgram = s.value("browserProgram").toString();
+  if (s.contains("proxyUrl"))
+    proxyUrl = s.value("proxyUrl").toString();
   if (s.contains("modifiersForLens"))
     modifiersForLens 
       = stringToModifiers(s.value("modifiersForLens").toString());
@@ -370,6 +380,7 @@ QDjViewPrefs::save(void)
   s.setValue("lensSize", lensSize);
   s.setValue("lensPower", lensPower);
   s.setValue("browserProgram", browserProgram);
+  s.setValue("proxyUrl", proxyUrl.toString());
   s.setValue("modifiersForLens", modifiersToString(modifiersForLens));
   s.setValue("modifiersForSelect", modifiersToString(modifiersForSelect));
   s.setValue("modifiersForLinks", modifiersToString(modifiersForLinks));
@@ -389,6 +400,119 @@ QDjViewPrefs::save(void)
   s.setValue("printReverse", printReverse);
 }
 
+
+
+/*! Emit the updated() signal. */
+
+void
+QDjViewPrefs::update()
+{
+  emit updated();
+}
+
+
+/*! \fn QDjViewPrefs::updated() 
+  This signal indicates that viewers should reload the preferences. */
+
+
+
+// ========================================
+// QDJVIEWGAMMAWIDGET
+// ========================================
+
+
+/*! \class QDjViewGammaWidget
+   \brief Shows a gamma correction adjustment frame. */
+
+
+
+QDjViewGammaWidget::QDjViewGammaWidget(QWidget *parent)
+  : QFrame(parent), g(2.2)
+{
+  setFrameShape(QFrame::Panel);
+  setFrameShadow(QFrame::Sunken);
+  setLineWidth(1);
+}
+
+double 
+QDjViewGammaWidget::gamma() const
+{
+  return g;
+}
+
+void 
+QDjViewGammaWidget::setGamma(double gamma)
+{
+  g = qBound(0.3, gamma, 5.0);
+  update();
+}
+
+
+void 
+QDjViewGammaWidget::setGammaTimesTen(int gamma)
+{
+  setGamma((double)gamma/10);
+}
+
+
+QSize 
+QDjViewGammaWidget::sizeHint() const
+{
+  return QSize(64, 64);
+}
+
+
+void 
+QDjViewGammaWidget::paintEvent(QPaintEvent *event)
+{
+  int w = width() - 8;
+  int h = height() - 8;
+  if (w >= 8 && h >= 8)
+    {
+      QPoint c = rect().center();
+      QPainter painter;
+      painter.begin(this);
+      int m = qMin( w, h ) / 4;
+      m = m + m;
+      QRect r(c.x()-m, c.y()-m, m, m);
+      painter.fillRect(rect(), Qt::white);
+      paintRect(painter, r.translated(m,0), true);
+      paintRect(painter, r.translated(0,m+1), true);
+      paintRect(painter, r.translated(m,m), false);
+      paintRect(painter, r, false);
+      painter.end();
+      QFrame::paintEvent(event);
+    }
+}
+
+
+void 
+QDjViewGammaWidget::paintRect(QPainter &painter, QRect r, bool strip)
+{
+  if (strip)
+    {
+      // draw stripes
+      painter.setPen(QPen(Qt::black, 1));
+      painter.setRenderHint(QPainter::Antialiasing, false);
+      for(int i=r.top(); i<=r.bottom(); i+=2)
+        painter.drawLine(r.left(), i, r.right(), i);
+    }
+  else
+    {
+      // see DjVuImage.cpp
+      double correction = g / 2.2;
+      if (correction < 0.1)
+        correction = 0.1;
+      else if (correction > 10)
+        correction = 10;
+      // see GPixmap.cpp
+      double x = ::pow(0.5, 1.0/correction);
+      int gray = (int)floor(255.0 * x + 0.5);
+      // fill
+      gray = qBound(0, gray, 255);
+      painter.fillRect(r, QColor(gray,gray,gray));
+    }
+}
 
 
 

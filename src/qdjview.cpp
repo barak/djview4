@@ -31,6 +31,7 @@
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QDebug>
+#include <QDialog>
 #include <QDir>
 #include <QDockWidget>
 #include <QEvent>
@@ -58,6 +59,7 @@
 #include <QRegExpValidator>
 #include <QScrollBar>
 #include <QShortcut>
+#include <QSlider>
 #include <QStackedLayout>
 #include <QStatusBar>
 #include <QString>
@@ -567,7 +569,9 @@ QDjView::createActions()
   
   actionPreferences = makeAction(tr("Prefere&nces...", "Settings|")) 
     << QIcon(":/images/icon_prefs.png")
-    << tr("Show the preferences dialog.");
+    << tr("Show the preferences dialog.")
+    << Trigger(this, SLOT(performPreferences()))
+    << Trigger(this, SLOT(updateActionsLater()));
 
   actionViewSideBar = sideBar->toggleViewAction() 
     << tr("Show &side bar", "Settings|")
@@ -847,6 +851,7 @@ QDjView::updateActions()
             action != actionOpen &&
             action != actionClose &&
             action != actionQuit &&
+            action != actionPreferences &&
             action != actionViewToolBar &&
             action != actionViewStatusBar &&
             action != actionViewSideBar &&
@@ -1878,6 +1883,8 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   enableContextMenu(true);
   
   // Preferences
+  connect(prefs, SIGNAL(updated()), this, SLOT(applyPreferences()));
+  connect(prefs, SIGNAL(updated()), this, SLOT(updateActionsLater()));
   applyPreferences();
   updateActions();
 }
@@ -1982,6 +1989,17 @@ QDjView::open(QUrl url)
   QDjVuHttpDocument *doc = new QDjVuHttpDocument(true);
   connect(doc, SIGNAL(error(QString,QString,int)),
           errorDialog, SLOT(error(QString,QString,int)));
+  if (prefs->proxyUrl.isValid() && prefs->proxyUrl.scheme() == "http")
+    {
+      QUrl proxyUrl = prefs->proxyUrl;
+      QString host =  proxyUrl.host();
+      int port = proxyUrl.port(8000);
+      QString user = proxyUrl.userName();
+      QString pass = proxyUrl.password();
+      if (!host.isEmpty() && proxyUrl.path().isEmpty())
+        doc->setProxy(host, port, user, pass);
+    }
+  
   QUrl docurl = removeDjVuCgiArguments(url);
   doc->setUrl(&djvuContext, docurl);
   if (!doc->isValid())
@@ -3131,6 +3149,34 @@ QDjView::performMetadata(void)
   metaDialog->refresh();
   metaDialog->raise();
   metaDialog->show();
+}
+
+
+void
+QDjView::performPreferences(void)
+{
+  // Load this window configuration into preferences
+  updateSaved(getSavedPrefs());
+  
+  // Temporary stuff to test QDjViewGammaWidget
+  QDialog *dlg = new QDialog(this);
+  QVBoxLayout *vlay = new QVBoxLayout(dlg);
+  QDjViewGammaWidget *gw = new QDjViewGammaWidget();
+  vlay->addWidget(gw);
+  QSlider *sl = new QSlider(Qt::Horizontal);
+  sl->setMinimum(5);
+  sl->setMaximum(60);
+  sl->setTracking(true);
+  sl->setTickInterval(5);
+  sl->setTickPosition(QSlider::TicksBelow);
+  vlay->addWidget(sl);
+  connect(sl, SIGNAL(valueChanged(int)), gw, SLOT(setGammaTimesTen(int)));
+  sl->setValue((int)(prefs->gamma * 10));
+  dlg->exec();
+  prefs->gamma = gw->gamma();
+  delete dlg;
+  prefs->save();
+  prefs->update();
 }
 
 

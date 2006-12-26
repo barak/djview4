@@ -93,6 +93,9 @@ class QDjView : public QMainWindow
   bool        saveTextFile(QString text, QString filename=QString());
   bool        saveImageFile(QImage image, QString filename=QString());
   bool        startBrowser(QUrl url);
+  void        fillZoomCombo(QComboBox *zoomCombo);
+  void        fillModeCombo(QComboBox *modeCombo);
+  void        fillPageCombo(QComboBox *pageCombo);
 
 public slots:
   bool  open(QString filename);
@@ -113,9 +116,7 @@ public slots:
   void  print(void);
   void  save(void);
   void  find(QString find = QString());
-  void  fillZoomCombo(QComboBox *zoomCombo);
-  void  fillModeCombo(QComboBox *modeCombo);
-  void  fillPageCombo(QComboBox *pageCombo);
+  void  applyPreferences(void);
   
 signals:
   void  documentClosed(QDjVuDocument *doc);
@@ -144,7 +145,6 @@ protected:
   void     updateOptions(void);
   void     applySaved(Saved *saved);
   void     updateSaved(Saved *saved);
-  void     applyPreferences(void);
   void     parseToolBarOption(QString option, QStringList &errors);
 
   virtual bool eventFilter(QObject *watched, QEvent *event);
@@ -175,6 +175,7 @@ protected slots:
   void performOpen(void);
   void performInformation(void);
   void performMetadata(void);
+  void performPreferences(void);
   void performRotation(void);
   void performZoom(void);
   void performSelect(bool);
