@@ -1993,10 +1993,14 @@ QDjView::open(QUrl url)
     {
       QUrl proxyUrl = prefs->proxyUrl;
       QString host =  proxyUrl.host();
-      int port = proxyUrl.port(8000);
+#if QT_VERSION >= 0x40100
+      int port = proxyUrl.port(8080);
+#else
+      int port = proxyUrl.port();
+#endif
       QString user = proxyUrl.userName();
       QString pass = proxyUrl.password();
-      if (!host.isEmpty() && proxyUrl.path().isEmpty())
+      if (!host.isEmpty() && proxyUrl.path().isEmpty() && port >=0 )
         doc->setProxy(host, port, user, pass);
     }
   
