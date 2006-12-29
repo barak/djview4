@@ -1316,9 +1316,11 @@ QDjViewPSExporter::setPrinter(QPrinter *p)
       fileName = QString::null;
       printerName = p->printerName();
     }
+#if QT_VERSION >= 0x40100  // bug?
   QPrinter::ColorMode colorMode = p->colorMode();
   ui1.colorButton->setChecked(colorMode == QPrinter::Color);
   ui1.grayScaleButton->setChecked(colorMode == QPrinter::GrayScale);
+#endif
   QPrinter::Orientation orient = p->orientation();
   ui2.portraitButton->setChecked(orient == QPrinter::Portrait);
   ui2.landscapeButton->setChecked(orient == QPrinter::Landscape);
