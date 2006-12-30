@@ -556,7 +556,7 @@ struct MapArea
   MapArea();
   bool error(const char *err, int pageno, miniexp_t info);
   bool parse(miniexp_t anno, int pageno=-1);
-  bool isClickable(void);
+  bool isClickable(bool hyperlinkEnabled=true);
   bool clicked(void);
   bool hasTransient();
   bool hasPermanent();
@@ -564,8 +564,8 @@ struct MapArea
   QPainterPath contour(QRectMapper &m, QPoint &offset);
   void update(QWidget *w, QRectMapper &m, QPoint offset);
   void paintBorder(QPaintDevice *w, QRectMapper &m, QPoint offset);
-  void paintPermanent(QPaintDevice *w, QRectMapper &m, QPoint offset);
-  void paintTransient(QPaintDevice *w, QRectMapper &m, QPoint offset);
+  void paintPermanent(QPaintDevice *w, QRectMapper &m, QPoint o, double z=100);
+  void paintTransient(QPaintDevice *w, QRectMapper &m, QPoint o);
 };
 
 struct Page
@@ -2732,10 +2732,10 @@ MapArea::clicked(void)
 }
 
 bool
-MapArea::isClickable(void)
+MapArea::isClickable(bool hyperlinkEnabled)
 {
   Keywords &k = *keywords();
-  if (url)
+  if (url && hyperlinkEnabled)
     return true;
   if (areaType == k.pushpin)
     return true;
@@ -2919,7 +2919,8 @@ MapArea::paintBorder(QPaintDevice *w, QRectMapper &m, QPoint offset)
 }
 
 void 
-MapArea::paintPermanent(QPaintDevice *w, QRectMapper &m, QPoint offset)
+MapArea::paintPermanent(QPaintDevice *w, QRectMapper &m, 
+                        QPoint offset, double zoom)
 {
   // The mapper <m> maps page coordinates to 
   // widget coordinates translated by <offset>.
@@ -2970,7 +2971,23 @@ MapArea::paintPermanent(QPaintDevice *w, QRectMapper &m, QPoint offset)
           QString s = miniexp_to_qstring(comment);
           paint.setPen(foregroundColor);
           int flags = Qt::AlignCenter|Qt::AlignVCenter|Qt::TextWordWrap;
-          paint.drawText(r,flags,s,0);
+          QFont font = paint.font();
+          // estimate font size
+          int size = (int)(zoom / 10.0);
+          while (size > 1)
+            {
+              QRect br;
+              font.setPointSize(size);
+              paint.setFont(font);
+              paint.drawText(r,flags|Qt::TextDontPrint,s,&br);
+              if (r.contains(br))
+                {
+                  // found good font size
+                  paint.drawText(r,flags,s,0);
+                  break;
+                }
+              size -= 1;
+            }
         }
       else if (areaType == k.pushpin)
         {
@@ -3468,7 +3485,8 @@ QDjVuPrivate::paintMapAreas(QImage &img, Page *p, const QRect &r, bool perm)
         {
           if (perm) 
             {
-              area.paintPermanent(&img, p->mapper, r.topLeft());
+              double z = p->rect.width() * p->dpi / p->width;
+              area.paintPermanent(&img, p->mapper, r.topLeft(), z);
               changed = true;
             }
           else if (mustDisplayMapArea(&area) && area.hasTransient()) 
@@ -3887,18 +3905,16 @@ QDjVuWidget::stopInteraction(void)
     {
     case DRAG_LINKING:
       priv->updatePosition(priv->cursorPoint, true);
-      if (priv->hyperlinkEnabled)
+      if (priv->currentMapArea && priv->currentMapArea->clicked())
         {
-          if (priv->currentMapArea && priv->currentMapArea->clicked())
-            {
-              priv->pixelCache.clear();
-              priv->currentMapArea->update(priv->widget->viewport(),
-                                           priv->currentMapAreaPage->mapper,
-                                           priv->visibleRect.topLeft()); 
-            }
-          else if (priv->currentMapArea && priv->currentMapArea->url )
-            emit pointerClick(priv->cursorPos, priv->currentMapArea->expr);
+          priv->pixelCache.clear();
+          priv->currentMapArea->update(priv->widget->viewport(),
+                                       priv->currentMapAreaPage->mapper,
+                                       priv->visibleRect.topLeft()); 
         }
+      else if (priv->currentMapArea && priv->currentMapArea->url 
+               && priv->hyperlinkEnabled )
+        emit pointerClick(priv->cursorPos, priv->currentMapArea->expr);
       break;
     case DRAG_SELECTING:
       priv->updatePosition(priv->cursorPoint, true);
@@ -3970,8 +3986,8 @@ QDjVuWidget::modifierEvent(Qt::KeyboardModifiers modifiers,
           viewport()->setCursor(Qt::CrossCursor);
           startSelecting(point);
         }
-      else if (priv->hyperlinkEnabled && priv->currentMapArea && 
-               priv->currentMapArea->isClickable())
+      else if (priv->currentMapArea && 
+               priv->currentMapArea->isClickable(priv->hyperlinkEnabled) )
         {
           viewport()->setCursor(Qt::ArrowCursor);
           if (buttons != Qt::NoButton)
