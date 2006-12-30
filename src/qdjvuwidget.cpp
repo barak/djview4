@@ -556,7 +556,7 @@ struct MapArea
   MapArea();
   bool error(const char *err, int pageno, miniexp_t info);
   bool parse(miniexp_t anno, int pageno=-1);
-  bool isClickable(bool hyperlinkEnabled=true);
+  bool isClickable(bool hyperlink=true);
   bool clicked(void);
   bool hasTransient();
   bool hasPermanent();
@@ -706,7 +706,7 @@ public:
   Prioritized<Align>       qHAlign;
   Prioritized<Align>       qVAlign;
   // hyperlinks
-  bool        pageMapAreas;
+  bool        displayMapAreas;
   Page       *currentMapAreaPage;
   MapArea    *currentMapArea;
   QString     currentUrl;
@@ -830,7 +830,7 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   ddjvu_format_set_gamma(renderFormat, gamma);
   // misc
   maxMessages = 20;
-  pageMapAreas = true;
+  displayMapAreas = true;
   currentMapAreaPage = 0;
   currentMapArea = 0;
   currentLinkDisplayed = false;
@@ -2277,22 +2277,22 @@ QDjVuWidget::setContextMenu(QMenu *m)
 }
 
 
-/*! \property QDjVuWidget::pageMapAreas
+/*! \property QDjVuWidget::displayMapAreas
   Indicates whether the mapareas specified in the annotations
   should be displayed. Default: \a true. */
 
 bool 
-QDjVuWidget::pageMapAreas(void) const
+QDjVuWidget::displayMapAreas(void) const
 {
-  return priv->pageMapAreas;
+  return priv->displayMapAreas;
 }
 
 void 
-QDjVuWidget::setPageMapAreas(bool b)
+QDjVuWidget::setDisplayMapAreas(bool b)
 {
-  if (b != priv->pageMapAreas)
+  if (b != priv->displayMapAreas)
     {
-      priv->pageMapAreas = b;
+      priv->displayMapAreas = b;
       viewport()->update();
       priv->checkCurrentMapArea();
       priv->showTransientMapAreas(priv->allLinksDisplayed);
@@ -2732,10 +2732,10 @@ MapArea::clicked(void)
 }
 
 bool
-MapArea::isClickable(bool hyperlinkEnabled)
+MapArea::isClickable(bool hyperlink)
 {
   Keywords &k = *keywords();
-  if (url && hyperlinkEnabled)
+  if (url && hyperlink)
     return true;
   if (areaType == k.pushpin)
     return true;
@@ -3059,9 +3059,9 @@ QDjVuPrivate::mustDisplayMapArea(MapArea *area)
     return true;
   if (area != currentMapArea)
     return false;
-  if (! hyperlinkEnabled)
-    return false;
-  return true;
+  if (hyperlinkEnabled && mouseEnabled)
+    return true;
+  return false;
 }
 
 void
@@ -3073,7 +3073,7 @@ QDjVuPrivate::checkCurrentMapArea(bool forceno)
   Page *newMapAreaPage = 0;
   MapArea *newMapArea = 0;
   // locate new maparea
-  if (pageMapAreas && !forceno && pos.inPage)
+  if (displayMapAreas && !forceno && pos.inPage)
     if (pageMap.contains(pos.pageNo))
       {
         Page *p = pageMap[pos.pageNo];
@@ -3129,7 +3129,7 @@ QDjVuPrivate::checkCurrentMapArea(bool forceno)
 void 
 QDjVuPrivate::showTransientMapAreas(bool b)
 {
-  b &= pageMapAreas;
+  b = b && displayMapAreas && hyperlinkEnabled && mouseEnabled;
   if (b != allLinksDisplayed)
     {
       Page *p;
@@ -3201,7 +3201,9 @@ QDjVuWidget::addHighlight(int pageno, int x, int y, int w, int h, QColor color)
 QString 
 QDjVuWidget::linkUrl(void)
 {
-  return priv->currentUrl;
+  if (priv->hyperlinkEnabled && priv->mouseEnabled)
+    return priv->currentUrl;
+  return QString();
 }
 
 /*! Returns the target string for the maparea located 
@@ -3211,7 +3213,9 @@ QDjVuWidget::linkUrl(void)
 QString 
 QDjVuWidget::linkTarget(void)
 {
-  return priv->currentTarget;
+  if (priv->hyperlinkEnabled && priv->mouseEnabled)
+    return priv->currentTarget;
+  return QString();
 }
 
 /*! Returns the comment string for the maparea located
@@ -3475,6 +3479,9 @@ QDjVuPrivate::addToPixelCache(const QRect &rect, QImage image)
 bool
 QDjVuPrivate::paintMapAreas(QImage &img, Page *p, const QRect &r, bool perm)
 {
+  // do not paint anything when disabled
+  if (! displayMapAreas)
+    return false;
   // warning: rect in desk coordinates.
   bool changed = false;
   for (int i=0; i<p->mapAreas.size(); i++)
@@ -3987,7 +3994,8 @@ QDjVuWidget::modifierEvent(Qt::KeyboardModifiers modifiers,
           startSelecting(point);
         }
       else if (priv->currentMapArea && 
-               priv->currentMapArea->isClickable(priv->hyperlinkEnabled) )
+               priv->currentMapArea->isClickable(priv->hyperlinkEnabled 
+                                                 && priv->mouseEnabled ) )
         {
           viewport()->setCursor(Qt::ArrowCursor);
           if (buttons != Qt::NoButton)

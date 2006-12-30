@@ -1061,6 +1061,7 @@ QDjView::applyOptions(void)
   statusBar->setVisible(options & QDjViewPrefs::SHOW_STATUSBAR);
   enableScrollBars(options & QDjViewPrefs::SHOW_SCROLLBARS);
   widget->setDisplayFrame(options & QDjViewPrefs::SHOW_FRAME);
+  widget->setDisplayMapAreas(options & QDjViewPrefs::SHOW_MAPAREAS);
   widget->setContinuous(options & QDjViewPrefs::LAYOUT_CONTINUOUS);
   widget->setSideBySide(options & QDjViewPrefs::LAYOUT_SIDEBYSIDE);
   widget->enableMouse(options & QDjViewPrefs::HANDLE_MOUSE);
@@ -1086,6 +1087,8 @@ QDjView::updateOptions(void)
     options |= QDjViewPrefs::SHOW_SCROLLBARS;
   if (widget->displayFrame())
     options |= QDjViewPrefs::SHOW_FRAME;
+  if (widget->displayMapAreas())
+    options |= QDjViewPrefs::SHOW_MAPAREAS;
   if (widget->continuous())
     options |= QDjViewPrefs::LAYOUT_CONTINUOUS;
   if (widget->sideBySide())
@@ -1138,12 +1141,12 @@ QDjView::updateSaved(Saved *saved)
       saved->zoom = widget->zoom();
       saved->state = saveState();
       saved->options = options;
-      // options we always want
+      // force options we always want
       saved->options |= (QDjViewPrefs::HANDLE_MOUSE |
                          QDjViewPrefs::HANDLE_KEYBOARD |
                          QDjViewPrefs::HANDLE_LINKS |
                          QDjViewPrefs::HANDLE_CONTEXTMENU );
-      // confusing options in standalone mode
+      // avoid confusing options in standalone mode
       if (saved == &prefs->forStandalone)
         saved->options |= (QDjViewPrefs::SHOW_MENUBAR |
                            QDjViewPrefs::SHOW_SCROLLBARS |

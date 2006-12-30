@@ -61,7 +61,7 @@ class QDjVuWidget : public QAbstractScrollArea
   Q_PROPERTY(int pixelCacheSize 
              READ pixelCacheSize WRITE setPixelCacheSize)
   Q_PROPERTY(bool pageMapArea 
-             READ pageMapAreas WRITE setPageMapAreas)
+             READ displayMapAreas WRITE setDisplayMapAreas)
   Q_PROPERTY(bool keyboardEnabled 
              READ keyboardEnabled WRITE enableKeyboard)
   Q_PROPERTY(bool hyperlinkEnabled 
@@ -152,7 +152,7 @@ public:
   int borderSize(void) const;
   QMenu* contextMenu(void) const;
   int  pixelCacheSize(void) const;
-  bool pageMapAreas(void) const;
+  bool displayMapAreas(void) const;
   bool keyboardEnabled(void) const;
   bool mouseEnabled(void) const;
   bool hyperlinkEnabled(void) const;
@@ -179,7 +179,7 @@ public slots:
   void setBorderBrush(QBrush);
   void setBorderSize(int);
   void setContextMenu(QMenu*);
-  void setPageMapAreas(bool);
+  void setDisplayMapAreas(bool);
   void setPixelCacheSize(int);
   void enableKeyboard(bool);
   void enableMouse(bool);
