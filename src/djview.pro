@@ -66,6 +66,7 @@ FORMS += qdjviewexportps2.ui
 FORMS += qdjviewexportps3.ui
 FORMS += qdjviewsavedialog.ui 
 FORMS += qdjviewprintdialog.ui 
+FORMS += qdjviewprefsdialog.ui 
 
 SOURCES += djview.cpp
 

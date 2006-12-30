@@ -570,8 +570,7 @@ QDjView::createActions()
   actionPreferences = makeAction(tr("Prefere&nces...", "Settings|")) 
     << QIcon(":/images/icon_prefs.png")
     << tr("Show the preferences dialog.")
-    << Trigger(this, SLOT(performPreferences()))
-    << Trigger(this, SLOT(updateActionsLater()));
+    << Trigger(this, SLOT(performPreferences()));
 
   actionViewSideBar = sideBar->toggleViewAction() 
     << tr("Show &side bar", "Settings|")
@@ -3168,28 +3167,11 @@ QDjView::performMetadata(void)
 void
 QDjView::performPreferences(void)
 {
-  // Load window configuration into preferences
+  QDjViewPrefsDialog *dialog = QDjViewPrefsDialog::instance(this);
   updateSaved(getSavedPrefs());
-  
-  // Temporary stuff to test QDjViewGammaWidget
-  QDialog *dlg = new QDialog(this);
-  QVBoxLayout *vlay = new QVBoxLayout(dlg);
-  QDjViewGammaWidget *gw = new QDjViewGammaWidget();
-  vlay->addWidget(gw);
-  QSlider *sl = new QSlider(Qt::Horizontal);
-  sl->setMinimum(5);
-  sl->setMaximum(60);
-  sl->setTracking(true);
-  sl->setTickInterval(5);
-  sl->setTickPosition(QSlider::TicksBelow);
-  vlay->addWidget(sl);
-  connect(sl, SIGNAL(valueChanged(int)), gw, SLOT(setGammaTimesTen(int)));
-  sl->setValue((int)(prefs->gamma * 10));
-  dlg->exec();
-  prefs->gamma = gw->gamma();
-  delete dlg;
-  prefs->save();
-  prefs->update();
+  dialog->load();
+  dialog->show();
+  dialog->raise();
 }
 
 

@@ -283,5 +283,54 @@
   <include location="qdjvuwidget.qrc" />
   <include location="qdjview.qrc" />
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>fromPageCombo</sender>
+   <signal>activated(int)</signal>
+   <receiver>pageRangeButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>158</x>
+     <y>163</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>76</x>
+     <y>158</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toPageCombo</sender>
+   <signal>activated(int)</signal>
+   <receiver>pageRangeButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>248</x>
+     <y>155</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>44</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cancelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>QDjViewSaveDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>375</x>
+     <y>342</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>443</x>
+     <y>367</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

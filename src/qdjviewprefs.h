@@ -190,12 +190,36 @@ public slots:
   void setGamma(double);
   void setGammaTimesTen(int);
 protected:
-  virtual QSize sizeHint() const;
   virtual void paintEvent(QPaintEvent *event);
 private:
   void paintRect(QPainter &painter, QRect r, bool strip);
   double g;
 };
+
+
+
+// Preferences Dialog
+
+class QDjView;
+class QDjVuContext;
+
+class QDjViewPrefsDialog : public QDialog
+{
+  Q_OBJECT
+public:
+  ~QDjViewPrefsDialog();
+  static QDjViewPrefsDialog *instance(QDjView *djview);
+public slots:
+  void load();
+  void apply();
+  virtual void done(int);
+protected slots:
+private:
+  QDjViewPrefsDialog(QDjView *djview);
+  struct Private;
+  Private *d;
+};
+
 
 
 

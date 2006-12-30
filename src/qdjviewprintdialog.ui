@@ -308,5 +308,54 @@
  </widget>
  <pixmapfunction></pixmapfunction>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>cancelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>QDjViewPrintDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>426</x>
+     <y>310</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>472</x>
+     <y>336</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>fromPageCombo</sender>
+   <signal>activated(int)</signal>
+   <receiver>pageRangeButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>150</x>
+     <y>152</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>44</x>
+     <y>163</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toPageCombo</sender>
+   <signal>activated(int)</signal>
+   <receiver>pageRangeButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>245</x>
+     <y>155</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>40</x>
+     <y>161</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

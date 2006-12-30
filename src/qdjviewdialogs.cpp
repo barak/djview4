@@ -101,7 +101,6 @@ QDjViewErrorDialog::QDjViewErrorDialog(QWidget *parent)
     d(new Private)
 {
   d->ui.setupUi(this);
-  connect(d->ui.okButton, SIGNAL(clicked()), this, SLOT(accept()));
   d->ui.textEdit->viewport()->setBackgroundRole(QPalette::Background);
   setWindowTitle(tr("DjView Error"));
 }
@@ -217,8 +216,6 @@ QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
           this, SLOT(refresh()));
   connect(d->djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
           this, SLOT(setPage(int)));
-  connect(d->ui.okButton, SIGNAL(clicked()), 
-          this, SLOT(accept()) );
   connect(d->ui.nextButton, SIGNAL(clicked()), 
           this, SLOT(nextFile()) );
   connect(d->ui.jumpButton, SIGNAL(clicked()), 
@@ -610,8 +607,6 @@ QDjViewMetaDialog::QDjViewMetaDialog(QDjView *parent)
           this, SLOT(refresh()));
   connect(d->djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
           this, SLOT(setPage(int)) );
-  connect(d->ui.okButton, SIGNAL(clicked()),
-          this, SLOT(accept()) );
   connect(d->ui.jumpButton, SIGNAL(clicked()),
           this, SLOT(jumpToSelectedPage()) );
   connect(d->ui.pageCombo, SIGNAL(activated(int)),
@@ -1659,8 +1654,6 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *djview)
 
   connect(d->ui.okButton, SIGNAL(clicked()), 
           this, SLOT(start()));
-  connect(d->ui.cancelButton, SIGNAL(clicked()), 
-          this, SLOT(reject()));
   connect(d->ui.stopButton, SIGNAL(clicked()), 
           this, SLOT(stop()));
   connect(d->ui.browseButton, SIGNAL(clicked()), 
@@ -1671,10 +1664,6 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *djview)
           this, SLOT(reset()));
   connect(d->ui.fileNameEdit, SIGNAL(textChanged(QString)), 
           this, SLOT(refresh()));
-  connect(d->ui.fromPageCombo, SIGNAL(activated(int)),
-          d->ui.pageRangeButton, SLOT(click()) );
-  connect(d->ui.toPageCombo, SIGNAL(activated(int)),
-          d->ui.pageRangeButton, SLOT(click()) );
   connect(djview, SIGNAL(documentClosed(QDjVuDocument*)),
           this, SLOT(clear()));
   connect(djview, SIGNAL(documentReady(QDjVuDocument*)),
@@ -2018,19 +2007,12 @@ QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
   setAttribute(Qt::WA_GroupLeader, true);
   connect(d->ui.okButton, SIGNAL(clicked()), 
           this, SLOT(start()));
-  connect(d->ui.cancelButton, SIGNAL(clicked()), 
-          this, SLOT(reject()));
   connect(d->ui.stopButton, SIGNAL(clicked()), 
           this, SLOT(stop()));
   connect(d->ui.chooseButton, SIGNAL(clicked()), 
           this, SLOT(choose()));
   connect(d->ui.resetButton, SIGNAL(clicked()), 
           this, SLOT(reset()));
-
-  connect(d->ui.fromPageCombo, SIGNAL(activated(int)),
-          d->ui.pageRangeButton, SLOT(click()) );
-  connect(d->ui.toPageCombo, SIGNAL(activated(int)),
-          d->ui.pageRangeButton, SLOT(click()) );
   connect(djview, SIGNAL(documentClosed(QDjVuDocument*)),
           this, SLOT(clear()));
   connect(djview, SIGNAL(documentReady(QDjVuDocument*)),

@@ -29,9 +29,11 @@
 #include <QSettings>
 #include <QStringList>
 #include <QVariant>
+#include <QWhatsThis>
 
 #include "qdjviewprefs.h"
 #include "qdjview.h"
+#include "qdjvu.h"
 
 #include <math.h>
 
@@ -417,6 +419,10 @@ QDjViewPrefs::update()
 
 
 
+
+
+
+
 // ========================================
 // QDJVIEWGAMMAWIDGET
 // ========================================
@@ -430,6 +436,7 @@ QDjViewPrefs::update()
 QDjViewGammaWidget::QDjViewGammaWidget(QWidget *parent)
   : QFrame(parent), g(2.2)
 {
+  setMinimumSize(64,64);
   setFrameShape(QFrame::Panel);
   setFrameShadow(QFrame::Sunken);
   setLineWidth(1);
@@ -456,18 +463,11 @@ QDjViewGammaWidget::setGammaTimesTen(int gamma)
 }
 
 
-QSize 
-QDjViewGammaWidget::sizeHint() const
-{
-  return QSize(64, 64);
-}
-
-
 void 
 QDjViewGammaWidget::paintEvent(QPaintEvent *event)
 {
-  int w = width() - 8;
-  int h = height() - 8;
+  int w = width() - 16;
+  int h = height() - 16;
   if (w >= 8 && h >= 8)
     {
       QPoint c = rect().center();
@@ -501,19 +501,199 @@ QDjViewGammaWidget::paintRect(QPainter &painter, QRect r, bool strip)
   else
     {
       // see DjVuImage.cpp
-      double correction = g / 2.2;
-      if (correction < 0.1)
-        correction = 0.1;
-      else if (correction > 10)
-        correction = 10;
+      double gamma = g;
+      if (gamma < 0.1)
+        gamma = 0.1;
+      else if (gamma > 10)
+        gamma = 10;
       // see GPixmap.cpp
-      double x = ::pow(0.5, 1.0/correction);
+      double x = ::pow(0.5, 1.0/gamma);
       int gray = (int)floor(255.0 * x + 0.5);
       // fill
       gray = qBound(0, gray, 255);
       painter.fillRect(r, QColor(gray,gray,gray));
     }
 }
+
+
+
+// ========================================
+// QDJVIEWPREFSDIALOG
+// ========================================
+
+
+#include "ui_qdjviewprefsdialog.h"
+
+
+static QPointer<QDjViewPrefsDialog> prefsDialog;
+
+
+/*! Returns the single preference dialog. */
+
+QDjViewPrefsDialog *
+QDjViewPrefsDialog::instance(QDjView *djview)
+{
+  QMutex mutex;
+  QMutexLocker locker(&mutex);
+  if (! prefsDialog)
+    {
+      QDjViewPrefsDialog *main = new QDjViewPrefsDialog(djview);
+      main->setWindowTitle(tr("Preferences - DjView"));
+      main->setAttribute(Qt::WA_DeleteOnClose);
+      prefsDialog = main;
+    }
+  return prefsDialog;
+}
+
+
+struct QDjViewPrefsDialog::Private
+{
+  QDjVuContext *context;
+  QDjViewPrefs *prefs;
+  Ui::QDjViewPrefsDialog ui;
+  QDjViewGammaWidget *gammaWidget;
+};
+
+
+QDjViewPrefsDialog::~QDjViewPrefsDialog()
+{
+  delete d;
+}
+
+
+static inline void
+setHelp(QWidget *w, QString s)
+{
+  w->setWhatsThis(s);
+}
+
+
+QDjViewPrefsDialog::QDjViewPrefsDialog(QDjView *djview)
+  : QDialog(), d(new Private)
+{
+  d->context = &djview->getDjVuContext();
+  d->prefs = QDjViewPrefs::instance();
+
+  // prepare ui
+  setAttribute(Qt::WA_GroupLeader, true);
+  d->ui.setupUi(this);
+  
+  // insert gamma widget
+  d->gammaWidget = new QDjViewGammaWidget(this);
+  d->gammaWidget->setMinimumSize(119,119);
+  d->gammaWidget->setMaximumSize(119,119);
+  QLayout *layout = d->ui.gammaTab->layout();
+  if (qobject_cast<QGridLayout*>(layout))
+    {
+      QGridLayout *gridLayout = (QGridLayout*)layout;
+      int cols = gridLayout->columnCount();
+      d->gammaWidget->setParent(0);
+      gridLayout->addWidget(d->gammaWidget, 0, cols-1, Qt::AlignCenter);
+    }
+  
+  // connect buttons (some are connected in the ui file)
+  connect(d->ui.applyButton, SIGNAL(clicked()),
+          this, SLOT(apply()) );
+  connect(d->ui.gammaSlider, SIGNAL(valueChanged(int)),
+          d->gammaWidget, SLOT(setGammaTimesTen(int)) );
+  
+  // load ui state
+  load();
+
+  // whatsthis
+  setHelp(d->ui.gammaTab,
+          tr("<html><b>Screen gamma correction.</b>"
+             "<br>The best color rendition is achieved"
+             " by adjusting the gamma correction slider"
+             " and choosing the position that makes the"
+             " gray square as uniform as possible."
+             "<p><b>Printer color correction.</b>"
+             "<br>The <i>automatic color matching</i> option"
+             " works best with PostScript printers"
+             " and ICC profiled printers."
+             " The slider might be useful in other cases."
+             "</html>") );
+  
+
+  setHelp(d->ui.networkTab,
+          tr("<html><b>Network proxy settings.</b>"
+             "<br>These proxy settings are used when"
+             " the standalone djview viewer accesses"
+             " a djvu document through a http url."
+             " The djview plugin always uses the proxy"
+             " settings of the web browser."
+             "</html>") );
+}
+
+
+void
+QDjViewPrefsDialog::load()
+{
+  // load preferences into ui
+  QDjViewPrefs *prefs = d->prefs;
+  
+  // 1- gamma tab
+  d->ui.gammaSlider->setValue((int)(prefs->gamma * 10));
+  int gamma = (int)(prefs->printerGamma * 10);
+  d->ui.printerAutoCheckBox->setChecked(gamma <= 0);
+  d->ui.printerGammaSlider->setValue(gamma ? qBound(5, gamma, 50) : 22);
+  
+  // 6- network tab
+  bool proxy = prefs->proxyUrl.isValid();
+  if (prefs->proxyUrl.scheme() != "http" ||
+      prefs->proxyUrl.host().isEmpty())
+    proxy = false;
+  if (proxy)
+    {
+      QUrl url = prefs->proxyUrl;
+      int port = url.port();
+      d->ui.proxyHostLineEdit->setText(url.host());
+      d->ui.proxyPortSpinBox->setValue(port>=0 ? port : 8080);
+      d->ui.proxyUserLineEdit->setText(url.userName());
+      d->ui.proxyPasswordLineEdit->setText(url.password());
+    }
+  d->ui.proxyCheckBox->setChecked(proxy);
+}
+
+
+void
+QDjViewPrefsDialog::apply()
+{
+  // save ui into preferences
+  QDjViewPrefs *prefs = d->prefs;
+
+  // 1- gamma tab
+  prefs->gamma = d->ui.gammaSlider->value() / 10.0;
+  if (d->ui.printerAutoCheckBox->isChecked())
+    prefs->printerGamma = 0;
+  else
+    prefs->printerGamma = d->ui.printerGammaSlider->value() / 10.0;
+
+  // 6- network tab
+  prefs->proxyUrl = QUrl();
+  if (d->ui.proxyCheckBox->isChecked())
+    {
+      prefs->proxyUrl.setScheme("http");
+      prefs->proxyUrl.setHost(d->ui.proxyHostLineEdit->text());
+      prefs->proxyUrl.setPort(d->ui.proxyPortSpinBox->value());
+      prefs->proxyUrl.setUserName(d->ui.proxyUserLineEdit->text());
+      prefs->proxyUrl.setPassword(d->ui.proxyPasswordLineEdit->text());
+    }
+
+  // broadcast change
+  prefs->update();
+}
+
+
+void
+QDjViewPrefsDialog::done(int result)
+{
+  if (result == QDialog::Accepted)
+    apply();
+  QDialog::done(result);
+}
+ 
+
 
 
 
