@@ -116,7 +116,6 @@ public slots:
   void  print(void);
   void  save(void);
   void  find(QString find = QString());
-  void  applyPreferences(void);
   
 signals:
   void  documentClosed(QDjVuDocument *doc);
@@ -145,6 +144,7 @@ protected:
   void     updateOptions(void);
   void     applySaved(Saved *saved);
   void     updateSaved(Saved *saved);
+  void     applyPreferences(void);
   void     parseToolBarOption(QString option, QStringList &errors);
 
   virtual bool eventFilter(QObject *watched, QEvent *event);
@@ -170,6 +170,7 @@ protected slots:
   void zoomComboEdited(void);
   void pageComboActivated(int);
   void pageComboEdited(void);
+  void preferencesChanged(void);
   void performAbout(void);
   void performNew(void);
   void performOpen(void);
@@ -180,7 +181,6 @@ protected slots:
   void performZoom(void);
   void performSelect(bool);
   void performViewFullScreen(bool);
-  
 
 protected:
   // mode

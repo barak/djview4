@@ -3764,7 +3764,8 @@ QDjVuPrivate::updateModifiers(Qt::KeyboardModifiers newModifiers,
   modifiers = newModifiers;
   buttons = newButtons;
   if (modifiers != oldModifiers)
-    showTransientMapAreas(modifiers == modifiersForLinks);
+    showTransientMapAreas(modifiers == modifiersForLinks && 
+                          modifiers != Qt::NoModifier );
   if (modifiers != oldModifiers ||
       buttons != oldButtons )
     widget->modifierEvent(modifiers, buttons, cursorPoint);
@@ -3950,12 +3951,13 @@ QDjVuWidget::modifierEvent(Qt::KeyboardModifiers modifiers,
           return; // Wait for the contextMenuEvent
         }
       else if (modifiers == priv->modifiersForLens &&
-               (modifiers != Qt::NoModifier || buttons != Qt::NoButton) )
+               modifiers != Qt::NoModifier )
         {
           viewport()->setCursor(Qt::CrossCursor);
           startLensing(point);
         }
       else if (modifiers == priv->modifiersForSelect &&
+               modifiers != Qt::NoModifier &&
                buttons != Qt::MidButton )
         {
           viewport()->setCursor(Qt::CrossCursor);
@@ -3968,8 +3970,8 @@ QDjVuWidget::modifierEvent(Qt::KeyboardModifiers modifiers,
           viewport()->setCursor(Qt::CrossCursor);
           startSelecting(point);
         }
-      else if (priv->hyperlinkEnabled && priv->currentMapArea 
-               && priv->currentMapArea->isClickable())
+      else if (priv->hyperlinkEnabled && priv->currentMapArea && 
+               priv->currentMapArea->isClickable())
         {
           viewport()->setCursor(Qt::ArrowCursor);
           if (buttons != Qt::NoButton)

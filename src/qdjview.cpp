@@ -1199,6 +1199,13 @@ QDjView::applyPreferences(void)
 }
 
 
+void 
+QDjView::preferencesChanged(void)
+{
+  applyPreferences();
+  updateActions();
+}
+
 
 // ----------------------------------------
 // QDJVIEW ARGUMENTS
@@ -1883,8 +1890,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   enableContextMenu(true);
   
   // Preferences
-  connect(prefs, SIGNAL(updated()), this, SLOT(applyPreferences()));
-  connect(prefs, SIGNAL(updated()), this, SLOT(updateActionsLater()));
+  connect(prefs, SIGNAL(updated()), this, SLOT(preferencesChanged()));
   applyPreferences();
   updateActions();
 }
@@ -3159,7 +3165,7 @@ QDjView::performMetadata(void)
 void
 QDjView::performPreferences(void)
 {
-  // Load this window configuration into preferences
+  // Load window configuration into preferences
   updateSaved(getSavedPrefs());
   
   // Temporary stuff to test QDjViewGammaWidget
