@@ -1089,5 +1089,37 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>rememberCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>showGroupBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>76</x>
+     <y>87</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>96</x>
+     <y>121</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rememberCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>modeGroupBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>185</x>
+     <y>88</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>204</x>
+     <y>120</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>
