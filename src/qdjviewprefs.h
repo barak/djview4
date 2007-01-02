@@ -212,6 +212,7 @@ public:
 public slots:
   void load();
   void apply();
+  void reset();
   virtual void done(int);
 protected slots:
 private:

@@ -396,7 +396,7 @@
       <number>6</number>
      </property>
      <item>
-      <widget class="QPushButton" name="defaultButton" >
+      <widget class="QPushButton" name="resetButton" >
        <property name="text" >
         <string>&amp;Defaults</string>
        </property>

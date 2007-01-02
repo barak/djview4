@@ -596,6 +596,8 @@ QDjViewPrefsDialog::QDjViewPrefsDialog(QDjView *djview)
           this, SLOT(apply()) );
   connect(d->ui.gammaSlider, SIGNAL(valueChanged(int)),
           d->gammaWidget, SLOT(setGammaTimesTen(int)) );
+  connect(d->ui.resetButton, SIGNAL(clicked()),
+          this, SLOT(reset()) );
   
   // load ui state
   load();
@@ -684,6 +686,17 @@ QDjViewPrefsDialog::apply()
   prefs->update();
 }
 
+
+void
+QDjViewPrefsDialog::reset()
+{
+  // 1- gamma tab
+  d->ui.gammaSlider->setValue(22);
+  d->ui.printerGammaSlider->setValue(22);
+  d->ui.printerAutoCheckBox->setChecked(true);
+  // 6- network tab
+  d->ui.proxyCheckBox->setChecked(false);
+}
 
 void
 QDjViewPrefsDialog::done(int result)
