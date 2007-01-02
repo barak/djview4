@@ -33,7 +33,7 @@ class QDjVuLens;
 class QDjVuWidget : public QAbstractScrollArea
 {
   Q_OBJECT
-  Q_ENUMS(DisplayMode PointerMode Align)
+  Q_ENUMS(DisplayMode PointerMode Align Priority)
   Q_PROPERTY(int page 
              READ page WRITE setPage)
   Q_PROPERTY(int rotation 
@@ -84,6 +84,8 @@ class QDjVuWidget : public QAbstractScrollArea
              READ modifiersForSelect WRITE setModifiersForSelect)
   Q_PROPERTY(Qt::KeyboardModifiers modifiersForLinks
              READ modifiersForLinks WRITE setModifiersForLinks)
+  Q_PROPERTY(Priority optionPriority
+             READ optionPriority WRITE setOptionPriority)
 
 public:
 
@@ -111,6 +113,13 @@ public:
     ALIGN_BOTTOM,               //!< Align page bottom sides.
     ALIGN_RIGHT = ALIGN_BOTTOM, //!< Align page right sides.
   };
+
+  enum Priority {
+    PRIORITY_DEFAULT,           //!< Priority for default option values.
+    PRIORITY_DOCUMENT,          //!< Priority for document defined options.
+    PRIORITY_PAGE,              //!< Priority for page defined options.
+    PRIORITY_USER               //!< Priority for user defined options.
+  };  
 
   struct Position {
     int    pageNo;
@@ -158,9 +167,10 @@ public:
   bool hyperlinkEnabled(void) const;
   int lensPower(void) const;
   int lensSize(void) const;
-  Qt::KeyboardModifiers modifiersForLens();
-  Qt::KeyboardModifiers modifiersForSelect();
-  Qt::KeyboardModifiers modifiersForLinks();
+  Qt::KeyboardModifiers modifiersForLens() const;
+  Qt::KeyboardModifiers modifiersForSelect() const;
+  Qt::KeyboardModifiers modifiersForLinks() const;
+  Priority optionPriority() const;
 
 public slots:
   void setDocument(QDjVuDocument *d);
@@ -189,7 +199,7 @@ public slots:
   void setModifiersForLens(Qt::KeyboardModifiers);
   void setModifiersForSelect(Qt::KeyboardModifiers);
   void setModifiersForLinks(Qt::KeyboardModifiers);
-  void makeDefaults(void);
+  void setOptionPriority(Priority);
 
 public:
   QString pastErrorMessage(int n=0);

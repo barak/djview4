@@ -1163,6 +1163,9 @@ QDjView::updateSaved(Saved *saved)
 void
 QDjView::applyPreferences(void)
 {
+  // Preferences have low priority
+  widget->setOptionPriority(QDjVuWidget::PRIORITY_DEFAULT);
+
   // Saved preferences
   applySaved(getSavedPrefs());
   
@@ -1192,8 +1195,8 @@ QDjView::applyPreferences(void)
       widget->setBorderSize(0);
     }
   
-  // Preferences have low priority
-  widget->makeDefaults();
+  // Restore user priority
+  widget->setOptionPriority(QDjVuWidget::PRIORITY_USER);
 
   // Preload full screen prefs.
   fsSavedNormal = prefs->forStandalone;
@@ -1659,6 +1662,8 @@ void
 QDjView::parseDjVuCgiArguments(QUrl url)
 {
   QStringList errors;
+  // set document option priority
+  widget->setOptionPriority(QDjVuWidget::PRIORITY_DOCUMENT);
   // parse
   bool djvuopts = false;
   QPair<QString,QString> pair;
@@ -1669,6 +1674,8 @@ QDjView::parseDjVuCgiArguments(QUrl url)
       else if (djvuopts)
         errors << parseArgument(pair.first, pair.second);
     }
+  // restore user option priority
+  widget->setOptionPriority(QDjVuWidget::PRIORITY_USER);
   // warning for errors
   if (djvuopts && errors.size() > 0)
     foreach(QString error, errors)

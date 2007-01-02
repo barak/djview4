@@ -70,27 +70,31 @@ typedef QDjVuWidget::Align Align;
 typedef QDjVuWidget::DisplayMode DisplayMode;
 typedef QDjVuWidget::Position Position;
 typedef QDjVuWidget::PageInfo PageInfo;
+typedef QDjVuWidget::Priority Priority;
 
-#define ZOOM_STRETCH    QDjVuWidget::ZOOM_STRETCH
-#define ZOOM_ONE2ONE    QDjVuWidget::ZOOM_ONE2ONE
-#define ZOOM_FITPAGE    QDjVuWidget::ZOOM_FITPAGE
-#define ZOOM_FITWIDTH   QDjVuWidget::ZOOM_FITWIDTH
-#define ZOOM_MIN        QDjVuWidget::ZOOM_MIN
-#define ZOOM_100        QDjVuWidget::ZOOM_100
-#define ZOOM_MAX        QDjVuWidget::ZOOM_MAX
+#define ZOOM_STRETCH      QDjVuWidget::ZOOM_STRETCH
+#define ZOOM_ONE2ONE      QDjVuWidget::ZOOM_ONE2ONE
+#define ZOOM_FITPAGE      QDjVuWidget::ZOOM_FITPAGE
+#define ZOOM_FITWIDTH     QDjVuWidget::ZOOM_FITWIDTH
+#define ZOOM_MIN          QDjVuWidget::ZOOM_MIN
+#define ZOOM_100          QDjVuWidget::ZOOM_100
+#define ZOOM_MAX          QDjVuWidget::ZOOM_MAX
 
-#define DISPLAY_COLOR   QDjVuWidget::DISPLAY_COLOR
-#define DISPLAY_STENCIL QDjVuWidget::DISPLAY_STENCIL
-#define DISPLAY_BG      QDjVuWidget::DISPLAY_BG
-#define DISPLAY_FG      QDjVuWidget::DISPLAY_FG
+#define DISPLAY_COLOR     QDjVuWidget::DISPLAY_COLOR
+#define DISPLAY_STENCIL   QDjVuWidget::DISPLAY_STENCIL
+#define DISPLAY_BG        QDjVuWidget::DISPLAY_BG
+#define DISPLAY_FG        QDjVuWidget::DISPLAY_FG
 
-#define ALIGN_TOP       QDjVuWidget::ALIGN_TOP
-#define ALIGN_LEFT      QDjVuWidget::ALIGN_LEFT
-#define ALIGN_CENTER    QDjVuWidget::ALIGN_CENTER
-#define ALIGN_BOTTOM    QDjVuWidget::ALIGN_BOTTOM
-#define ALIGN_RIGHT     QDjVuWidget::ALIGN_RIGHT
+#define ALIGN_TOP         QDjVuWidget::ALIGN_TOP
+#define ALIGN_LEFT        QDjVuWidget::ALIGN_LEFT
+#define ALIGN_CENTER      QDjVuWidget::ALIGN_CENTER
+#define ALIGN_BOTTOM      QDjVuWidget::ALIGN_BOTTOM
+#define ALIGN_RIGHT       QDjVuWidget::ALIGN_RIGHT
 
-
+#define PRIORITY_DEFAULT  QDjVuWidget::PRIORITY_DEFAULT
+#define PRIORITY_DOCUMENT QDjVuWidget::PRIORITY_DOCUMENT
+#define PRIORITY_PAGE     QDjVuWidget::PRIORITY_PAGE
+#define PRIORITY_USER     QDjVuWidget::PRIORITY_USER
 
 
 
@@ -446,20 +450,13 @@ END_ANONYMOUS_NAMESPACE
 
 BEGIN_ANONYMOUS_NAMESPACE 
 
-enum Priority {
-  PRIORITY_DEFAULT,
-  PRIORITY_DOCUMENT,
-  PRIORITY_PAGE,
-  PRIORITY_USER
-};  
-
 template<class Value>
 class Prioritized
 {
 public:
   Prioritized();
   operator Value() const;
-  void set(Priority priority, Value value);
+  void set(Priority priority, Value value, bool force=false);
   void unset(Priority priority);
 private:
   bool   flags[PRIORITY_USER+1];
@@ -483,10 +480,19 @@ Prioritized<Value>::operator Value() const
 }
 
 template<class Value> void
-Prioritized<Value>::set(Priority priority, Value val)
+Prioritized<Value>::set(Priority priority, Value val, bool force)
 {
   values[priority] = val;
   flags[priority] = true;
+  if (force)
+    {
+      if (priority < PRIORITY_DOCUMENT)
+        flags[PRIORITY_DOCUMENT] = false;
+      if (priority < PRIORITY_PAGE)
+        flags[PRIORITY_PAGE] = false;
+      if (priority < PRIORITY_USER)
+        flags[PRIORITY_USER] = false;
+    }
 }
 
 template<class Value> void
@@ -705,6 +711,7 @@ public:
   Prioritized<DisplayMode> qDisplay;
   Prioritized<Align>       qHAlign;
   Prioritized<Align>       qVAlign;
+  Priority                 optionPriority;
   // hyperlinks
   bool        displayMapAreas;
   Page       *currentMapAreaPage;
@@ -795,6 +802,7 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   separatorSize = 12;
   shadowSize = 2;
   // prioritized
+  optionPriority = PRIORITY_USER;
   qBorderSize.set(PRIORITY_DEFAULT, borderSize);
   qZoom.set(PRIORITY_DEFAULT, zoom);
   qBorderBrush.set(PRIORITY_DEFAULT, borderBrush);
@@ -1980,7 +1988,7 @@ QDjVuWidget::zoom(void) const
 void 
 QDjVuWidget::setZoom(int z)
 {
-  priv->qZoom.set(PRIORITY_USER, z);    
+  priv->qZoom.set(priv->optionPriority, z, true);    
   priv->changeZoom();
 }
 
@@ -2064,7 +2072,7 @@ QDjVuWidget::displayMode(void) const
 void 
 QDjVuWidget::setDisplayMode(DisplayMode m)
 {
-  priv->qDisplay.set(PRIORITY_USER, m);
+  priv->qDisplay.set(priv->optionPriority, m, true);
   priv->changeDisplay();
 }
 
@@ -2159,7 +2167,7 @@ QDjVuWidget::horizAlign(void) const
 void 
 QDjVuWidget::setHorizAlign(Align a)
 {
-  priv->qHAlign.set(PRIORITY_USER, a);
+  priv->qHAlign.set(priv->optionPriority, a, true);
   priv->changeHAlign();
 }
 
@@ -2188,7 +2196,7 @@ QDjVuWidget::vertAlign(void) const
 void 
 QDjVuWidget::setVertAlign(Align a)
 {
-  priv->qVAlign.set(PRIORITY_USER, a);
+  priv->qVAlign.set(priv->optionPriority, a, true);
   priv->changeVAlign();
 }
 
@@ -2216,7 +2224,7 @@ QDjVuWidget::borderBrush(void) const
 void 
 QDjVuWidget::setBorderBrush(QBrush b)
 {
-  priv->qBorderBrush.set(PRIORITY_USER, b);
+  priv->qBorderBrush.set(priv->optionPriority, b, true);
   priv->changeBorderBrush();
 }
 
@@ -2245,7 +2253,7 @@ QDjVuWidget::borderSize(void) const
 void 
 QDjVuWidget::setBorderSize(int b)
 {
-  priv->qBorderSize.set(PRIORITY_USER, b);
+  priv->qBorderSize.set(priv->optionPriority, b, true);
   priv->changeBorderSize();
 }
 
@@ -2426,7 +2434,7 @@ QDjVuWidget::setLensSize(int size)
   Default: Control + Shift. */
 
 Qt::KeyboardModifiers 
-QDjVuWidget::modifiersForLens()
+QDjVuWidget::modifiersForLens() const
 {
   return priv->modifiersForLens;
 }
@@ -2449,7 +2457,7 @@ QDjVuWidget::setModifiersForLens(Qt::KeyboardModifiers m)
   Default: Control. */
 
 Qt::KeyboardModifiers 
-QDjVuWidget::modifiersForSelect()
+QDjVuWidget::modifiersForSelect() const
 {
   return priv->modifiersForSelect;
 }
@@ -2472,7 +2480,7 @@ QDjVuWidget::setModifiersForSelect(Qt::KeyboardModifiers m)
   Default: Shift. */
 
 Qt::KeyboardModifiers 
-QDjVuWidget::modifiersForLinks()
+QDjVuWidget::modifiersForLinks() const
 {
   return priv->modifiersForLinks;
 }
@@ -3329,37 +3337,44 @@ QDjVuWidget::getDjVuPage(int pageno)
 // SETTINGS FROM ANNOTATIONS
 
 
-/*! Turn all current settings into default settings
-  that can be overidden by annotations located
-  inside the djvu files. */
- 
-void
-QDjVuWidget::makeDefaults(void)
+
+/*! \enum QDjVuWidget::Priority
+  Levels for prioritized properties.
+  See \a QDjVuWidget::optionPriority.
+*/
+
+/*! \property QDjVuWidget::optionPriority
+  Certain properties can be set at various priority levels for 
+  defining the default values, document level values, page level values, 
+  and user specified values. 
+
+  The property setting function sets these prioritized properties
+  at the level specified by \a optionPriority. They also unset all
+  values stored with a higher priority to ensure that the new value
+  takes effect immediately. Priority levels matter when one changes
+  the current document or the current page: new property values
+  might be unmasked when the document level or page level 
+  values are unset. 
+
+  The prioritized properties are: \a borderSize, \a zoom,
+  \a borderBrush, \a displayMode, \a horizAlign, \a vertAlign. 
+*/
+
+
+QDjVuWidget::Priority
+QDjVuWidget::optionPriority(void) const
 {
-  priv->qZoom.set(PRIORITY_DEFAULT, priv->qZoom);
-  priv->qZoom.unset(PRIORITY_USER);
-  priv->changeZoom();
-
-  priv->qDisplay.set(PRIORITY_DEFAULT, priv->qDisplay);
-  priv->qDisplay.unset(PRIORITY_USER);
-  priv->changeDisplay();
-    
-  priv->qHAlign.set(PRIORITY_DEFAULT, priv->qHAlign);
-  priv->qHAlign.unset(PRIORITY_USER);
-  priv->changeHAlign();
-
-  priv->qVAlign.set(PRIORITY_DEFAULT, priv->qVAlign);
-  priv->qVAlign.unset(PRIORITY_USER);
-  priv->changeVAlign();
-  
-  priv->qBorderBrush.set(PRIORITY_DEFAULT, priv->qBorderBrush);
-  priv->qBorderBrush.unset(PRIORITY_USER);
-  priv->changeBorderBrush();
-
-  priv->qBorderSize.set(PRIORITY_DEFAULT, priv->qBorderSize);
-  priv->qBorderSize.unset(PRIORITY_USER);
-  priv->changeBorderSize();
+  return priv->optionPriority;
 }
+
+
+void
+QDjVuWidget::setOptionPriority(Priority p)
+{
+  if (p >= PRIORITY_DEFAULT && p <= PRIORITY_USER)
+    priv->optionPriority = p;
+}
+
 
 
 void
