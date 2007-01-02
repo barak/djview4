@@ -1052,8 +1052,8 @@
      <y>66</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>119</x>
-     <y>106</y>
+     <x>110</x>
+     <y>66</y>
     </hint>
    </hints>
   </connection>
@@ -1084,40 +1084,8 @@
      <y>63</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>81</x>
-     <y>95</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rememberCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>showGroupBox</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>97</x>
-     <y>90</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>150</x>
-     <y>179</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rememberCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>modeGroupBox</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>351</x>
-     <y>96</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>358</x>
-     <y>125</y>
+     <x>92</x>
+     <y>66</y>
     </hint>
    </hints>
   </connection>
