@@ -1140,16 +1140,14 @@ QDjView::updateSaved(Saved *saved)
       saved->zoom = widget->zoom();
       saved->state = saveState();
       saved->options = options;
-      // force options we always want
-      saved->options |= (QDjViewPrefs::HANDLE_MOUSE |
-                         QDjViewPrefs::HANDLE_KEYBOARD |
-                         QDjViewPrefs::HANDLE_LINKS |
-                         QDjViewPrefs::HANDLE_CONTEXTMENU );
       // avoid confusing options in standalone mode
-      if (saved == &prefs->forStandalone)
+      if (saved == &prefs->forStandalone &&
+          !(saved->options & QDjViewPrefs::HANDLE_CONTEXTMENU) &&
+          !(saved->options & QDjViewPrefs::SHOW_MENUBAR) )
         saved->options |= (QDjViewPrefs::SHOW_MENUBAR |
                            QDjViewPrefs::SHOW_SCROLLBARS |
-                           QDjViewPrefs::SHOW_FRAME);
+                           QDjViewPrefs::SHOW_FRAME |
+                           QDjViewPrefs::HANDLE_CONTEXTMENU );
       // main window size in standalone mode
       if (saved == &prefs->forStandalone)
         if (! (windowState() & unusualWindowStates))
@@ -1905,17 +1903,6 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 }
 
 
-/*! Return the base name of the current file. */
-
-QString
-QDjView::getShortFileName()
-{
-  if (! documentFileName.isEmpty())
-    return QFileInfo(documentFileName).fileName();
-  else if (! documentUrl.isEmpty())
-    return documentUrl.path().section('/', -1);
-  return QString();
-}
 
 
 void 
@@ -2332,6 +2319,32 @@ QDjView::find(QString find)
 
 /*! \fn QDjView::getDocumentUrl()
   Return the url of the currently displayed \a QDjVuDocument. */
+
+/*! \fn QDjView::getViewerMode
+  Return the current viewer mode. */
+
+
+/*! Return the base name of the current file. */
+
+QString
+QDjView::getShortFileName()
+{
+  if (! documentFileName.isEmpty())
+    return QFileInfo(documentFileName).fileName();
+  else if (! documentUrl.isEmpty())
+    return documentUrl.path().section('/', -1);
+  return QString();
+}
+
+
+/*! Return true if full screen mode is active */
+bool
+QDjView::getFullScreen()
+{
+  if (viewerMode == STANDALONE)
+    return actionViewFullScreen->isChecked();
+  return false;
+}
 
 
 /*! Return the number of pages in the document.
@@ -3174,9 +3187,9 @@ QDjView::performMetadata(void)
 void
 QDjView::performPreferences(void)
 {
-  QDjViewPrefsDialog *dialog = QDjViewPrefsDialog::instance(this);
+  QDjViewPrefsDialog *dialog = QDjViewPrefsDialog::instance();
   updateSaved(getSavedPrefs());
-  dialog->load();
+  dialog->load(this);
   dialog->show();
   dialog->raise();
 }

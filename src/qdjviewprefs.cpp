@@ -17,6 +17,12 @@
 // $Id$
 
 
+
+#include <stdlib.h>
+#include <math.h>
+#include <libdjvu/miniexp.h>
+#include <libdjvu/ddjvuapi.h>
+
 #include <QCoreApplication>
 #include <QDebug>
 #include <QMetaEnum>
@@ -35,7 +41,6 @@
 #include "qdjview.h"
 #include "qdjvu.h"
 
-#include <math.h>
 
 
 // ========================================
@@ -278,13 +283,18 @@ QDjViewPrefs::loadGroup(QSettings &s, QString name, Saved &saved)
   if (s.contains("sidebarTab"))
     saved.sidebarTab = s.value("sidebarTab").toInt();
   s.endGroup();
+  // we always want these options
+  saved.options |= (QDjViewPrefs::HANDLE_MOUSE |
+                    QDjViewPrefs::HANDLE_KEYBOARD |
+                    QDjViewPrefs::HANDLE_LINKS );
+  
 }
 
 
 /*! Load saved preferences and set all member variables. */
 
 void
-QDjViewPrefs::load(void)
+QDjViewPrefs::load()
 {
   QSettings s(DJVIEW_ORG, DJVIEW_APP);
 
@@ -531,13 +541,13 @@ static QPointer<QDjViewPrefsDialog> prefsDialog;
 /*! Returns the single preference dialog. */
 
 QDjViewPrefsDialog *
-QDjViewPrefsDialog::instance(QDjView *djview)
+QDjViewPrefsDialog::instance()
 {
   QMutex mutex;
   QMutexLocker locker(&mutex);
   if (! prefsDialog)
     {
-      QDjViewPrefsDialog *main = new QDjViewPrefsDialog(djview);
+      QDjViewPrefsDialog *main = new QDjViewPrefsDialog();
       main->setWindowTitle(tr("Preferences - DjView"));
       main->setAttribute(Qt::WA_DeleteOnClose);
       prefsDialog = main;
@@ -548,10 +558,11 @@ QDjViewPrefsDialog::instance(QDjView *djview)
 
 struct QDjViewPrefsDialog::Private
 {
-  QDjVuContext *context;
-  QDjViewPrefs *prefs;
+  QDjVuContext          *context;
   Ui::QDjViewPrefsDialog ui;
-  QDjViewGammaWidget *gammaWidget;
+  QDjViewGammaWidget    *gammaWidget;
+  QDjViewPrefs::Saved    saved[4];
+  int                    currentSaved;
 };
 
 
@@ -568,12 +579,14 @@ setHelp(QWidget *w, QString s)
 }
 
 
-QDjViewPrefsDialog::QDjViewPrefsDialog(QDjView *djview)
+QDjViewPrefsDialog::QDjViewPrefsDialog()
   : QDialog(), d(new Private)
 {
-  d->context = &djview->getDjVuContext();
-  d->prefs = QDjViewPrefs::instance();
-
+  // sanitize
+  d->context = 0;
+  d->gammaWidget = 0;
+  d->currentSaved = -1;
+  
   // prepare ui
   setAttribute(Qt::WA_GroupLeader, true);
   d->ui.setupUi(this);
@@ -598,10 +611,13 @@ QDjViewPrefsDialog::QDjViewPrefsDialog(QDjView *djview)
           d->gammaWidget, SLOT(setGammaTimesTen(int)) );
   connect(d->ui.resetButton, SIGNAL(clicked()),
           this, SLOT(reset()) );
+  connect(d->ui.cacheClearButton, SIGNAL(clicked()),
+          this, SLOT(cacheClear()) );
+  connect(d->ui.modeComboBox, SIGNAL(activated(int)),
+          this, SLOT(modeComboChanged(int)) );
+  connect(d->ui.zoomCombo->lineEdit(), SIGNAL(editingFinished()),
+          this, SLOT(zoomComboEdited()) );
   
-  // load ui state
-  load();
-
   // whatsthis
   setHelp(d->ui.gammaTab,
           tr("<html><b>Screen gamma correction.</b>"
@@ -629,16 +645,33 @@ QDjViewPrefsDialog::QDjViewPrefsDialog(QDjView *djview)
 
 
 void
-QDjViewPrefsDialog::load()
+QDjViewPrefsDialog::load(QDjView *djview)
 {
   // load preferences into ui
-  QDjViewPrefs *prefs = d->prefs;
+  QDjViewPrefs *prefs = QDjViewPrefs::instance();
+  d->context = &djview->getDjVuContext();
   
   // 1- gamma tab
   d->ui.gammaSlider->setValue((int)(prefs->gamma * 10));
   int gamma = (int)(prefs->printerGamma * 10);
   d->ui.printerAutoCheckBox->setChecked(gamma <= 0);
   d->ui.printerGammaSlider->setValue(gamma ? qBound(5, gamma, 50) : 22);
+
+  // 2- interface tab
+  d->saved[0] = prefs->forStandalone;
+  d->saved[1] = prefs->forFullScreen;
+  d->saved[2] = prefs->forFullPagePlugin;
+  d->saved[3] = prefs->forEmbeddedPlugin;
+  djview->fillZoomCombo(d->ui.zoomCombo);
+  int n = 0;
+  if (djview->getViewerMode() == QDjView::EMBEDDED_PLUGIN)
+    n = 3;
+  else if (djview->getViewerMode() == QDjView::FULLPAGE_PLUGIN)
+    n = 2;
+  else if (djview->getFullScreen()) 
+    n = 1;
+  modeComboChanged(n);
+  d->ui.modeComboBox->setCurrentIndex(n);
   
   // 6- network tab
   bool proxy = prefs->proxyUrl.isValid();
@@ -662,7 +695,7 @@ void
 QDjViewPrefsDialog::apply()
 {
   // save ui into preferences
-  QDjViewPrefs *prefs = d->prefs;
+  QDjViewPrefs *prefs = QDjViewPrefs::instance();
 
   // 1- gamma tab
   prefs->gamma = d->ui.gammaSlider->value() / 10.0;
@@ -671,6 +704,14 @@ QDjViewPrefsDialog::apply()
   else
     prefs->printerGamma = d->ui.printerGammaSlider->value() / 10.0;
 
+  // 2- interface tab
+  int n = d->ui.modeComboBox->currentIndex();
+  modeComboChanged(n);
+  prefs->forStandalone = d->saved[0];
+  prefs->forFullScreen = d->saved[1];
+  prefs->forFullPagePlugin = d->saved[2];
+  prefs->forEmbeddedPlugin = d->saved[3];
+  
   // 6- network tab
   prefs->proxyUrl = QUrl();
   if (d->ui.proxyCheckBox->isChecked())
@@ -694,6 +735,23 @@ QDjViewPrefsDialog::reset()
   d->ui.gammaSlider->setValue(22);
   d->ui.printerGammaSlider->setValue(22);
   d->ui.printerAutoCheckBox->setChecked(true);
+  // 2- interface
+  QDjViewPrefs::Saved defsaved;
+  QDjViewPrefs::Options optMSS = (QDjViewPrefs::SHOW_MENUBAR|
+                                  QDjViewPrefs::SHOW_STATUSBAR|
+                                  QDjViewPrefs::SHOW_SIDEBAR);
+  QDjViewPrefs::Options optS = QDjViewPrefs::SHOW_SCROLLBARS;
+  QDjViewPrefs::Options optT = QDjViewPrefs::SHOW_TOOLBAR;
+  d->saved[0] = defsaved;
+  d->saved[1] = defsaved;
+  d->saved[1].options &= ~(optMSS|optS|optT);
+  d->saved[2] = defsaved;
+  d->saved[2].options &= ~(optMSS);
+  d->saved[3] = defsaved;
+  d->saved[3].options &= ~(optMSS|optT);
+  d->saved[3].remember = false;
+  d->currentSaved = -1;
+  modeComboChanged(d->ui.modeComboBox->currentIndex());
   // 6- network tab
   d->ui.proxyCheckBox->setChecked(false);
 }
@@ -707,11 +765,112 @@ QDjViewPrefsDialog::done(int result)
 }
  
 
+void 
+QDjViewPrefsDialog::cacheClear()
+{
+  if (d->context)
+    ddjvu_cache_clear(*d->context);
+}
+
+
+template<class T> static inline void
+set_reset(QFlags<T> &x, T y, bool plus, bool minus=true)
+{
+  if (plus)
+    x |= y;
+  else if (minus)
+    x &= ~y;
+}
+
+
+void 
+QDjViewPrefsDialog::modeComboChanged(int n)
+{
+  if (d->currentSaved >=0 && d->currentSaved <4)
+    {
+      // save ui values
+      QDjViewPrefs::Saved &saved = d->saved[d->currentSaved];
+      saved.remember = d->ui.rememberCheckBox->isChecked();
+      set_reset(saved.options, QDjViewPrefs::SHOW_MENUBAR,
+                d->ui.menuBarCheckBox->isChecked() );
+      set_reset(saved.options, QDjViewPrefs::SHOW_TOOLBAR,
+                d->ui.toolBarCheckBox->isChecked() );
+      set_reset(saved.options, QDjViewPrefs::SHOW_SCROLLBARS,
+                d->ui.scrollBarsCheckBox->isChecked() );
+      set_reset(saved.options, QDjViewPrefs::SHOW_STATUSBAR,
+                d->ui.statusBarCheckBox->isChecked() );
+      set_reset(saved.options, QDjViewPrefs::SHOW_SIDEBAR,
+                d->ui.sideBarCheckBox->isChecked() );
+      set_reset(saved.options, QDjViewPrefs::SHOW_FRAME,
+                d->ui.frameCheckBox->isChecked() );
+      set_reset(saved.options, QDjViewPrefs::SHOW_MAPAREAS,
+                d->ui.mapAreasCheckBox->isChecked() );
+      // layout
+      int n = d->ui.layoutCombo->currentIndex();
+      set_reset(saved.options, QDjViewPrefs::LAYOUT_CONTINUOUS, n&1);
+      set_reset(saved.options, QDjViewPrefs::LAYOUT_SIDEBYSIDE, n&2);
+      // zoom
+      bool okay;
+      int zoomIndex = d->ui.zoomCombo->currentIndex();
+      QString zoomText = d->ui.zoomCombo->lineEdit()->text();
+      int zoom = zoomText.replace(QRegExp("\\s*%?$"),"").trimmed().toInt(&okay);
+      if (okay && zoom>=QDjVuWidget::ZOOM_MIN && zoom<=QDjVuWidget::ZOOM_MAX)
+        saved.zoom = zoom;
+      else if (zoomIndex >= 0)
+        saved.zoom = d->ui.zoomCombo->itemData(zoomIndex).toInt();
+    }
+  d->currentSaved = n;
+  if (d->currentSaved >=0 && d->currentSaved <4)
+    {
+      // load ui values
+      QDjViewPrefs::Saved &saved = d->saved[d->currentSaved];
+      d->ui.rememberCheckBox->setChecked(saved.remember);
+      QDjViewPrefs::Options opt = saved.options;
+      d->ui.menuBarCheckBox->setChecked(opt & QDjViewPrefs::SHOW_MENUBAR);
+      d->ui.toolBarCheckBox->setChecked(opt & QDjViewPrefs::SHOW_TOOLBAR);
+      d->ui.scrollBarsCheckBox->setChecked(opt & QDjViewPrefs::SHOW_SCROLLBARS);
+      d->ui.statusBarCheckBox->setChecked(opt & QDjViewPrefs::SHOW_STATUSBAR);
+      d->ui.sideBarCheckBox->setChecked(opt & QDjViewPrefs::SHOW_SIDEBAR);
+      d->ui.frameCheckBox->setChecked(opt & QDjViewPrefs::SHOW_FRAME);
+      d->ui.mapAreasCheckBox->setChecked(opt & QDjViewPrefs::SHOW_MAPAREAS);
+      // layout
+      int n = 0;
+      if (opt & QDjViewPrefs::LAYOUT_CONTINUOUS)
+        n += 1;
+      if (opt & QDjViewPrefs::LAYOUT_SIDEBYSIDE)
+        n += 2;
+      d->ui.layoutCombo->setCurrentIndex(n);
+      // zoom
+      int zoomIndex = d->ui.zoomCombo->findData(QVariant(saved.zoom));
+      d->ui.zoomCombo->clearEditText();
+      d->ui.zoomCombo->setCurrentIndex(zoomIndex);
+      if (zoomIndex < 0 &&
+          saved.zoom >= QDjVuWidget::ZOOM_MIN && 
+          saved.zoom <= QDjVuWidget::ZOOM_MAX)
+        d->ui.zoomCombo->setEditText(QString("%1%").arg(saved.zoom));
+      else if (zoomIndex >= 0)
+        d->ui.zoomCombo->setEditText(d->ui.zoomCombo->itemText(zoomIndex));
+    }
+}
+
+
+void 
+QDjViewPrefsDialog::zoomComboEdited()
+{
+  bool okay;
+  int zoomIndex = d->ui.zoomCombo->currentIndex();
+  QString zoomText = d->ui.zoomCombo->lineEdit()->text();
+  int zoom = zoomText.replace(QRegExp("\\s*%?$"),"").trimmed().toInt(&okay);
+  if (okay && zoom >= QDjVuWidget::ZOOM_MIN && zoom <= QDjVuWidget::ZOOM_MAX)
+    d->ui.zoomCombo->setEditText(QString("%1%").arg(zoom));
+  else if (zoomIndex >= 0)
+    d->ui.zoomCombo->setEditText(d->ui.zoomCombo->itemText(zoomIndex));
+}
 
 
 
 /* -------------------------------------------------------------
    Local Variables:
-   c++-font-lock-extra-types: );
-   s.setValue(End:
+   c++-font-lock-extra-types: ( "\\sw+_t" "[A-Z]\\sw*[a-z]\\sw*" )
+   End:
    ------------------------------------------------------------- */

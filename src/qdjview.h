@@ -79,7 +79,9 @@ class QDjView : public QMainWindow
   QDjVuDocument      *getDocument()         { return document; } 
   QString             getDocumentFileName() { return documentFileName; }
   QUrl                getDocumentUrl()      { return documentUrl; }
+  ViewerMode          getViewerMode()       { return viewerMode; }
   QString             getShortFileName();
+  bool                getFullScreen();
   
   QStringList  parseArgument(QString key, QString val);
   QStringList  parseArgument(QString keyEqualVal);

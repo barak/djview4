@@ -201,22 +201,24 @@ private:
 // Preferences Dialog
 
 class QDjView;
-class QDjVuContext;
 
 class QDjViewPrefsDialog : public QDialog
 {
   Q_OBJECT
 public:
   ~QDjViewPrefsDialog();
-  static QDjViewPrefsDialog *instance(QDjView *djview);
+  static QDjViewPrefsDialog *instance();
 public slots:
-  void load();
+  void load(QDjView *djview);
   void apply();
   void reset();
   virtual void done(int);
 protected slots:
+  void cacheClear();
+  void modeComboChanged(int);
+  void zoomComboEdited();
 private:
-  QDjViewPrefsDialog(QDjView *djview);
+  QDjViewPrefsDialog();
   struct Private;
   Private *d;
 };
