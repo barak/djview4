@@ -2483,6 +2483,7 @@ QDjVuWidget::setModifiersForLinks(Qt::KeyboardModifiers m)
   if (priv->modifiersForLinks != m)
     {
       priv->modifiersForLinks = m;
+      priv->showTransientMapAreas(m!=Qt::NoModifier && m==priv->modifiers);
       if (priv->dragMode == DRAG_NONE)
         modifierEvent(priv->modifiers, priv->buttons, priv->cursorPoint);
     }
