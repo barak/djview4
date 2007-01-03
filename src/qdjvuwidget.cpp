@@ -94,6 +94,7 @@ typedef QDjVuWidget::Priority Priority;
 #define PRIORITY_DEFAULT  QDjVuWidget::PRIORITY_DEFAULT
 #define PRIORITY_DOCUMENT QDjVuWidget::PRIORITY_DOCUMENT
 #define PRIORITY_PAGE     QDjVuWidget::PRIORITY_PAGE
+#define PRIORITY_CGI      QDjVuWidget::PRIORITY_CGI
 #define PRIORITY_USER     QDjVuWidget::PRIORITY_USER
 
 
@@ -456,8 +457,9 @@ class Prioritized
 public:
   Prioritized();
   operator Value() const;
-  void set(Priority priority, Value value, bool force=false);
+  void set(Priority priority, Value value);
   void unset(Priority priority);
+  void reduce(Priority priority);
 private:
   bool   flags[PRIORITY_USER+1];
   Value  values[PRIORITY_USER+1];
@@ -480,11 +482,8 @@ Prioritized<Value>::operator Value() const
 }
 
 template<class Value> void
-Prioritized<Value>::set(Priority priority, Value val, bool force)
+Prioritized<Value>::set(Priority priority, Value val)
 {
-  if (force)
-    for (int i=priority; i<=PRIORITY_USER; i++)
-      flags[i] = false;
   values[priority] = val;
   flags[priority] = true;
 }
@@ -493,6 +492,18 @@ template<class Value> void
 Prioritized<Value>::unset(Priority priority)
 {
   flags[priority] = false;
+}
+
+template<class Value> void
+Prioritized<Value>::reduce(Priority priority)
+{
+  for (int i=PRIORITY_USER; i>priority; i--)
+    if (flags[i])
+      {
+        flags[i-1] = flags[i];
+        values[i-1] = values[i];
+        flags[i] = false;
+      }
 }
 
 END_ANONYMOUS_NAMESPACE
@@ -1981,7 +1992,7 @@ QDjVuWidget::zoom(void) const
 void 
 QDjVuWidget::setZoom(int z)
 {
-  priv->qZoom.set(PRIORITY_USER, z, true);    
+  priv->qZoom.set(PRIORITY_USER, z);    
   priv->changeZoom();
 }
 
@@ -2065,7 +2076,7 @@ QDjVuWidget::displayMode(void) const
 void 
 QDjVuWidget::setDisplayMode(DisplayMode m)
 {
-  priv->qDisplay.set(PRIORITY_USER, m, true);
+  priv->qDisplay.set(PRIORITY_USER, m);
   priv->changeDisplay();
 }
 
@@ -2160,7 +2171,7 @@ QDjVuWidget::horizAlign(void) const
 void 
 QDjVuWidget::setHorizAlign(Align a)
 {
-  priv->qHAlign.set(PRIORITY_USER, a, true);
+  priv->qHAlign.set(PRIORITY_USER, a);
   priv->changeHAlign();
 }
 
@@ -2189,7 +2200,7 @@ QDjVuWidget::vertAlign(void) const
 void 
 QDjVuWidget::setVertAlign(Align a)
 {
-  priv->qVAlign.set(PRIORITY_USER, a, true);
+  priv->qVAlign.set(PRIORITY_USER, a);
   priv->changeVAlign();
 }
 
@@ -2217,7 +2228,7 @@ QDjVuWidget::borderBrush(void) const
 void 
 QDjVuWidget::setBorderBrush(QBrush b)
 {
-  priv->qBorderBrush.set(PRIORITY_USER, b, true);
+  priv->qBorderBrush.set(PRIORITY_USER, b);
   priv->changeBorderBrush();
 }
 
@@ -2246,7 +2257,7 @@ QDjVuWidget::borderSize(void) const
 void 
 QDjVuWidget::setBorderSize(int b)
 {
-  priv->qBorderSize.set(PRIORITY_USER, b, true);
+  priv->qBorderSize.set(PRIORITY_USER, b);
   priv->changeBorderSize();
 }
 
@@ -3354,12 +3365,19 @@ QDjVuWidget::getDjVuPage(int pageno)
 void
 QDjVuWidget::reduceOptionsToPriority(Priority priority)
 {
-  priv->qBorderSize.set(priority, priv->qBorderSize, true);
-  priv->qZoom.set(priority, priv->qZoom, true);
-  priv->qBorderBrush.set(priority, priv->qBorderBrush, true);
-  priv->qDisplay.set(priority, priv->qDisplay, true);
-  priv->qHAlign.set(priority, priv->qHAlign, true);
-  priv->qVAlign.set(priority, priv->qVAlign, true);
+  priv->qBorderSize.reduce(priority);
+  priv->qZoom.reduce(priority);
+  priv->qBorderBrush.reduce(priority);
+  priv->qDisplay.reduce(priority);
+  priv->qHAlign.reduce(priority);
+  priv->qVAlign.reduce(priority);
+  // Apply changes
+  priv->changeZoom();
+  priv->changeHAlign();
+  priv->changeVAlign();
+  priv->changeDisplay();
+  priv->changeBorderSize();
+  priv->changeBorderBrush();
 }
 
 

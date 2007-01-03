@@ -113,11 +113,11 @@ public:
   };
 
   enum Priority {
-    PRIORITY_DEFAULT,           //!< Priority for default option values.
-    PRIORITY_DOCUMENT,          //!< Priority for document defined options.
-    PRIORITY_PAGE,              //!< Priority for page defined options.
-    PRIORITY_CGI,               //!< Priority for cgi defined options.
-    PRIORITY_USER               //!< Priority for gui defined options.
+    PRIORITY_DEFAULT  = 0,      //!< Priority for default option values.
+    PRIORITY_DOCUMENT = 1,      //!< Priority for document defined options.
+    PRIORITY_PAGE = 2,          //!< Priority for page defined options.
+    PRIORITY_CGI = 3,           //!< Priority for cgi defined options.
+    PRIORITY_USER = 4           //!< Priority for gui defined options.
   };  
 
   struct Position {

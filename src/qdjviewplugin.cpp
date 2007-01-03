@@ -911,7 +911,6 @@ QDjViewPlugin::cmdAttachWindow()
       if (errors.size() > 0)
         foreach(QString error, errors)
           qWarning((const char*)error.toLocal8Bit());
-      QDjVuWidget *djvu = djview->getDjVuWidget();
     }
   // map and reparent djview object
   instance->open();
