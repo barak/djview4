@@ -18,17 +18,28 @@
 
 #if AUTOCONF
 # include "config.h"
+#else
+# define HAVE_SYS_TYPES_H 1
+# define HAVE_SYS_WAIT_H 1
+# define HAVE_UNISTD_H 1
+# define HAVE_WAITPID 1
 #endif
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
-#include <unistd.h>
-#include <signal.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <signal.h>
+#if HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+#if HAVE_SYS_WAIT_H
+# include <sys/wait.h>
+#endif
+#if HAVE_UNISTD_H
+# include <unistd.h>
+#endif
 
 #include <QApplication>
 #include <QClipboard>
@@ -1371,7 +1382,12 @@ QDjViewPSExporter::openFile()
 #endif 
       // Disable SIGPIPE
 #ifdef SIGPIPE
-# ifdef SA_RESTART
+# ifndef HAVE_SIGACTION
+#  ifdef SA_RESTART
+#   define HAVE_SIGACTION 1
+#  endif
+# endif
+# if HAVE_SIGACTION
       sigset_t mask;
       struct sigaction act;
       sigemptyset(&mask);
@@ -1444,7 +1460,13 @@ QDjViewPSExporter::openFile()
           ::close(fds[0]);
           output = fdopen(fds[1], "w");
           if (pid >= 0)
-            ::waitpid(pid, 0, 0);
+            {
+#if HAVE_WAITPID
+              ::waitpid(pid, 0, 0);
+#else
+              ::wait(0);
+#endif
+            }
           else
             closeFile();
         }

@@ -20,16 +20,6 @@
 # include "config.h"
 #endif
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/select.h>
-#include <unistd.h>
-#include <signal.h>
-
 #include <QApplication>
 #include <QByteArray>
 #include <QDebug>
@@ -58,10 +48,15 @@
 
 #ifdef Q_WS_X11
 
+# include <stdlib.h>
+# include <stdio.h>
+# include <errno.h>
+# include <signal.h>
+# include <unistd.h>
+# include <fcntl.h>
 # include <X11/Xlib.h>
 # include <X11/Xutil.h>
 # include <X11/Xatom.h>
-
 # undef FocusOut
 # undef FocusIn
 # undef KeyPress
@@ -1187,7 +1182,12 @@ QDjViewPlugin::QDjViewPlugin(const char *progname)
 {
   // Disable SIGPIPE
 #ifdef SIGPIPE
-# ifdef SA_RESTART
+# ifndef HAVE_SIGACTION
+#  ifdef SA_RESTART
+#   define HAVE_SIGACTION 1
+#  endif
+# endif
+# if HAVE_SIGACTION
   sigset_t mask;
   struct sigaction act;
   sigemptyset(&mask);
