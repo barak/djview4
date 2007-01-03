@@ -2334,11 +2334,8 @@ QDjVuWidget::enableKeyboard(bool b)
     priv->keyboardEnabled = b;
 }
 
-/*! \property QDjVuWidget::keyboardEnabled
-  Enables keyboard interaction. 
-  This property controls the behavior of 
-  arrows keys, page movement keys, and 
-  various shortcut keys.
+/*! \property QDjVuWidget::mouseEnabled
+  Enables mouse interaction. 
   Default: \a true. */
 
 bool 
@@ -2359,6 +2356,7 @@ QDjVuWidget::enableMouse(bool b)
   This propery indicates whether hyperlink feedback
   is displayed, and whether the signals \a pointerEnter,
   \a pointerLeave and \a pointerClick are emitted.
+  You must also set \a mouseEnabled and \a displayMapAreas to \a true.
   Default: \a true. */
 
 bool 

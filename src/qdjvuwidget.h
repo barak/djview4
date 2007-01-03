@@ -64,7 +64,7 @@ class QDjVuWidget : public QAbstractScrollArea
              READ borderSize WRITE setBorderSize)
   Q_PROPERTY(int pixelCacheSize 
              READ pixelCacheSize WRITE setPixelCacheSize)
-  Q_PROPERTY(bool pageMapArea 
+  Q_PROPERTY(bool displayMapAreas 
              READ displayMapAreas WRITE setDisplayMapAreas)
   Q_PROPERTY(bool keyboardEnabled 
              READ keyboardEnabled WRITE enableKeyboard)
