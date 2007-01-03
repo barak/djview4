@@ -610,7 +610,6 @@ QDjViewModifiersComboBox::editingFinished()
   QString text = lineEdit()->text();
   Qt::KeyboardModifiers m = prefs->stringToModifiers(text);
   text = (m) ? prefs->modifiersToString(m) : none;
-  setCurrentIndex(-1);
   setEditText(text);
 }
 
@@ -667,7 +666,7 @@ QDjViewPrefsDialog::instance()
   if (! prefsDialog)
     {
       QDjViewPrefsDialog *main = new QDjViewPrefsDialog();
-      main->setWindowTitle(tr("Preferences - DjView"));
+      main->setWindowTitle(tr("Preferences[*] - DjView"));
       main->setAttribute(Qt::WA_DeleteOnClose, true);
       main->setAttribute(Qt::WA_QuitOnClose, false);
       prefsDialog = main;
@@ -737,6 +736,17 @@ QDjViewPrefsDialog::QDjViewPrefsDialog()
           this, SLOT(modeComboChanged(int)) );
   connect(d->ui.zoomCombo->lineEdit(), SIGNAL(editingFinished()),
           this, SLOT(zoomComboEdited()) );
+
+  // modified
+  connectModified(d->ui.gammaTab);
+  connectModified(d->ui.rememberCheckBox);
+  connectModified(d->ui.showGroupBox);
+  connectModified(d->ui.modeGroupBox);
+  connectModified(d->ui.keysTab);
+  connectModified(d->ui.lensTab);
+  connectModified(d->ui.pixelCacheSpinBox);
+  connectModified(d->ui.pageCacheSpinBox);
+  connectModified(d->ui.networkTab);
   
   // whatsthis
   setHelp(d->ui.gammaTab,
@@ -802,6 +812,23 @@ QDjViewPrefsDialog::QDjViewPrefsDialog()
 
 
 void
+QDjViewPrefsDialog::connectModified(QWidget *w)
+{
+  if (w->inherits("QComboBox"))
+    connect(w, SIGNAL(editTextChanged(QString)), this, SLOT(setModified()));
+  else if (w->inherits("QSpinBox"))
+    connect(w, SIGNAL(valueChanged(int)), this, SLOT(setModified()));
+  else if (w->inherits("QAbstractButton"))
+    connect(w, SIGNAL(toggled(bool)), this, SLOT(setModified()));
+  else if (w->inherits("QAbstractSlider"))
+    connect(w, SIGNAL(valueChanged(int)), this, SLOT(setModified()));
+  QObject *child;
+  foreach(child, w->children())
+    if (child->isWidgetType())
+      connectModified(qobject_cast<QWidget*>(child));
+}
+
+void
 QDjViewPrefsDialog::load(QDjView *djview)
 {
   // load preferences into ui
@@ -832,7 +859,15 @@ QDjViewPrefsDialog::load(QDjView *djview)
   d->ui.keysForSelectCombo->setValue(prefs->modifiersForSelect);
   d->ui.keysForLinksCombo->setValue(prefs->modifiersForLinks);
   // 4- lens tab
+  bool lens = (prefs->lensPower > 0) && (prefs->lensSize > 0);
+  d->ui.lensEnableCheckBox->setChecked(lens);
+  d->ui.lensPowerSpinBox->setValue(lens ? qBound(2,prefs->lensPower,10) : 3);
+  d->ui.lensSizeSpinBox->setValue(lens ? qBound(50,prefs->lensSize,500) : 300);
   // 5- cache tab
+  qreal k256 = 256 * 1024;
+  qreal k1024 = 1024 * 1024;
+  d->ui.pixelCacheSpinBox->setValue(qRound(prefs->pixelCacheSize / k256));
+  d->ui.pageCacheSpinBox->setValue(qRound(prefs->cacheSize / k1024));
   // 6- network tab
   bool proxy = prefs->proxyUrl.isValid();
   if (prefs->proxyUrl.scheme() != "http" ||
@@ -848,6 +883,8 @@ QDjViewPrefsDialog::load(QDjView *djview)
       d->ui.proxyPasswordLineEdit->setText(url.password());
     }
   d->ui.proxyCheckBox->setChecked(proxy);
+  // no longer modified
+  setWindowModified(false);
 }
 
 
@@ -874,7 +911,12 @@ QDjViewPrefsDialog::apply()
   prefs->modifiersForSelect = d->ui.keysForSelectCombo->value();
   prefs->modifiersForLinks = d->ui.keysForLinksCombo->value();
   // 4- lens tab
+  bool lens = d->ui.lensEnableCheckBox->isChecked();
+  prefs->lensPower = (lens) ? d->ui.lensPowerSpinBox->value() : 0;
+  prefs->lensSize = d->ui.lensSizeSpinBox->value();
   // 5- cache tab
+  prefs->pixelCacheSize = d->ui.pixelCacheSpinBox->value() * 256 * 1024;
+  prefs->cacheSize = d->ui.pageCacheSpinBox->value() * 1024 * 1024;
   // 6- network tab
   prefs->proxyUrl = QUrl();
   if (d->ui.proxyCheckBox->isChecked())
@@ -887,6 +929,8 @@ QDjViewPrefsDialog::apply()
     }
 
   // broadcast change
+  setWindowModified(false);
+  prefs->save();
   prefs->update();
 }
 
@@ -898,7 +942,7 @@ QDjViewPrefsDialog::reset()
   d->ui.gammaSlider->setValue(22);
   d->ui.printerGammaSlider->setValue(22);
   d->ui.printerAutoCheckBox->setChecked(true);
-  // 2- interface
+  // 2- interface tab
   QDjViewPrefs::Saved defsaved;
   QDjViewPrefs::Options optMSS = (QDjViewPrefs::SHOW_MENUBAR|
                                   QDjViewPrefs::SHOW_STATUSBAR|
@@ -915,13 +959,28 @@ QDjViewPrefsDialog::reset()
   d->saved[3].remember = false;
   d->currentSaved = -1;
   modeComboChanged(d->ui.modeComboBox->currentIndex());
-  // 3- keys
+  // 3- keys tab
   d->ui.keysForLensCombo->setValue(Qt::ShiftModifier|Qt::ControlModifier);
   d->ui.keysForSelectCombo->setValue(Qt::ControlModifier);
   d->ui.keysForLinksCombo->setValue(Qt::ShiftModifier);
+  // 4- lens tab
+  d->ui.lensEnableCheckBox->setChecked(true);
+  d->ui.lensPowerSpinBox->setValue(3);
+  d->ui.lensSizeSpinBox->setValue(300);
+  // 5- cache tab
+  d->ui.pixelCacheSpinBox->setValue(1);
+  d->ui.pageCacheSpinBox->setValue(10);
   // 6- network tab
   d->ui.proxyCheckBox->setChecked(false);
 }
+
+
+void
+QDjViewPrefsDialog::setModified()
+{
+  setWindowModified(true);
+}
+
 
 void
 QDjViewPrefsDialog::done(int result)
@@ -989,6 +1048,8 @@ QDjViewPrefsDialog::modeComboChanged(int n)
   d->currentSaved = n;
   if (d->currentSaved >=0 && d->currentSaved <4)
     {
+      // save modified flag
+      bool modified = isWindowModified();
       // load ui values
       QDjViewPrefs::Saved &saved = d->saved[d->currentSaved];
       d->ui.rememberCheckBox->setChecked(saved.remember);
@@ -1017,6 +1078,8 @@ QDjViewPrefsDialog::modeComboChanged(int n)
         d->ui.zoomCombo->setEditText(QString("%1%").arg(saved.zoom));
       else if (zoomIndex >= 0)
         d->ui.zoomCombo->setEditText(d->ui.zoomCombo->itemText(zoomIndex));
+      // reset modified flag
+      setWindowModified(modified);
     }
 }
 
@@ -1025,13 +1088,13 @@ void
 QDjViewPrefsDialog::zoomComboEdited()
 {
   bool okay;
-  int zoomIndex = d->ui.zoomCombo->currentIndex();
   QString zoomText = d->ui.zoomCombo->lineEdit()->text();
   int zoom = zoomText.replace(QRegExp("\\s*%?$"),"").trimmed().toInt(&okay);
-  if (okay && zoom >= QDjVuWidget::ZOOM_MIN && zoom <= QDjVuWidget::ZOOM_MAX)
+  if (d->ui.zoomCombo->findText(zoomText) >= 0)
+    d->ui.zoomCombo->setEditText(zoomText);
+  else if (okay && zoom >= QDjVuWidget::ZOOM_MIN 
+           && zoom <= QDjVuWidget::ZOOM_MAX)
     d->ui.zoomCombo->setEditText(QString("%1%").arg(zoom));
-  else if (zoomIndex >= 0)
-    d->ui.zoomCombo->setEditText(d->ui.zoomCombo->itemText(zoomIndex));
 }
 
 

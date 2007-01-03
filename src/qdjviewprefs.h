@@ -203,8 +203,10 @@ protected slots:
   void cacheClear();
   void modeComboChanged(int);
   void zoomComboEdited();
+  void setModified();
 private:
   QDjViewPrefsDialog();
+  void connectModified(QWidget *w);
   struct Private;
   Private *d;
 };
