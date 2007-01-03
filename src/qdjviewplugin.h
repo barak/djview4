@@ -82,6 +82,7 @@ private:
   void cmdPrint();
   void cmdHandshake();
   void cmdShutdown();
+  void cmdSetOption();
   
   class  Document;
   class  Forwarder;

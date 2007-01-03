@@ -560,7 +560,8 @@ enum {
   CMD_GET_URL = 11,
   CMD_GET_URL_NOTIFY = 12,
   CMD_URL_NOTIFY = 13,
-  CMD_HANDSHAKE = 14
+  CMD_HANDSHAKE = 14,
+  CMD_SET_OPTION = 15,
 };
 
 #define OK_STRING   "OK"
@@ -1115,6 +1116,27 @@ QDjViewPlugin::cmdPrint()
 void
 QDjViewPlugin::cmdHandshake()
 {
+  writeString(pipeWrite, QByteArray(OK_STRING));
+}
+
+
+void
+QDjViewPlugin::cmdSetOption()
+{
+  // protocol extension for plugin scripting
+  Instance *instance = (Instance*) readPointer(pipeRead);
+  QString key = readString(pipeRead);
+  QString value = readString(pipeRead);
+  // check instance
+  if (!instances.contains(instance))
+    {
+      fprintf(stderr, "djview dispatcher: bad instance\n");
+      writeString(pipeWrite, QByteArray(ERR_STRING));
+      return;
+    }
+  // apply options
+  if (instance->djview)
+    instance->djview->parseArgument(key, value);
   writeString(pipeWrite, QByteArray(OK_STRING));
 }
 
