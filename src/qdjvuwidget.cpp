@@ -92,8 +92,7 @@ typedef QDjVuWidget::Priority Priority;
 #define ALIGN_RIGHT       QDjVuWidget::ALIGN_RIGHT
 
 #define PRIORITY_DEFAULT  QDjVuWidget::PRIORITY_DEFAULT
-#define PRIORITY_DOCUMENT QDjVuWidget::PRIORITY_DOCUMENT
-#define PRIORITY_PAGE     QDjVuWidget::PRIORITY_PAGE
+#define PRIORITY_ANNO     QDjVuWidget::PRIORITY_ANNO
 #define PRIORITY_CGI      QDjVuWidget::PRIORITY_CGI
 #define PRIORITY_USER     QDjVuWidget::PRIORITY_USER
 
@@ -917,9 +916,9 @@ QDjVuPrivate::makeLayout()
             if (i < loPage - 2 && i >= hiPage + 2)
               pageData[i].clear();
           if (continuous || sideBySide)
-            adjustSettings(PRIORITY_PAGE, miniexp_nil);
+            adjustSettings(PRIORITY_ANNO, miniexp_nil);
           else
-            adjustSettings(PRIORITY_PAGE, pageLayout[0]->annotations);
+            adjustSettings(PRIORITY_ANNO, pageLayout[0]->annotations);
         }
       // Layout page sizes
       else if (layoutChange & CHANGE_SIZE)
@@ -1414,7 +1413,7 @@ QDjVuPrivate::getAnnotationsAndText(Page *p)
     {
       p->annotations = doc->getPageAnnotations(p->pageno);
       if (p->annotations && !continuous && !sideBySide)
-        adjustSettings(PRIORITY_PAGE, p->annotations);
+        adjustSettings(PRIORITY_ANNO, p->annotations);
       if (p->annotations)
         prepareMapAreas(p);
     }
@@ -1823,8 +1822,7 @@ QDjVuWidget::setDocument(QDjVuDocument *d)
       // cleanup
       if (priv->doc)
         {
-          priv->adjustSettings(PRIORITY_DOCUMENT, miniexp_nil);
-          priv->adjustSettings(PRIORITY_PAGE, miniexp_nil);
+          priv->adjustSettings(PRIORITY_ANNO, miniexp_nil);
           priv->adjustSettings(PRIORITY_CGI, miniexp_nil);
           disconnect(priv->doc, 0, priv, 0);
           priv->doc->deref();
@@ -3345,12 +3343,12 @@ QDjVuWidget::getDjVuPage(int pageno)
 /*! \enum QDjVuWidget::Priority
   Levels for prioritized properties.
   Certain properties can be set at various priority levels for 
-  defining the default values, document level values, page level values, 
+  defining the default values, annotation options, cgi options,
   and user specified values. Priority levels matter when one changes
   the current document or the current page: new property values
-  might be unmasked when the document level or page level 
-  values are unset.  The prioritized properties are: \a borderSize, 
-  \a zoom, \a borderBrush, \a displayMode, \a horizAlign, \a vertAlign. 
+  might be unmasked when the annotation or cgi level values are unset.  
+  The prioritized properties are: \a borderSize, \a zoom, 
+  \a borderBrush, \a displayMode, \a horizAlign, \a vertAlign. 
 */
 
 /*! \property QDjVuWidget::clampOptionPriority
