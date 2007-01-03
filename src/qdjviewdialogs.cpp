@@ -239,7 +239,7 @@ QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
   wd->setWhatsThis(tr("<html><b>Document information</b><br>"
                       "This panel shows information about the document and "
                       "its component files. Select a component file "
-                      "to display detailled information in the 'File' "
+                      "to display detailled information in the <tt>File</tt> "
                       "tab. Double click a component file to show "
                       "the corresponding page in the main window. "
                       "</html>"));
@@ -247,8 +247,8 @@ QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
   wf->setWhatsThis(tr("<html><b>File and page information</b><br>"
                       "This panel shows the structure of the DjVu data "
                       "corresponding to the component file or the page "
-                      "selected in the 'Document' tab. The arrow buttons "
-                      "let you navigate to the previous or next "
+                      "selected in the <tt>Document</tt> tab. "
+                      "The arrow buttons jump to the previous or next "
                       "component file.</html>"));
 }
 
@@ -1233,7 +1233,7 @@ QDjViewPSExporter::QDjViewPSExporter(QDialog *parent, QDjView *djview,
 
   // whatsthis
   page1->setWhatsThis(tr("<html><b>PostScript options.</b><br>"
-                         "The color option enables color printing. "
+                         "Option <tt>Color</tt> enables color printing. "
                          "Document pages can be decorated with frame "
                          "and crop marks. "
                          "PostScript language level 1 is only useful "
@@ -1242,12 +1242,12 @@ QDjViewPSExporter::QDjViewPSExporter(QDialog *parent, QDjView *djview,
                          "on recent printers.</html>") );
 
   page2->setWhatsThis(tr("<html><b>Position and scaling.</b><br>"
-                         "Option <i>scale to fit</i> accomodates "
+                         "Option <tt>Scale to fit</tt> accomodates "
                          "whatever paper size your printer uses. "
-                         "Zoom factor 100% reproduces the initial "
-                         "document size. Automatic orientation chooses "
-                         "portrait or landscape on a page per page basis. "
-                         "</html>") )
+                         "Zoom factor <tt>100%</tt> reproduces the initial "
+                         "document size. Orientation <tt>Automatic</tt> "
+                         "chooses portrait or landscape on a page per "
+                         "page basis.</html>") )
 ;
   page3->setWhatsThis(tr("<html><b>Producing booklets.</b><br>"
                          "The booklet mode prints the selected "
@@ -2020,7 +2020,7 @@ QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
 
   setWhatsThis(tr("<html><b>Printing.</b><br/> "
                   "You can print the whole document or a page range. "
-                  "Use the 'Choose' button to select a print "
+                  "Use the <tt>Choose</tt> button to select a print "
                   "destination and specify printer options. "
                   "Additional dialog tabs might appear "
                   "to specify conversion options.</html>"));

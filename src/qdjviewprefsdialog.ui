@@ -555,22 +555,22 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1" >
-           <widget class="QComboBox" name="keysForLinksCombo" >
+          <item row="0" column="1" >
+           <widget class="QDjViewModifiersComboBox" name="keysForLensCombo" >
             <property name="editable" >
              <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="1" column="1" >
-           <widget class="QComboBox" name="keysForSelectCombo" >
+           <widget class="QDjViewModifiersComboBox" name="keysForSelectCombo" >
             <property name="editable" >
              <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
-           <widget class="QComboBox" name="keysForLensCombo" >
+          <item row="2" column="1" >
+           <widget class="QDjViewModifiersComboBox" name="keysForLinksCombo" >
             <property name="editable" >
              <bool>true</bool>
             </property>
@@ -973,6 +973,15 @@
   </layout>
  </widget>
  <pixmapfunction></pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>QDjViewModifiersComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qdjviewprefs.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>gammaSlider</tabstop>
   <tabstop>printerGammaSlider</tabstop>

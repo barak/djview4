@@ -1566,9 +1566,9 @@ QDjViewFind::QDjViewFind(QDjView *djview)
                   "Search hits appear progressively as soon as you type "
                   "a search string. Typing enter jumps to the next hit. "
                   "To move to the previous or next hit, you can also use "
-                  "the arrow buttons or the shortcuts F3 or Shift-F3. "
-                  "You can also double click a page name. "
-                  "Use the \"Options\" menu to search words only or "
+                  "the arrow buttons or the shortcuts <tt>F3</tt> or "
+                  "<tt>Shift-F3</tt>. You can also double click a page name. "
+                  "Use the <tt>Options</tt> menu to search words only or "
                   "to specify the case sensitivity."
                   "</html>"));
 

@@ -45,7 +45,10 @@
 #endif
 
 
-// Global preferences
+// ========================================
+// QDJVIEWPREFS
+// ========================================
+
 
 class QDjViewPrefs : public QObject
 {
@@ -178,27 +181,10 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QDjViewPrefs::Tools)
 
 
 
-// Widget for showing gamma correction
+// ========================================
+// QDJVIEWPREFSDIALOG
+// ========================================
 
-class QDjViewGammaWidget : public QFrame
-{
-  Q_OBJECT
-public:
-  QDjViewGammaWidget(QWidget *parent = 0);
-  double gamma() const;
-public slots:
-  void setGamma(double);
-  void setGammaTimesTen(int);
-protected:
-  virtual void paintEvent(QPaintEvent *event);
-private:
-  void paintRect(QPainter &painter, QRect r, bool strip);
-  double g;
-};
-
-
-
-// Preferences Dialog
 
 class QDjView;
 

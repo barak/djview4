@@ -23,8 +23,10 @@
 #include <libdjvu/miniexp.h>
 #include <libdjvu/ddjvuapi.h>
 
+#include <QComboBox>
 #include <QCoreApplication>
 #include <QDebug>
+#include <QLineEdit>
 #include <QMetaEnum>
 #include <QMetaObject>
 #include <QMutex>
@@ -32,6 +34,7 @@
 #include <QPainter>
 #include <QPointer>
 #include <QRect>
+#include <QRegExpValidator>
 #include <QSettings>
 #include <QStringList>
 #include <QVariant>
@@ -438,9 +441,21 @@ QDjViewPrefs::update()
 // ========================================
 
 
-/*! \class QDjViewGammaWidget
-   \brief Shows a gamma correction adjustment frame. */
-
+class QDjViewGammaWidget : public QFrame
+{
+  Q_OBJECT
+public:
+  QDjViewGammaWidget(QWidget *parent = 0);
+  double gamma() const;
+public slots:
+  void setGamma(double);
+  void setGammaTimesTen(int);
+protected:
+  virtual void paintEvent(QPaintEvent *event);
+private:
+  void paintRect(QPainter &painter, QRect r, bool strip);
+  double g;
+};
 
 
 QDjViewGammaWidget::QDjViewGammaWidget(QWidget *parent)
@@ -452,11 +467,13 @@ QDjViewGammaWidget::QDjViewGammaWidget(QWidget *parent)
   setLineWidth(1);
 }
 
+
 double 
 QDjViewGammaWidget::gamma() const
 {
   return g;
 }
+
 
 void 
 QDjViewGammaWidget::setGamma(double gamma)
@@ -527,6 +544,108 @@ QDjViewGammaWidget::paintRect(QPainter &painter, QRect r, bool strip)
 
 
 
+
+// ========================================
+// QDJVIEWMODIFIERSCOMBOBOX
+// ========================================
+
+
+class QDjViewModifiersComboBox : public QComboBox
+{
+  Q_OBJECT
+  Q_PROPERTY(Qt::KeyboardModifiers value READ value WRITE setValue)
+public:
+  QDjViewModifiersComboBox(QWidget *parent);
+  Qt::KeyboardModifiers value() const;
+public slots:
+  void setValue(Qt::KeyboardModifiers m);
+  void insertValue(Qt::KeyboardModifiers m);
+protected slots:
+  void editingFinished();
+private:
+  static const char *none;
+};
+
+const char* QDjViewModifiersComboBox::none = "None";
+
+
+QDjViewModifiersComboBox::QDjViewModifiersComboBox(QWidget *parent)
+  : QComboBox(parent)
+{
+  setEditable(true);
+  setInsertPolicy(QComboBox::NoInsert);
+  // validator
+  QStringList keynames;
+  keynames << "Shift";
+  keynames << "Control";
+  keynames << "Alt";
+#ifdef Q_WS_MAC
+  keynames << "Command";
+#else
+  keynames << "Meta";
+#endif  
+  QString keys = "(" + keynames.join("|") + ")";
+  keys = keys + "(\\+" + keys + ")*";
+  keys = keys + "|" + none;
+  QRegExp re( keys, Qt::CaseInsensitive);
+  setValidator(new QRegExpValidator(re, this));
+  // menu entries
+  insertValue(Qt::NoModifier);
+  insertValue(Qt::ShiftModifier);
+  insertValue(Qt::ControlModifier);
+  insertValue(Qt::AltModifier);
+  insertValue(Qt::MetaModifier);
+  insertValue(Qt::ShiftModifier|Qt::ControlModifier);
+  insertValue(Qt::ControlModifier|Qt::AltModifier);
+  setValue(Qt::NoModifier);
+  connect(lineEdit(), SIGNAL(editingFinished()),
+          this, SLOT(editingFinished()) );
+}
+
+
+void 
+QDjViewModifiersComboBox::editingFinished()
+{
+  QDjViewPrefs *prefs = QDjViewPrefs::instance();
+  QString text = lineEdit()->text();
+  Qt::KeyboardModifiers m = prefs->stringToModifiers(text);
+  text = (m) ? prefs->modifiersToString(m) : none;
+  setCurrentIndex(-1);
+  setEditText(text);
+}
+
+
+Qt::KeyboardModifiers
+QDjViewModifiersComboBox::value() const
+{
+  const_cast<QDjViewModifiersComboBox*>(this)->editingFinished();
+  QString text = lineEdit()->text();
+  QDjViewPrefs *prefs = QDjViewPrefs::instance();
+  return prefs->stringToModifiers(text);
+}
+
+
+void 
+QDjViewModifiersComboBox::setValue(Qt::KeyboardModifiers m)
+{
+  QDjViewPrefs *prefs = QDjViewPrefs::instance();
+  QString text = (m) ? prefs->modifiersToString(m) : none;
+  setEditText(text);
+}
+
+
+void 
+QDjViewModifiersComboBox::insertValue(Qt::KeyboardModifiers m)
+{
+  QDjViewPrefs *prefs = QDjViewPrefs::instance();
+  QString text = (m) ? prefs->modifiersToString(m) : none;
+  QVariant vm(m);
+  if (findData(vm) < 0)
+    insertItem(count(), text, vm);
+}
+
+
+
 // ========================================
 // QDJVIEWPREFSDIALOG
 // ========================================
@@ -549,7 +668,8 @@ QDjViewPrefsDialog::instance()
     {
       QDjViewPrefsDialog *main = new QDjViewPrefsDialog();
       main->setWindowTitle(tr("Preferences - DjView"));
-      main->setAttribute(Qt::WA_DeleteOnClose);
+      main->setAttribute(Qt::WA_DeleteOnClose, true);
+      main->setAttribute(Qt::WA_QuitOnClose, false);
       prefsDialog = main;
     }
   return prefsDialog;
@@ -626,12 +746,49 @@ QDjViewPrefsDialog::QDjViewPrefsDialog()
              " and choosing the position that makes the"
              " gray square as uniform as possible."
              "<p><b>Printer color correction.</b>"
-             "<br>The <i>automatic color matching</i> option"
+             "<br>The <tt>Automatic color</tt> option"
              " works best with PostScript printers"
              " and ICC profiled printers."
              " The slider might be useful in other cases."
              "</html>") );
   
+  setHelp(d->ui.interfaceTab,
+          tr("<html><b>Initial interface setup.</b>"
+             "<br>DjView can run as a standalone viewer,"
+             " as a full screen viewer, as a full page browser plugin,"
+             " or as a plugin embedded inside a html page."
+             " For each case, check the <tt>Remember</tt> box to"
+             " automatically save and restore the interface setup."
+             " Otherwise, specify an initial configuration."
+             "</html>") );
+
+  setHelp(d->ui.keysTab,
+          tr("<html><b>Modifiers keys.</b>"
+             "<br>Define which combination of modifier keys"
+             " will show the manifying lens, temporarily enable"
+             " the selection mode, or highlight the hyperlinks."
+             "</html>") );
+
+  setHelp(d->ui.lensTab,
+          tr("<html><b>Magnifying lens.</b>"
+             "<br>The magnifying lens appears when you depress"
+             " the modifier keys specifier in tab <tt>Keys</tt>."
+             " This panel lets you choose the power and the size"
+             " of the magnifying lens."
+             "</html>") );
+  
+  setHelp(d->ui.cacheTab,
+          tr("<b>Caches.</b>"
+             "<br>The <i>pixel cache</i> stores image data"
+             " located outside the visible area."
+             " This cache makes panning smoother."
+             " The <i>decoded page cache</i> contains partially"
+             " decoded pages. It provides faster response times"
+             " when navigating a multipage document or when returning"
+             " to a previously viewed page. Clearing this cache"
+             " might be useful to reflect a change in the page"
+             " data without restarting the DjVu viewer."
+             "</html>"));
 
   setHelp(d->ui.networkTab,
           tr("<html><b>Network proxy settings.</b>"
@@ -650,13 +807,11 @@ QDjViewPrefsDialog::load(QDjView *djview)
   // load preferences into ui
   QDjViewPrefs *prefs = QDjViewPrefs::instance();
   d->context = &djview->getDjVuContext();
-  
   // 1- gamma tab
   d->ui.gammaSlider->setValue((int)(prefs->gamma * 10));
   int gamma = (int)(prefs->printerGamma * 10);
   d->ui.printerAutoCheckBox->setChecked(gamma <= 0);
   d->ui.printerGammaSlider->setValue(gamma ? qBound(5, gamma, 50) : 22);
-
   // 2- interface tab
   d->saved[0] = prefs->forStandalone;
   d->saved[1] = prefs->forFullScreen;
@@ -672,7 +827,12 @@ QDjViewPrefsDialog::load(QDjView *djview)
     n = 1;
   modeComboChanged(n);
   d->ui.modeComboBox->setCurrentIndex(n);
-  
+  // 3- keys tab
+  d->ui.keysForLensCombo->setValue(prefs->modifiersForLens);
+  d->ui.keysForSelectCombo->setValue(prefs->modifiersForSelect);
+  d->ui.keysForLinksCombo->setValue(prefs->modifiersForLinks);
+  // 4- lens tab
+  // 5- cache tab
   // 6- network tab
   bool proxy = prefs->proxyUrl.isValid();
   if (prefs->proxyUrl.scheme() != "http" ||
@@ -696,14 +856,12 @@ QDjViewPrefsDialog::apply()
 {
   // save ui into preferences
   QDjViewPrefs *prefs = QDjViewPrefs::instance();
-
   // 1- gamma tab
   prefs->gamma = d->ui.gammaSlider->value() / 10.0;
   if (d->ui.printerAutoCheckBox->isChecked())
     prefs->printerGamma = 0;
   else
     prefs->printerGamma = d->ui.printerGammaSlider->value() / 10.0;
-
   // 2- interface tab
   int n = d->ui.modeComboBox->currentIndex();
   modeComboChanged(n);
@@ -711,7 +869,12 @@ QDjViewPrefsDialog::apply()
   prefs->forFullScreen = d->saved[1];
   prefs->forFullPagePlugin = d->saved[2];
   prefs->forEmbeddedPlugin = d->saved[3];
-  
+  // 3- keys
+  prefs->modifiersForLens = d->ui.keysForLensCombo->value();
+  prefs->modifiersForSelect = d->ui.keysForSelectCombo->value();
+  prefs->modifiersForLinks = d->ui.keysForLinksCombo->value();
+  // 4- lens tab
+  // 5- cache tab
   // 6- network tab
   prefs->proxyUrl = QUrl();
   if (d->ui.proxyCheckBox->isChecked())
@@ -752,6 +915,10 @@ QDjViewPrefsDialog::reset()
   d->saved[3].remember = false;
   d->currentSaved = -1;
   modeComboChanged(d->ui.modeComboBox->currentIndex());
+  // 3- keys
+  d->ui.keysForLensCombo->setValue(Qt::ShiftModifier|Qt::ControlModifier);
+  d->ui.keysForSelectCombo->setValue(Qt::ControlModifier);
+  d->ui.keysForLinksCombo->setValue(Qt::ShiftModifier);
   // 6- network tab
   d->ui.proxyCheckBox->setChecked(false);
 }
@@ -867,6 +1034,12 @@ QDjViewPrefsDialog::zoomComboEdited()
     d->ui.zoomCombo->setEditText(d->ui.zoomCombo->itemText(zoomIndex));
 }
 
+
+
+// ----------------------------------------
+// MOC
+
+#include "qdjviewprefs.moc"
 
 
 /* -------------------------------------------------------------
