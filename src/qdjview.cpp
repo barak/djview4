@@ -16,11 +16,14 @@
 
 // $Id$
 
+#if AUTOCONF
+# include "config.h"
+#endif
+
 #include <string.h>
 #include <errno.h>
 #include <libdjvu/miniexp.h>
 #include <libdjvu/ddjvuapi.h>
-
 
 #include <QAction>
 #include <QActionGroup>

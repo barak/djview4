@@ -1,3 +1,4 @@
+#C- -*- shell-script -*-
 #C- -------------------------------------------------------------------
 #C- DjView4
 #C- Copyright (c) 2006  Leon Bottou
@@ -15,32 +16,46 @@
 #C-
 #C- $Id$
 
+
 TEMPLATE = app 
 TARGET = djview
 CONFIG += qt thread warn_on 
 QT += network 
 
-CONFIG(release,debug|release) {
-  DEFINES += QT_NO_DEBUG QT_NO_DEBUG_STREAM
-}
 
-unix {
-  CONFIG += link_pkgconfig
-  PKGCONFIG += ddjvuapi
+
+# -- find libraries
+CONFIG(autoconf) {
+    # for use with autoconf
+    LIBS += $$AUTO_LIBS
+    QMAKE_CXXFLAGS += $$AUTO_CFLAGS
+    QMAKE_CFLAGS += $$AUTO_CFLAGS
+    DEFINES += AUTOCONF
+} else:unix {
+    # for use under unix with pkgconfig
+    CONFIG += link_pkgconfig
+    PKGCONFIG += ddjvuapi
 } else {
-  LIBS += -ldjvulibre
-  # INCLUDEPATH += ...
-  # QMAKE_CXXFLAGS += ...
+    # for use on other platforms (complete below)
+    LIBS += -ldjvulibre
 }
 
+
+# -- no debug in release mode
+CONFIG(release,debug|release) {
+    DEFINES += QT_NO_DEBUG QT_NO_DEBUG_STREAM
+}
+
+# -- check for x11
 macx {
   contains(DEFINES,__USE_WS_X11__): CONFIG += x11
 } else:win32 {
-  contains(DEFINES,_WIN32_X11_):    CONFIG += x11
+  contains(DEFINES,_WIN32_X11_): CONFIG += x11
 } else:unix {
   CONFIG += x11
 }
 
+# -- djvu files
 HEADERS += qdjvu.h 
 HEADERS += qdjvuhttp.h 
 HEADERS += qdjvuwidget.h
@@ -49,6 +64,7 @@ SOURCES += qdjvuhttp.cpp
 SOURCES += qdjvuwidget.cpp
 RESOURCES += qdjvuwidget.qrc 
 
+# -- djview files
 HEADERS += qdjviewprefs.h
 HEADERS += qdjviewdialogs.h 
 HEADERS += qdjviewsidebar.h
@@ -67,13 +83,11 @@ FORMS += qdjviewexportps3.ui
 FORMS += qdjviewsavedialog.ui 
 FORMS += qdjviewprintdialog.ui 
 FORMS += qdjviewprefsdialog.ui 
-
 SOURCES += djview.cpp
-
 x11 {
   HEADERS += qdjviewplugin.h
   SOURCES += qdjviewplugin.cpp
 }
 
-
+# -- transations
 TRANSLATIONS += djview_fr.ts

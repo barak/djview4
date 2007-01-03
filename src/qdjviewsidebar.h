@@ -19,6 +19,10 @@
 #ifndef QDJVIEWSIDEBAR_H
 #define QDJVIEWSIDEBAR_H
 
+#if AUTOCONF
+# include "config.h"
+#endif
+
 #include <Qt>
 #include <QObject>
 #include <QModelIndex>

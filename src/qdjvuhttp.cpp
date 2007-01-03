@@ -16,11 +16,14 @@
 
 // $Id$
 
+#if AUTOCONF
+# include "config.h"
+#endif
+
 #include "qdjvuhttp.h"
 #include <libdjvu/ddjvuapi.h>
 
 #include <QDebug>
-
 
 
 /*! \class QDjVuHttpDocument

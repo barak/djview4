@@ -19,6 +19,10 @@
 #ifndef QDJVUHTTP_H
 #define QDJVUHTTP_H
 
+#if AUTOCONF
+# include "config.h"
+#endif
+
 #include <qdjvu.h>
 
 #include <QList>

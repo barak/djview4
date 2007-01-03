@@ -19,6 +19,10 @@
 #ifndef QDJVIEWDIALOGS_H
 #define QDJVIEWDIALOGS_H
 
+#if AUTOCONF
+# include "config.h"
+#endif
+
 #include <QObject>
 #include <QDialog>
 #include <QLabel>

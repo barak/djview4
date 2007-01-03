@@ -19,6 +19,10 @@
 #ifndef QDJVIEW_H
 #define QDJVIEW_H
 
+#if AUTOCONF
+# include "config.h"
+#endif
+
 #include <Qt>
 #include <QObject>
 #include <QMainWindow>

@@ -16,6 +16,10 @@
 
 // $Id$
 
+#if AUTOCONF
+# include "config.h"
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>

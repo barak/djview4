@@ -19,6 +19,10 @@
 #ifndef QDJVUWIDGET_H
 #define QDJVUWIDGET_H
 
+#if AUTOCONF
+# include "config.h"
+#endif
+
 #include "qdjvu.h"
 
 #include <QPoint>

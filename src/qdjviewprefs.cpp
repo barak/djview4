@@ -16,7 +16,9 @@
 
 // $Id$
 
-
+#if AUTOCONF
+# include "config.h"
+#endif
 
 #include <stdlib.h>
 #include <math.h>

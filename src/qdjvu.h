@@ -19,6 +19,10 @@
 #ifndef QDJVU_H
 #define QDJVU_H
 
+#if AUTOCONF
+# include "config.h"
+#endif
+
 // The following definition allow for using 
 // this file without the libdjvu include files.
 

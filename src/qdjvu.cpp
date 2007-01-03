@@ -16,13 +16,16 @@
 
 // $Id$
 
+#if AUTOCONF
+# include "config.h"
+#endif
+
 #include <stdlib.h>
 #include <errno.h>
 #include <libdjvu/miniexp.h>
 #include <libdjvu/ddjvuapi.h>
 
 #include "qdjvu.h"
-
 
 #include <QByteArray>
 #include <QCoreApplication>

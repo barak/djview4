@@ -16,6 +16,10 @@
 
 // $Id$
 
+#if AUTOCONF
+# include "config.h"
+#endif
+
 #include <libdjvu/ddjvuapi.h>
 #include <libdjvu/miniexp.h>
 #include <locale.h>

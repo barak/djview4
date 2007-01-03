@@ -19,6 +19,10 @@
 #ifndef QDJVIEWPLUGIN_H
 #define QDJVIEWPLUGIN_H
 
+#if AUTOCONF
+# include "config.h"
+#endif
+
 #include <QApplication>
 #include <QByteArray>
 #include <QList>
