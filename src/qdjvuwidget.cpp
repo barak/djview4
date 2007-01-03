@@ -3351,14 +3351,13 @@ QDjVuWidget::getDjVuPage(int pageno)
   \a borderBrush, \a displayMode, \a horizAlign, \a vertAlign. 
 */
 
-/*! \property QDjVuWidget::clampOptionPriority
-  The property setting function always set the prioritized 
+
+/*! The property setting function always set the prioritized 
   properties at priority level \a PRIORITY_USER. 
   This function downgrades all options set with a 
   priority higher than \a priority to priority 
   level \a priority.
 */
-
 
 void
 QDjVuWidget::reduceOptionsToPriority(Priority priority)
