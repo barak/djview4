@@ -84,8 +84,6 @@ class QDjVuWidget : public QAbstractScrollArea
              READ modifiersForSelect WRITE setModifiersForSelect)
   Q_PROPERTY(Qt::KeyboardModifiers modifiersForLinks
              READ modifiersForLinks WRITE setModifiersForLinks)
-  Q_PROPERTY(Priority optionPriority
-             READ optionPriority WRITE setOptionPriority)
 
 public:
 
@@ -170,7 +168,6 @@ public:
   Qt::KeyboardModifiers modifiersForLens() const;
   Qt::KeyboardModifiers modifiersForSelect() const;
   Qt::KeyboardModifiers modifiersForLinks() const;
-  Priority optionPriority() const;
 
 public slots:
   void setDocument(QDjVuDocument *d);
@@ -199,7 +196,7 @@ public slots:
   void setModifiersForLens(Qt::KeyboardModifiers);
   void setModifiersForSelect(Qt::KeyboardModifiers);
   void setModifiersForLinks(Qt::KeyboardModifiers);
-  void setOptionPriority(Priority);
+  void reduceOptionsToPriority(Priority);
 
 public:
   QString pastErrorMessage(int n=0);

@@ -711,7 +711,6 @@ public:
   Prioritized<DisplayMode> qDisplay;
   Prioritized<Align>       qHAlign;
   Prioritized<Align>       qVAlign;
-  Priority                 optionPriority;
   // hyperlinks
   bool        displayMapAreas;
   Page       *currentMapAreaPage;
@@ -802,7 +801,6 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   separatorSize = 12;
   shadowSize = 2;
   // prioritized
-  optionPriority = PRIORITY_USER;
   qBorderSize.set(PRIORITY_DEFAULT, borderSize);
   qZoom.set(PRIORITY_DEFAULT, zoom);
   qBorderBrush.set(PRIORITY_DEFAULT, borderBrush);
@@ -1988,7 +1986,7 @@ QDjVuWidget::zoom(void) const
 void 
 QDjVuWidget::setZoom(int z)
 {
-  priv->qZoom.set(priv->optionPriority, z, true);    
+  priv->qZoom.set(PRIORITY_USER, z, true);    
   priv->changeZoom();
 }
 
@@ -2072,7 +2070,7 @@ QDjVuWidget::displayMode(void) const
 void 
 QDjVuWidget::setDisplayMode(DisplayMode m)
 {
-  priv->qDisplay.set(priv->optionPriority, m, true);
+  priv->qDisplay.set(PRIORITY_USER, m, true);
   priv->changeDisplay();
 }
 
@@ -2167,7 +2165,7 @@ QDjVuWidget::horizAlign(void) const
 void 
 QDjVuWidget::setHorizAlign(Align a)
 {
-  priv->qHAlign.set(priv->optionPriority, a, true);
+  priv->qHAlign.set(PRIORITY_USER, a, true);
   priv->changeHAlign();
 }
 
@@ -2196,7 +2194,7 @@ QDjVuWidget::vertAlign(void) const
 void 
 QDjVuWidget::setVertAlign(Align a)
 {
-  priv->qVAlign.set(priv->optionPriority, a, true);
+  priv->qVAlign.set(PRIORITY_USER, a, true);
   priv->changeVAlign();
 }
 
@@ -2224,7 +2222,7 @@ QDjVuWidget::borderBrush(void) const
 void 
 QDjVuWidget::setBorderBrush(QBrush b)
 {
-  priv->qBorderBrush.set(priv->optionPriority, b, true);
+  priv->qBorderBrush.set(PRIORITY_USER, b, true);
   priv->changeBorderBrush();
 }
 
@@ -2253,7 +2251,7 @@ QDjVuWidget::borderSize(void) const
 void 
 QDjVuWidget::setBorderSize(int b)
 {
-  priv->qBorderSize.set(priv->optionPriority, b, true);
+  priv->qBorderSize.set(PRIORITY_USER, b, true);
   priv->changeBorderSize();
 }
 
@@ -3340,39 +3338,33 @@ QDjVuWidget::getDjVuPage(int pageno)
 
 /*! \enum QDjVuWidget::Priority
   Levels for prioritized properties.
-  See \a QDjVuWidget::optionPriority.
-*/
-
-/*! \property QDjVuWidget::optionPriority
   Certain properties can be set at various priority levels for 
   defining the default values, document level values, page level values, 
-  and user specified values. 
-
-  The property setting function sets these prioritized properties
-  at the level specified by \a optionPriority. They also unset all
-  values stored with a higher priority to ensure that the new value
-  takes effect immediately. Priority levels matter when one changes
+  and user specified values. Priority levels matter when one changes
   the current document or the current page: new property values
   might be unmasked when the document level or page level 
-  values are unset. 
-
-  The prioritized properties are: \a borderSize, \a zoom,
-  \a borderBrush, \a displayMode, \a horizAlign, \a vertAlign. 
+  values are unset.  The prioritized properties are: \a borderSize, 
+  \a zoom, \a borderBrush, \a displayMode, \a horizAlign, \a vertAlign. 
 */
 
-
-QDjVuWidget::Priority
-QDjVuWidget::optionPriority(void) const
-{
-  return priv->optionPriority;
-}
+/*! \property QDjVuWidget::clampOptionPriority
+  The property setting function always set the prioritized 
+  properties at priority level \a PRIORITY_USER. 
+  This function downgrades all options set with a 
+  priority higher than \a priority to priority 
+  level \a priority.
+*/
 
 
 void
-QDjVuWidget::setOptionPriority(Priority p)
+QDjVuWidget::reduceOptionsToPriority(Priority priority)
 {
-  if (p >= PRIORITY_DEFAULT && p <= PRIORITY_USER)
-    priv->optionPriority = p;
+  priv->qBorderSize.set(priority, priv->qBorderSize, true);
+  priv->qZoom.set(priority, priv->qZoom, true);
+  priv->qBorderBrush.set(priority, priv->qBorderBrush, true);
+  priv->qDisplay.set(priority, priv->qDisplay, true);
+  priv->qHAlign.set(priority, priv->qHAlign, true);
+  priv->qVAlign.set(priority, priv->qVAlign, true);
 }
 
 

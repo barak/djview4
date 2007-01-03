@@ -1161,9 +1161,6 @@ QDjView::updateSaved(Saved *saved)
 void
 QDjView::applyPreferences(void)
 {
-  // Preferences have low priority
-  widget->setOptionPriority(QDjVuWidget::PRIORITY_DEFAULT);
-
   // Saved preferences
   applySaved(getSavedPrefs());
   
@@ -1193,9 +1190,6 @@ QDjView::applyPreferences(void)
       widget->setBorderSize(0);
     }
   
-  // Restore user priority
-  widget->setOptionPriority(QDjVuWidget::PRIORITY_USER);
-
   // Preload full screen prefs.
   fsSavedNormal = prefs->forStandalone;
   fsSavedFullScreen = prefs->forFullScreen;
@@ -1660,8 +1654,6 @@ void
 QDjView::parseDjVuCgiArguments(QUrl url)
 {
   QStringList errors;
-  // set document option priority
-  widget->setOptionPriority(QDjVuWidget::PRIORITY_DOCUMENT);
   // parse
   bool djvuopts = false;
   QPair<QString,QString> pair;
@@ -1672,8 +1664,6 @@ QDjView::parseDjVuCgiArguments(QUrl url)
       else if (djvuopts)
         errors << parseArgument(pair.first, pair.second);
     }
-  // restore user option priority
-  widget->setOptionPriority(QDjVuWidget::PRIORITY_USER);
   // warning for errors
   if (djvuopts && errors.size() > 0)
     foreach(QString error, errors)
@@ -1731,14 +1721,12 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
     savingAllowed(true)
 {
   // Main window setup
-
   setWindowTitle(tr("DjView"));
   setWindowIcon(QIcon(":/images/djvu.png"));
   if (QApplication::windowIcon().isNull())
     QApplication::setWindowIcon(windowIcon());
 
   // Basic preferences
-
   prefs = QDjViewPrefs::instance();
   options = QDjViewPrefs::defaultOptions;
   tools = prefs->tools;
@@ -1746,14 +1734,11 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   fsWindowState = 0;
   
   // Create dialogs
-
   errorDialog = new QDjViewErrorDialog(this);
   infoDialog = 0;
   metaDialog = 0;
   
-  // Create widgets
-
-  // - djvu widget
+  // Create djvu widget
   QWidget *central = new QWidget(this);
   widget = new QDjVuWidget(central);
   widget->setFrameShape(QFrame::NoFrame);
@@ -1785,7 +1770,8 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
           this, SLOT(pointerClick(const Position&,miniexp_t)));
   connect(widget, SIGNAL(pointerSelect(const QPoint&,const QRect&)),
           this, SLOT(pointerSelect(const QPoint&,const QRect&)));
-  // - splash screen
+
+  // Create splash screen
   splash = new QLabel(central);
   splash->setFrameShape(QFrame::Box);
   splash->setFrameShadow(QFrame::Sunken);
@@ -1798,21 +1784,21 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   splash->setAutoFillBackground(true);
 #endif
 
-  // - central layout
+  // Create central layout
   layout = new QStackedLayout(central);
   layout->addWidget(widget);
   layout->addWidget(splash);
   layout->setCurrentWidget(splash);
   setCentralWidget(central);
 
-  // - context menu
+  // Create context menu
   contextMenu = new QMenu(this);
 
-  // - menubar
+  // Create menubar
   menuBar = new QMenuBar(this);
   setMenuBar(menuBar);
 
-  // - statusbar
+  // Create statusbar
   statusBar = new QStatusBar(this);
   QFont font = QApplication::font();
   font.setPointSize((font.pointSize() * 3 + 3) / 4);
@@ -1833,13 +1819,13 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   statusBar->addPermanentWidget(mouseLabel);
   setStatusBar(statusBar);
 
-  // - toolbar  
+  // Create toolbar  
   toolBar = new QToolBar(this);
   toolBar->setObjectName("toolbar");
   toolBar->setAllowedAreas(Qt::TopToolBarArea|Qt::BottomToolBarArea);
   addToolBar(toolBar);
 
-  // - mode combo box
+  // Create mode combo box
   modeCombo = new QComboBox(toolBar);
   fillModeCombo(modeCombo);
   connect(modeCombo, SIGNAL(activated(int)),
@@ -1847,7 +1833,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   connect(modeCombo, SIGNAL(activated(int)),
           this, SLOT(updateActionsLater()) );
 
-  // - zoom combo box
+  // Create zoom combo box
   zoomCombo = new QComboBox(toolBar);
   zoomCombo->setEditable(true);
   zoomCombo->setInsertPolicy(QComboBox::NoInsert);
@@ -1857,7 +1843,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   connect(zoomCombo->lineEdit(), SIGNAL(editingFinished()),
           this, SLOT(zoomComboEdited()) );
 
-  // - page combo box
+  // Create page combo box
   pageCombo = new QComboBox(toolBar);
   pageCombo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
   pageCombo->setMinimumWidth(80);
@@ -1868,7 +1854,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   connect(pageCombo->lineEdit(), SIGNAL(editingFinished()),
           this, SLOT(pageComboEdited()) );
   
-  // - sidebar  
+  // Create sidebar  
   sideBar = new QDockWidget(this); 
   sideBar->setObjectName("sidebar");
   sideBar->setAllowedAreas(Qt::AllDockWidgetAreas);
@@ -1878,11 +1864,11 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   sideToolBox->setBackgroundRole(QPalette::Background);
   sideBar->setWidget(sideToolBox);
 
-  // - escape shortcut for sidebar
+  // Create escape shortcut for sidebar
   QShortcut *esc = new QShortcut(QKeySequence("Esc"), sideToolBox);
   connect(esc, SIGNAL(activated()), sideBar, SLOT(hide()));
   
-  // - sidebar components
+  // Create sidebar components
   thumbnailWidget = new QDjViewThumbnails(this);
   sideToolBox->addItem(thumbnailWidget, tr("&Thumbnails"));
   outlineWidget = new QDjViewOutline(this);
@@ -1950,8 +1936,13 @@ QDjView::open(QDjVuDocument *doc, QUrl url)
   docinfo();
   if (doc)
     emit documentOpened(doc);
+  // options set so far get default priority
+  widget->reduceOptionsToPriority(QDjVuWidget::PRIORITY_DEFAULT);
+  // process url options
   if (url.isValid())
     parseDjVuCgiArguments(url);
+  // newly set options get document priority
+  widget->reduceOptionsToPriority(QDjVuWidget::PRIORITY_DOCUMENT);
 }
 
 

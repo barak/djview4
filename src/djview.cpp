@@ -261,7 +261,7 @@ main(int argc, char *argv[])
     }
   if (argc > 2)
     usage();
-  
+
   // Open file
   if (argc > 1)
     {
