@@ -1190,7 +1190,11 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Finding text.&lt;/b&gt;&lt;br/&gt; Search hits appear progressively as soon as you type a search string. Typing enter jumps to the next hit. To move to the previous or next hit, you can also use the arrow buttons or the shortcuts F3 or Shift-F3. You can also double click a page name. Use the &quot;Options&quot; menu to search words only or to specify the case sensitivity.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Recherche de texte.&lt;/b&gt;&lt;br/&gt; Les occurrences du texte à rechercher apparaissent progressivement pendant sa saisie. La touche «Entrée» montre la prochaine occurrence. Pour aller à l&apos;occurrence précédente ou suivante, utilisez les boutons fléchés ou les touches «F3» et «Maj+F3». Vous pouvez aussi double cliquer un nom de page. Le menu «Options» permet de chercher des mots entiers ou de spécifier la casse.&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;b&gt;Recherche de texte.&lt;/b&gt;&lt;br/&gt; Les occurrences du texte à rechercher apparaissent progressivement pendant sa saisie. La touche «Entrée» montre la prochaine occurrence. Pour aller à l&apos;occurrence précédente ou suivante, utilisez les boutons fléchés ou les touches «F3» et «Maj+F3». Vous pouvez aussi double cliquer un nom de page. Le menu «Options» permet de chercher des mots entiers ou de spécifier la casse.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;Finding text.&lt;/b&gt;&lt;br/&gt; Search hits appear progressively as soon as you type a search string. Typing enter jumps to the next hit. To move to the previous or next hit, you can also use the arrow buttons or the shortcuts &lt;tt&gt;F3&lt;/tt&gt; or &lt;tt&gt;Shift-F3&lt;/tt&gt;. You can also double click a page name. Use the &lt;tt&gt;Options&lt;/tt&gt; menu to search words only or to specify the case sensitivity.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Recherche de texte.&lt;/b&gt;&lt;br/&gt; Les occurrences du texte à rechercher apparaissent progressivement pendant sa saisie. La touche «Entrée» montre la prochaine occurrence. Pour aller à l&apos;occurrence précédente ou suivante, utilisez les boutons fléchés ou les touches &lt;tt&gt;F3&lt;/tt&gt; et &lt;tt&gt;Maj+F3&lt;/tt&gt;. Vous pouvez aussi double cliquer un nom de page. Le menu &lt;tt&gt;Options&lt;/tt&gt; permet de chercher des mots entiers ou de spécifier la casse.&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1256,7 +1260,7 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;File and page information&lt;/b&gt;&lt;br&gt;This panel shows the structure of the DjVu data corresponding to the component file or the page selected in the &apos;Document&apos; tab. The arrow buttons let you navigate to the previous or next component file.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Informations sur un fichier&lt;/b&gt;&lt;br&gt;Ce panneau montre la structure des données DjVu correspondant au fichier ou à la page sélectionnée dans l&apos;onglet «Document». Les flèches vous permettent de naviguer vers le fichier précédent ou suivant.&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;b&gt;Informations sur un fichier&lt;/b&gt;&lt;br&gt;Ce panneau montre la structure des données DjVu correspondant au fichier ou à la page sélectionnée dans l&apos;onglet «Document». Les flèches vous permettent de naviguer vers le fichier précédent ou suivant.&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Waiting for data...</source>
@@ -1356,7 +1360,15 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailled information in the &apos;File&apos; tab. Double click a component file to show the corresponding page in the main window. &lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Information sur le document&lt;/b&gt;&lt;br&gt;Ce panneau montre les informations sur le document et les fichiers qui le composent. Sélectionnez un nom de fichier pour afficher ses informations sous l&apos;index «Fichier». Double-cliquez un nom de fichier pour montrer la page correspondante &lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;b&gt;Information sur le document&lt;/b&gt;&lt;br&gt;Ce panneau montre les informations sur le document et les fichiers qui le composent. Sélectionnez un nom de fichier pour afficher ses informations sous l&apos;index «Fichier». Double-cliquez un nom de fichier pour montrer la page correspondante &lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailled information in the &lt;tt&gt;File&lt;/tt&gt; tab. Double click a component file to show the corresponding page in the main window. &lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Information sur le document&lt;/b&gt;&lt;br&gt;Ce panneau montre les informations sur le document et les fichiers qui le composent. Sélectionnez un nom de fichier pour afficher ses informations sous l&apos;index &lt;tt&gt;Fichier&lt;/tt&gt;. Double-cliquez un nom de fichier pour montrer la page correspondante &lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;File and page information&lt;/b&gt;&lt;br&gt;This panel shows the structure of the DjVu data corresponding to the component file or the page selected in the &lt;tt&gt;Document&lt;/tt&gt; tab. The arrow buttons jump to the previous or next component file.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Informations sur un fichier&lt;/b&gt;&lt;br&gt;Ce panneau montre la structure des données DjVu correspondant au fichier ou à la page sélectionnée dans l&apos;onglet &lt;tt&gt;Document&lt;/tt&gt;. Les flèches vous permettent de naviguer vers le fichier précédent ou suivant.&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1449,11 +1461,7 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;PostScript options.&lt;/b&gt;&lt;br&gt;The color option enables color printing. Document pages can be decorated with frame and crop marks. PostScript language level 1 is only useful with very old printers. Level 2 works with most printers. Level 3 print color document faster on recent printers.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Options PostScript.&lt;/b&gt;&lt;br&gt;L&apos;option «couleur» autorise l&apos;impression en couleur. Les pages imprimées peuvent être décorées avec un cadre ou des marques de découpage. Le niveau PostScript 1 est utile pour les très vieilles imprimantes. Le niveau 2 fonctionne avec la plupart des imprimantes en service. Le niveau 3 imprime les documents en couleur plus rapidement sur des imprimantes récentes.&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;b&gt;Position and scaling.&lt;/b&gt;&lt;br&gt;Option &lt;i&gt;scale to fit&lt;/i&gt; accomodates whatever paper size your printer uses. Zoom factor 100% reproduces the initial document size. Automatic orientation chooses portrait or landscape on a page per page basis. &lt;/html&gt;</source>
-        <translation></translation>
+        <translation type="obsolete">&lt;html&gt;&lt;b&gt;Options PostScript.&lt;/b&gt;&lt;br&gt;L&apos;option «couleur» autorise l&apos;impression en couleur. Les pages imprimées peuvent être décorées avec un cadre ou des marques de découpage. Le niveau PostScript 1 est utile pour les très vieilles imprimantes. Le niveau 2 fonctionne avec la plupart des imprimantes en service. Le niveau 3 imprime les documents en couleur plus rapidement sur des imprimantes récentes.&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Producing booklets.&lt;/b&gt;&lt;br&gt;The booklet mode prints the selected pages as sheets suitable for folding one or several booklets. Several booklets might be produced when a maximum number of sheets per booklet is specified. You can either use a duplex printer or print rectos and versos separately.&lt;p&gt; Shifting rectos and versos is useful with poorly aligned duplex printers. The center margins determine how much space is left between the pages to fold the sheets. This space slowly increases from the inner sheet to the outer sheet.&lt;/html&gt;</source>
@@ -1471,12 +1479,283 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
         <source>Save job creation failed!</source>
         <translation>L&apos;operation d&apos;enregistrement a échoué!</translation>
     </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;PostScript options.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Color&lt;/tt&gt; enables color printing. Document pages can be decorated with frame and crop marks. PostScript language level 1 is only useful with very old printers. Level 2 works with most printers. Level 3 print color document faster on recent printers.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Options PostScript.&lt;/b&gt;&lt;br&gt;L&apos;option &lt;tt&gt;Couleur&lt;/tt&gt; autorise l&apos;impression en couleur. Les pages imprimées peuvent être décorées avec un cadre ou des marques de découpage. Le niveau PostScript 1 est utile pour les très vieilles imprimantes. Le niveau 2 fonctionne avec la plupart des imprimantes en service. Le niveau 3 imprime les documents en couleur plus rapidement sur des imprimantes récentes.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;Position and scaling.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accomodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Position and aggrandissement.&lt;/b&gt;&lt;br&gt;L&apos;option &lt;tt&gt;Agrandir à la page&lt;/tt&gt; choisit un grossissement adapté a la taille de papier utilisée par votre imprimante. Le facteur de grossissement &lt;tt&gt;100%&lt;/tt&gt; reproduit la taille originale du document. L&apos;orientation &lt;tt&gt;Automatique&lt;/tt&gt; sélectionne portrait ou paysage en fonction de la taille de chaque page.&lt;/html&gt;</translation>
+    </message>
 </context>
 <context>
     <name>QDjViewPlugin::Document</name>
     <message>
         <source>Requesting %1.</source>
         <translation>Chargement de %1.</translation>
+    </message>
+</context>
+<context>
+    <name>QDjViewPrefsDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation>Dialogue</translation>
+    </message>
+    <message>
+        <source>&amp;Gamma</source>
+        <translation>&amp;Gamma</translation>
+    </message>
+    <message>
+        <source>Automatic colors</source>
+        <translation>Calibrage automatique</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;Printer color correction.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;Correction de couleur pour l&apos;impression.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Darker</source>
+        <translation>Foncé</translation>
+    </message>
+    <message>
+        <source>Lighter</source>
+        <translation>Clair</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;Screen color correction.&lt;br&gt;Adjust slider until gray shades look similar.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;Correction de couleur pour l&apos;écran.&lt;br&gt;Adjustez le potentionmètre de façon à rendre les niveaux de gris similaires.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&amp;Interface</source>
+        <translation>&amp;Interface</translation>
+    </message>
+    <message>
+        <source>Options for</source>
+        <translation>Options pour</translation>
+    </message>
+    <message>
+        <source>Standalone Viewer</source>
+        <translation>Application</translation>
+    </message>
+    <message>
+        <source>Full Screen Standalone Viewer</source>
+        <translation>Application Plein-Écran</translation>
+    </message>
+    <message>
+        <source>Full Page Plugin</source>
+        <translation>Plugin Pleine-Page</translation>
+    </message>
+    <message>
+        <source>Embedded Plugin</source>
+        <translation>Plugin en Ligne</translation>
+    </message>
+    <message>
+        <source>&amp;Remember initial state from last invocation</source>
+        <translation>Mémo&amp;riser les dernières options utilisées</translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation>Élements</translation>
+    </message>
+    <message>
+        <source>&amp;Menu bar</source>
+        <translation>Barre de &amp;menu</translation>
+    </message>
+    <message>
+        <source>&amp;Tool bar</source>
+        <translation>Barre d&apos;ou&amp;tils</translation>
+    </message>
+    <message>
+        <source>Sc&amp;rollbars</source>
+        <translation>Barres de &amp;défilement</translation>
+    </message>
+    <message>
+        <source>Stat&amp;us bar</source>
+        <translation>Barre d&apos;ét&amp;at</translation>
+    </message>
+    <message>
+        <source>&amp;Side bar</source>
+        <translation>Panneau &amp;latéral</translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <translation>Affichage</translation>
+    </message>
+    <message>
+        <source>&amp;Zoom: </source>
+        <translation>&amp;Zoom: </translation>
+    </message>
+    <message>
+        <source>&amp;Layout: </source>
+        <translation>&amp;Disposition: </translation>
+    </message>
+    <message>
+        <source>Single page</source>
+        <translation>Page seule</translation>
+    </message>
+    <message>
+        <source>Continuous pages</source>
+        <translation>Pages en continu</translation>
+    </message>
+    <message>
+        <source>Double pages</source>
+        <translation>Double pages</translation>
+    </message>
+    <message>
+        <source>Continuous double pages</source>
+        <translation>Double pages en continu</translation>
+    </message>
+    <message>
+        <source>Display page &amp;frames</source>
+        <translation>Ca&amp;dres de pages</translation>
+    </message>
+    <message>
+        <source>Display &amp;annotations</source>
+        <translation>&amp;Annotations</translation>
+    </message>
+    <message>
+        <source>&amp;Keys</source>
+        <translation>&amp;Touches</translation>
+    </message>
+    <message>
+        <source>Keys</source>
+        <translation>Touches</translation>
+    </message>
+    <message>
+        <source>For displaying hyper&amp;links: </source>
+        <translation>Pour montrer les &amp;liens:  </translation>
+    </message>
+    <message>
+        <source>For &amp;selecting text or images: </source>
+        <translation>Pour &amp;selectionner texte ou images: </translation>
+    </message>
+    <message>
+        <source>For displaying the &amp;lens: </source>
+        <translation>Pour la &amp;loupe:</translation>
+    </message>
+    <message>
+        <source>&amp;Lens</source>
+        <translation>&amp;Loupe</translation>
+    </message>
+    <message>
+        <source>Enable magnifying &amp;lens</source>
+        <translation>Autorise l&apos;utilisation de la &amp;loupe</translation>
+    </message>
+    <message>
+        <source>Lens options</source>
+        <translation>Options de la loupe</translation>
+    </message>
+    <message>
+        <source>Lens &amp;size: </source>
+        <translation>T&amp;aille: </translation>
+    </message>
+    <message>
+        <source>Magnifying &amp;power: </source>
+        <translation>&amp;Grossissement: </translation>
+    </message>
+    <message>
+        <source>x</source>
+        <translation>x</translation>
+    </message>
+    <message>
+        <source> pixels</source>
+        <translation> points</translation>
+    </message>
+    <message>
+        <source>&amp;Cache</source>
+        <translation>&amp;Cache</translation>
+    </message>
+    <message>
+        <source>Cache</source>
+        <translation>Cache</translation>
+    </message>
+    <message>
+        <source>&amp;Clear</source>
+        <translation>&amp;Effacer</translation>
+    </message>
+    <message>
+        <source> Mbytes</source>
+        <translation> MB</translation>
+    </message>
+    <message>
+        <source>&amp;Decoded page cache: </source>
+        <translation>Cache de pages &amp;décodées: </translation>
+    </message>
+    <message>
+        <source>&amp;Pixel cache: </source>
+        <translation>Cache de &amp;pixels: </translation>
+    </message>
+    <message>
+        <source>&amp;Network</source>
+        <translation>&amp;Réseau</translation>
+    </message>
+    <message>
+        <source>Use pro&amp;xy to access the network</source>
+        <translation>Utiliser un pro&amp;xy pour accéder au réseau</translation>
+    </message>
+    <message>
+        <source>Proxy settings</source>
+        <translation>Options du proxy</translation>
+    </message>
+    <message>
+        <source>Pass&amp;word: </source>
+        <translation>Mot de pa&amp;sse: </translation>
+    </message>
+    <message>
+        <source>&amp;User: </source>
+        <translation>&amp;Utilisateur: </translation>
+    </message>
+    <message>
+        <source>&amp;Port: </source>
+        <translation>&amp;Port: </translation>
+    </message>
+    <message>
+        <source>&amp;Host: </source>
+        <translation>&amp;Hôte: </translation>
+    </message>
+    <message>
+        <source>&amp;Defaults</source>
+        <translation>&amp;Défaults</translation>
+    </message>
+    <message>
+        <source>&amp;Apply</source>
+        <translation>&amp;Appliquer</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation>&amp;Ok</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Annuler</translation>
+    </message>
+    <message>
+        <source>Preferences[*] - DjView</source>
+        <translation>Préférences[*] - DjView</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;Screen gamma correction.&lt;/b&gt;&lt;br&gt;The best color rendition is achieved by adjusting the gamma correction slider and choosing the position that makes the gray square as uniform as possible.&lt;p&gt;&lt;b&gt;Printer color correction.&lt;/b&gt;&lt;br&gt;The &lt;tt&gt;Automatic color&lt;/tt&gt; option works best with PostScript printers and ICC profiled printers. The slider might be useful in other cases.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Correction de couleur pour l&apos;écran.&lt;/b&gt;&lt;br&gt;Le meilleur rendu est obtenu en ajustant le potentiomètre de façon à rendre les niveaux de gris de la mire aussi proches que possible.&lt;p&gt;&lt;b&gt;Correction de couleur pour l&apos;impression.&lt;/b&gt;&lt;br&gt;Le &lt;tt&gt;Calibrage automatique&lt;/tt&gt; fonctionne bien avec les imprimantes PostScript ou les imprimantes munies d&apos;un profil de couleur. Le potentiomètres peut être utile dans les autres cas.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;Initial interface setup.&lt;/b&gt;&lt;br&gt;DjView can run as a standalone viewer, as a full screen viewer, as a full page browser plugin, or as a plugin embedded inside a html page. For each case, check the &lt;tt&gt;Remember&lt;/tt&gt; box to automatically save and restore the interface setup. Otherwise, specify an initial configuration.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Configuration initiale.&lt;/b&gt;&lt;br&gt;DjView peut fonctionner comme application normale, comme application plein-écran, comme plugin pleine-page, ou plugin en ligne dans une page web. Dans chaque cas, sélectionnez l&apos;option &lt;tt&gt;Mémoriser...&lt;/tt&gt; pour retenir la dernière configuration utilisée dans ce mode. Sinon, spécifiez les détails de la configuration initiale desirée.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;Modifiers keys.&lt;/b&gt;&lt;br&gt;Define which combination of modifier keys will show the manifying lens, temporarily enable the selection mode, or highlight the hyperlinks.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Touches spéciales.&lt;/b&gt;&lt;br&gt;Definissez quelles combinaisons de touches spéciales seront affectées à la loupe, à la selection de texte et d;images, et à l&apos;affichage temporaire des liens.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;Magnifying lens.&lt;/b&gt;&lt;br&gt;The magnifying lens appears when you depress the modifier keys specifier in tab &lt;tt&gt;Keys&lt;/tt&gt;. This panel lets you choose the power and the size of the magnifying lens.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Loupe.&lt;/b&gt;&lt;br&gt;La loupe apparaît lorsque vous maintenez les touches spéciales définies dans l&apos;onglet &lt;tt&gt;Touches&lt;/tt&gt;. Ce panneau vous permet d&apos;en spécifier la taille et le grossissement.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Caches.&lt;/b&gt;&lt;br&gt;The &lt;i&gt;pixel cache&lt;/i&gt; stores image data located outside the visible area. This cache makes panning smoother. The &lt;i&gt;decoded page cache&lt;/i&gt; contains partially decoded pages. It provides faster response times when navigating a multipage document or when returning to a previously viewed page. Clearing this cache might be useful to reflect a change in the page data without restarting the DjVu viewer.&lt;/html&gt;</source>
+        <translation>&lt;b&gt;Caches.&lt;/b&gt;&lt;br&gt;Le &lt;i&gt;cache de pixels&lt;/i&gt; contient des portions d&apos;images situées en limite de la zone visible. Il permet des défilements plus fluides. Le &lt;i&gt;cache de page décodées&lt;/i&gt; contient des pages partiellement décodées. Il permet de parcourir plus rapidement des documents à pages multiples. Effacer ce cache peut être utile pour prendre en compte un fichier modifié sans redemarrer l&apos;application.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;Network proxy settings.&lt;/b&gt;&lt;br&gt;These proxy settings are used when the standalone djview viewer accesses a djvu document through a http url. The djview plugin always uses the proxy settings of the web browser.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Options du réseau.&lt;/b&gt;&lt;br&gt;Ce panneau permet de définir un proxy utilisé pour atteindre un document DjVu distant avec le protocole réseau HTTP. Ces options sont ignorées lorsque le programme fonctionne en mode plugin: les accès réseaux utilisent alors les options du navigateur hôte.&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1567,7 +1846,15 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Printing.&lt;/b&gt;&lt;br/&gt; You can print the whole document or a page range. Use the &apos;Choose&apos; button to select a print destination and specify printer options. Additional dialog tabs might appear to specify conversion options.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Impression.&lt;/b&gt;&lt;br/&gt; Vous pouvez imprimer le document entier ou un intervalle de pages. Utilisez le bouton «Choisir» pour sélectionner une destination d&apos;impression. Des index supplémentaires permettent alors de spécifier les options de conversion. &lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;b&gt;Impression.&lt;/b&gt;&lt;br/&gt; Vous pouvez imprimer le document entier ou un intervalle de pages. Utilisez le bouton «Choisir» pour sélectionner une destination d&apos;impression. Des index supplémentaires permettent alors de spécifier les options de conversion. &lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;Printing.&lt;/b&gt;&lt;br/&gt; You can print the whole document or a page range. Use the &lt;tt&gt;Choose&lt;/tt&gt; button to select a print destination and specify printer options. Additional dialog tabs might appear to specify conversion options.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Impression.&lt;/b&gt;&lt;br/&gt; Vous pouvez imprimer le document entier ou un intervalle de pages. Utilisez le bouton &lt;tt&gt;Choisir&lt;/tt&gt; pour selectionner une destination d&apos;impression. Des onglets supplémentaires peuvent apparaître pour spécifier des options de conversion adaptées à l&apos;imprimante.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&amp;Defaults</source>
+        <translation>&amp;Défaults</translation>
     </message>
 </context>
 <context>
@@ -1694,6 +1981,10 @@ Voulez-vous le remplacer?</translation>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Saving.&lt;/b&gt;&lt;br/&gt; You can save the whole document or a page range under a variety of formats. Selecting certain formats creates additional dialog pages for specifying format options.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Enregistrer.&lt;/b&gt;&lt;br/&gt; Vous pouvez enregistrer le document entier ou un intervalle de pages sous divers formats. Certain formats font apparaître des pages supplémentaires permettant de spécifier les options de conversion.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&amp;Defaults</source>
+        <translation>&amp;Défaults</translation>
     </message>
 </context>
 <context>

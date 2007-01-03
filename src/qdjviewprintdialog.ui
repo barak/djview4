@@ -231,7 +231,7 @@
        <item>
         <widget class="QPushButton" name="resetButton" >
          <property name="text" >
-          <string>&amp;Reset Options</string>
+          <string>&amp;Defaults</string>
          </property>
          <property name="autoDefault" >
           <bool>false</bool>
