@@ -116,7 +116,8 @@ public:
     PRIORITY_DEFAULT,           //!< Priority for default option values.
     PRIORITY_DOCUMENT,          //!< Priority for document defined options.
     PRIORITY_PAGE,              //!< Priority for page defined options.
-    PRIORITY_USER               //!< Priority for user defined options.
+    PRIORITY_CGI,               //!< Priority for cgi defined options.
+    PRIORITY_USER               //!< Priority for gui defined options.
   };  
 
   struct Position {

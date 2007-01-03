@@ -482,17 +482,11 @@ Prioritized<Value>::operator Value() const
 template<class Value> void
 Prioritized<Value>::set(Priority priority, Value val, bool force)
 {
+  if (force)
+    for (int i=priority; i<=PRIORITY_USER; i++)
+      flags[i] = false;
   values[priority] = val;
   flags[priority] = true;
-  if (force)
-    {
-      if (priority < PRIORITY_DOCUMENT)
-        flags[PRIORITY_DOCUMENT] = false;
-      if (priority < PRIORITY_PAGE)
-        flags[PRIORITY_PAGE] = false;
-      if (priority < PRIORITY_USER)
-        flags[PRIORITY_USER] = false;
-    }
 }
 
 template<class Value> void
@@ -1820,6 +1814,7 @@ QDjVuWidget::setDocument(QDjVuDocument *d)
         {
           priv->adjustSettings(PRIORITY_DOCUMENT, miniexp_nil);
           priv->adjustSettings(PRIORITY_PAGE, miniexp_nil);
+          priv->adjustSettings(PRIORITY_CGI, miniexp_nil);
           disconnect(priv->doc, 0, priv, 0);
           priv->doc->deref();
         }

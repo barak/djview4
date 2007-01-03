@@ -1941,8 +1941,8 @@ QDjView::open(QDjVuDocument *doc, QUrl url)
   // process url options
   if (url.isValid())
     parseDjVuCgiArguments(url);
-  // newly set options get document priority
-  widget->reduceOptionsToPriority(QDjVuWidget::PRIORITY_DOCUMENT);
+  // newly set options get cgi priority
+  widget->reduceOptionsToPriority(QDjVuWidget::PRIORITY_CGI);
 }
 
 
