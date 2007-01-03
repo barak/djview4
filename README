@@ -22,7 +22,7 @@ $ export NPX_DJVIEW=`pwd`/djview
 $ firefox
 
 
-Hightlights:
+Highlights:
 - entirely based on the public library api (ddjvuapi)
 - entirely written in portable Qt4.
 - has been reported to work with Qt/Mac.
@@ -38,19 +38,13 @@ Hightlights:
 - metadata dialog (see djvused command set-meta)
 - implemented as reusable Qt widgets
 
-Todo before 1st release.
-- find functionality
-- print dialog
-- preference dialog
-
 Welcome help
 - translation files
 
 Ideas for later releases.
 - animation hints when jumping to specific locations
-- saving djvu documents as indirect files.
-- export dialog
-
+- saving djvu documents as pdf, tiff, etc.
+- preference page to define the default toolbar.
 
 
 
