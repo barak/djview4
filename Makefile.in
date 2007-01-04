@@ -15,8 +15,13 @@ SHELL = @SHELL@
 INSTALL = @INSTALL@
 LN_S = @LN_S@
 RM = @RM@ 
+TOUCH = @TOUCH@
+MKDIR = @MKDIR@
 LIBTOOL = @LIBTOOL@
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
 
 srcdir = @srcdir@
 prefix = @prefix@
@@ -34,21 +39,21 @@ SUBDIRS=src
 
 
 all: FORCE
-	for d in ${SUBDIRS} ; do make -C $$d all ; true ; done
+	for d in ${SUBDIRS} ; do ${MAKE} -C $$d all ; true ; done
 	@echo "Done."
 
 
 clean-here: FORCE
 
 distclean-here: clean-here FORCE
-	-rm 2>/dev/null Makefile config.log config.status config.h libtool
-	-rm 2>/dev/null -r autom4te.cache
+	-${RM} 2>/dev/null Makefile config.log config.status config.h libtool
+	-${RM} 2>/dev/null -r autom4te.cache
 
 clean: clean-here
-	for d in ${SUBDIRS} ; do make -C $$d clean ; true ; done
+	for d in ${SUBDIRS} ; do ${MAKE} -C $$d clean ; true ; done
 
 distclean: distclean-here 
-	for d in ${SUBDIRS} ; do make -C $$d distclean ; true ; done
+	for d in ${SUBDIRS} ; do ${MAKE} -C $$d distclean ; true ; done
 
 FORCE:
 

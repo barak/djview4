@@ -81,7 +81,6 @@ AC_PROG_MAKE_SET
 # Programs
 AC_PROG_LN_S
 AC_PATH_PROG(RM, rm)
-AC_PATH_PROG(AR, ar)
 AC_PATH_PROG(TOUCH, touch)
 AC_PATH_PROG(MKDIR, mkdir)
 AC_PROG_INSTALL
@@ -199,6 +198,11 @@ if test "$ac_debug" = yes ; then
 else
   QARG="$QARG CONFIG+=release"
 fi
+
+# moc, uic, rcc
+QARG="$QARG QMAKE_UIC="'"'"$UIC"'"'
+QARG="$QARG QMAKE_MOC="'"'"$MOC"'"'
+QARG="$QARG QMAKE_RCC="'"'"$RCC"'"'
 
 # run
 AC_CONFIG_COMMANDS([src/Makefile],

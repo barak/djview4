@@ -314,51 +314,42 @@ Please define variable QMAKE to a suitable qmake.])
     AC_MSG_RESULT([Defining QTDIR=$QTDIR])
   fi
   path=$PATH
-  if test -n "$QTDIR" && test -d "$QTDIR/bin" ; then
-    path=$QTDIR/bin:$PATH
-  fi
   if test -d "$QT_INSTALL_BINS" ; then
     path=$QT_INSTALL_BINS:$path
   fi
+  if test -n "$QTDIR" && test -d "$QTDIR/bin" ; then
+    path=$QTDIR/bin:$PATH
+  fi
   if test -z "$MOC" ; then
-    if test -x "$QMAKE_MOC" ; then
+    if test -d "$QTDIR" && test -d "$QTDIR/bin" && test -x "$QTDIR/bin/moc" ; then
+      MOC="$QTDIR/bin/moc"
+      AC_MSG_RESULT([Defining MOC=$MOC])
+    elif test -x "$QMAKE_MOC" ; then
       MOC=$QMAKE_MOC
-      AC_MSG_RESULT([Defining MOC=$MOC.])
+      AC_MSG_RESULT([Defining MOC=$MOC])
     else
       AC_PATH_PROGS([UIC], [moc-qt4 moc], [], [$path])
     fi
   fi
   if test -z "$UIC" ; then
-    if test -x "$QMAKE_UIC" ; then
+    if test -d "$QTDIR" && test -d "$QTDIR/bin" && test -x "$QTDIR/bin/uic" ; then
+      UIC="$QTDIR/bin/uic"
+      AC_MSG_RESULT([Defining UIC=$UIC])
+    elif test -x "$QMAKE_UIC" ; then
       UIC=$QMAKE_UIC
-      AC_MSG_RESULT([Defining UIC=$UIC.])
+      AC_MSG_RESULT([Defining UIC=$UIC])
     else
       AC_PATH_PROGS([UIC], [uic-qt4 uic], [], [$path])
     fi
   fi
   if test -z "$RCC" ; then
-    if test -x "$QMAKE_RCC" ; then
-      RCC=$QMAKE_RCC
-      AC_MSG_RESULT([Defining RCC=$RCC.])
-    else
-      AC_PATH_PROGS([RCC], [rcc], [], [$path])
-    fi
+    AC_PATH_PROGS([RCC], [rcc], [], [$path])
   fi
   if test -z "$LUPDATE" ; then
-    if test -x "$LUPDATE" ; then
-      LUPDATE=$QMAKE_LUPDATE
-      AC_MSG_RESULT([Defining LUPDATE=$LUPDATE.])
-    else
-      AC_PATH_PROGS([LUPDATE], [lupdate], [], [$path])
-    fi
+    AC_PATH_PROGS([LUPDATE], [lupdate], [], [$path])
   fi
   if test -z "$LRELEASE" ; then
-    if test -x "$QMAKE_LRELEASE" ; then
-      UIC=$QMAKE_LRELEASE
-      AC_MSG_RESULT([Defining LRELEASE=$LRELEASE.])
-    else
-      AC_PATH_PROGS([LRELEASE], [lrelease], [], [$path])
-    fi
+    AC_PATH_PROGS([LRELEASE], [lrelease], [], [$path])
   fi
 ])
 

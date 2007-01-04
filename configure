@@ -21529,7 +21529,7 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <X11/Xlib.h>
+#include <X11/Intrinsic.h>
 _ACEOF
 if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
   (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
@@ -21556,7 +21556,7 @@ else
 sed 's/^/| /' conftest.$ac_ext >&5
 
   for ac_dir in $ac_x_header_dirs; do
-  if test -r "$ac_dir/X11/Xlib.h"; then
+  if test -r "$ac_dir/X11/Intrinsic.h"; then
     ac_x_includes=$ac_dir
     break
   fi
@@ -21570,18 +21570,18 @@ if test "$ac_x_libraries" = no; then
   # See if we find them without any special options.
   # Don't add to $LIBS permanently.
   ac_save_LIBS=$LIBS
-  LIBS="-lX11 $LIBS"
+  LIBS="-lXt $LIBS"
   cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <X11/Xlib.h>
+#include <X11/Intrinsic.h>
 int
 main ()
 {
-XrmInitialize ()
+XtMalloc (0)
   ;
   return 0;
 }
@@ -21619,7 +21619,7 @@ for ac_dir in `echo "$ac_x_includes $ac_x_header_dirs" | sed s/include/lib/g`
 do
   # Don't even attempt the hair of trying to link an X program!
   for ac_extension in a so sl; do
-    if test -r $ac_dir/libX11.$ac_extension; then
+    if test -r $ac_dir/libXt.$ac_extension; then
       ac_x_libraries=$ac_dir
       break 2
     fi
@@ -21769,7 +21769,7 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <X11/Xlib.h>
+#include <X11/Intrinsic.h>
 _ACEOF
 if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
   (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
@@ -21796,7 +21796,7 @@ else
 sed 's/^/| /' conftest.$ac_ext >&5
 
   for ac_dir in $ac_x_header_dirs; do
-  if test -r "$ac_dir/X11/Xlib.h"; then
+  if test -r "$ac_dir/X11/Intrinsic.h"; then
     ac_x_includes=$ac_dir
     break
   fi
@@ -21810,18 +21810,18 @@ if test "$ac_x_libraries" = no; then
   # See if we find them without any special options.
   # Don't add to $LIBS permanently.
   ac_save_LIBS=$LIBS
-  LIBS="-lX11 $LIBS"
+  LIBS="-lXt $LIBS"
   cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <X11/Xlib.h>
+#include <X11/Intrinsic.h>
 int
 main ()
 {
-XrmInitialize ()
+XtMalloc (0)
   ;
   return 0;
 }
@@ -21859,7 +21859,7 @@ for ac_dir in `echo "$ac_x_includes $ac_x_header_dirs" | sed s/include/lib/g`
 do
   # Don't even attempt the hair of trying to link an X program!
   for ac_extension in a so sl; do
-    if test -r $ac_dir/libX11.$ac_extension; then
+    if test -r $ac_dir/libXt.$ac_extension; then
       ac_x_libraries=$ac_dir
       break 2
     fi
@@ -23155,17 +23155,21 @@ Please define variable QMAKE to a suitable qmake." >&2;}
 echo "${ECHO_T}Defining QTDIR=$QTDIR" >&6
   fi
   path=$PATH
-  if test -n "$QTDIR" && test -d "$QTDIR/bin" ; then
-    path=$QTDIR/bin:$PATH
-  fi
   if test -d "$QT_INSTALL_BINS" ; then
     path=$QT_INSTALL_BINS:$path
   fi
+  if test -n "$QTDIR" && test -d "$QTDIR/bin" ; then
+    path=$QTDIR/bin:$PATH
+  fi
   if test -z "$MOC" ; then
-    if test -x "$QMAKE_MOC" ; then
+    if test -d "$QTDIR" && test -d "$QTDIR/bin" && test -x "$QTDIR/bin/moc" ; then
+      MOC="$QTDIR/bin/moc"
+      echo "$as_me:$LINENO: result: Defining MOC=$MOC" >&5
+echo "${ECHO_T}Defining MOC=$MOC" >&6
+    elif test -x "$QMAKE_MOC" ; then
       MOC=$QMAKE_MOC
-      echo "$as_me:$LINENO: result: Defining MOC=$MOC." >&5
-echo "${ECHO_T}Defining MOC=$MOC." >&6
+      echo "$as_me:$LINENO: result: Defining MOC=$MOC" >&5
+echo "${ECHO_T}Defining MOC=$MOC" >&6
     else
       for ac_prog in moc-qt4 moc
 do
@@ -23214,10 +23218,14 @@ done
     fi
   fi
   if test -z "$UIC" ; then
-    if test -x "$QMAKE_UIC" ; then
+    if test -d "$QTDIR" && test -d "$QTDIR/bin" && test -x "$QTDIR/bin/uic" ; then
+      UIC="$QTDIR/bin/uic"
+      echo "$as_me:$LINENO: result: Defining UIC=$UIC" >&5
+echo "${ECHO_T}Defining UIC=$UIC" >&6
+    elif test -x "$QMAKE_UIC" ; then
       UIC=$QMAKE_UIC
-      echo "$as_me:$LINENO: result: Defining UIC=$UIC." >&5
-echo "${ECHO_T}Defining UIC=$UIC." >&6
+      echo "$as_me:$LINENO: result: Defining UIC=$UIC" >&5
+echo "${ECHO_T}Defining UIC=$UIC" >&6
     else
       for ac_prog in uic-qt4 uic
 do
@@ -23266,12 +23274,7 @@ done
     fi
   fi
   if test -z "$RCC" ; then
-    if test -x "$QMAKE_RCC" ; then
-      RCC=$QMAKE_RCC
-      echo "$as_me:$LINENO: result: Defining RCC=$RCC." >&5
-echo "${ECHO_T}Defining RCC=$RCC." >&6
-    else
-      for ac_prog in rcc
+    for ac_prog in rcc
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -23315,15 +23318,9 @@ fi
   test -n "$RCC" && break
 done
 
-    fi
   fi
   if test -z "$LUPDATE" ; then
-    if test -x "$LUPDATE" ; then
-      LUPDATE=$QMAKE_LUPDATE
-      echo "$as_me:$LINENO: result: Defining LUPDATE=$LUPDATE." >&5
-echo "${ECHO_T}Defining LUPDATE=$LUPDATE." >&6
-    else
-      for ac_prog in lupdate
+    for ac_prog in lupdate
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -23367,15 +23364,9 @@ fi
   test -n "$LUPDATE" && break
 done
 
-    fi
   fi
   if test -z "$LRELEASE" ; then
-    if test -x "$QMAKE_LRELEASE" ; then
-      UIC=$QMAKE_LRELEASE
-      echo "$as_me:$LINENO: result: Defining LRELEASE=$LRELEASE." >&5
-echo "${ECHO_T}Defining LRELEASE=$LRELEASE." >&6
-    else
-      for ac_prog in lrelease
+    for ac_prog in lrelease
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -23419,7 +23410,6 @@ fi
   test -n "$LRELEASE" && break
 done
 
-    fi
   fi
 
 
@@ -23578,7 +23568,7 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <X11/Xlib.h>
+#include <X11/Intrinsic.h>
 _ACEOF
 if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
   (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
@@ -23605,7 +23595,7 @@ else
 sed 's/^/| /' conftest.$ac_ext >&5
 
   for ac_dir in $ac_x_header_dirs; do
-  if test -r "$ac_dir/X11/Xlib.h"; then
+  if test -r "$ac_dir/X11/Intrinsic.h"; then
     ac_x_includes=$ac_dir
     break
   fi
@@ -23619,18 +23609,18 @@ if test "$ac_x_libraries" = no; then
   # See if we find them without any special options.
   # Don't add to $LIBS permanently.
   ac_save_LIBS=$LIBS
-  LIBS="-lX11 $LIBS"
+  LIBS="-lXt $LIBS"
   cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <X11/Xlib.h>
+#include <X11/Intrinsic.h>
 int
 main ()
 {
-XrmInitialize ()
+XtMalloc (0)
   ;
   return 0;
 }
@@ -23668,7 +23658,7 @@ for ac_dir in `echo "$ac_x_includes $ac_x_header_dirs" | sed s/include/lib/g`
 do
   # Don't even attempt the hair of trying to link an X program!
   for ac_extension in a so sl; do
-    if test -r $ac_dir/libX11.$ac_extension; then
+    if test -r $ac_dir/libXt.$ac_extension; then
       ac_x_libraries=$ac_dir
       break 2
     fi
@@ -23818,7 +23808,7 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <X11/Xlib.h>
+#include <X11/Intrinsic.h>
 _ACEOF
 if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
   (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
@@ -23845,7 +23835,7 @@ else
 sed 's/^/| /' conftest.$ac_ext >&5
 
   for ac_dir in $ac_x_header_dirs; do
-  if test -r "$ac_dir/X11/Xlib.h"; then
+  if test -r "$ac_dir/X11/Intrinsic.h"; then
     ac_x_includes=$ac_dir
     break
   fi
@@ -23859,18 +23849,18 @@ if test "$ac_x_libraries" = no; then
   # See if we find them without any special options.
   # Don't add to $LIBS permanently.
   ac_save_LIBS=$LIBS
-  LIBS="-lX11 $LIBS"
+  LIBS="-lXt $LIBS"
   cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <X11/Xlib.h>
+#include <X11/Intrinsic.h>
 int
 main ()
 {
-XrmInitialize ()
+XtMalloc (0)
   ;
   return 0;
 }
@@ -23908,7 +23898,7 @@ for ac_dir in `echo "$ac_x_includes $ac_x_header_dirs" | sed s/include/lib/g`
 do
   # Don't even attempt the hair of trying to link an X program!
   for ac_extension in a so sl; do
-    if test -r $ac_dir/libX11.$ac_extension; then
+    if test -r $ac_dir/libXt.$ac_extension; then
       ac_x_libraries=$ac_dir
       break 2
     fi
@@ -25205,6 +25195,11 @@ if test "$ac_debug" = yes ; then
 else
   QARG="$QARG CONFIG+=release"
 fi
+
+# moc, uic, rcc
+QARG="$QARG QMAKE_UIC="'"'"$UIC"'"'
+QARG="$QARG QMAKE_MOC="'"'"$MOC"'"'
+QARG="$QARG QMAKE_RCC="'"'"$RCC"'"'
 
 # run
           ac_config_commands="$ac_config_commands src/Makefile"
