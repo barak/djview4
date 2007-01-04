@@ -111,6 +111,7 @@ AC_CHECK_HEADERS(unistd.h string.h strings.h)
 # Functions
 # ----------------------------------------
 
+AC_FUNC_FORK
 AC_CHECK_FUNCS(sigaction strerror waitpid wait3)
 
 
@@ -170,6 +171,7 @@ AC_SUBST(INSTALL_SHLIB)
 # Define installation paths and version string
 AC_DEFINE_INSTALL_PATHS
 AC_DEFINE_VERSION([DJVIEW_VERSION], [${PACKAGE_VERSION}])
+AC_DEFINE_UNQUOTED([DJVIEW_VERSION_STR], ["${PACKAGE_VERSION}"], [string version])
 
 
 # ----------------------------------------
@@ -228,6 +230,7 @@ AC_CONFIG_COMMANDS([src/Makefile],
 # ----------------------------------------
 
 AC_CONFIG_FILES(Makefile)
+AC_CONFIG_FILES(nsdejavu/Makefile)
 AC_OUTPUT
 
 # ----------------------------------------

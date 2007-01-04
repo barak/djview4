@@ -27,9 +27,9 @@ dnl Defines a hexadecimal version number
 dnl -------------------------------------------------------
 
 AC_DEFUN([AC_DEFINE_VERSION], [
-  IFS=. read major minor revis <<EOF
+  IFS=. read major minor revis <<__eof__
 $2
-EOF
+__eof__
   test -z "$major" && major=0
   test -z "$minor" && minor=0
   test -z "$revis" && revis=0
