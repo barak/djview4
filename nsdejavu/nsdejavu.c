@@ -67,8 +67,10 @@
 #endif
 
 #ifndef LIBRARY_NAME
-# ifdef hpux
+# if defined(hpux)
 #  define LIBRARY_NAME    "nsdejavu.sl"
+# elif defined(WIN32) || defined(__CYGWIN32__)
+#  define LIBRARY_NAME    "nsdejavu.dll"
 # else
 #  define LIBRARY_NAME    "nsdejavu.so"
 # endif
@@ -221,13 +223,21 @@ Write(int fd, const void * buffer, int length)
 {
   int size = length;
   const char *ptr = (const char*)buffer;
+#if HAVE_SIGACTION
   sigset_t new_mask, old_mask;
   struct sigaction new_action, old_action;
+#else
+  void *oldhandler;
+#endif
   int res;
 
+#if HAVE_SIGACTION
   sigemptyset(&new_mask);
   sigaddset(&new_mask, SIGPIPE);
   sigprocmask(SIG_BLOCK, &new_mask, &old_mask);
+#else
+  oldhandler = signal(SIGPIPE, SIG_IGN);
+#endif
   while(size>0)
     {
       errno = 0;
@@ -239,12 +249,16 @@ Write(int fd, const void * buffer, int length)
       size-=res; 
       ptr+=res;
     }
+#if HAVE_SIGACTION
   sigaction(SIGPIPE, 0, &new_action);
   new_action.sa_handler=SIG_IGN;
   new_action.sa_flags=SA_NODEFER;
   sigaction(SIGPIPE, &new_action, &old_action);
   sigprocmask(SIG_SETMASK, &old_mask, 0);
   sigaction(SIGPIPE, &old_action, 0);
+#else
+  signal(SIGPIPE, oldhandler);
+#endif
   if (size > 0)
     return -1;
   return 0;
@@ -561,7 +575,7 @@ get_plugin_path(strpool *pool)
 {
   const char *env;
   const char *dir;
-  // MOZ_PLUGIN_PATH
+  /* MOZ_PLUGIN_PATH */
   if ((env = getenv("MOZ_PLUGIN_PATH"))) {
     while ((dir = pathelem(pool, &env))) {
       const char *lib = strconcat(pool, dir, "/", LIBRARY_NAME, 0);
@@ -569,7 +583,7 @@ get_plugin_path(strpool *pool)
         return lib;
     }
   }
-  // NPX_PLUGIN_PATH
+  /* NPX_PLUGIN_PATH */
   if ((env = getenv("NPX_PLUGIN_PATH"))) {
     while ((dir = pathelem(pool, &env))) {
       const char *lib = strconcat(pool, dir, "/", LIBRARY_NAME, 0);
@@ -577,7 +591,7 @@ get_plugin_path(strpool *pool)
         return lib;
     }
   }
-  // $HOME/.{mozilla,netscape}/plugins
+  /* $HOME/.{mozilla,netscape}/plugins */
   if ((env = getenv("HOME"))) {
     const char *lib;
     lib = strconcat(pool, env, "/.mozilla/plugins/", LIBRARY_NAME, 0);
@@ -587,13 +601,13 @@ get_plugin_path(strpool *pool)
     if (is_file(lib))
       return lib;
   }
-  // MOZILLA_HOME
+  /* MOZILLA_HOME */
   if ((env = getenv("MOZILLA_HOME"))) {
     const char *lib = strconcat(pool, env, "/plugins/", LIBRARY_NAME, 0);
     if (is_file(lib))
       return lib;
   }
-  // OTHER
+  /* OTHER */
   env = stdpath;
   while ((dir = pathelem(pool, &env))) {
     const char *lib = strconcat(pool, dir, "/", LIBRARY_NAME, 0);
@@ -626,9 +640,7 @@ get_viewer_path(strpool *pool)
   int i;
   const char *env = 0;
   const char *envs = 0;
-  const char *dir;
-  const char *test;
-  const char *djview[] = { DJVIEW_NAME, DJVIEW4_NAME, DJVIEW3_NAME, 0 };
+  static const char *djview[] = { DJVIEW_NAME, DJVIEW4_NAME, DJVIEW3_NAME, 0 };
   /* Environment variable NPX_DJVIEW overrides everything */
   if ((env = getenv("NPX_DJVIEW")))
     if (is_executable(env))
@@ -639,6 +651,8 @@ get_viewer_path(strpool *pool)
   /* Try the following names */
   for (i=0; djview[i]; i++)
     {
+      const char *dir;
+      const char *test;
       if (envs) {
         /* Try relative to plugin path */
         dir = dirname(pool, envs);
@@ -1026,7 +1040,7 @@ static DelayedRequestList	delayed_requests;
 static int		pipe_read = -1;
 static int              pipe_write = -1;
 static int              rev_pipe = -1;
-static u_long		white, black;
+static unsigned long	white, black;
 static Colormap         colormap;
 static GC		text_gc;
 static XFontStruct	*font10, *font12, *font14, *font18, *fixed_font;
@@ -1034,7 +1048,7 @@ static XFontStruct	*font10, *font12, *font14, *font18, *fixed_font;
 typedef struct
 {
   int pipe_read, pipe_write, rev_pipe;
-  u_long white, black;
+  unsigned long white, black;
   Colormap colormap;
   GC text_gc;
   XFontStruct *font10, *font12, *font14, *font18, *fixed_font;
@@ -1472,7 +1486,7 @@ CopyColormap(Display *displ, Visual *visual, Screen *screen, Colormap cmap)
            is Netscape's.  Otherwise the screen may flash. */
         XSync(displ, False);
         XInstallColormap(displ, colormap);
-        // Cleanup
+        /* Cleanup */
         if (colors)
           free(colors);
         if (pixels)
@@ -1488,12 +1502,6 @@ CopyColormap(Display *displ, Visual *visual, Screen *screen, Colormap cmap)
 /*******************************************************************************
 ************************************* Utilities ********************************
 *******************************************************************************/
-
-static inline int
-max(int x, int y)
-{
-  return x<y ? y : x;
-}
 
 static int
 IsConnectionOK(int handshake)
@@ -1605,7 +1613,7 @@ Attach(Display * displ, Window window, void * id)
   const char *text="DjVu plugin is being loaded. Please stand by...";
   XtAppContext app_context;  
   Dimension width, height;
-  u_long back_color;
+  unsigned long back_color;
   XColor cell;
   
   XSync(displ, False);
@@ -1641,7 +1649,7 @@ Attach(Display * displ, Window window, void * id)
   /* Process colormap */
   if (!colormap)
     {
-      // Allocating black and white colors
+      /* Allocating black and white colors */
       XColor white_screen, white_exact;
       XColor black_screen, black_exact;
       XAllocNamedColor(displ, cmap, "white", &white_screen, &white_exact);
@@ -1702,7 +1710,7 @@ Attach(Display * displ, Window window, void * id)
       if (fixed_font && XTextWidth(fixed_font, text, strlen(text))*6<=width*5)
         font=fixed_font;
     }
-  // Paint the drawing area and display "Stand by..." message
+  /* Paint the drawing area and display "Stand by..." message */
   XtVaSetValues(widget, XtNforeground, black, XtNbackground, white, NULL);
   if (font && text_gc)
     {
@@ -1820,10 +1828,10 @@ StartProgram(void)
       for(s=8;s<1024;s++) 
         close(s);
       
-      // This is needed for RedHat's version of Netscape.
+      /* This is needed for RedHat's version of Netscape. */
       UnsetVariable("LD_PRELOAD");
       UnsetVariable("XNLSPATH");
-      // This is needed to disable session management in Qt
+      /* This is needed to disable session management in Qt */
       UnsetVariable("SESSION_MANAGER");      
       
       /* Old autoinstaller fails to set the "executable" flag. */
@@ -1841,7 +1849,7 @@ StartProgram(void)
       _exit(1);
     }
   
-  // Parent
+  /* Parent */
   close(_pipe_write);
   close(_pipe_read);
   close(_rev_pipe);
@@ -1964,7 +1972,7 @@ NPP_Destroy(NPP np_inst, NPSavedData ** save)
   
   if (map_lookup(&instance, id, &inst) < 0)
     return NPERR_INVALID_INSTANCE_ERROR;
-  // Detach the main window, if not already detached
+  /* Detach the main window, if not already detached */
   NPP_SetWindow(np_inst, 0);
   map_remove(&instance, id);
   np_inst->pdata=0;
