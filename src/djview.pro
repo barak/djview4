@@ -28,8 +28,9 @@ QT += network
 CONFIG(autoconf) {
     # for use with autoconf
     LIBS += $$AUTO_LIBS
-    QMAKE_CXXFLAGS += $$AUTO_CFLAGS
+    QMAKE_CXXFLAGS += $$AUTO_CXXFLAGS
     QMAKE_CFLAGS += $$AUTO_CFLAGS
+    QMAKE_LFLAGS += $$AUTO_LFLAGS
     DEFINES += AUTOCONF
 } else:unix {
     # for use under unix with pkgconfig

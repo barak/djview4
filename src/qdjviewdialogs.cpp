@@ -19,16 +19,17 @@
 #if AUTOCONF
 # include "config.h"
 #else
-# define HAVE_SYS_TYPES_H 1
-# define HAVE_SYS_WAIT_H 1
-# define HAVE_UNISTD_H 1
-# define HAVE_WAITPID 1
+# define HAVE_STRING_H     1
+# define HAVE_SYS_TYPES_H  1
+# define HAVE_SYS_WAIT_H   1
+# define HAVE_UNISTD_H     1
+# define HAVE_STRERROR     1
+# define HAVE_WAITPID      1
 #endif
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
-#include <stdlib.h>
 #include <limits.h>
 #include <signal.h>
 #if HAVE_SYS_TYPES_H
@@ -36,6 +37,9 @@
 #endif
 #if HAVE_SYS_WAIT_H
 # include <sys/wait.h>
+#endif
+#if HAVE_STRING_H
+# include <string.h>
 #endif
 #if HAVE_UNISTD_H
 # include <unistd.h>
@@ -90,6 +94,7 @@
 #if DDJVUAPI_VERSION < 18
 # error "DDJVUAPI_VERSION>=18 is required !"
 #endif
+
 
 
 // =======================================
@@ -1025,7 +1030,11 @@ QDjViewDjVuExporter::run()
   if (! output)
     {
       failed = true;
-      QString message = tr("System error: %1").arg(strerror(errno));
+      QString message = tr("Unknown error");
+#ifdef HAVE_STRERROR
+      if (errno)
+        message = tr("System error: %1").arg(strerror(errno));
+#endif
       error(message, __FILE__, __LINE__);
       return;
     }
@@ -1481,11 +1490,11 @@ QDjViewPSExporter::openFile()
   if (! output)
     {
       failed = true;
-      QString message;
+      QString message = tr("Unknown error");
+#if HAVE_STRERROR
       if (errno)
         message = tr("System error: %1").arg(strerror(errno));
-      else
-        message = tr("Unknown error");
+#endif
       error(message, __FILE__, __LINE__);
     }
 }

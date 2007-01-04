@@ -18,10 +18,20 @@
 
 #if AUTOCONF
 # include "config.h"
+#else
+# define HAVE_STRING_H 1
+# define HAVE_UNISTD_H 1
+# define HAVE_STRERROR 1
 #endif
 
-#include <string.h>
+#if HAVE_STRING_H
+# include <string.h>
+#endif
+#if HAVE_UNISTD_H
+# include <unistd.h>
+#endif
 #include <errno.h>
+
 #include <libdjvu/miniexp.h>
 #include <libdjvu/ddjvuapi.h>
 
@@ -2499,8 +2509,10 @@ QDjView::saveTextFile(QString text, QString filename)
   if (! file.open(QIODevice::WriteOnly|QIODevice::Truncate))
     {
       QString message = file.errorString();
+#if HAVE_STRERROR
       if (file.error() == QFile::OpenError && errno > 0)
         message = strerror(errno);
+#endif
       QMessageBox::critical(this, 
                             tr("Error - DjView", "dialog caption"),
                             tr("Cannot write file '%1'.\n%2.")
@@ -2558,8 +2570,10 @@ QDjView::saveImageFile(QImage image, QString filename)
       QString message = file.errorString();
       if (writer.error() == QImageWriter::UnsupportedFormatError)
         message = tr("Image format %1 not supported.").arg(suffix.toUpper());
+#if HAVE_STRERROR
       else if (file.error() == QFile::OpenError && errno > 0)
         message = strerror(errno);
+#endif
       QMessageBox::critical(this,
                             tr("Error - DjView", "dialog caption"),
                             tr("Cannot write file '%1'.\n%2.")

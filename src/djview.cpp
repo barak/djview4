@@ -137,8 +137,9 @@ static void
 addDirectory(QStringList &dirs, QString path)
 {
   QDir dir = path;
-  if (dir.exists())
-    dirs << dir.canonicalPath();
+  QString dirname = dir.canonicalPath();
+  if (dir.exists() && !dirs.contains(dirname))
+    dirs << dirname;
 }
 
 
@@ -167,18 +168,21 @@ setupApplication()
   QStringList dirs;
   QDir dir = app->applicationDirPath();
   QString dirPath = dir.canonicalPath();
+#ifdef DIR_DATADIR
+  QString datadir = DIR_DATADIR;
+  addDirectory(dirs, datadir + "/djvu/djview4/translations");
+  addDirectory(dirs, datadir + "/djview4/translations");
+#endif
   addDirectory(dirs, dirPath);
-  addDirectory(dirs, dirPath + "/Resources/translations");
   addDirectory(dirs, dirPath + "/share/djvu/djview4/translations");
   addDirectory(dirs, dirPath + "/share/djview4/translations");
-  addDirectory(dirs, dirPath + "/../Resources/translations");
+  addDirectory(dirs, dirPath + "/Resources/translations");
   addDirectory(dirs, dirPath + "/../share/djvu/djview4/translations");
   addDirectory(dirs, dirPath + "/../share/djview4/translations");
-#ifdef PREFIX_NAME
-  QString prefix = PREFIX_NAME;
-  addDirectory(dirs, prefix + "/share/djvu/djview4/translations");
-  addDirectory(dirs, prefix + "/share/djview4/translations");
-#endif
+  addDirectory(dirs, dirPath + "/../Resources/translations");
+  addDirectory(dirs, dirPath + "/../../share/djvu/djview4/translations");
+  addDirectory(dirs, dirPath + "/../../share/djview4/translations");
+  addDirectory(dirs, dirPath + "/../../Resources/translations");
   addDirectory(dirs, "/usr/share/djvu/djview4/translations");
   addDirectory(dirs, "/usr/share/djview4/translations");
   addDirectory(dirs, QLibraryInfo::location(QLibraryInfo::TranslationsPath));

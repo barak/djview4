@@ -134,8 +134,8 @@ dnl ------------------------------------------------------------------
 
 AC_DEFUN([AC_PATH_TIFF],
 [
-  AC_ARG_VAR(TIFF_LIBS)
-  AC_ARG_VAR(TIFF_CFLAGS)
+  AC_ARG_VAR(TIFF_LIBS, [Libraries for tiff])
+  AC_ARG_VAR(TIFF_CFLAGS, [Compilation flags for tiff])
   ac_tiff=no
   AC_ARG_WITH(tiff,
      AC_HELP_STRING([--with-tiff=DIR],
@@ -190,17 +190,70 @@ TIFFOpen(0,0);],
 
 
 
+dnl ------------------------------------------------------------------
+dnl @synopsis AC_PROG_PKG_CONFIG([ACTION-IF-FOUND[, ACTION-IF-NOT-FOUND]])
+dnl Sets output variables PKG_CONFIG
+dnl ------------------------------------------------------------------
+
+
+AC_DEFUN([AC_PROG_PKG_CONFIG], 
+[
+  AC_ARG_VAR(PKG_CONFIG,[Location of the pkg-config program.])
+  AC_ARG_VAR(PKG_CONFIG_PATH, [Path for pkg-config descriptors.])
+  AC_PATH_PROG(PKG_CONFIG, pkg-config)
+  if test -z "$PKG_CONFIG" ; then
+      ifelse([$2],,:,[$2])
+  else
+      ifelse([$1],,:,[$1])
+  fi
+])
 
 
 
 
 dnl ------------------------------------------------------------------
-dnl @synopsis AC_PATH_QT4([ACTION-IF-FOUND[, ACTION-IF-NOT-FOUND]])
-dnl Define HAVE_QT and set it to QT_VERSION
-dnl Set output variables QMAKE, MOC, UIC,
+dnl @synopsis AC_PATH_DDJVUAPI([action-if-found],[action-if-notfound])
+dnl Search for ddjvuapi.  Defines HAVE_DDJVUAPI.
+dnl Sets output variables DDJVUAPI_CFLAGS and DDJVUAPI_LIBS
 dnl ------------------------------------------------------------------
 
-AC_DEFUN([AC_PATH_QT4],
+AC_DEFUN([AC_PATH_DDJVUAPI],
+[
+  AC_REQUIRE([AC_PROG_PKG_CONFIG])        
+  AC_ARG_VAR(DDJVUAPI_LIBS, [Libraries for ddjvuapi])
+  AC_ARG_VAR(DDJVUAPI_CFLAGS, [Compilation flags for ddjvuapi])
+  AC_MSG_CHECKING([for ddjvuapi])
+  if test -x "$PKG_CONFIG" ; then
+    if $PKG_CONFIG ddjvuapi ; then
+       ac_ddjvuapi=yes
+       AC_MSG_RESULT([found])
+       DDJVUAPI_LIBS=`$PKG_CONFIG --libs ddjvuapi`
+       AC_MSG_RESULT([setting DDJVUAPI_LIBS=$DDJVUAPI_LIBS])
+       DDJVUAPI_CFLAGS=`$PKG_CONFIG --cflags ddjvuapi`
+       AC_MSG_RESULT([setting DDJVUAPI_CFLAGS=$DDJVUAPI_CFLAGS])
+       AC_DEFINE(HAVE_DDJVUAPI,1,[Define if you have ddjvuapi.])
+       ifelse([$1],,:,[$1])
+    else
+       AC_MSG_RESULT([not found by pkg-config])
+       ac_ddjvuapi=no
+       ifelse([$2],,:,[$2])
+    fi
+  else
+    AC_MSG_RESULT([no pkg-config])
+    ac_ddjvuapi=no
+    ifelse([$2],,:,[$2])
+  fi
+])
+
+
+
+dnl ------------------------------------------------------------------
+dnl @synopsis AC_PROGS_QT4
+dnl Sets output variables QMAKE, MOC, UIC, RCC, LUPDATE, LRELEASE
+dnl Prints an error message if QMAKE is not found or not suitable
+dnl ------------------------------------------------------------------
+
+AC_DEFUN([AC_PROGS_QT4],
 [
   AC_REQUIRE([AC_PATH_X])
   AC_REQUIRE([AC_PATH_XTRA])
@@ -208,6 +261,105 @@ AC_DEFUN([AC_PATH_QT4],
   AC_ARG_VAR(QMAKE,[Location of the MOC program.])
   AC_ARG_VAR(MOC,[Location of the MOC program.])
   AC_ARG_VAR(UIC,[Location of the UIC program.])
+  AC_ARG_VAR(RCC,[Location of the RCC program.])
+  AC_ARG_VAR(LUPDATE,[Location of the LUPDATE program.])
+  AC_ARG_VAR(LRELEASE,[Location of the LRELEASE program.])
+
+  path=$PATH
+  if test -n "$QTDIR" && test -d "$QTDIR/bin" ; then
+    path=$QTDIR/bin:$PATH
+  fi
+  if test -z "$QMAKE" ; then
+    AC_PATH_PROGS([QMAKE], [qmake-qt4 qmake], [], [$path])
+  fi
+  if test -z "$QMAKE" ; then
+    AC_MSG_ERROR([Cannot find Qt4 program qmake. 
+Please define variable QMAKE or QTDIR.])
+  fi
+  mkdir conftest.d
+  cat > conftest.d/conftest.pro <<\EOF
+changequote(<<, >>)dnl
+message(QMAKE_UIC="$$QMAKE_UIC")
+message(QMAKE_MOC="$$QMAKE_MOC")
+message(QT_VERSION="$$[QT_VERSION]")
+message(QT_INSTALL_PREFIX="$$[QT_INSTALL_PREFIX]")
+message(QT_INSTALL_DATA="$$[QT_INSTALL_DATA]")
+message(QT_INSTALL_BINS="$$[QT_INSTALL_BINS]")
+message(QMAKE_RUN_CC="$$QMAKE_RUN_CC")
+message(QMAKE_RUN_CXX="$$QMAKE_RUN_CXX")
+changequote([, ])dnl
+EOF
+  if ( cd conftest.d && $QMAKE > conftest.out 2>&1 ) ; then
+    sed -e 's/^.*: *//' < conftest.d/conftest.out > conftest.d/conftest.sh
+    . conftest.d/conftest.sh
+    rm -rf conftest.d
+  else
+    rm -rf conftest.d
+    AC_MSG_ERROR([Cannot successfully run Qt4 program qmake. 
+Please define variable QMAKE to a working qmake.])
+  fi
+  case "$QT_VERSION" in
+    4.*)
+      AC_MSG_RESULT([Program qmake reports Qt version $QT_VERSION.]) 
+      ;;
+    *)
+      AC_MSG_ERROR([Qt version $QT_VERSION is insufficient.
+Please define variable QMAKE to a suitable qmake.])
+      ;;
+  esac
+  if test -z "$QTDIR" && 
+     test -n "$QT_INSTALL_DATA" &&
+     test -d "$QT_INSTALL_DATA/bin" ; then
+    QTDIR="$QT_INSTALL_DATA"
+    AC_MSG_RESULT([Defining QTDIR=$QTDIR])
+  fi
+  path=$PATH
+  if test -n "$QTDIR" && test -d "$QTDIR/bin" ; then
+    path=$QTDIR/bin:$PATH
+  fi
+  if test -d "$QT_INSTALL_BINS" ; then
+    path=$QT_INSTALL_BINS:$path
+  fi
+  if test -z "$MOC" ; then
+    if test -x "$QMAKE_MOC" ; then
+      MOC=$QMAKE_MOC
+      AC_MSG_RESULT([Defining MOC=$MOC.])
+    else
+      AC_PATH_PROGS([UIC], [moc-qt4 moc], [], [$path])
+    fi
+  fi
+  if test -z "$UIC" ; then
+    if test -x "$QMAKE_UIC" ; then
+      UIC=$QMAKE_UIC
+      AC_MSG_RESULT([Defining UIC=$UIC.])
+    else
+      AC_PATH_PROGS([UIC], [uic-qt4 uic], [], [$path])
+    fi
+  fi
+  if test -z "$RCC" ; then
+    if test -x "$QMAKE_RCC" ; then
+      RCC=$QMAKE_RCC
+      AC_MSG_RESULT([Defining RCC=$RCC.])
+    else
+      AC_PATH_PROGS([RCC], [rcc], [], [$path])
+    fi
+  fi
+  if test -z "$LUPDATE" ; then
+    if test -x "$LUPDATE" ; then
+      LUPDATE=$QMAKE_LUPDATE
+      AC_MSG_RESULT([Defining LUPDATE=$LUPDATE.])
+    else
+      AC_PATH_PROGS([LUPDATE], [lupdate], [], [$path])
+    fi
+  fi
+  if test -z "$LRELEASE" ; then
+    if test -x "$QMAKE_LRELEASE" ; then
+      UIC=$QMAKE_LRELEASE
+      AC_MSG_RESULT([Defining LRELEASE=$LRELEASE.])
+    else
+      AC_PATH_PROGS([LRELEASE], [lrelease], [], [$path])
+    fi
+  fi
 ])
 
 

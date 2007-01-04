@@ -21,7 +21,7 @@
 # ----------------------------------------
 
 AC_PREREQ(2.50)
-AC_INIT(djview, 4.0.0)
+AC_INIT(djview, 4.0)
 AC_REVISION($Id$)
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_SRCDIR(README)
@@ -84,7 +84,6 @@ AC_PATH_PROG(RM, rm)
 AC_PATH_PROG(AR, ar)
 AC_PATH_PROG(TOUCH, touch)
 AC_PATH_PROG(MKDIR, mkdir)
-AC_PATH_PROG(PKGCONFIG, pkg-config)
 AC_PROG_INSTALL
 
 # Libtool & Compilers
@@ -106,22 +105,35 @@ AC_HEADER_STDC
 AC_HEADER_DIRENT
 AC_HEADER_TIME
 AC_HEADER_SYS_WAIT     
-AC_CHECK_HEADERS(unistd.h)
+AC_CHECK_HEADERS(unistd.h string.h strings.h)
 
 
 # ----------------------------------------
 # Functions
 # ----------------------------------------
 
-AC_CHECK_FUNCS(sigaction waitpid wait3)
+AC_CHECK_FUNCS(sigaction strerror waitpid wait3)
 
 
 # ----------------------------------------
 # Packages
 # ----------------------------------------
 
-AC_PATH_QT4
-AC_PATH_TIFF
+AC_PROG_PKG_CONFIG([],[
+  AC_MSG_ERROR([Cannot find required program pkg-config.])
+])
+
+AC_PROGS_QT4([],[
+  AC_MSG_ERROR([Cannot find required Qt4 programs.])
+])
+
+AC_PATH_DDJVUAPI([],[
+  AC_MSG_ERROR([Cannot find required package ddjvuapi.])
+])
+
+dnl disabled for now
+dnl AC_PATH_TIFF
+
 
 # ----------------------------------------
 # How to compile and install nsdejavu
@@ -153,16 +165,74 @@ AC_SUBST(INSTALL_SHLIB)
 
 
 # ----------------------------------------
-# End
+# Paths
 # ----------------------------------------
 
 # Define installation paths and version string
 AC_DEFINE_INSTALL_PATHS
 AC_DEFINE_VERSION([DJVIEW_VERSION], [${PACKAGE_VERSION}])
 
-# Output files
+
+# ----------------------------------------
+# Run qmake
+# ----------------------------------------
+
+# autoconf
+QARG="CONFIG+=autoconf"
+AUTO_LIBS="$DDJVUAPI_LIBS $TIFF_LIBS"
+AUTO_FLAGS="-I.. $CXXFLAGS $DDJVUAPI_CFLAGS $TIFF_CFLAGS"
+
+# out-of-tree?
+if test -d src && test -r src/qdjvu.cpp ; then : ; else
+  test -d src || mkdir src
+  cp $srcdir/src/djview.pro src
+  dnl cp $srcdir/src/*.ts src
+  nsrcdir="$srcdir"
+  case "$srcdir" in .*) nsrcdir="../$srcdir" ;; esac
+  QARG="$QARG VPATH=$nsrcdir/src"
+  AUTO_FLAGS="-I$nsrcdir/src $AUTO_FLAGS"
+fi
+
+# debug
+if test "$ac_debug" = yes ; then
+  QARG="$QARG CONFIG+=debug"
+else
+  QARG="$QARG CONFIG+=release"
+fi
+
+# run
+AC_CONFIG_COMMANDS([src/Makefile],
+ [ echo "config.status: running $qmake_QMAKE in directory src."
+   ( cd src && $qmake_QMAKE $qmake_QARG \
+     "AUTO_LIBS=$qmake_AUTO_LIBS" \
+     "AUTO_LFLAGS=$qmake_LDFLAGS" \
+     "AUTO_CFLAGS=$qmake_CFLAGS $qmake_AUTO_FLAGS" \
+     "AUTO_CXXFLAGS=$qmake_CXXFLAGS $qmake_AUTO_FLAGS" )
+ ],
+ [ qmake_QMAKE="$QMAKE"
+   qmake_QARG="$QARG"
+   qmake_LDFLAGS="$LDFLAGS"
+   qmake_CFLAGS="$CFLAGS"
+   qmake_CXXFLAGS="$CXXFLAGS"
+   qmake_AUTO_LIBS="$AUTO_LIBS"
+   qmake_AUTO_FLAGS="$AUTO_FLAGS" ] )
+
+
+
+# ----------------------------------------
+# Outputs
+# ----------------------------------------
+
 AC_CONFIG_FILES(Makefile)
 AC_OUTPUT
 
-# Run qmake
+# ----------------------------------------
+# Fin
+# ----------------------------------------
 
+echo ""
+echo "Configuration is done."
+echo "Compile with command:"
+echo "    $ make"
+echo "Then install the binaries in $prefix with command:"
+echo "    # make install"
