@@ -41,7 +41,7 @@ all: FORCE
 clean-here: FORCE
 
 distclean-here: clean-here FORCE
-	-rm 2>/dev/null Makefile config.log config.status libtool
+	-rm 2>/dev/null Makefile config.log config.status config.h libtool
 	-rm 2>/dev/null -r autom4te.cache
 
 clean: clean-here
