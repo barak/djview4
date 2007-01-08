@@ -73,8 +73,9 @@ install-djview-man: FORCE
 
 install-djview-qm: FORCE
 	${INSTALL} -d ${DESTDIR}${datadir}/djvu/djview4
-	for qm in djview/*.qm ; do test -r $$qm && \
-          ${INSTALL_DATA} $$qm ${datadir}/djvu/djview4 || true ; done
+	for qm in src/*.qm ; do test -r $$qm && \
+          ${INSTALL_DATA} $$qm ${DESTDIR}${datadir}/djvu/djview4 || true ; \
+	done
 
 install-nsdejavu: FORCE
 	${MAKE} -C nsdejavu install
@@ -87,6 +88,7 @@ install-desktop: FORCE
 # make clean
 
 clean: clean-subdirs FORCE
+	-${RM} 2>/dev/null src/*.qm src/djview
 	@echo "Done."
 
 clean-subdirs: FORCE
@@ -96,6 +98,7 @@ clean-subdirs: FORCE
 # make distclean
 
 distclean: distclean-subdirs FORCE
+	-${RM} 2>/dev/null src/*.qm src/djview
 	-${RM} 2>/dev/null Makefile config.log config.status config.h libtool
 	-${RM} 2>/dev/null -r autom4te.cache
 	@echo "Done."
