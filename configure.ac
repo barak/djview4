@@ -210,18 +210,18 @@ QARG="$QARG QMAKE_RCC="'"'"$RCC"'"'
 AC_CONFIG_COMMANDS([src/Makefile],
  [ echo "config.status: running $qmake_QMAKE in directory src."
    ( cd src && $qmake_QMAKE $qmake_QARG \
-     "AUTO_LIBS=$qmake_AUTO_LIBS" \
-     "AUTO_LFLAGS=$qmake_LDFLAGS" \
-     "AUTO_CFLAGS=$qmake_CFLAGS $qmake_AUTO_FLAGS" \
-     "AUTO_CXXFLAGS=$qmake_CXXFLAGS $qmake_AUTO_FLAGS" )
+     "LIBS+=$qmake_LIBS" \
+     "QMAKE_LFLAGS+=$qmake_LDFLAGS" \
+     "QMAKE_CFLAGS+=$qmake_CFLAGS $qmake_FLAGS" \
+     "QMAKE_CXXFLAGS+=$qmake_CXXFLAGS $qmake_FLAGS" )
  ],
  [ qmake_QMAKE="$QMAKE"
    qmake_QARG="$QARG"
    qmake_LDFLAGS="$LDFLAGS"
    qmake_CFLAGS="$CFLAGS"
    qmake_CXXFLAGS="$CXXFLAGS"
-   qmake_AUTO_LIBS="$AUTO_LIBS"
-   qmake_AUTO_FLAGS="$AUTO_FLAGS" ] )
+   qmake_LIBS="$AUTO_LIBS"
+   qmake_FLAGS="$AUTO_FLAGS" ] )
 
 
 

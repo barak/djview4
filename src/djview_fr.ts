@@ -996,6 +996,10 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
         <source>Save job creation failed!</source>
         <translation>L&apos;operation d&apos;enregistrement a échoué!</translation>
     </message>
+    <message>
+        <source>Unknown error</source>
+        <translation>Erreur inconnue</translation>
+    </message>
 </context>
 <context>
     <name>QDjViewErrorDialog</name>
@@ -1189,10 +1193,6 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
         <translation>Options</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;b&gt;Finding text.&lt;/b&gt;&lt;br/&gt; Search hits appear progressively as soon as you type a search string. Typing enter jumps to the next hit. To move to the previous or next hit, you can also use the arrow buttons or the shortcuts F3 or Shift-F3. You can also double click a page name. Use the &quot;Options&quot; menu to search words only or to specify the case sensitivity.&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;b&gt;Recherche de texte.&lt;/b&gt;&lt;br/&gt; Les occurrences du texte à rechercher apparaissent progressivement pendant sa saisie. La touche «Entrée» montre la prochaine occurrence. Pour aller à l&apos;occurrence précédente ou suivante, utilisez les boutons fléchés ou les touches «F3» et «Maj+F3». Vous pouvez aussi double cliquer un nom de page. Le menu «Options» permet de chercher des mots entiers ou de spécifier la casse.&lt;/html&gt;</translation>
-    </message>
-    <message>
         <source>&lt;html&gt;&lt;b&gt;Finding text.&lt;/b&gt;&lt;br/&gt; Search hits appear progressively as soon as you type a search string. Typing enter jumps to the next hit. To move to the previous or next hit, you can also use the arrow buttons or the shortcuts &lt;tt&gt;F3&lt;/tt&gt; or &lt;tt&gt;Shift-F3&lt;/tt&gt;. You can also double click a page name. Use the &lt;tt&gt;Options&lt;/tt&gt; menu to search words only or to specify the case sensitivity.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Recherche de texte.&lt;/b&gt;&lt;br/&gt; Les occurrences du texte à rechercher apparaissent progressivement pendant sa saisie. La touche «Entrée» montre la prochaine occurrence. Pour aller à l&apos;occurrence précédente ou suivante, utilisez les boutons fléchés ou les touches &lt;tt&gt;F3&lt;/tt&gt; et &lt;tt&gt;Maj+F3&lt;/tt&gt;. Vous pouvez aussi double cliquer un nom de page. Le menu &lt;tt&gt;Options&lt;/tt&gt; permet de chercher des mots entiers ou de spécifier la casse.&lt;/html&gt;</translation>
     </message>
@@ -1257,10 +1257,6 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     <message>
         <source>Page Title</source>
         <translation>Titre</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;b&gt;File and page information&lt;/b&gt;&lt;br&gt;This panel shows the structure of the DjVu data corresponding to the component file or the page selected in the &apos;Document&apos; tab. The arrow buttons let you navigate to the previous or next component file.&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;b&gt;Informations sur un fichier&lt;/b&gt;&lt;br&gt;Ce panneau montre la structure des données DjVu correspondant au fichier ou à la page sélectionnée dans l&apos;onglet «Document». Les flèches vous permettent de naviguer vers le fichier précédent ou suivant.&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Waiting for data...</source>
@@ -1359,10 +1355,6 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
         <translation>&amp;Fermer</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailled information in the &apos;File&apos; tab. Double click a component file to show the corresponding page in the main window. &lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;b&gt;Information sur le document&lt;/b&gt;&lt;br&gt;Ce panneau montre les informations sur le document et les fichiers qui le composent. Sélectionnez un nom de fichier pour afficher ses informations sous l&apos;index «Fichier». Double-cliquez un nom de fichier pour montrer la page correspondante &lt;/html&gt;</translation>
-    </message>
-    <message>
         <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailled information in the &lt;tt&gt;File&lt;/tt&gt; tab. Double click a component file to show the corresponding page in the main window. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Information sur le document&lt;/b&gt;&lt;br&gt;Ce panneau montre les informations sur le document et les fichiers qui le composent. Sélectionnez un nom de fichier pour afficher ses informations sous l&apos;index &lt;tt&gt;Fichier&lt;/tt&gt;. Double-cliquez un nom de fichier pour montrer la page correspondante &lt;/html&gt;</translation>
     </message>
@@ -1458,10 +1450,6 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
         <source>Booklet</source>
         <comment>tab caption</comment>
         <translation>Fascicule</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;b&gt;PostScript options.&lt;/b&gt;&lt;br&gt;The color option enables color printing. Document pages can be decorated with frame and crop marks. PostScript language level 1 is only useful with very old printers. Level 2 works with most printers. Level 3 print color document faster on recent printers.&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;b&gt;Options PostScript.&lt;/b&gt;&lt;br&gt;L&apos;option «couleur» autorise l&apos;impression en couleur. Les pages imprimées peuvent être décorées avec un cadre ou des marques de découpage. Le niveau PostScript 1 est utile pour les très vieilles imprimantes. Le niveau 2 fonctionne avec la plupart des imprimantes en service. Le niveau 3 imprime les documents en couleur plus rapidement sur des imprimantes récentes.&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Producing booklets.&lt;/b&gt;&lt;br&gt;The booklet mode prints the selected pages as sheets suitable for folding one or several booklets. Several booklets might be produced when a maximum number of sheets per booklet is specified. You can either use a duplex printer or print rectos and versos separately.&lt;p&gt; Shifting rectos and versos is useful with poorly aligned duplex printers. The center margins determine how much space is left between the pages to fold the sheets. This space slowly increases from the inner sheet to the outer sheet.&lt;/html&gt;</source>
@@ -1843,10 +1831,6 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     <message>
         <source>This operation has been interrupted.</source>
         <translation>Cette opération a été interrompue.</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;b&gt;Printing.&lt;/b&gt;&lt;br/&gt; You can print the whole document or a page range. Use the &apos;Choose&apos; button to select a print destination and specify printer options. Additional dialog tabs might appear to specify conversion options.&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;b&gt;Impression.&lt;/b&gt;&lt;br/&gt; Vous pouvez imprimer le document entier ou un intervalle de pages. Utilisez le bouton «Choisir» pour sélectionner une destination d&apos;impression. Des index supplémentaires permettent alors de spécifier les options de conversion. &lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Printing.&lt;/b&gt;&lt;br/&gt; You can print the whole document or a page range. Use the &lt;tt&gt;Choose&lt;/tt&gt; button to select a print destination and specify printer options. Additional dialog tabs might appear to specify conversion options.&lt;/html&gt;</source>

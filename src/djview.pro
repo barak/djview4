@@ -27,11 +27,12 @@ QT += network
 # -- find libraries
 CONFIG(autoconf) {
     # for use with autoconf
-    LIBS += $$AUTO_LIBS
-    QMAKE_CXXFLAGS += $$AUTO_CXXFLAGS
-    QMAKE_CFLAGS += $$AUTO_CFLAGS
-    QMAKE_LFLAGS += $$AUTO_LFLAGS
     DEFINES += AUTOCONF
+    #   Autoconf calls qmake with the following variables
+    #   LIBS += ...
+    #   QMAKE_CXXFLAGS += ...
+    #   QMAKE_CFLAGS += ...
+    #   QMAKE_LFLAGS += ...
 } else:unix:!macx {
     # for use under unix with pkgconfig
     CONFIG += link_pkgconfig
