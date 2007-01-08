@@ -21,7 +21,7 @@
 .\" You should have received a copy of the GNU General Public
 .\" License along with this manual. Otherwise check the web site
 .\" of the Free Software Foundation at http://www.fsf.org.
-.TH NSDEJAVU 1 "1/4/2006" "DjView-4" "DjView-4"
+.TH NSDEJAVU 1 "1/4/2006" "DjVuLibre-3.5" "DjVuLibre-3.5"
 .de SS
 .SH \\0\\0\\0\\$*
 ..
@@ -43,36 +43,22 @@ of support for Netscape plugins.
 Please check section "Browser Compatibility"
 for instructions on how to enable the
 DjVu browser plugin.
-Both the standalone viewer
-.B djview4
-and the DjVu browser plugin
-.B NSDEJAVUSO
-offer similar features.
-The DjVu browser plugin in fact is wrapper that invokes the standalone viewer
-program in remote control mode.  This man pages describes those features
-that are specific to the browser plugin.  Additional information can
-be found in the
-.BR djview4 (1)
-and
-.BR djview3 (1)
-man pages.
 
-.SH FINDING DJVIEW
-The shared library 
-.B NSDEJAVUSO 
-first searches a program named
-.BR djview ,
-.BR djview4 ,
-or, when everything else fails,
-.BR djview3 .
-Each program is searched in a rather long list 
-of plausible directories.  
+The DjVuLibre browser plugin works by invoking
+a standalone viewer with the special command line option
+.BR -netscape .
+The plugin first searches a program named
+.BR djview .
+If this program cannot be found,
+it searches for
+.BR djview4
+and finally
+.BR djview3.
 It is always possible to override this search strategy
-by making the environment variable
+by setting the environment variable
 .B NPX_DJVIEW
-point to the desired 
-.B djview
-executable.
+to the full path of the desired executable.
+
 
 .SH MIME TYPES AND EXTENSIONS
 Typing the
@@ -85,19 +71,22 @@ is in fact a DjVu document.
 Web server normally provide a
 .SM MIME
 type to web browsers.
-The official MIME type for DjVu documents is
+The official 
+.SM MIME 
+type for DjVu documents is
 .BR image/vnd.djvu .
 For compatibility with ancient versions of the
 DjVu viewer, it is common to use instead the
-experimental MIME type
+experimental 
+.SM MIME 
+type
 .B image/x-djvu
 or
 .BR image/x.djvu .
-Web servers should be configured to send the proper
-MIME type for DjVu documents. See the DjVu tutorial
-for more information (
-.B http://www.djvuzone.org/support/tutorial
-).
+Web servers should be configured to send the 
+proper
+.SM MIME 
+type for DjVu documents. 
 Most web browsers also recognize files ending with
 .B .djvu
 or
@@ -105,7 +94,8 @@ or
 as DjVu files.
 
 An easy way to check if an http server is giving an appropriate
-content-type is to invoke the following command with a URL
+content-type is to invoke the following command with a 
+.SM URL
 corresponding to an actual DjVu file on the server.
 .IP "" 2
 .BI "curl -u " URL " | grep Content-Type"
@@ -118,7 +108,10 @@ The result should be one of the following, preferably the first.
 .br
 .B Content-Type: image/x-djvu
 .PP
-Any other MIME type indicates a server misconfiguration.
+Any other 
+.SM MIME 
+type indicates a server misconfiguration.
+
 
 .SH CGI-STYLE FLAGS
 The behavior of the DjVu browser plugin can be specified by
@@ -134,8 +127,12 @@ This syntax is described by the following template:
 The DjVu browser plugin only recognizes keywords that appear
 after the word
 .BR djvuopts .
-The recognized keywords are listed in the man page
-.BR djview4 (1).
+The keywords recognized by each viewer
+are listed in the man pages for
+.BR djview3 (1)
+and
+.BR djview4 (1)
+Unrecognized keywords are ignored.
 The most common keywords are:
 .TP
 .BI page= pagenum_or_pagename
@@ -162,27 +159,19 @@ width	Select the "fit width" mode.
 page	Select the "fit page" mode.
 stretch	Stretch the image to the plugin window size.
 .TE
-.PP
-.TP
-.BI cache=(yes|no)
-Enable or disable the caching of fully decoded pages of the document.
-Caching is on by default.  Caching of documents whose
-.SM URL
-does not contain extension
-.BE .djvu " or " .djv
-is off by default.
 
-.SH EMBEDDING DJVU IMAGES
-A good way to integrate DjVu content on your web page is to use the
-.SM EMBED
-directive of the
+
+.SH EMBEDDING DJVU IMAGES IN HTML PAGES
+You can integrate DjVu content on an
 .SM HTML
-language.
-An advantage of this method is that it will work even if your web server
-does not support the DjVu
+web page with the
+.SM <embed>
+tag.
+This method is that it will work even if your web 
+server does not support the DjVu
 .SM MIME
 type.
-Furthermore, the
+The
 .SM CGI
 style flags can be directly used as attributes of the
 .SM EMBED
@@ -196,6 +185,130 @@ Here is an example:
 .B "\0\0\0\0\0\0\0\0\0 page=iii zoom=stretch >
 .B </embed>
 .PP
+
+
+.SH BROWSER COMPATIBILITY
+The DjVu browser plugin has been tested with
+several popular web browsers:
+.SS NETSCAPE 4
+.PP
+The DjVu browser plugin is normally installed in directory
+.BR /usr/local/lib/netscape/plugins .
+This is sufficient to enable the DjVu browser plugin
+because Netscape 4 always searches this directory for
+plugins.
+You might have to first remove previous version of the DjVuLibre plugin.
+Selecting menu
+.B "Help->About Plugins"
+in
+.B netscape
+displays the current list of plugins.
+Previous versions of the plugin might be installed in one of
+the following locations:
+.IP "" 2
+.B "$HOME/.netscape/plugins/nsdejavu.so"
+.br
+.B "/usr/lib/netscape/plugins/nsdejavu.so"
+.br
+.B "/opt/netscape/plugins/nsdejavu.so"
+.PP
+More complicated cases can be solved by creating a symbolic
+link into your personal plugin directory:
+.IP "" 2
+.B "cd $HOME/.netscape/plugins"
+.br
+.B "ln -s /usr/lib/netscape/plugins/nsdejavu.so ."
+.PP
+You must not copy
+.B nsdejavu.so
+but create a symbolic link.  This is necessary
+because
+.B nsdejavu.so
+first locates its normal installation directory by following the symbolic
+link.  The Netscape plugin search rules are explained in the
+.B README
+file that comes with the Netscape distribution.
+Also check option
+.B -fix
+of program
+.BR djview3 .
+.PP
+.SS NETSCAPE 6
+.PP
+The DjVuLibre plugin works nicely with Netscape 6.1 or better.
+It seems that Netscape 6 only recognize plugins installed inside
+its own plugin directory.  This can be done using a symbolic link.
+Let us assume that Netscape 6 is installed in
+.IR /usr/local/netscape6 .
+The following commands should do the trick:
+.IP "" 2
+.BI "cd " "/usr/local/netscape6" "/plugins"
+.br
+.B "ln -s /usr/lib/netscape/plugins/nsdejavu.so ."
+.PP
+.SS MOZILLA
+.PP
+The DjVuLibre plugin works nicely with Mozilla 0.9.5 or better.
+You must establish a link from the Mozilla plugin directory.
+Assuming that Mozilla is installed under
+.IR /usr/lib/mozilla-1.1 :
+.IP "" 2
+.BI "cd " "/usr/lib/mozilla-1.1" "/plugins"
+.br
+.B "ln -s /usr/lib/netscape/plugins/nsdejavu.so ."
+.PP
+You can then restart
+.B mozilla
+and select menu
+.B "Help->About Plugins" to check
+whether the DjVuLibre plugin is properly recognized.
+.PP
+.SS GALEON
+.PP
+Galeon internally uses the Mozilla rendering engine.
+Install the plugin for Mozilla and it should also
+work for Galeon.
+.PP
+.SS FIREFOX
+.PP
+The DjVuLibre plugin works nicely with Firefox or better.
+You must establish a link from the Firefox plugin directory.
+Assuming that Firefox is installed under
+.IR /usr/lib/mozilla-firefox :
+.IP "" 2
+.BI "cd " "/usr/lib/mozilla-firefox" "/plugins"
+.br
+.B "ln -s /usr/lib/netscape/plugins/nsdejavu.so ."
+.PP
+.SS KONQUEROR
+.PP
+The DjVuLibre plugin works with
+.SM KDE-2.2
+or better.
+You must first make sure that
+.B konqueror
+recognizes the DjVU plugin.
+In Konqueror, select
+.BR "Settings->Configure Konqueror" .
+When the dialog appears, select the icon
+.BR "Netscape Plugins" .
+Make sure that directory
+.B "/usr/lib/netscape/plugins"
+appears in the list of plugin directories.
+Then press button
+.BR "Scan for new plugins" .
+Clicking the
+.B "Plugins"
+tab button should display a list of recognized plugins.
+Check that
+.B "nsdejavu.so"
+appears there.
+.PP
+.SS OPERA
+.PP
+The DjVuLibre plugin works with Opera-6.
+As explained in the Opera software support pages,
+you must have the OpenMotif libraries installed.
 
 .SH CREDITS
 This program was written by Andrei Erofeev <andrew_erofeev@yahoo.com>
