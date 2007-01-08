@@ -210,10 +210,9 @@ QARG="$QARG QMAKE_CFLAGS+="'"'"$LDFLAGS"'"'
 QARG="$QARG QMAKE_CFLAGS+="'"'"$CFLAGS $AUTO_FLAGS"'"'
 QARG="$QARG QMAKE_CXXFLAGS+="'"'"$CXXFLAGS $AUTO_FLAGS"'"'
 
-# quote QARG
-# QARG=`echo $QARG | sed -e 's/"/"'"'"'"'"'"'"/g'`
-
-
+# quoting QARG with
+#  QARG=`echo $QARG | sed -e 's/"/"'"'"'"'"'"'"/g'`
+# is now useless because we set QMAKE_COMMAND with read!
 
 # run
 AC_CONFIG_COMMANDS([src/Makefile], [
