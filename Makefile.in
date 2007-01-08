@@ -51,7 +51,7 @@ all-subdirs: FORCE
 	for d in ${SUBDIRS} ; do ${MAKE} -C $$d all ; true ; done
 
 all-djview-qm: FORCE
-	( cd src ; ${LRELEASE} djview.pro )
+	cd src ; test -x "${LRELEASE}" && "${LRELEASE}" djview.pro || true
 
 
 # make install
