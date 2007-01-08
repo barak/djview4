@@ -190,7 +190,7 @@ if test -d src && test -r src/qdjvu.cpp ; then : ; else
   dnl cp $srcdir/src/*.ts src
   nsrcdir="$srcdir"
   case "$srcdir" in .*) nsrcdir="../$srcdir" ;; esac
-  QARG="$QARG VPATH=$nsrcdir/src"
+  QARG="$QARG VPATH="'"'"$nsrcdir/src"'"'
   AUTO_FLAGS="-I$nsrcdir/src $AUTO_FLAGS"
 fi
 
@@ -201,28 +201,29 @@ else
   QARG="$QARG CONFIG+=release"
 fi
 
-# moc, uic, rcc
+# qmake arguments
 QARG="$QARG QMAKE_UIC="'"'"$UIC"'"'
 QARG="$QARG QMAKE_MOC="'"'"$MOC"'"'
 QARG="$QARG QMAKE_RCC="'"'"$RCC"'"'
+QARG="$QARG LIBS+="'"'"$AUTO_LIBS"'"'
+QARG="$QARG QMAKE_CFLAGS+="'"'"$LDFLAGS"'"'
+QARG="$QARG QMAKE_CFLAGS+="'"'"$CFLAGS $AUTO_FLAGS"'"'
+QARG="$QARG QMAKE_CXXFLAGS+="'"'"$CXXFLAGS $AUTO_FLAGS"'"'
+
+# quote QARG
+# QARG=`echo $QARG | sed -e 's/"/"'"'"'"'"'"'"/g'`
+
+
 
 # run
-AC_CONFIG_COMMANDS([src/Makefile],
- [ echo "config.status: running $qmake_QMAKE in directory src."
-   ( cd src && $qmake_QMAKE $qmake_QARG \
-     "LIBS+=$qmake_LIBS" \
-     "QMAKE_LFLAGS+=$qmake_LDFLAGS" \
-     "QMAKE_CFLAGS+=$qmake_CFLAGS $qmake_FLAGS" \
-     "QMAKE_CXXFLAGS+=$qmake_CXXFLAGS $qmake_FLAGS" )
- ],
- [ qmake_QMAKE="$QMAKE"
-   qmake_QARG="$QARG"
-   qmake_LDFLAGS="$LDFLAGS"
-   qmake_CFLAGS="$CFLAGS"
-   qmake_CXXFLAGS="$CXXFLAGS"
-   qmake_LIBS="$AUTO_LIBS"
-   qmake_FLAGS="$AUTO_FLAGS" ] )
-
+AC_CONFIG_COMMANDS([src/Makefile], [
+     echo "config.status: running $qmake_QMAKE in directory src."
+     ( cd src ; eval "$QMAKE_COMMAND" )
+],[
+     read QMAKE_COMMAND <<QMAKE_COMMAND_EOF
+$QMAKE $QARG
+QMAKE_COMMAND_EOF
+] )
 
 
 # ----------------------------------------
