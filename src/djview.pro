@@ -32,7 +32,7 @@ CONFIG(autoconf) {
     QMAKE_CFLAGS += $$AUTO_CFLAGS
     QMAKE_LFLAGS += $$AUTO_LFLAGS
     DEFINES += AUTOCONF
-} else:unix:!mac {
+} else:unix:!macx {
     # for use under unix with pkgconfig
     CONFIG += link_pkgconfig
     PKGCONFIG += ddjvuapi
