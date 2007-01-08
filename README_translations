@@ -33,7 +33,7 @@ HOW TO CREATE NEW TRANSLATION FILES FOR DJVIEW.
         $ LANGUAGE=de ./djview
 
 - Once you are satisfied, 
-  send me your translation file 
+  send me your translation file 'djview_de.ts' 
   by email (leonb@users.sourceforge.net)
 
 
