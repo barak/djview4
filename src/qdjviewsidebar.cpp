@@ -682,7 +682,7 @@ QDjViewThumbnails::QDjViewThumbnails(QDjView *djview)
   action->setData(true);
   updateActions();
 
-#if Q_WS_MAC
+#ifdef Q_WS_MAC
   QString mc = tr("Control Left Mouse Button");
 #else
   QString mc = tr("Right Mouse Button");

@@ -32,13 +32,17 @@ CONFIG(autoconf) {
     QMAKE_CFLAGS += $$AUTO_CFLAGS
     QMAKE_LFLAGS += $$AUTO_LFLAGS
     DEFINES += AUTOCONF
-} else:unix {
+} else:unix:!mac {
     # for use under unix with pkgconfig
     CONFIG += link_pkgconfig
     PKGCONFIG += ddjvuapi
 } else {
-    # for use on other platforms (complete below)
+    # for use on other platforms
     LIBS += -ldjvulibre
+    # QMAKE_CXXFLAGS +=  ... (c++ flags)
+    # QMAKE_CFLAGS += ...    (c flags)
+    # QMAKE_LFLAGS += ...    (link flags)
+    # DEFINES += ...         (definitions)
 }
 
 

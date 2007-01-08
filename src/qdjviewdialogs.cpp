@@ -1383,10 +1383,10 @@ QDjViewPSExporter::openFile()
 
   if (fileName.isEmpty())
     {
-#if Q_WS_WIN
+#ifdef Q_WS_WIN
       // TODO: tempfile?
 #endif
-#if Q_WS_MAC
+#ifdef Q_WS_MAC
       // TODO: dunno?
 #endif 
       // Disable SIGPIPE
