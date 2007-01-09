@@ -3708,10 +3708,17 @@ QDjVuWidget::scrollContentsBy(int, int)
 {
   if (! (priv->layoutChange && CHANGE_SCROLLBARS))
     {
-      int x = horizontalScrollBar()->sliderPosition();
-      int y = verticalScrollBar()->sliderPosition();
-      priv->visibleRect.moveTo(x, y);
-      priv->changeLayout(CHANGE_VISIBLE);
+      QScrollBar *hBar = horizontalScrollBar();
+      QScrollBar *vBar = verticalScrollBar();
+      QPoint p = priv->visibleRect.topLeft();
+      if (hBar->maximum() > hBar->minimum())
+        p.rx() = hBar->sliderPosition();
+      if (vBar->maximum() > vBar->minimum())
+        p.ry() = vBar->sliderPosition();
+      QPoint np = p - priv->visibleRect.topLeft();
+      priv->movePoint = priv->currentPoint;
+      priv->movePos = priv->findPosition(np + priv->movePoint);
+      priv->changeLayout(CHANGE_VIEW);
     }
 }
 
@@ -4637,7 +4644,7 @@ QDjVuWidget::moveToPageBottom(void)
   QPoint point = priv->currentPoint;
   pos.inPage = false;
   if (pos.pageNo>=0 && pos.pageNo<priv->numPages)
-    pos.posView.ry() = priv->pageData[pos.pageNo].rect.height();
+   pos.posView.ry() = priv->pageData[pos.pageNo].rect.height();
   point.ry() = priv->visibleRect.height() - priv->borderSize;
   setPosition(pos, point);
 }
