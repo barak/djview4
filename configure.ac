@@ -187,10 +187,8 @@ AUTO_FLAGS="-I.. $CXXFLAGS $DDJVUAPI_CFLAGS $TIFF_CFLAGS"
 if test -d src && test -r src/qdjvu.cpp ; then : ; else
   test -d src || mkdir src
   for n in $srcdir/src/djview.pro $srcdir/src/*.ts ; do
-      if test -r $n ; then
-          m=`basename $n`
-          cmp -s $n src/$m || cp $n src/$m
-      fo
+      m=`basename $n`
+      test -r $n && ( cmp -s $n src/$m || cp $n src/$m )
   done
   nsrcdir="$srcdir"
   case "$srcdir" in .*) nsrcdir="../$srcdir" ;; esac
