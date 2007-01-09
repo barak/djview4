@@ -186,8 +186,12 @@ AUTO_FLAGS="-I.. $CXXFLAGS $DDJVUAPI_CFLAGS $TIFF_CFLAGS"
 # out-of-tree?
 if test -d src && test -r src/qdjvu.cpp ; then : ; else
   test -d src || mkdir src
-  cp $srcdir/src/djview.pro src
-  dnl cp $srcdir/src/*.ts src
+  for n in $srcdir/src/djview.pro $srcdir/src/*.ts ; do
+      if test -r $n ; then
+          m=`basename $n`
+          cmp -s $n src/$m || cp $n src/$m
+      fo
+  done
   nsrcdir="$srcdir"
   case "$srcdir" in .*) nsrcdir="../$srcdir" ;; esac
   QARG="$QARG VPATH="'"'"$nsrcdir/src"'"'
