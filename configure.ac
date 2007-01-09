@@ -86,11 +86,10 @@ AC_PATH_PROG(MKDIR, mkdir)
 AC_PROG_INSTALL
 
 # Libtool & Compilers
-AC_DISABLE_STATIC
-AC_PROG_LIBTOOL
 AC_PROG_CC
 AC_PROG_CXX
-AC_SUBST(LIBTOOL_DEPS)
+AC_DISABLE_STATIC
+AC_PROG_LIBTOOL
 
 # C++
 AC_LANG(C++)
@@ -180,8 +179,11 @@ AC_DEFINE_UNQUOTED([DJVIEW_VERSION_STR], ["${PACKAGE_VERSION}"], [string version
 
 # autoconf
 QARG="CONFIG+=autoconf"
-AUTO_LIBS="$DDJVUAPI_LIBS $TIFF_LIBS"
-AUTO_FLAGS="-I.. $CXXFLAGS $DDJVUAPI_CFLAGS $TIFF_CFLAGS"
+AUTO_LIBS="$DDJVUAPI_LIBS $TIFF_LIBS $LIBS"
+AUTO_FLAGS="-I.. $DDJVUAPI_CFLAGS $TIFF_CFLAGS"
+#    note: AUTO_FLAGS does not contain $OPTS
+#          because qmake determines itself
+#          its optimization flags...
 
 # out-of-tree?
 if test -d src && test -r src/qdjvu.cpp ; then : ; else

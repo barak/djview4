@@ -49,7 +49,7 @@ CONFIG(autoconf) {
 
 # -- no debug in release mode
 CONFIG(release,debug|release) {
-    DEFINES += QT_NO_DEBUG QT_NO_DEBUG_STREAM
+    DEFINES += NDEBUG QT_NO_DEBUG QT_NO_DEBUG_STREAM
 }
 
 # -- check for x11

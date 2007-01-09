@@ -21,7 +21,6 @@ RM = @RM@
 TOUCH = @TOUCH@
 MKDIR = @MKDIR@
 LIBTOOL = @LIBTOOL@
-LIBTOOL_DEPS = @LIBTOOL_DEPS@
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
@@ -48,10 +47,10 @@ all: all-subdirs all-djview-qm FORCE
 	@echo "Done."
 
 all-subdirs: FORCE
-	for d in ${SUBDIRS} ; do ${MAKE} -C $$d all ; true ; done
+	for d in ${SUBDIRS} ; do ( cd $$d && ${MAKE} all ) || break ; done
 
 all-djview-qm: FORCE
-	cd src ; test -x "${LRELEASE}" && "${LRELEASE}" djview.pro || true
+	-cd src && test -x "${LRELEASE}" && "${LRELEASE}" djview.pro
 
 # make install
 
@@ -81,7 +80,7 @@ install-nsdejavu: FORCE
 
 
 install-desktop: FORCE
-	# ${MAKE} -C desktop install
+# 	${MAKE} -C desktop install
 
 
 # make clean
@@ -91,7 +90,7 @@ clean: clean-subdirs FORCE
 	@echo "Done."
 
 clean-subdirs: FORCE
-	for d in ${SUBDIRS} ; do ${MAKE} -C $$d clean ; true ; done
+	-for d in ${SUBDIRS} ; do ( cd $$d && ${MAKE} clean ) ; done
 
 
 # make distclean
@@ -103,7 +102,7 @@ distclean: distclean-subdirs FORCE
 	@echo "Done."
 
 distclean-subdirs: FORCE
-	for d in ${SUBDIRS} ; do ${MAKE} -C $$d distclean ; true ; done
+	-for d in ${SUBDIRS} ; do ( cd $$d && ${MAKE} distclean ) ; done
 
 
 # phony targets
