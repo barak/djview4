@@ -722,6 +722,9 @@ get_library_path(strpool *pool)
 static const char *
 GetLibraryPath(void)
 {
+  /* This is no longer needed since djview no longer uses the provided path.
+     This is kept to allow interoperability between nsdejavu.so and previous
+     version of djview. LYB. */
   static char path[MAXPATHLEN+1];
   if (! path[0]) 
     {
@@ -1608,7 +1611,7 @@ Attach(Display * displ, Window window, void * id)
   Visual *visual;
   Widget shell;
   Widget widget;
-  char back_color_str[128]; 
+  char protocol_str[128]; 
   XFontStruct * font=0;
   const char *text="DjVu plugin is being loaded. Please stand by...";
   XtAppContext app_context;  
@@ -1658,14 +1661,19 @@ Attach(Display * displ, Window window, void * id)
       black = black_screen.pixel;
       CopyColormap(displ, visual, XtScreen(shell), cmap);
     }
-  /* Get the background color for passing it to the application */
-  back_color_str[0]=0;
-  XtVaGetValues(widget, XtNwidth, &width, XtNheight, &height,
-                XtNbackground, &back_color, NULL);
-  cell.flags=DoRed | DoGreen | DoBlue;
-  cell.pixel=back_color;
-  XQueryColor(displ, cmap, &cell);
-  sprintf(back_color_str, "rgb:%X/%X/%X", cell.red, cell.green, cell.blue);
+  /* Protocol string could be "XEMBED/..." to indicate that we want XEMBED. */
+  protocol_str[0]=0;
+  /* Old viewers want the background color name instead. */
+  if (! protocol_str[0])
+    {
+      XtVaGetValues(widget, XtNwidth, &width, XtNheight, &height,
+                    XtNbackground, &back_color, NULL);
+      cell.flags=DoRed | DoGreen | DoBlue;
+      cell.pixel=back_color;
+      XQueryColor(displ, cmap, &cell);
+      sprintf(protocol_str, "rgb:%X/%X/%X", cell.red, cell.green, cell.blue);
+    }
+  /* Map widget */
   XtMapWidget(widget);
   XSync(displ, False);
   /* Creating GC for "Stand by..." message */
@@ -1723,8 +1731,8 @@ Attach(Display * displ, Window window, void * id)
   XSync(displ,False);
   if ( (WriteInteger(pipe_write, CMD_ATTACH_WINDOW) <= 0) ||
        (WritePointer(pipe_write, id) <= 0) ||
-       (WriteString(pipe_write, displ_str) <= 0) ||
-       (WriteString(pipe_write, back_color_str) <= 0) ||
+       (WriteString(pipe_write,  displ_str) <= 0) ||
+       (WriteString(pipe_write,  protocol_str) <= 0) ||
        (WriteInteger(pipe_write, window) <= 0) ||
        (WriteInteger(pipe_write, colormap) <= 0) ||
        (WriteInteger(pipe_write, XVisualIDFromVisual(visual)) <= 0) ||
