@@ -1214,18 +1214,14 @@ QDjVuPrivate::makeLayout()
           foreach(p, pageLayout)
             if (p->page && !v.intersects(p->rect)) 
               p->clear();
-          // construct pageVisible array and create QDjVuPage(s)
+          // construct pageVisible array and schedule page requests
           pageVisible.clear();
           foreach(p, pageLayout)
             if (rv.intersects(p->rect)) 
               {
                 pageVisible.append(p);
                 if (p->dataPresent)
-                  {
-                    // start decoding the page
-                    requestPage(p);
-                    getAnnotationsAndText(p);
-                  }
+                  getAnnotationsAndText(p);
               }
           if (! pageRequestScheduled)
             {
@@ -1609,6 +1605,9 @@ QDjVuPrivate::docinfo()
       for (int i=0; i<numPages; i++)
         pageData[i].pageno = i;
       changeLayout(CHANGE_PAGES|UPDATE_ALL);
+      // request first page immediately
+      if (numPages > 0)
+        requestPage(&pageData[0]);
     }
   else if (status == DDJVU_JOB_STOPPED && !docStopped)
     {
