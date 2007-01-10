@@ -834,7 +834,7 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   lensSize = 300;
   // scheduled changes
   layoutChange = 0;
-  pageRequestDelay = 150;
+  pageRequestDelay = 250;
   pageRequestTimer = new QTimer(this);
   pageRequestTimer->setSingleShot(true);
   // render format
