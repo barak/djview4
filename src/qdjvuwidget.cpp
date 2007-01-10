@@ -688,8 +688,8 @@ public:
   int      separatorSize;       // size of separation between pages (pixels)
   int      shadowSize;          // size of the page shadow (pixels)
   // page requests
-  int  pageRequestDelay;        // time before requesting pages
-  bool pageRequestScheduled;    // page requests have been scheduled
+  int      pageRequestDelay;    // delay when scrollbars are down
+  QTimer  *pageRequestTimer;    // timer for page requests
   // painting
   int         pixelCacheSize;   // size of pixel cache
   QRect       selectedRect;     // selection rectangle (viewport coord)
@@ -835,7 +835,8 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   // scheduled changes
   layoutChange = 0;
   pageRequestDelay = 150;
-  pageRequestScheduled = false;
+  pageRequestTimer = new QTimer(this);
+  pageRequestTimer->setSingleShot(true);
   // render format
   gamma = 2.2;
   unsigned int masks[4] = { 0xff0000, 0xff00, 0xff, 0xff000000 };
@@ -855,6 +856,13 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   // cursors
   cursHandOpen = qcursor_by_name(":/images/cursor_hand_open.png");
   cursHandClosed = qcursor_by_name(":/images/cursor_hand_closed.png");
+  // connect
+  connect(pageRequestTimer, SIGNAL(timeout()),
+          this, SLOT(makePageRequests()) );
+  connect(widget->horizontalScrollBar(), SIGNAL(sliderReleased()),
+          this, SLOT(makePageRequests()) );
+  connect(widget->verticalScrollBar(), SIGNAL(sliderReleased()),
+          this, SLOT(makePageRequests()) );
 }
 
 
@@ -1223,12 +1231,13 @@ QDjVuPrivate::makeLayout()
                 if (p->dataPresent)
                   getAnnotationsAndText(p);
               }
-          if (! pageRequestScheduled)
-            {
-              pageRequestScheduled = true;
-              QTimer::singleShot(pageRequestDelay, this, 
-                                 SLOT(makePageRequests()));
-            }
+          // schedule page requests
+          QScrollBar *hBar = widget->horizontalScrollBar();
+          QScrollBar *vBar = widget->verticalScrollBar();
+          if (hBar->isSliderDown() || vBar->isSliderDown())
+            pageRequestTimer->start(pageRequestDelay);
+          else
+            pageRequestTimer->start(0);
           // setup mapper and finish
           updatePosition(cursorPoint, false, false);
           updateCurrentPoint(currentPos);
@@ -1412,8 +1421,6 @@ QDjVuPrivate::makePageRequests(void)
             found |= requestPage(&pageData[pmin-2]);
         }
     }
-  // finish
-  pageRequestScheduled = false;
 }
 
 // Obtain page annotations and hidden text if not present
@@ -3654,7 +3661,7 @@ QDjVuPrivate::paintAll(QPainter &paint, const QRegion &paintRegion)
         {
           // Cannot paint page yet
           ddjvu_status_t s = DDJVU_JOB_FAILED;
-          if (pageRequestScheduled)
+          if (pageRequestTimer->isActive())
             s = DDJVU_JOB_STARTED;
           if (p->page)
             s = ddjvu_page_decoding_status(*(p->page));
