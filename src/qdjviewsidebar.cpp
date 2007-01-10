@@ -471,7 +471,7 @@ QDjViewThumbnails::Model::refresh()
       if (status >= DDJVU_JOB_OK)
         pageInProgress = -1;
     }
-  if (doc && pageInProgress < 0)
+  if (doc && pageInProgress < 0 && widget->isVisible())
     {
       QRect dr = widget->view->rect();
       for (int i=0; i<names.size(); i++)

@@ -700,6 +700,7 @@ public:
   bool        keyboardEnabled;  // obey keyboard commands
   bool        mouseEnabled;     // obey mouse commands
   bool        hyperlinkEnabled; // follow hyperlinks
+  bool        changingSBars;    // set while changing scrollbars
   DragMode    dragMode;         // dragging mode
   QPoint      dragStart;        // starting point for dragging
   QMenu*      contextMenu;      // popup menu
@@ -826,6 +827,7 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   modifiersForLinks = Qt::ShiftModifier;
   modifiersForLens = Qt::ShiftModifier|Qt::ControlModifier;
   modifiersForSelect = Qt::ControlModifier;
+  changingSBars = false;
   dragMode = DRAG_NONE;
   lens = 0;
   lensMag = 3;
@@ -1255,6 +1257,7 @@ QDjVuPrivate::makeLayout()
               if (scale_int(rd.height(), vw+sw, vw) > rv.height())
                 vcorr = 1;
             }
+          changingSBars = true;
           vBar->setMinimum(rd.top());
           vBar->setMaximum(rd.top()+rd.height()-vStep+vcorr);
           vBar->setPageStep(vStep);
@@ -1265,6 +1268,7 @@ QDjVuPrivate::makeLayout()
           hBar->setPageStep(hStep);
           hBar->setSingleStep(lineStep);
           hBar->setValue(rv.left());
+          changingSBars = false;
           layoutChange &= ~CHANGE_SCROLLBARS;
         }
       // force redraw
@@ -1343,11 +1347,17 @@ QDjVuPrivate::makeLayout()
       else if (layoutChange & REFRESH_PAGES)
         {
           Page *p;
+          bool changes = false;
           foreach(p, pageLayout)
             if (p->redisplay)
-              if (visibleRect.intersects(p->rect))
-                widget->viewport()->update(p->viewRect);
-          pixelCache.clear();
+              {
+                if (visibleRect.intersects(p->rect))
+                  widget->viewport()->update(p->viewRect);
+                p->redisplay = false;
+                changes = true;
+              }
+          if (changes)
+            pixelCache.clear();
           layoutChange &= ~REFRESH_PAGES;
         }
       else
@@ -1362,6 +1372,7 @@ QDjVuPrivate::makeLayout()
   layoutChange &= ~SCHEDULED;      
   layoutChange |= futureLayoutChange;
 }
+
 
 // Make all page requests
 void
@@ -1674,7 +1685,7 @@ QDjVuPrivate::redisplayPage()
       if (pageMap.contains(pageno)) 
         {
           Page *p = pageMap[pageno];
-          if (p) 
+          if (p && !p->redisplay) 
             {
               p->redisplay = true;
               changeLayout(REFRESH_PAGES);
@@ -3706,7 +3717,7 @@ QDjVuWidget::paintEvent(QPaintEvent *event)
 void 
 QDjVuWidget::scrollContentsBy(int, int)
 {
-  if (! (priv->layoutChange && CHANGE_SCROLLBARS))
+  if (! priv->changingSBars)
     {
       QScrollBar *hBar = horizontalScrollBar();
       QScrollBar *vBar = verticalScrollBar();
