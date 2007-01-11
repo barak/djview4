@@ -4024,7 +4024,6 @@ QDjVuWidget::modifierEvent(Qt::KeyboardModifiers modifiers,
           startLensing(point);
         }
       else if (modifiers == priv->modifiersForSelect &&
-               modifiers != Qt::NoModifier &&
                buttons != Qt::MidButton )
         {
           viewport()->setCursor(Qt::CrossCursor);

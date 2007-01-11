@@ -592,7 +592,6 @@ QDjViewModifiersComboBox::QDjViewModifiersComboBox(QWidget *parent)
   QRegExp re( keys, Qt::CaseInsensitive);
   setValidator(new QRegExpValidator(re, this));
   // menu entries
-  insertValue(Qt::NoModifier);
   insertValue(Qt::ShiftModifier);
   insertValue(Qt::ControlModifier);
   insertValue(Qt::AltModifier);
