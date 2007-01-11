@@ -55,6 +55,7 @@ CONFIG(release,debug|release) {
 # -- check for x11
 macx {
   contains(DEFINES,__USE_WS_X11__): CONFIG += x11
+  ICON = images/DjVuApp.icns
 } else:win32 {
   contains(DEFINES,_WIN32_X11_): CONFIG += x11
 } else:unix {
