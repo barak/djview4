@@ -1,0 +1,6 @@
+djview (4.0-1) unstable; urgency=low
+
+  * Initial release Closes: #nnnn  (nnnn is the bug number of your ITP)
+
+ -- Leon Bottou <leonb@unknown>  Tue, 16 Jan 2007 20:01:58 -0500
+

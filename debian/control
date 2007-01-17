@@ -1,0 +1,13 @@
+Source: djview4
+Section: web
+Priority: optional
+Maintainer: Barak A. Pearlmutter <bap@debian.org>
+Build-Depends: debhelper (>= 5), autotools-dev, libdjvulibre-dev (>= 3.5.18), libx11-dev | xlibs-dev, libxext-dev | xlibs-dev, libxt-dev | xlibs-dev, x-dev | xlibs-dev, libqt4-dev (>= 4.1)
+Standards-Version: 3.7.2.1
+
+Package: djview4
+Section: graphics
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, xdg-utils
+Description: Viewer for the DjVu image format.
+ DjVu viewer djview.

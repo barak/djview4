@@ -1,0 +1,18 @@
+#! /bin/sh
+
+# Register menu entries (non debian menus)
+if [ "$1" = "configure" ] && 
+   [ -x /usr/share/djvu/djview4/desktop/register-djview-menu ]
+  /usr/share/djvu/djview4/desktop/register-djview-menu install
+fi
+
+# Alternatives
+if [ "$1" = "configure" ] && [ -x /usr/sbin/update-alternatives ] ; then
+  m1=`ls -1 /usr/share/man/man1/djview4.* | head -1`
+  m2=`echo $m1 | sed -e 's/djview4/djview/'`
+  /usr/sbin/update-alternatives --quiet \
+    --install /usr/bin/djview djview /usr/bin/djview4 104 \
+    --slave $m2 `basename $m2` $m1
+fi
+
+#DEBHELPER#

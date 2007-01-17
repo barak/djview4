@@ -1,0 +1,15 @@
+#! /bin/sh
+
+# Alternatives
+if [ "$1" = "remove" ] && [ -x /usr/sbin/update-alternatives ] ; then
+  /usr/sbin/update-alternatives --quiet --remove djview /usr/bin/djview4
+fi
+
+# XDG menu entries
+if [ "$1" = "remove" ] && 
+   [ -x /usr/share/djvu/djview4/desktop/register-djview-menu ] ; then
+  /usr/share/djvu/djview4/desktop/register-djview-menu uninstall
+fi
+
+#DEBHELPER#
+
