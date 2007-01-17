@@ -235,6 +235,7 @@ QMAKE_COMMAND_EOF
 
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(nsdejavu/Makefile)
+AC_CONFIG_FILES(desktopfiles/Makefile)
 AC_OUTPUT
 
 # ----------------------------------------

@@ -24673,6 +24673,8 @@ QARG="$QARG QMAKE_CXXFLAGS+="'"'"$CXXFLAGS $AUTO_FLAGS"'"'
 
           ac_config_files="$ac_config_files nsdejavu/Makefile"
 
+          ac_config_files="$ac_config_files desktopfiles/Makefile"
+
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -25214,6 +25216,7 @@ do
   # Handling of arguments.
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "nsdejavu/Makefile" ) CONFIG_FILES="$CONFIG_FILES nsdejavu/Makefile" ;;
+  "desktopfiles/Makefile" ) CONFIG_FILES="$CONFIG_FILES desktopfiles/Makefile" ;;
   "src/Makefile" ) CONFIG_COMMANDS="$CONFIG_COMMANDS src/Makefile" ;;
   "config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS config.h:config/config.h.in" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5

@@ -38,7 +38,7 @@ srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 top_builddir = .
 
-SUBDIRS=src nsdejavu
+SUBDIRS=src nsdejavu desktopfiles
 
 
 # make all
@@ -76,12 +76,11 @@ install-djview-qm: FORCE
 	done
 
 install-nsdejavu: FORCE
-	${MAKE} -C nsdejavu install
+	( cd nsdejavu && ${MAKE} install )
 
 
 install-desktop: FORCE
-# 	${MAKE} -C desktop install
-
+	( cd desktopfiles && ${MAKE} install )
 
 # make clean
 
