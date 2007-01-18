@@ -8,6 +8,6 @@ Standards-Version: 3.7.2.1
 Package: djview4
 Section: graphics
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, xdg-utils
+Depends: ${shlibs:Depends}, xdg-utils
 Description: Viewer for the DjVu image format.
  DjVu viewer djview.
