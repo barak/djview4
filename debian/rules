@@ -45,11 +45,11 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 	$(MAKE) install \
-		DESTDIR=$(CURDIR)/debian/djview/usr \
+		DESTDIR=$(CURDIR)/debian/tmp \
 		plugindir=/usr/lib/$(plugsubdir)
 	-rm debian/tmp/usr/bin/djview
-	-rm debian/tmp/usr/share/man/man1/djview.1
-	-rm debian/tmp/usr/share/man/man1/nsdejavu.1
+	-rm debian/tmp/usr/share/man/man1/djview.*
+	-rm debian/tmp/usr/share/man/man1/nsdejavu.*
 	-rm debian/tmp/usr/lib/${plugsubdir}/nsdejavu.so
 
 
@@ -64,6 +64,7 @@ binary-arch: build install
 	dh_installchangelogs 
 	dh_installdocs
 	dh_installexamples
+	dh_movefiles
 #	dh_install
 	dh_installmenu
 #	dh_installdebconf	
