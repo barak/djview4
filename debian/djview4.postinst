@@ -2,7 +2,7 @@
 
 # Register menu entries (non debian menus)
 if [ "$1" = "configure" ] && 
-   [ -x /usr/share/djvu/djview4/desktop/register-djview-menu ]
+   [ -x /usr/share/djvu/djview4/desktop/register-djview-menu ] ; then
   /usr/share/djvu/djview4/desktop/register-djview-menu install
 fi
 
