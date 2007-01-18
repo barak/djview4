@@ -23,7 +23,7 @@ mydir=MYDIR
 # test directory
 if test -d "$mydir" 
 then
-  cd ${mydir}
+  cd $mydir
 else
   echo 1>&2 "Unable to find directory ${mydir}"
   exit 10
@@ -48,9 +48,9 @@ else
 fi
 
 if test -n "$XDG_DATA_DIR" ; then
-    XDG_DATA_DIR="$DATADIR:$XDG_DATA_DIR"
+    XDG_DATA_DIR="$datadir:$XDG_DATA_DIR"
 else
-    XDG_DATA_DIR="$DATADIR:/usr/local/share/:/usr/share/"
+    XDG_DATA_DIR="$datadir:/usr/local/share/:/usr/share/"
 fi
 export XDG_DATA_DIR
 
