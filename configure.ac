@@ -164,6 +164,38 @@ AC_SUBST(INSTALL_SHLIB)
 
 
 # ----------------------------------------
+# XDG tools
+# ----------------------------------------
+
+AC_PATH_PROG(XDG_MIME, xdg-mime)
+AC_PATH_PROG(XDG_ICON_RESOURCE, xdg-icon-resource)
+AC_PATH_PROG(XDG_DESKTOP_MENU, xdg-desktop-menu)
+if test -x ${XDG_MIME} && \
+   test -x ${XDG_ICON_RESOURCE} && \
+   test -x ${XDG_DESKTOP_MENU}
+then 
+  true
+elif test $ac_desktopfiles != no ; then
+  ac_desktopfiles = no
+  AC_MSG_WARN([Cannot find the Xdg Portland tools.
+--------------------------------------------------------
+*** The Xdg Portland tools <http://portland.freedesktop.org>.
+*** are required to register the menu entries.
+*** You can install these tools later and then run the script
+*** ${datadir}/djvu/djview4/desktop/register-djview-menu.
+--------------------------------------------------------])
+else
+  AC_MSG_WARN([Cannot find the Xdg Portland tools.
+--------------------------------------------------------
+*** You will not be able to use the script
+*** ${datadir}/djvu/djview4/desktop/register-djview-menu.
+*** without first installing the Xdg Portland tools
+*** available at <http://portland.freedesktop.org>.
+--------------------------------------------------------])
+fi
+
+
+# ----------------------------------------
 # Paths
 # ----------------------------------------
 
