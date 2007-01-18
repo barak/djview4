@@ -62,7 +62,7 @@ binary-arch: build install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs 
-	dh_installdocs
+	dh_installdocs --noscripts
 	dh_installexamples
 	dh_movefiles
 #	dh_install
