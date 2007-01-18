@@ -170,21 +170,21 @@ setupApplication()
   QString dirPath = dir.canonicalPath();
 #ifdef DIR_DATADIR
   QString datadir = DIR_DATADIR;
-  addDirectory(dirs, datadir + "/djvu/djview4/translations");
-  addDirectory(dirs, datadir + "/djview4/translations");
+  addDirectory(dirs, datadir + "/djvu/djview4");
+  addDirectory(dirs, datadir + "/djview4");
 #endif
   addDirectory(dirs, dirPath);
-  addDirectory(dirs, dirPath + "/share/djvu/djview4/translations");
-  addDirectory(dirs, dirPath + "/share/djview4/translations");
+  addDirectory(dirs, dirPath + "/share/djvu/djview4");
+  addDirectory(dirs, dirPath + "/share/djview4");
   addDirectory(dirs, dirPath + "/Resources/translations");
-  addDirectory(dirs, dirPath + "/../share/djvu/djview4/translations");
-  addDirectory(dirs, dirPath + "/../share/djview4/translations");
+  addDirectory(dirs, dirPath + "/../share/djvu/djview4");
+  addDirectory(dirs, dirPath + "/../share/djview4");
   addDirectory(dirs, dirPath + "/../Resources/translations");
-  addDirectory(dirs, dirPath + "/../../share/djvu/djview4/translations");
-  addDirectory(dirs, dirPath + "/../../share/djview4/translations");
+  addDirectory(dirs, dirPath + "/../../share/djvu/djview4");
+  addDirectory(dirs, dirPath + "/../../share/djview4");
   addDirectory(dirs, dirPath + "/../../Resources/translations");
-  addDirectory(dirs, "/usr/share/djvu/djview4/translations");
-  addDirectory(dirs, "/usr/share/djview4/translations");
+  addDirectory(dirs, "/usr/share/djvu/djview4");
+  addDirectory(dirs, "/usr/share/djview4");
   addDirectory(dirs, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
   
   // load translators
