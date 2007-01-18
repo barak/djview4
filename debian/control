@@ -9,5 +9,7 @@ Package: djview4
 Section: graphics
 Architecture: any
 Depends: ${shlibs:Depends}, libdjvulibre15 (>= 3.5.18), xdg-utils
+Recommends: djvulibre-plugin
+Suggests: djvulibre-bin
 Description: Viewer for the DjVu image format.
  DjVu viewer djview.
