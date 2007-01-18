@@ -70,7 +70,7 @@ QDjVuHttpDocument::QDjVuHttpDocument(int nConnections, bool autoDelete,
 
 QDjVuHttpDocument::QDjVuHttpDocument(bool autoDelete, QObject *parent)
   : QDjVuDocument(autoDelete, parent), 
-    connections(4), 
+    connections(2), 
     ctx(0)
 {
   init();
@@ -81,7 +81,7 @@ QDjVuHttpDocument::QDjVuHttpDocument(bool autoDelete, QObject *parent)
 
 QDjVuHttpDocument::QDjVuHttpDocument(QObject *parent)
   : QDjVuDocument(parent), 
-    connections(4), 
+    connections(2), 
     ctx(0)
 {
   init();
