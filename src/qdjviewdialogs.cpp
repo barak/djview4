@@ -1930,11 +1930,14 @@ QDjViewSaveDialog::browse()
                                        tr("Save - DjView", "dialog caption"),
                                        fname, filters, 0,
                                        QFileDialog::DontConfirmOverwrite);
-  QFileInfo finfo(fname);
-  QString ext = d->exporterExtensions[d->exporterIndex]; 
-  if (finfo.completeSuffix().isEmpty() && !ext.isEmpty())
-    fname = QFileInfo(finfo.dir(), finfo.baseName() + ext).filePath();
-  d->ui.fileNameEdit->setText(fname);
+  if (! fname.isEmpty())
+    {
+      QFileInfo finfo(fname);
+      QString ext = d->exporterExtensions[d->exporterIndex]; 
+      if (finfo.completeSuffix().isEmpty() && !ext.isEmpty())
+        fname = QFileInfo(finfo.dir(), finfo.baseName() + ext).filePath();
+      d->ui.fileNameEdit->setText(fname);
+    }
 }
 
 
@@ -2200,29 +2203,31 @@ QDjViewPrintDialog::choose()
   else
     d->printDialog->setFromTo(qMin(fPage,lPage)+1, qMax(fPage,lPage)+1);
   // exec print dialog
-  d->printDialog->exec();
-  // update ui
-  setCurrentExporter();
-  if (d->printer->numCopies() > 1)
-    d->ui.numCopiesSpinBox->setValue(d->printer->numCopies());
-  d->ui.collateCheckBox->setChecked(d->printer->collateCopies());
-  QPrinter::PageOrder order = d->printer->pageOrder();
-  d->ui.reverseCheckBox->setChecked(order == QPrinter::LastPageFirst);
-  QPrintDialog::PrintRange range = d->printDialog->printRange();
-  if (range == QPrintDialog::AllPages)
-    d->ui.documentButton->setChecked(true);
-  else
+  if (d->printDialog->exec() == QDialog::Accepted)
     {
-      fPage = qBound(1, d->printDialog->fromPage(), npages) - 1;
-      lPage = qBound(1, d->printDialog->toPage(), npages) -1;
-      d->ui.fromPageCombo->setCurrentIndex(fPage);
-      d->ui.toPageCombo->setCurrentIndex(lPage);
-      if (fPage == lPage && fPage == cPage)
-        d->ui.currentPageButton->setChecked(true);
+      // update ui
+      setCurrentExporter();
+      if (d->printer->numCopies() > 1)
+        d->ui.numCopiesSpinBox->setValue(d->printer->numCopies());
+      d->ui.collateCheckBox->setChecked(d->printer->collateCopies());
+      QPrinter::PageOrder order = d->printer->pageOrder();
+      d->ui.reverseCheckBox->setChecked(order == QPrinter::LastPageFirst);
+      QPrintDialog::PrintRange range = d->printDialog->printRange();
+      if (range == QPrintDialog::AllPages)
+        d->ui.documentButton->setChecked(true);
       else
-        d->ui.pageRangeButton->setChecked(true);
-    }  
-  refresh();
+        {
+          fPage = qBound(1, d->printDialog->fromPage(), npages) - 1;
+          lPage = qBound(1, d->printDialog->toPage(), npages) -1;
+          d->ui.fromPageCombo->setCurrentIndex(fPage);
+          d->ui.toPageCombo->setCurrentIndex(lPage);
+          if (fPage == lPage && fPage == cPage)
+            d->ui.currentPageButton->setChecked(true);
+          else
+            d->ui.pageRangeButton->setChecked(true);
+        }  
+      refresh();
+    }
 }
 
 
