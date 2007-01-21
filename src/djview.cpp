@@ -146,11 +146,15 @@ addDirectory(QStringList &dirs, QString path)
 void
 setupApplication()
 {
+  // Color specification
+  QApplication::setColorSpec(QApplication::ManyColor);
+  
+  // Translations
   QCoreApplication *app = QCoreApplication::instance();
   QTranslator *qtTrans = new QTranslator(app);
   QTranslator *djviewTrans = new QTranslator(app);
   
-  // preferred languages
+  // - determine preferred languages
   QStringList langs; 
   QString varLanguage = ::getenv("LANGUAGE");
   if (varLanguage.size())
@@ -164,7 +168,7 @@ setupApplication()
   if (qtLocale.size())
     langs += qtLocale.toLower();
   
-  // potential directories
+  // - determine potential directories
   QStringList dirs;
   QDir dir = app->applicationDirPath();
   QString dirPath = dir.canonicalPath();
@@ -187,7 +191,7 @@ setupApplication()
   addDirectory(dirs, "/usr/share/djview4");
   addDirectory(dirs, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
   
-  // load translators
+  // - load translators
   bool qtTransValid = false;
   bool djviewTransValid = false;
   foreach (QString lang, langs)
@@ -201,7 +205,7 @@ setupApplication()
         }
     }
   
-  // install tranlators
+  // - install tranlators
   if (qtTransValid)
     app->installTranslator(qtTrans);
   if (djviewTransValid)
