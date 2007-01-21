@@ -19,16 +19,223 @@
 .\" License along with this manual. Otherwise check the web site
 .\" of the Free Software Foundation at http://www.fsf.org.
 .TH DJVIEW4 1 "10/11/2001" "DjVuLibre" "DjVuLibre"
+.de SS
+.SH \\0\\0\\0\\$*
+..
 .SH NAME
 djview4 \- Standalone DjVu viewer
 
 .SH SYNOPSIS
-.BI "djview4 [" "options" "] [" "djvufile" "]"
+.BI "djview4 [" "options" "] [" "filename-or-url" "]"
 
 .SH DESCRIPTION
 Standalone viewer for DjVu files.  
+Features include navigating documents,
+zooming and panning page images, 
+producing and displaying thumbnails,
+displaying document outlines,
+searching documents for particular words in the hidden text layer,
+copying hidden text to the clipboard,
+saving pages and documents
+as bundled or indirect multi-page files, 
+and printing page and documents.
+The viewer can simultaneously display several pages
+using a side-by-side or a continuous layout.
 
-This man page needs to be completed.
+The 
+.B djview4
+viewer can run as a standalone program or 
+as a slave process for the browser plugin
+.BR nsdejavu .
+When running as a standalone program,
+the command line argument
+.I filename-or-url
+can be:
+.IP "*" 3
+The filename of a valid DjVu document.
+.IP "*" 3
+An
+.SM URL
+of the form:
+.IP "" 5
+.BI "file:///" path "/" name.djvu "[?djvuopts&" keyword = value "&...]"
+.IP "" 3
+that points to a local file.
+This form can be useful to check the syntax of 
+options provided as fake CGI-style arguments.
+.IP "*" 3
+An 
+.SM URL
+of the form:
+.IP "" 5
+.BI http:// host / path "/" name.djvu "[?djvuopts&" keyword = value "&...]"
+.IP "" 3
+that points to a remote DjVu document.
+Browsing remote DjVu documents with the standalone viewer
+is less efficient than using the browser plugin.
+The standalone viewer does not benefit from the browser
+caching strategies and proxy settings.
+Proxy settings for the standalone viewer can be set
+independently with the preferences dialog.
+.PP
+
+The
+.B djview4
+viewer understands an extensive list of command line options.
+Most options can be specified as command line argument
+or as pseudo
+.SM CGI
+arguments in the document 
+.SM URL.
+Some options can only be specified as command line arguments
+and some are specific to the
+.SM X11
+version of the 
+.BR djview4
+program.
+
+.SH OPTIONS FOR THE COMMAND LINE ONLY
+The following options can only be specified as
+command line arguments for the standalone viewer.
+
+.TP
+.B "-help"
+Display a brief help message.
+
+.TP
+.B "-verbose"
+Prints informational messages on the console.
+This option is very useful because it displays
+messages about the unrecognized constructs
+in the DjVu annotation and hyperlink layers.
+
+.TP
+.BI "-fullscreen, -fs "
+Start 
+.B djview4 
+in full screen mode.
+Use the key
+.B F11
+to exit the full screen mode.
+
+.TP
+.BI "-style=" "stylename"
+Specify the graphical user interface style.
+The recognized values for
+.I stylename
+depend on the installed version of the Qt toolkit.
+Common style names include
+.BR cde ,
+.BR motif ,
+.BR plastique ,
+.BR platinum ,
+and
+.BR windows .
+
+.TP
+.BI "-netscape"
+This option should exclusively be used by the browser plugin
+.B nsdejavu
+to start the program
+.BR djview4 
+as a slave process.
+Do not use this option for normal use.
+
+
+
+.SH OPTIONS FOR THE X11 VIEWER ONLY
+The following traditional X11 options
+can also be specified as command line arguments.
+
+.TP
+.BI "-display=" "displayname"
+Specify that the 
+.B djview3
+windows should appear on the X11 display 
+.IR displayname .
+
+.TP
+.BI "-geometry=" w x h + x + y
+Specify the initial size and position of the first window
+using the traditional X11 geometry specification syntax.
+Arguments 
+.IR w " and " h
+represent the initial window width and height.
+Arguments 
+.IR x " and " y
+indicate the window position relative to the 
+top left corner of the screen.
+
+.TP
+.BI "-name " "name"
+Set the application name.
+
+.TP
+.BI "-title " "title"
+Set the title of the first window.
+
+.TP
+.BI "-fn " "fontname" ", -font " "fontname"
+Specify the name of the default font 
+used for buttons and menus.
+The font should be specified using 
+a X logical font description string.
+.TP
+.BI "-bg " "color" ", -background " "color"
+Specify the default background color for 
+graphical user interface elements.
+The color should be given as a standard X11 color name.
+
+.TP
+.BI "-fg " "color" ", -foreground " "color"
+Specify the default foreground color for
+graphical user interface elements.
+The color should be given as a standard X11 color name.
+
+.TP
+.BI "-btn " "color"
+Specify the default button color.
+The color should be given as a standard X11 color name.
+
+.TP
+.B "-ncols " "count"
+Limit the number of colors allocated on a 8 bit display. 
+The default color cube contains 216 distinct colors.
+.TP
+.B "-cmap"
+Force the allocation of a private color map on a 8-bit display.
+This might increase the color quality but cause flashing
+when the viewer window gets activated.
+
+
+.SH GENERAL OPTIONS
+The following options can be specified on the command line
+of the standalone viewer or passed by augmenting the DjVu document
+.SM URL
+using a syntax similar to that used by the
+.SM CGI
+programs.
+This syntax is described by the following template:
+.IP "" 3
+.BI "http://.../file.djvu?djvuopts&" "keyword=value" "&" "keyword=value" "&" "..."
+.PP
+Keywords are derived from the option names by removing
+the initial dashes. In order to separate real
+.SM CGI 
+arguments from these options,
+the viewer only recognizes keywords 
+that appear after the word
+.BR djvuopts .
+
+
+
+TO BE COMPLETED...
+
+
+
+.SH KEYS
+
+TO BE COMPLETED...
 
 
 .SH CREDITS
