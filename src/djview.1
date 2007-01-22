@@ -54,23 +54,30 @@ can be:
 .IP "*" 3
 The filename of a valid DjVu document.
 .IP "*" 3
-An
+A local DjVu document 
 .SM URL
 of the form:
 .IP "" 5
 .BI "file:///" path "/" name.djvu "[?djvuopts&" keyword = value "&...]"
 .IP "" 3
-that points to a local file.
-This form can be useful to check the syntax of 
-options provided as fake CGI-style arguments.
+The square brackets delimit the optional components of the 
+.SM URL.
+Various options can be specified using a syntax
+similar to that of
+.SM CGI
+arguments.
+Specifying options in this manner is very useful 
+for a browser plugin because there are no 
+command line arguments.
+In the case of a standalone viewer,
+all options can be specified as command line arguments.
 .IP "*" 3
-An 
+An remote DjVu document 
 .SM URL
 of the form:
 .IP "" 5
 .BI http:// host / path "/" name.djvu "[?djvuopts&" keyword = value "&...]"
 .IP "" 3
-that points to a remote DjVu document.
 Browsing remote DjVu documents with the standalone viewer
 is less efficient than using the browser plugin.
 The standalone viewer does not benefit from the browser
@@ -139,8 +146,6 @@ This option should exclusively be used by the browser plugin
 to start the program
 .BR djview4 
 as a slave process.
-Do not use this option for normal use.
-
 
 
 .SH OPTIONS FOR THE X11 VIEWER ONLY
@@ -188,7 +193,7 @@ The color should be given as a standard X11 color name.
 
 .TP
 .BI "-fg " "color" ", -foreground " "color"
-Specify the default foreground color for
+Specify the default foreground color for 
 graphical user interface elements.
 The color should be given as a standard X11 color name.
 
@@ -239,7 +244,9 @@ TO BE COMPLETED...
 
 
 .SH CREDITS
-This program was written by L\('eon Bottou <leonb@users.sourceforge.net>.
+The program 
+.B djview4 
+was written by L\('eon Bottou <leonb@users.sourceforge.net>.
 
 .SH SEE ALSO
 .BR djvu (1),
