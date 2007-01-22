@@ -26,7 +26,7 @@
 djview4 \- Standalone DjVu viewer
 
 .SH SYNOPSIS
-.BI "djview4 [" "options" "] [" "filename-or-url" "]"
+.BI "djview4 [" "options" "] [" "argument" "]"
 
 .SH DESCRIPTION
 Standalone viewer for DjVu files.  
@@ -42,14 +42,14 @@ and printing page and documents.
 The viewer can simultaneously display several pages
 using a side-by-side or a continuous layout.
 
-The 
-.B djview4
-viewer can run as a standalone program or 
-as a slave process for the browser plugin
+.SH COMMAND LINE ARGUMENT AND OPTIONS
+This program
+can run as a standalone program or 
+as a slave process for the DjVu browser plugin
 .BR nsdejavu .
 When running as a standalone program,
 the command line argument
-.I filename-or-url
+.I argument
 can be:
 .IP "*" 3
 The filename of a valid DjVu document.
@@ -86,24 +86,26 @@ Proxy settings for the standalone viewer can be set
 independently with the preferences dialog.
 .PP
 
-The
-.B djview4
-viewer understands an extensive list of command line options.
-Most options can be specified as command line argument
-or as pseudo
+An extensive list of options are recognized.
+Most options can be specified as command line argument starting
+with the customary dash character
+.BR "" "(" "-" ")"
+or using the syntax of
 .SM CGI
 arguments in the document 
 .SM URL.
-Some options can only be specified as command line arguments
-and some are specific to the
+Some options however are only meaningful 
+as command line arguments.
+Other options are only recognized when
+running the 
 .SM X11
 version of the 
 .BR djview4
 program.
 
-.SH OPTIONS FOR THE COMMAND LINE ONLY
-The following options can only be specified as
-command line arguments for the standalone viewer.
+.SH COMMAND LINE OPTIONS
+The following options are only meaningful
+when specified on the command line.
 
 .TP
 .B "-help"
@@ -148,9 +150,12 @@ to start the program
 as a slave process.
 
 
-.SH OPTIONS FOR THE X11 VIEWER ONLY
-The following traditional X11 options
-can also be specified as command line arguments.
+.SH X11 OPTIONS
+The following command line options are recognized by the
+.SM X11
+version of the 
+.B djview4
+program.
 
 .TP
 .BI "-display=" "displayname"
@@ -160,14 +165,14 @@ windows should appear on the X11 display
 .IR displayname .
 
 .TP
-.BI "-geometry=" w x h + x + y
+.BI "-geometry=" W x H + X + Y
 Specify the initial size and position of the first window
 using the traditional X11 geometry specification syntax.
-Arguments 
-.IR w " and " h
+The numerical arguments 
+.IR W " and " H
 represent the initial window width and height.
-Arguments 
-.IR x " and " y
+The numerical arguments 
+.IR X " and " Y
 indicate the window position relative to the 
 top left corner of the screen.
 
@@ -214,27 +219,28 @@ when the viewer window gets activated.
 
 
 .SH GENERAL OPTIONS
-The following options can be specified on the command line
-of the standalone viewer or passed by augmenting the DjVu document
+The following options can be specified as command line options
+or can be passed by augmenting the document 
 .SM URL
-using a syntax similar to that used by the
+using a syntax similar to that of
 .SM CGI
-programs.
-This syntax is described by the following template:
+arguments
 .IP "" 3
-.BI "http://.../file.djvu?djvuopts&" "keyword=value" "&" "keyword=value" "&" "..."
+.BI "http://.../file.djvu?djvuopts&" "key=value" "&" "key=value" "&" "..."
 .PP
-Keywords are derived from the option names by removing
-the initial dashes. In order to separate real
+In order to separate real
 .SM CGI 
 arguments from these options,
 the viewer only recognizes keywords 
 that appear after the word
 .BR djvuopts .
-
+The keywords
+.I key
+are derived from the option names 
+by removing the initial dashes. 
 
 .TP
-.BI "--page=" "pagename"
+.BI "-page=" "pagename"
 Display a specific document page.
 The viewer first searches a page 
 whose title matches the argument
@@ -253,7 +259,7 @@ desired page regardless of the existing
 page names.
 
 .TP
-.BI --passive=(yes|no)
+.BI -passive=(yes|no)
 Cause the DjVu image to be displayed in a manner similar 
 to an ordinary web image.
 The default zoom factor is changed to "Fit Page".
@@ -262,34 +268,34 @@ keyboard shortcuts are disabled.
 The default is no.
 
 .TP
-.BI --scrollbars=(yes|no)
+.BI -scrollbars=(yes|no)
 Enable or disable the presence of scroll bars when the full
 image size exceeds the plugin window size. 
  The default is yes.
 
 .TP
-.BI --menu=(yes|no)
+.BI -menu=(yes|no)
 Enable or disable the pop-up menu.
 The pop-up menu is enabled by default.
 
 .TP
-.BI --keyboard=(yes|no)
+.BI -keyboard=(yes|no)
 Enable or disable the DjVu plugin keyboard shortcuts.
 The default is yes (enabled).
 
 .TP
-.BI --frame=(yes|no)
+.BI -frame=(yes|no)
 Enable or disable the display of a thin frame 
 and shadow around the DjVu images.
 Frames are enabled by default.
 
 .TP
-.BI --links=(yes|no)
+.BI -links=(yes|no)
 Enable or disable hyper-links in the DjVu image.
 Hyper-links are enabled by default.
 
 .TP
-.BI --zoom= zoomfactor
+.BI -zoom= zoomfactor
 Specify the initial zoom factor.
 Unless the toolbar, pop-up menu and keyboard are disabled,
 the user will be able to change the zoom factor.
@@ -314,7 +320,7 @@ stretch	Stretch the image to the plugin window size.
 .PP
 
 .TP
-.BI --mode= modespec
+.BI -mode= modespec
 Specify the initial display mode.
 Unless the toolbar and pop-up menu are disabled,
 the user will be able to change it.
@@ -337,7 +343,7 @@ back	Display the background only.
 .PP
 
 .TP
-.BI --hor_align= keyword
+.BI -hor_align= keyword
 Specify the horizontal position of the page in the viewer window.
 (This does not specify what part of the page will be shown, but rather
 how margins will be laid out around the page in the plugin window.)
@@ -350,7 +356,7 @@ or
 .BR right .
 
 .TP
-.BI --ver_align= keyword
+.BI -ver_align= keyword
 Specify the vertical position of the page in the viewer window.
 (This does not specify what part of the page will be shown, but rather
 how margins will be laid out around the page in the plugin window.)
@@ -363,7 +369,7 @@ or
 .BR bottom .
 
 .TP
-.BI --toolbar= keyword {(,|+|-) keyword }
+.BI -toolbar= keyword {(,|+|-) keyword }
 Controls the appearance and the contents of the toolbar.
 The argument of option
 .B toolbar
@@ -436,7 +442,7 @@ backforw	for the back and forward buttons.
 .PP
 
 .TP
-.BI --highlight= x , y , w , h [, color ]
+.BI -highlight= x , y , w , h [, color ]
 Display a highlighted rectangle at the specified coordinates and with the
 specified color.  Coordinates
 .IR x ", " y ", " w ", and " h
@@ -451,17 +457,17 @@ Omitting the color argument means to use
 highlighting.  Multiple highlighted zone can be specified.
 
 .TP
-.BI --rotate=(0|90|180|270)
+.BI -rotate=(0|90|180|270)
 Rotate the djvu image by the specified angle expressed
 in degrees counter-clockwise.
 
 .TP
-.BI --print=(yes|no)
+.BI -print=(yes|no)
 Enable or disable printing the DjVu image.
 Printing is enabled by default.
 
 .TP
-.BI --cache=(yes|no)
+.BI -cache=(yes|no)
 Enable or disable the caching of fully decoded pages of the document.
 Caching is on by default.  
 Caching of documents whose
