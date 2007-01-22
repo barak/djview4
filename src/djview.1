@@ -406,6 +406,7 @@ When this is a plus
 the toolbar is initially empty.
 When this is a minus
 the toolbar is initially full.
+
 The following keywords are recognized:
 .br
 .TS
@@ -423,22 +424,51 @@ lfB l
 lfB l
 lfB l
 lfB l
+lfB l
 .
-fore,back,color,bw	for the display mode selection tool.
-rescombo	for the zoom selection tool.
+modecombo	for the display mode selection tool.
+zoomcombo	for the zoom selection tool.
 zoom	for the zoom buttons.
-pan	for the panning mode button.
-zoomsel	for the zooming mode button.
-textsel	for the text selection mode button.
+select	for the selection mode button.
 rotate	for the image rotation buttons.
-search	for the text search button.
+find	for the text search button.
+new	for the new window button.
+open	for the open new document button.
 save	for the save button.
 print	for the print button.
+layout	for the page layout buttons.
 pagecombo	for the page selection tool.
 firstlast	for the first-page and last-page buttons.
 prevnext	for the previous- and next-page buttons.
-backforw	for the back and forward buttons.
+backforw	reserved for the back and forward buttons.
+help	for the contextual help button.
 .TE
+.PP
+For the sake of backward compatibility,
+the keywords
+.BR fore ,
+.BR back ,
+.BR color ,
+and
+.BR color 
+are interpreted like keyword
+.BR modecombo ;
+the keyword
+.BR rescombo
+is a synonym of 
+.BR zoomcombo ;
+the keywords
+.BR pan ,
+.BR zoomsel ,
+and
+.BR textsel
+are interpreted like keyword
+.BR select ;
+and the keyword 
+.BR doublepage
+is interpreter like keyword
+.BR layout .
+All other keywords are ignored.
 .PP
 
 .TP
