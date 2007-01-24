@@ -252,50 +252,15 @@ matching the internal page identifiers.
 
 This convention might cause ambiguities when
 page titles can be interpreted as numbers.
-Therefore a number preceded by a dollar sign
+To reduce these problems, 
+a number preceded by a dollar sign
 .BR "" "(" "$" ")"
 is always interpreted as the position of the
 desired page regardless of the existing 
 page names.
 
 .TP
-.BI -passive=(yes|no)
-Cause the DjVu image to be displayed in a manner similar 
-to an ordinary web image.
-The default zoom factor is changed to "Fit Page".
-The toolbar, the pop-up menu, the scroll bar, and the
-keyboard shortcuts are disabled.
-The default is no.
-
-.TP
-.BI -scrollbars=(yes|no)
-Enable or disable the presence of scroll bars when the full
-image size exceeds the plugin window size. 
- The default is yes.
-
-.TP
-.BI -menu=(yes|no)
-Enable or disable the pop-up menu.
-The pop-up menu is enabled by default.
-
-.TP
-.BI -keyboard=(yes|no)
-Enable or disable the DjVu plugin keyboard shortcuts.
-The default is yes (enabled).
-
-.TP
-.BI -frame=(yes|no)
-Enable or disable the display of a thin frame 
-and shadow around the DjVu images.
-Frames are enabled by default.
-
-.TP
-.BI -links=(yes|no)
-Enable or disable hyper-links in the DjVu image.
-Hyper-links are enabled by default.
-
-.TP
-.BI -zoom= zoomfactor
+.BI "-zoom=" zoomfactor
 Specify the initial zoom factor.
 Unless the toolbar, pop-up menu and keyboard are disabled,
 the user will be able to change the zoom factor.
@@ -320,7 +285,7 @@ stretch	Stretch the image to the plugin window size.
 .PP
 
 .TP
-.BI -mode= modespec
+.BI "-mode=" modespec
 Specify the initial display mode.
 Unless the toolbar and pop-up menu are disabled,
 the user will be able to change it.
@@ -343,7 +308,7 @@ back	Display the background only.
 .PP
 
 .TP
-.BI -hor_align= keyword
+.BI "-hor_align=" keyword ", -halign=" keyword
 Specify the horizontal position of the page in the viewer window.
 (This does not specify what part of the page will be shown, but rather
 how margins will be laid out around the page in the plugin window.)
@@ -356,7 +321,7 @@ or
 .BR right .
 
 .TP
-.BI -ver_align= keyword
+.BI "-ver_align=" keyword ", -valign=" keyword
 Specify the vertical position of the page in the viewer window.
 (This does not specify what part of the page will be shown, but rather
 how margins will be laid out around the page in the plugin window.)
@@ -369,7 +334,39 @@ or
 .BR bottom .
 
 .TP
-.BI -toolbar= keyword {(,|+|-) keyword }
+.BI "-cache=(yes|no)"
+Enable or disable the caching of fully decoded pages of the document.
+Caching is on by default.  
+Caching of documents whose
+.SM URL
+does not contain extension
+.BE .djvu " or " .djv
+is off by default.
+
+.TP
+.BI "-continuous=(yes|no)"
+Enable or disable the continous layout of
+multipage documents.
+
+.TP
+.BI "-sidebyside=(yes|no), -side_by_side=(yes|no)"
+Enable or disable the side-by-side layout of
+multipage documents.
+
+.TP
+.BI "-scrollbars=(yes|no)"
+Enable or disable the presence of scroll bars when the full
+image size exceeds the plugin window size. 
+The default is yes.
+
+.TP
+.BI "-frame=(yes|no)"
+Enable or disable the display of a thin frame 
+and shadow around the DjVu images.
+Frames are enabled by default.
+
+.TP
+.BI "-toolbar=" keyword "{(,|+|-)" keyword "}"
 Controls the appearance and the contents of the toolbar.
 The argument of option
 .B toolbar
@@ -389,9 +386,9 @@ lfB l
 lfB l
 .
 no	Disable toolbar.
-always	Disable toolbar "autohide" mode.
-auto	Enable toolbar "autohide" mode.
-top	Place toolbar along top edge (not implemented).
+always	Displays the toolbar.
+auto	Enable toolbar "autohide" mode (not implemented).
+top	Place toolbar along top edge.
 bottom	Place toolbar along bottom edge.
 .TE
 .IP ""
@@ -429,7 +426,7 @@ lfB l
 modecombo	for the display mode selection tool.
 zoomcombo	for the zoom selection tool.
 zoom	for the zoom buttons.
-select	for the selection mode button.
+select	for the selection button.
 rotate	for the image rotation buttons.
 find	for the text search button.
 new	for the new window button.
@@ -446,11 +443,8 @@ help	for the contextual help button.
 .PP
 For the sake of backward compatibility,
 the keywords
-.BR fore ,
-.BR back ,
-.BR color ,
-and
-.BR color 
+.BR fore , fore_button , back , back_button ,
+.BR bw , bw_button , color ", and " color_button
 are interpreted like keyword
 .BR modecombo ;
 the keyword
@@ -458,10 +452,7 @@ the keyword
 is a synonym of 
 .BR zoomcombo ;
 the keywords
-.BR pan ,
-.BR zoomsel ,
-and
-.BR textsel
+.BR pan , zoomsel ", and " textsel
 are interpreted like keyword
 .BR select ;
 and the keyword 
@@ -472,9 +463,72 @@ All other keywords are ignored.
 .PP
 
 .TP
-.BI -highlight= x , y , w , h [, color ]
-Display a highlighted rectangle at the specified coordinates and with the
-specified color.  Coordinates
+.BI "-menubar=(yes|no)"
+Enable or disable the presence of the menu bar
+located on top of the window.
+
+.TP
+.BI "-statusbar=(yes|no)"
+Enable or disable the presence of the status bar
+located at the bottom of the window.
+
+.TP
+.BI "-sidebar=" keyword "{," keyword "}"
+Enable or disable the side bar.
+The following keywords are recognized.
+.br
+.TS
+center,box;
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+.
+no,false	hide the sidebar.
+yes,true	show the sidebar.
+thumbnails	sidebar displays the thumbnails.
+outline,bookmarks	sidebar display the document outline.
+search,find	sidebar display the search interface.
+left	sidebar can dock on the left side.
+right	sidebar can dock on the right side.
+top	sidebar can dock on the top side.
+bottom	sidebar can dock on the bottom side.
+.TE
+.PP
+
+.TP
+.BI "-thumbnails=" keyword "{," keyword "}"
+Compatibility alias for 
+.BI "-sidebar=thumbnails," keyword "{," keyword "}."
+
+.TP
+.BI "-outline=" keyword "{," keyword "}"
+Compatibility alias for 
+.BI "-sidebar=outline," keyword "{," keyword "}."
+
+.TP
+.BI "-menu=(yes|no)"
+Enable or disable the pop-up menu.
+
+.TP
+.BI "-keyboard=(yes|no)"
+Enable or disable the DjVu plugin keyboard shortcuts.
+The default is yes (enabled).
+
+.TP
+.BI "-links=(yes|no)"
+Enable or disable hyper-links in the DjVu image.
+Hyper-links are enabled by default.
+
+.TP
+.BI "-highlight=" x "," y "," w "," h "[," color "]"
+Display a highlighted rectangle at the specified coordinates 
+and with the specified color.  Coordinates
 .IR x ", " y ", " w ", and " h
 are measured in document image coordinates (not screen coordinates).
 The origin is set at the bottom left corner of the image.  The color
@@ -482,47 +536,70 @@ The origin is set at the bottom left corner of the image.  The color
 must be given in hexadecimal
 .SM RRGGBB
 format.
-Omitting the color argument means to use
-.SM XOR
-highlighting.  Multiple highlighted zone can be specified.
+Multiple highlighted zone can be specified.
 
 .TP
-.BI -rotate=(0|90|180|270)
+.BI "-find=" text
+Hightlights the occurences of string 
+.IR text .
+This option works when the document contains a hidden
+text layer. It can be used in conjunction with
+.BR "-sidebar=find" 
+to display the text searching interface.
+
+.TP
+.BI "-rotate=(0|90|180|270)"
 Rotate the djvu image by the specified angle expressed
 in degrees counter-clockwise.
 
 .TP
-.BI -print=(yes|no)
-Enable or disable printing the DjVu image.
+.BI "-print=(yes|no)"
+Enable or disable printing the DjVu documment.
 Printing is enabled by default.
 
 .TP
-.BI -cache=(yes|no)
-Enable or disable the caching of fully decoded pages of the document.
-Caching is on by default.  
-Caching of documents whose
-.SM URL
-does not contain extension
-.BE .djvu " or " .djv
-is off by default.
+.BI "-save=(yes|no)"
+Enable or disable saving the DjVu document.
+Saving is enabled by default.
 
+.TP
+.BI "-passive"
+Cause the DjVu image to be displayed in a manner similar 
+to an ordinary web image.
+The default zoom factor is changed to 
+.BR page . 
+The toolbar, the status bar, the scrollbars, 
+the menus, and the keyboard shortcuts are disabled.
 
+.TP
+.BI "-passivestretch"
+Cause the DjVu image to be displayed in a manner similar 
+to an ordinary web image.
+The default zoom factor is changed to 
+.BR stretch .
+The toolbar, the status bar, the scrollbars, 
+the menus, and the keyboard shortcuts are disabled.
 
-TO BE COMPLETED...
+.TP
+.BI "-nomenu, -notoolbar, -noscrollbars"
+These options were recognized by some versions
+of the DjVu viewers and are honored for the sake
+of backward compatibility.
 
+.TP
+.BI "-logo, -textsel, -search"
+These options were recognized by some versions
+of the DjVu viewers but are not implemented by
+.BR djview4 .
 
-
-.SH KEYS
-
-TO BE COMPLETED...
 
 
 .SH CREDITS
-The program 
-.B djview4 
-was written by L\('eon Bottou <leonb@users.sourceforge.net>.
+This program was written by L\('eon Bottou <leonb@users.sf.net>.
+
 
 .SH SEE ALSO
 .BR djvu (1),
 .BR ddjvu (1),
-.BR nsdejavu (1)
+.BR nsdejavu (1),
+.BR djview3 (1),
