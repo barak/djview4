@@ -146,9 +146,6 @@ addDirectory(QStringList &dirs, QString path)
 void
 setupApplication()
 {
-  // Color specification
-  QApplication::setColorSpec(QApplication::ManyColor);
-  
   // Translations
   QCoreApplication *app = QCoreApplication::instance();
   QTranslator *qtTrans = new QTranslator(app);
@@ -236,6 +233,9 @@ main(int argc, char *argv[])
     verbose = true;
 #endif
 
+  // Color specification
+  QApplication::setColorSpec(QApplication::ManyColor);
+  
   // Plugin mode
 #ifdef Q_WS_X11
   for (int i=1; i<argc; i++)
