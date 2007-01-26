@@ -948,8 +948,6 @@ QDjVuPrivate::makeLayout()
               if (! p->infoNeeded)
                 continue;
               p->dataPresent = ddjvu_document_check_pagedata(*doc, n);
-              if (! p->dataPresent)
-                continue;
               if (p->dpi <= 0)
                 {
                   ddjvu_pageinfo_t info;
@@ -969,7 +967,8 @@ QDjVuPrivate::makeLayout()
                   layoutChange |= CHANGE_SCALE;
                   layoutChange |= UPDATE_BORDERS;
                 }
-              getAnnotationsAndText(p);
+              if (p->dataPresent)
+                getAnnotationsAndText(p);
             }
         }
       // Layout scaled page size
@@ -1465,7 +1464,7 @@ QDjVuPrivate::requestPage(Page *p)
       changeLayout(REFRESH_PAGES);
       return true;
     }
-  if (! p->infoNeeded)
+  if (!p->infoNeeded)
     {
       p->infoNeeded = true;
       changeLayout(CHANGE_SIZE);
@@ -1656,7 +1655,11 @@ QDjVuPrivate::pageinfoPage()
         {
         case DDJVU_JOB_OK:
           if (p)
-            getAnnotationsAndText(p);
+            {
+              p->dataPresent = true;
+              getAnnotationsAndText(p);
+            }
+          // no break!
         case DDJVU_JOB_STARTED:
           if (p && p->dpi <= 0)
             {
