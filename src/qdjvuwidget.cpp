@@ -1442,6 +1442,7 @@ QDjVuPrivate::getAnnotationsAndText(Page *p)
 bool
 QDjVuPrivate::requestPage(Page *p)
 {
+  bool result = true;
   if (! p->page) 
     {
       // create and connect page
@@ -1457,7 +1458,7 @@ QDjVuPrivate::requestPage(Page *p)
               this, SLOT(info(QString)) );
       p->redisplay = true;
       changeLayout(REFRESH_PAGES);
-      return true;
+      result = true;
     }
   if (! p->infoNeeded)
     {
@@ -1465,7 +1466,7 @@ QDjVuPrivate::requestPage(Page *p)
       changeLayout(CHANGE_SIZE);
     }
   getAnnotationsAndText(p);
-  return false;
+  return result;
 }
 
 // compute Position for a given viewport point.
