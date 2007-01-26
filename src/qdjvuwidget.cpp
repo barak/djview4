@@ -1446,8 +1446,7 @@ QDjVuPrivate::requestPage(Page *p)
   if (! p->page) 
     {
       // create and connect page
-      if (! p->page)
-        p->page = new QDjVuPage(doc, p->pageno); 
+      p->page = new QDjVuPage(doc, p->pageno); 
       connect(p->page, SIGNAL(pageinfo()), 
               this, SLOT(pageinfoPage()));
       connect(p->page, SIGNAL(redisplay()),
