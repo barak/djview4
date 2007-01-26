@@ -1381,10 +1381,9 @@ QDjVuPrivate::makePageRequests(void)
   QRect &rv = visibleRect;
   bool found = false;
   // visible pages
-  for(int i=pageVisible.count()-1; i>=0; i--)
-    if ((p = pageVisible[i]))
-      if (rv.intersects(p->rect)) 
-        found |= requestPage(p);
+  foreach(p, pageVisible)
+    if (p && rv.intersects(p->rect)) 
+      found |= requestPage(p);
   // search more if document is idle (prefetch/predecode)
   if (!found && !doc->runningProcesses())
     {
