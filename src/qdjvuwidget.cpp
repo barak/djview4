@@ -597,7 +597,6 @@ struct Page
   int            initialRot;    // initial rotation (used for text)
   QList<MapArea> mapAreas;      // the list of mapareas
   bool           redisplay;     // must redisplay
-  bool           dataPresent;   // page data is present
   bool           infoNeeded;    // we want the page info now.
   
   void clear() { delete page; page=0; } 
@@ -605,7 +604,7 @@ struct Page
   Page()       : pageno(-1),width(0),height(0),dpi(0),page(0),
                  annotations(miniexp_dummy),hiddenText(miniexp_dummy),
                  initialRot(-1),redisplay(false),
-                 dataPresent(false),infoNeeded(false) { clear(); }
+                 infoNeeded(false) { clear(); }
 };
 
 struct Cache
@@ -943,11 +942,8 @@ QDjVuPrivate::makeLayout()
           foreach(p, pageLayout) 
             {
               int n = p->pageno;
-              if (p->dataPresent) 
-                continue;
               if (! p->infoNeeded)
                 continue;
-              p->dataPresent = ddjvu_document_check_pagedata(*doc, n);
               if (p->dpi <= 0)
                 {
                   ddjvu_pageinfo_t info;
@@ -967,8 +963,7 @@ QDjVuPrivate::makeLayout()
                   layoutChange |= CHANGE_SCALE;
                   layoutChange |= UPDATE_BORDERS;
                 }
-              if (p->dataPresent)
-                getAnnotationsAndText(p);
+              getAnnotationsAndText(p);
             }
         }
       // Layout scaled page size
@@ -1464,11 +1459,12 @@ QDjVuPrivate::requestPage(Page *p)
       changeLayout(REFRESH_PAGES);
       return true;
     }
-  if (!p->infoNeeded)
+  if (! p->infoNeeded)
     {
       p->infoNeeded = true;
       changeLayout(CHANGE_SIZE);
     }
+  getAnnotationsAndText(p);
   return false;
 }
 
@@ -1655,10 +1651,7 @@ QDjVuPrivate::pageinfoPage()
         {
         case DDJVU_JOB_OK:
           if (p)
-            {
-              p->dataPresent = true;
-              getAnnotationsAndText(p);
-            }
+            getAnnotationsAndText(p);
           // no break!
         case DDJVU_JOB_STARTED:
           if (p && p->dpi <= 0)
