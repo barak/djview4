@@ -598,13 +598,14 @@ struct Page
   QList<MapArea> mapAreas;      // the list of mapareas
   bool           redisplay;     // must redisplay
   bool           dataPresent;   // page data is present
+  bool           infoNeeded;    // we want the page info now.
   
   void clear() { delete page; page=0; } 
   ~Page()      { clear(); };
   Page()       : pageno(-1),width(0),height(0),dpi(0),page(0),
                  annotations(miniexp_dummy),hiddenText(miniexp_dummy),
                  initialRot(-1),redisplay(false),
-                 dataPresent(false) { clear(); }
+                 dataPresent(false),infoNeeded(false) { clear(); }
 };
 
 struct Cache
@@ -737,7 +738,7 @@ public:
   QCursor cursHandOpen;
   QCursor cursHandClosed;
 
-  void changeLayout(int change);
+  void changeLayout(int change, int delay=0);
   void getAnnotationsAndText(Page *p);
   bool requestPage(Page *p);
   Position findPosition(const QPoint &point);
@@ -873,12 +874,12 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
 
 // Schedule a layout recomputation.
 void
-QDjVuPrivate::changeLayout(int change)
+QDjVuPrivate::changeLayout(int change, int delay)
 {
   int oldChange = layoutChange;
   layoutChange = oldChange | change | SCHEDULED;
   if (! (oldChange & SCHEDULED))
-    QTimer::singleShot(0, this, SLOT(makeLayout()));
+    QTimer::singleShot(delay, this, SLOT(makeLayout()));
 }
 
 // Perform a scheduled layout recomputation.
@@ -944,8 +945,10 @@ QDjVuPrivate::makeLayout()
               int n = p->pageno;
               if (p->dataPresent) 
                 continue;
+              if (! p->infoNeeded)
+                continue;
               p->dataPresent = ddjvu_document_check_pagedata(*doc, n);
-              if (! p->dataPresent) 
+              if (! p->dataPresent)
                 continue;
               if (p->dpi <= 0)
                 {
@@ -966,6 +969,7 @@ QDjVuPrivate::makeLayout()
                   layoutChange |= CHANGE_SCALE;
                   layoutChange |= UPDATE_BORDERS;
                 }
+              getAnnotationsAndText(p);
             }
         }
       // Layout scaled page size
@@ -1226,11 +1230,7 @@ QDjVuPrivate::makeLayout()
           pageVisible.clear();
           foreach(p, pageLayout)
             if (rv.intersects(p->rect)) 
-              {
-                pageVisible.append(p);
-                if (p->dataPresent)
-                  getAnnotationsAndText(p);
-              }
+              pageVisible.append(p);
           // schedule page requests
           QScrollBar *hBar = widget->horizontalScrollBar();
           QScrollBar *vBar = widget->verticalScrollBar();
@@ -1465,6 +1465,11 @@ QDjVuPrivate::requestPage(Page *p)
       changeLayout(REFRESH_PAGES);
       return true;
     }
+  if (! p->infoNeeded)
+    {
+      p->infoNeeded = true;
+      changeLayout(CHANGE_SIZE);
+    }
   return false;
 }
 
@@ -1633,7 +1638,7 @@ QDjVuPrivate::docinfo()
 void 
 QDjVuPrivate::pageinfo()
 {
-  changeLayout(CHANGE_SIZE);
+  changeLayout(CHANGE_SIZE, 250);
 }
 
 void 
