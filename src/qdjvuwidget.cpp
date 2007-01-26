@@ -1442,7 +1442,7 @@ QDjVuPrivate::getAnnotationsAndText(Page *p)
 bool
 QDjVuPrivate::requestPage(Page *p)
 {
-  bool result = true;
+  bool result = false;
   if (! p->page) 
     {
       // create and connect page
@@ -1458,8 +1458,8 @@ QDjVuPrivate::requestPage(Page *p)
               this, SLOT(info(QString)) );
       p->redisplay = true;
       changeLayout(REFRESH_PAGES);
+      result = true;
     }
-  result = false;
   if (! p->infoNeeded)
     {
       p->infoNeeded = true;
