@@ -1458,8 +1458,8 @@ QDjVuPrivate::requestPage(Page *p)
               this, SLOT(info(QString)) );
       p->redisplay = true;
       changeLayout(REFRESH_PAGES);
-      result = true;
     }
+  result = false;
   if (! p->infoNeeded)
     {
       p->infoNeeded = true;
