@@ -1,29 +1,13 @@
-This cvs repository contains a QT4 djvu viewer under development.
-It is intended to replace the djview program in djvulibre-3.5.
-It depends only on the public djvulibre api ddjvuapi.h and miniexp.h.
 
 
-Prerequisites
-- Qt-4.1
-- djvulibre-3.5.18  (or pre18, latest CVS version)
+DJVIEW4
+-------
 
-Compiling
-$ cd djview/src
-$ qmake-qt4
-$ make
-$ ./djview filename
-
-Using it as a plugin.
-- Assuming you already have the djvulibre-3.5 plugin working,
-  the following trick makes it call this version of djview
-  instead of the default one.
-
-$ export NPX_DJVIEW=`pwd`/djview
-$ firefox
-
+This package contains the djview4 viewer and browser plugin.
+This new viewer relies on the DjVulibre library and the Qt4 toolkit.
 
 Highlights:
-- entirely based on the public library api (ddjvuapi)
+- entirely based on the public djvulibre api.
 - entirely written in portable Qt4.
 - has been reported to work with Qt/Mac.
 - should work with Qt/Windows as well.
@@ -38,13 +22,25 @@ Highlights:
 - metadata dialog (see djvused command set-meta)
 - implemented as reusable Qt widgets
 
-Welcome help
-- translation files
+Prerequisites:
+- DjVuLibre >= 3.5.18
+- Qt4 >= 4.1
 
-Ideas for later releases.
-- animation hints when jumping to specific locations
-- saving djvu documents as pdf, tiff, etc.
-- preference page to define the default toolbar.
 
+
+USING DJVIEW4 AS A PLUGIN
+-------------------------
+
+Under Unix/X11, djview4 can be used as a browser plugin
+by means of the small shared library named nsdejavu.so.
+The djview3 distributed with djvulibre uses the same approach.
+
+In fact both djview3 and djview4 communicate 
+with nsdejavu.so with the same protocol.  
+You can either install the file nsdejavu.so that comes 
+with djview3 or the one that comes with djview4.  
+The file nsdejavu.so uses the viewer specified
+with the environment variable NPX_DJVIEW or searches 
+an executable viewer named djview, djview4 or djview3.
 
 

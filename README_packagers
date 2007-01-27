@@ -1,0 +1,78 @@
+
+
+PACKAGING SUGGESTIONS FOR DJVIEW4
+=================================
+
+
+The makefile provides fine grain installation targets. In fact, 
+ # make install 
+is equivalent to
+ # make install-djview install-nsdejavu install-desktop
+
+These three targets are discussed below.
+
+
+
+1) MAKE INSTALL-DJVIEW
+----------------------
+
+The command 
+ # make install-djview
+installs the djview4 binary as ${bindir}/djview4
+the djview4 man page as ${mandir}/man1/djview4.1
+and the translation files in ${datadir}/djvu/djview4.
+
+It also creates (but does not overwrite) symbolic links
+named ${bindir}/djview and ${mandir}/man1/djview.1
+pointing to ${bindir}/djview4 and ${mandir}/man1/djview4.1
+respectively. These symbolic links can be advantageously
+by alternatives on system that support alternatives
+such as debian or fedora.
+
+
+2) MAKE INSTALL-NSDEJAVU
+------------------------
+
+The command
+ # make install-nsdejavu
+installs the djvu browser plugin as ${plugindir}/nsdejavu.so
+and its man page ${mandir}/man1/nsdejavu.1.
+Variable ${plugindir} defaults to ${libdir}/netscape/plugins,
+which may or may not be appropriate for the target system.
+
+Note that these installs conflict with the files
+nsdejavu.so and nsdejavu.1 installed by DjVuLibre.
+This is not a severe problem since these files are identical,
+but this calls for a packaging decision.
+
+Both the rpm spec file and the debian package provided
+with the djview4 source code assume that the nsdejavu 
+files will be provided by the djvulibre package(s).
+
+Debian splits djvulibre itself into many packages
+(library, development files, tools, viewer, browser plugin)
+while the djvulibre rpm spec files constructs a single 
+binary package. Since the djview4 viewer is slated
+to replace the djview3 viewer that comes with DjVuLibre,
+the debian approach seems superior.
+
+
+
+3) MAKE INSTALL-DESKTOP
+-----------------------
+
+The command 
+ # make install-desktop
+installs the shell script register-djview-menu and its 
+data files in directory ${datadir}/djvu/djview4/desktop/.
+
+This shell script can be used in postinstall and prerm/preun
+scripts to register xdg menu entries for djview4.
+This script assumes that you have the xdg portland tools
+xdg-icon-resource and xdg-desktop-menu installed.
+
+
+
+
+
+
