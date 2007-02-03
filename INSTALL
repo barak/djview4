@@ -1,18 +1,195 @@
 
 
-
-INSTALLING ON UNIX/X11
-----------------------
-
+1- PREREQUISITES
+================
 
 
+1.1 DJVULIBRE
+-------------
+
+You need DjVuLibre >= 3.5.18.
+
+See http://djvu.sourceforge.net for the 
+source code and for pointers to binary packages.
+Under debian type "apt-get install libdjvulibre-dev"
 
 
-INSTALLING ON THE MACINTOSH
----------------------------
+1.2 QT4
+-------
+
+You need Qt4 >= 4.1.0
+
+See http://trolltech.com for the source code.
+Select the version of Qt adapted to your platform.
+Under debian type "apt-get install libqt4-dev qt4-dev-tools
+
+
+1.3 PKG-CONFIG
+--------------
+
+Under Unix the configure script uses pkg-config
+to locate the DjVuLibre library and its ancillary files.
+See http://pkgconfig.freedesktop.org.
+
+If you do not have pkg-config, you will have
+to specify which compilation options using
+the variabled DDJVUAPI_CFLAGS and DDJVUAPI_LIBS.
+
+
+1.4 XDG-UTILS
+-------------
+
+Under Unix, the installation process creates
+shell script to install the djview4 menu entry and icon.
+These scripts depend on the XDG "Portland" utilities.
+See http://portland.freedesktop.org
+
+
+
+2 COMPILING AND INSTALLING UNDER UNIX
+=====================================
+
+
+2.1 CONFIGURE
+-------------
+
+First run the script 'configure' to generate the makefiles.
+
+Command 'configure --help' list options and environment 
+variables that affect the generation of makefile.
+The most useful ones are:
+
+--prefix=<directory>
+        Indicate the base directory for installing djview.
+        The default prefix is /usr/local.
+        Binary packages are usually compiled with prefix /usr.
+
+--mandir=<directory>
+        Indicates where the man pages go.
+        The default is ${prefix}/man but many systems 
+        prefer to install man pages in ${prefix}/share/man.
+
+PKG_CONFIG_PATH=<colon-separated-directories>
+        Indicates the path for search pkg-config description files.
+        The default path is /usr/lib/pkgconfig:/usr/share/pkgconfig.
+        If you have installed DjVuLibre with a prefix different
+        from /usr, you probably want to add ${prefix}/lib/pkgconfig
+        to this path.
+
+DDJVUAPI_CFLAGS=<compiler-flags>
+        Compiler flags for using the DjVuLibre api.
+        This is useful when you do not have pkg-config
+        or when pkg-config does not locate DjVuLibre.
+
+DDJVUAPI_LIBS=<linker-flags>
+        Linker flags for using the DjVuLibre api.
+        This is useful when you do not have pkg-config
+        or when pkg-config does not locate DjVuLibre.
+
+QMAKE=<filaname>
+        Indicate the location of the Qt4 qmake executable.
+        This is useful when configure cannot locate Qt4.
+
+Running configure creates all the required makefiles
+and executes command qmake in directory src.
+
+
+2.2 MAKE
+--------
+
+You can then compile djview4 with command
+  % make
+
+
+2.3 INSTALL
+-----------
+
+Once the compilation is successful, command
+  % make install
+copies the binary files to the appropriate location.
+The following files are created
+
+        ${bindir}/djview4
+        ${bindir}/djview   --> djview4
+        ${mandir}/man1/djview4.1
+        ${mandir}/man1/djview.1   --> djview4.1
+        ${datadir}/djvu/djview4/...
+
+Unless specified otherwise on the configure command line:
+        ${bindir}=${prefix}/bin
+        ${mandir}=${prefix}/man
+        ${datadir}=${prefix}/share
+
+File README_packagers contains more information 
+about the installation process.
+
+After the installation, you can run
+  % ${datadir}/djview4/desktop/register-djview-menu install
+to setup the djview4 menu entries and icons.
 
 
 
 
-INSTALLING ON WINDOWS
----------------------
+
+3 OTHER PLATFORMS
+=================
+
+In general you can compile the standalone 
+viewer djview4 on non unix platforms.
+However the browser plugin capability 
+is currently not working on non X11 systems.
+
+You will need to compile DjVuLibre.
+You will need the appropriate version of Qt4.
+
+
+3.1 MAC OS X
+------------
+
+There are two options under Mac OS X.
+
+* Installing the X11 system and its development files.
+  Installing the X11 version of Qt4.
+  Proceding as for normal Unix systems.
+  Please refer to section 2 for details.      
+
+* Installing the native Mac OS X version of Qt4.
+  This is still experimental but has been reported to work.
+  The procedure is described below.
+
+You must first edit the file djview4/src/djview.pro.
+Locate the section identified by the 
+comment "for use on other platforms".
+Define the variable LIBS with the linker flags 
+that are necessary for using DjVuLibre.
+Define the variable QMAKE_CXXFLAGS with the compiler 
+flags that are necessary for using DjVuLibre.
+
+Then run the Qt4 program
+   % qmake -macx
+to generate a XCode project file.
+You can then use XCode to compile djview4.
+
+
+3.2 WINDOWS
+-----------
+
+The compilation of djview 
+under Windows is still experimental.
+
+You must first edit the file djview4/src/djview.pro.
+Locate the section identified by the 
+comment "for use on other platforms".
+Define the variable LIBS with the linker flags 
+that are necessary for using DjVuLibre.
+Define the variable QMAKE_CXXFLAGS with the compiler 
+flags that are necessary for using DjVuLibre.
+
+Then run the Qt4 program
+   % qmake -win32
+to generate a MS Visual C++ project file.
+You can then use MS Visual C++ to compile djview4.
+
+
+
+
