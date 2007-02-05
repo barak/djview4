@@ -339,7 +339,7 @@ Enable or disable the caching of fully decoded pages of the document.
 Caching is on by default.  
 Caching of documents whose
 .SM URL
-does not contain extension
+does not contain an extension
 .BE .djvu " or " .djv
 is off by default.
 
@@ -388,8 +388,8 @@ lfB l
 no	Disable toolbar.
 always	Displays the toolbar.
 auto	Enable toolbar "autohide" mode (not implemented).
-top	Place toolbar along top edge.
-bottom	Place toolbar along bottom edge.
+top	Place toolbar along the top edge.
+bottom	Place toolbar along the bottom edge.
 .TE
 .IP ""
 The contents of the toolbar is controlled by keywords
@@ -402,7 +402,8 @@ by the first occurrence of a character plus or minus.
 When this is a plus
 the toolbar is initially empty.
 When this is a minus
-the toolbar is initially full.
+the toolbar initially contains 
+the default selection of buttons.
 
 The following keywords are recognized:
 .br
@@ -594,15 +595,22 @@ the menus, and the keyboard shortcuts are disabled.
 .BI "-nomenu, -notoolbar, -noscrollbars"
 These options were recognized by some versions
 of the DjVu viewers and are honored for the sake
-of backward compatibility.
+of backward compatibility. 
+A warning message is printed
+when option 
+.BR -verbose
+is active.
 
 .TP
 .BI "-logo, -textsel, -search"
 These options were recognized by some versions
-of the DjVu viewers but are not implemented by
+of the DjVu viewers but are currently 
+not implemented by
 .BR djview4 .
-
-
+A warning message is printed
+when option 
+.BR -verbose
+is active.
 
 .SH CREDITS
 This program was written by L\('eon Bottou <leonb@users.sf.net>.
