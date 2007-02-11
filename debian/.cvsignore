@@ -1,0 +1,6 @@
+djview4
+djview4.postinst.debhelper
+djview4.postrm.debhelper
+djview4.substvars
+files
+tmp
