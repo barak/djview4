@@ -4,4 +4,4 @@ djview4 for Debian
 Currently we ignore the nsdejavu stuff
 since the one distributed with djvulibre works as well.
 
- -- Leon Bottou <leonb@unknown>, Tue, 16 Jan 2007 20:01:58 -0500
+ -- Leon Bottou <leonb@bottou.org>, Tue, 16 Jan 2007 20:01:58 -0500
