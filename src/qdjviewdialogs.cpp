@@ -62,6 +62,7 @@
 #include <QFont>
 #include <QHBoxLayout>
 #include <QHeaderView>
+#include <QImageWriter>
 #include <QItemDelegate>
 #include <QKeySequence>
 #include <QList>
@@ -1752,7 +1753,7 @@ QDjViewPageExporter::checkPage()
       disconnect(curPage, 0, this, 0);
       delete curPage;
       curPage = 0;
-      if (nextPage > tpg)
+      if (curStatus < DDJVU_JOB_OK && nextPage > tpg)
         curStatus = DDJVU_JOB_OK;
       emit progress(curProgress);
       if (curStatus >= DDJVU_JOB_OK)
@@ -1829,15 +1830,6 @@ QDjViewTiffExporter::resetOptions()
 }
 
 
-static void tiffHandler(const char *, const char *fmt, va_list ap)
-{
-  QString message;
-  message.vsprintf(fmt, ap);
-  va_end(ap);
-  throw message;
-}
-
-
 QDjViewTiffExporter::QDjViewTiffExporter(QDialog *parent, QDjView *djview,
                                          QString group )
   : QDjViewPageExporter(parent, djview), 
@@ -1865,32 +1857,31 @@ QDjViewTiffExporter::QDjViewTiffExporter(QDialog *parent, QDjView *djview,
                         "Allowing JPEG compression uses lossy JPEG "
                         "for all non bitonal or subsampled images. "
                         "</html>") );
-  // setup tiff handlers
-#if HAVE_TIFF
-  TIFFSetErrorHandler(tiffHandler);
-  TIFFSetWarningHandler(0);
-#endif
+}
+
+
+static QDjViewTiffExporter *tiffExporter;
+
+
+static void 
+tiffHandler(const char *, const char *fmt, va_list ap)
+{
+  QString message;
+  message.vsprintf(fmt, ap);
+  tiffExporter->error(message, __FILE__, __LINE__);
 }
 
 
 void 
 QDjViewTiffExporter::closeFile()
 {
-  try
-    {
 #if HAVE_TIFF
-      if (tiff)
-        TIFFClose(tiff);
+  tiffExporter = this;
+  TIFFSetErrorHandler(tiffHandler);
+  TIFFSetWarningHandler(0);
+  if (tiff)
+    TIFFClose(tiff);
 #endif
-    }
-  catch(QString s)
-    {
-      error(tr("TIFF error: %1.").arg(s), __FILE__, __LINE__);
-    }
-  catch(...)
-    {
-      error(tr("Unknown error."), __FILE__, __LINE__);
-    }
   if (curStatus > DDJVU_JOB_OK && !fileName.isEmpty())
     ::remove(QFile::encodeName(fileName).data());
   tiff = 0;
@@ -1902,18 +1893,21 @@ QDjViewTiffExporter::doPage()
 {
   ddjvu_format_t *fmt = 0;
   char *image = 0;
-  try
-    {
+  QString message;
 #if HAVE_TIFF
-      QDjVuPage *page = curPage;
-      // set tiff error handler
-      // open file or write directory
-      if (tiff)
-        TIFFWriteDirectory(tiff);
-      else
-        tiff = TIFFOpen(QFile::encodeName(fileName).data(), "w");
-      if (! tiff)
-        throw tr("Cannot open output file.");
+  tiffExporter = this;
+  TIFFSetErrorHandler(tiffHandler);
+  TIFFSetWarningHandler(0);
+  QDjVuPage *page = curPage;
+  // open file or write directory
+  if (tiff)
+    TIFFWriteDirectory(tiff);
+  else
+    tiff = TIFFOpen(QFile::encodeName(fileName).data(), "w");
+  if (!tiff)
+    message = tr("Cannot open output file.");
+  else
+    {
       // determine rectangle
       ddjvu_rect_t rect;
       int imgdpi = ddjvu_page_get_resolution(*page);
@@ -1953,20 +1947,9 @@ QDjViewTiffExporter::doPage()
         compression = COMPRESSION_JPEG;
       else if (TIFFFindCODEC(COMPRESSION_PACKBITS))
         compression = COMPRESSION_PACKBITS;
-      if (! (fmt = ddjvu_format_create(style, 0, 0)))
-        throw tr("Out of memory.");
+      fmt = ddjvu_format_create(style, 0, 0);
       ddjvu_format_set_row_order(fmt, 1);
-      // allocate image buffer
-      int rowsize = rect.w * 3;
-      if (style == DDJVU_FORMAT_MSBTOLSB)
-        rowsize = (rect.w + 7) / 8;
-      else if (style == DDJVU_FORMAT_GREY8)
-        rowsize = rect.w;
-      if (! (image = (char*)malloc(rowsize * rect.h)))
-        throw tr("Out of memory.");
-      // render
-      if (! ddjvu_page_render(*page, mode, &rect, &rect, fmt, rowsize, image))
-        throw tr("Cannot render page.");
+      ddjvu_format_set_gamma(fmt, 2.2);
       // set parameters
       int quality = ui.jpegSpinBox->value();
       TIFFSetField(tiff, TIFFTAG_IMAGEWIDTH, (uint32)rect.w);
@@ -2000,29 +1983,129 @@ QDjViewTiffExporter::doPage()
             TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
         }
       }
-      if (rowsize != TIFFScanlineSize(tiff))
-        throw QString("Internal error.");
-      // save scanlines
-      char *s = image;
-      for (int i=0; i<(int)rect.h; i++, s+=rowsize)
-        TIFFWriteScanline(tiff, s, i, 0);
+      // render and save
+      int rowsize = rect.w * 3;
+      if (style == DDJVU_FORMAT_MSBTOLSB)
+        rowsize = (rect.w + 7) / 8;
+      else if (style == DDJVU_FORMAT_GREY8)
+        rowsize = rect.w;
+      if (! (image = (char*)malloc(rowsize * rect.h)))
+        message = tr("Out of memory.");
+      else if (rowsize != TIFFScanlineSize(tiff))
+        message = tr("Internal error.");
+      else
+        {
+          char *s = image;
+          for (int i=0; i<(int)rect.h; i++, s+=rowsize)
+            TIFFWriteScanline(tiff, s, i, 0);
+        }
+    }
 #else
-      throw tr("TIFF export has not been compiled.");
+  message = tr("TIFF export has not been compiled.");
 #endif
-    }
-  catch(QString s)
-    {
-      error(tr("TIFF error: %1.").arg(s), __FILE__, __LINE__);
-    }
-  catch(...)
-    {
-      error(tr("Unknown error."), __FILE__, __LINE__);
-    }
-  // deallocate
+  if (! message.isEmpty())
+    error(message, __FILE__, __LINE__);
   if (fmt)
     ddjvu_format_release(fmt);
   if (image)
     free(image);
+}
+
+
+
+// -------------------
+// QDJVIEWIMGEXPORTER
+
+
+
+class QDjViewImgExporter : public QDjViewPageExporter
+{
+  Q_OBJECT
+public:
+  QDjViewImgExporter(QDialog *parent, QDjView *djview);
+  virtual bool canExportPageRange()  { return false; }
+  static QString filters();
+protected:
+  virtual void doPage();
+  //Ui::QDjViewExportImg ui;
+  //QPointer<QWidget> page;
+  //QString group;
+};
+
+
+QDjViewImgExporter::QDjViewImgExporter(QDialog *parent, QDjView *djview)
+  : QDjViewPageExporter(parent, djview)
+{
+}
+
+
+void
+QDjViewImgExporter::doPage()
+{
+  QDjVuPage *page = curPage;
+  // determine rectangle
+  ddjvu_rect_t rect;
+  int imgdpi = ddjvu_page_get_resolution(*page);
+  int dpi = imgdpi; // no max resolution yet
+  rect.x = rect.y = 0;
+  rect.w = ( ddjvu_page_get_width(*page) * dpi + imgdpi/2 ) / imgdpi;
+  rect.h = ( ddjvu_page_get_height(*page) * dpi + imgdpi/2 ) / imgdpi;
+  // prepare format
+  ddjvu_format_t *fmt = 0;
+  unsigned int masks[4] = { 0xff0000, 0xff00, 0xff, 0xff000000 };
+  fmt = ddjvu_format_create(DDJVU_FORMAT_RGBMASK32, 3, masks);
+  ddjvu_format_set_row_order(fmt, true);
+  ddjvu_format_set_gamma(fmt, 2.2);
+  // determine mode
+  ddjvu_render_mode_t mode = DDJVU_RENDER_COLOR;
+  QDjVuWidget::DisplayMode displayMode;
+  displayMode = djview->getDjVuWidget()->displayMode();
+  if (displayMode == QDjVuWidget::DISPLAY_STENCIL)
+    mode = DDJVU_RENDER_BLACK;
+  else if (displayMode == QDjVuWidget::DISPLAY_BG)
+    mode = DDJVU_RENDER_BACKGROUND;
+  else if (displayMode == QDjVuWidget::DISPLAY_FG)
+    mode = DDJVU_RENDER_FOREGROUND;
+  // compute image
+  QString message;
+  QString suffix = QFileInfo(fileName).suffix();
+  QImage img(rect.w, rect.h, QImage::Format_RGB32);
+  if (! ddjvu_page_render(*page, mode, &rect, &rect, fmt,
+                          img.bytesPerLine(), (char*)img.bits() ))
+    message = tr("Cannot render page.");
+  else if (suffix.isEmpty())
+    message = tr("File name has no file format suffix.");
+  else
+    {
+      QFile file(fileName);
+      QImageWriter writer(&file, suffix.toLatin1());
+      if (! writer.write(img))
+        {
+          message = file.errorString();
+          file.remove();
+          if (writer.error() == QImageWriter::UnsupportedFormatError)
+            message = tr("Image format %1 not supported.")
+              .arg(suffix.toUpper());
+#if HAVE_STRERROR
+          if (file.error() == QFile::OpenError && errno > 0)
+            message = strerror(errno);
+#endif
+        }
+    }
+  if (! message.isEmpty())
+    error(message, __FILE__, __LINE__);
+  if (fmt)
+    ddjvu_format_release(fmt);
+}
+
+
+QString
+QDjViewImgExporter::filters()
+{
+  QStringList patterns;
+  foreach(QByteArray format, QImageWriter::supportedImageFormats())
+    patterns << "*." + QString(format).toLower();
+  return tr("Image formats (%1)").arg(patterns.join(" "));
 }
 
 
@@ -2032,8 +2115,6 @@ QDjViewTiffExporter::doPage()
 
 
 
-// -------------------
-// QDJVIEWIMGEXPORTER
 
 
 
@@ -2116,7 +2197,9 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *djview)
   addExporter(tr("Encapsulated PostScript"),
               tr("Encapsulated PostScript File (*.eps)"), ".eps",
               new QDjViewPSExporter(this, d->djview, "EPS", true));
-  
+  addExporter(tr("Generic image formats"),
+              QDjViewImgExporter::filters(), ".ppm",
+              new QDjViewImgExporter(this, d->djview));
   refresh();
 }
 
