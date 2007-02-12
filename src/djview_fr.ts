@@ -989,16 +989,16 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
         <translation>&amp;Annuler</translation>
     </message>
     <message>
-        <source>System error: %1</source>
-        <translation>Erreur système: %1</translation>
-    </message>
-    <message>
         <source>Save job creation failed!</source>
         <translation>L&apos;operation d&apos;enregistrement a échoué!</translation>
     </message>
     <message>
-        <source>Unknown error</source>
-        <translation>Erreur inconnue</translation>
+        <source>Unknown error.</source>
+        <translation>Erreur inconnue.</translation>
+    </message>
+    <message>
+        <source>System error: %1.</source>
+        <translation>Erreur système: %1.</translation>
     </message>
 </context>
 <context>
@@ -1164,6 +1164,41 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     <message>
         <source>per page.</source>
         <translation>par page.</translation>
+    </message>
+</context>
+<context>
+    <name>QDjViewExportTiff</name>
+    <message>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <source>Resolution</source>
+        <translation>Résolution</translation>
+    </message>
+    <message>
+        <source>Maximum image resolution </source>
+        <translation>Résolution maximale </translation>
+    </message>
+    <message>
+        <source> dpi</source>
+        <translation> dpi</translation>
+    </message>
+    <message>
+        <source>Compression</source>
+        <translation>Compression</translation>
+    </message>
+    <message>
+        <source>JPEG &amp;quality</source>
+        <translation>&amp;Qualité JPEG</translation>
+    </message>
+    <message>
+        <source>Force &amp;bitonal G4 compression.</source>
+        <translation>Force la compression &amp;bitonale CCITT G4.</translation>
+    </message>
+    <message>
+        <source>Allow &amp;lossy JPEG compression.</source>
+        <translation>Autorise la com&amp;pression JPEG.</translation>
     </message>
 </context>
 <context>
@@ -1456,14 +1491,6 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
         <translation>&lt;html&gt;&lt;b&gt;Production de fascicules.&lt;/b&gt;&lt;br&gt;Le mode fascicule permet d&apos;imprimer des feuillets à plier en un ou plusieurs fascicules. Plusieurs fascicules sont nécessaires lorsqu&apos;un nombre maximum de feuillets est spécifié. Vous pouvez utiliser une imprimante recto-verso ou imprimer séparément les rectos et les versos&lt;p&gt; Décaler les versos est utile pour les imprimantes recto-versos mal alignées. La marge centrale peut être modifiée et augmente lors de la progression du feuillet intérieur vers le feuillet extérieur.&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>System error: %1</source>
-        <translation>Erreur système: %1</translation>
-    </message>
-    <message>
-        <source>Unknown error</source>
-        <translation>Erreur inconnue</translation>
-    </message>
-    <message>
         <source>Save job creation failed!</source>
         <translation>L&apos;operation d&apos;enregistrement a échoué!</translation>
     </message>
@@ -1474,6 +1501,14 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Position and scaling.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accomodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Position and aggrandissement.&lt;/b&gt;&lt;br&gt;L&apos;option &lt;tt&gt;Agrandir à la page&lt;/tt&gt; choisit un grossissement adapté a la taille de papier utilisée par votre imprimante. Le facteur de grossissement &lt;tt&gt;100%&lt;/tt&gt; reproduit la taille originale du document. L&apos;orientation &lt;tt&gt;Automatique&lt;/tt&gt; sélectionne portrait ou paysage en fonction de la taille de chaque page.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Unknown error.</source>
+        <translation>Erreur inconnue.</translation>
+    </message>
+    <message>
+        <source>System error: %1.</source>
+        <translation>Erreur système: %1.</translation>
     </message>
 </context>
 <context>
@@ -1970,6 +2005,14 @@ Voulez-vous le remplacer?</translation>
         <source>&amp;Defaults</source>
         <translation>&amp;Défaults</translation>
     </message>
+    <message>
+        <source>TIFF</source>
+        <translation>TIFF</translation>
+    </message>
+    <message>
+        <source>TIFF File (*.tif *.tiff)</source>
+        <translation>Fichier TIFF (*.tif *.tiff)</translation>
+    </message>
 </context>
 <context>
     <name>QDjViewThumbnails</name>
@@ -2009,6 +2052,42 @@ Voulez-vous le remplacer?</translation>
     <message>
         <source>&lt;html&gt;&lt;b&gt;Document thumbnails.&lt;/b&gt;&lt;br/&gt; This panel display thumbnails for the document pages. Double click a thumbnail to jump to the selected page. %1 to change the thumbnail size or the refresh mode. The smart refresh mode only computes thumbnails when the page data is present (displayed or cached.)&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Vignettes.&lt;/b&gt;&lt;br/&gt; Ce panneau montre des vignettes représentant les pages du document. Double cliquer une vignette pour voir une page. %1 pour afficher un menu permettant de changer la taille des vignettes et leur mode de calcul. Le mode de calcul intelligent ne calcule que les vignettes pour lesquelles les données sont disponibles en mémoire.&lt;/html&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>QDjViewTiffExporter</name>
+    <message>
+        <source>TIFF Options</source>
+        <comment>tab caption</comment>
+        <translation>Options TIFF</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;TIFF options.&lt;/b&gt;&lt;br&gt;The resolution box specifies an upper limit for the resolution of the TIFF images. Forcing bitonal G4 compression encodes all pages in black and white using the CCITT Group 4 compression. Allowing JPEG compression uses lossy JPEG for all non bitonal or subsampled images. &lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Options TIFF.&lt;/b&gt;&lt;br&gt;La boite de résolution spécifie la résolution maximale de chaque image dans le fichier TIFF. Forcer la compression bitonale G4 encode toutes les pages en noir et blanc avec la compression CCITT Groupe 4. Autoriser la compression JPEG utilise JPEG pour toutes les images en niveaux de gris ou en couleurs. &lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Cannot open output file.</source>
+        <translation>Impossible d&apos;ouvrir le fichier destination.</translation>
+    </message>
+    <message>
+        <source>Cannot render page.</source>
+        <translation>Impossible de dessiner la page.</translation>
+    </message>
+    <message>
+        <source>TIFF error: %1.</source>
+        <translation>Erreur TIFF: %1.</translation>
+    </message>
+    <message>
+        <source>Unknown error.</source>
+        <translation>Erreur inconnue.</translation>
+    </message>
+    <message>
+        <source>Out of memory.</source>
+        <translation>Mémoire pleine.</translation>
+    </message>
+    <message>
+        <source>TIFF export has not been compiled.</source>
+        <translation>L&apos;exportation de fichier TIFF n&apos;est pas compilée.</translation>
     </message>
 </context>
 <context>

@@ -130,8 +130,9 @@ AC_PATH_DDJVUAPI([],[
   AC_MSG_ERROR([Cannot find required package ddjvuapi.])
 ])
 
-dnl disabled for now
-dnl AC_PATH_TIFF
+AC_PATH_TIFF([],[
+  AC_MSG_WARN([Cannot find libtiff (required for tiff export).])
+])
 
 
 # ----------------------------------------
@@ -251,8 +252,8 @@ QARG="$QARG QMAKE_CXXFLAGS+="'"'"$CXXFLAGS $AUTO_FLAGS"'"'
 # is now useless because we set QMAKE_COMMAND with read!
 
 # run
-AC_CONFIG_COMMANDS([src/Makefile], [
-     echo "config.status: running $qmake_QMAKE in directory src."
+AC_CONFIG_COMMANDS([src directory], [
+     echo "config.status: running $QMAKE_COMMAND."
      ( cd src ; eval "$QMAKE_COMMAND" )
 ],[
      read QMAKE_COMMAND <<QMAKE_COMMAND_EOF
