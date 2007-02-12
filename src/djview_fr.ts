@@ -2018,7 +2018,7 @@ Voulez-vous le remplacer?</translation>
     </message>
     <message>
         <source>Generic image formats</source>
-        <translation>Formats image génériques</translation>
+        <translation type="obsolete">Formats image génériques</translation>
     </message>
     <message>
         <source>DjVu Files (*.djvu *.djv)</source>
@@ -2035,6 +2035,10 @@ Voulez-vous le remplacer?</translation>
     <message>
         <source>Encapsulated PostScript Files (*.eps)</source>
         <translation>Fichiers PostScript Encapsulés (*.eps)</translation>
+    </message>
+    <message>
+        <source>Other image formats</source>
+        <translation>Autre image formats</translation>
     </message>
 </context>
 <context>

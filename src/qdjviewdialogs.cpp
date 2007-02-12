@@ -2197,7 +2197,7 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *djview)
   addExporter(tr("Encapsulated PostScript"),
               tr("Encapsulated PostScript Files (*.eps)"), ".eps",
               new QDjViewPSExporter(this, d->djview, "EPS", true));
-  addExporter(tr("Generic image formats"),
+  addExporter(tr("Other image formats"),
               QDjViewImgExporter::filters(), ".jpg",
               new QDjViewImgExporter(this, d->djview));
   refresh();
