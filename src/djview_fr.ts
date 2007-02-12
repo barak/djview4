@@ -1268,6 +1268,25 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
 </context>
 <context>
+    <name>QDjViewImgExporter</name>
+    <message>
+        <source>Cannot render page.</source>
+        <translation>Impossible de dessiner la page.</translation>
+    </message>
+    <message>
+        <source>File name has no file format suffix.</source>
+        <translation>Nom de fichier sans suffixe indiquant le format d&apos;image.</translation>
+    </message>
+    <message>
+        <source>Image format %1 not supported.</source>
+        <translation>Le format de fichier image «%1» n&apos;est pas supporté.</translation>
+    </message>
+    <message>
+        <source>Image files (%1)</source>
+        <translation>Fichiers image (%1)</translation>
+    </message>
+</context>
+<context>
     <name>QDjViewInfoDialog</name>
     <message>
         <source>File #</source>
@@ -2013,6 +2032,10 @@ Voulez-vous le remplacer?</translation>
         <source>TIFF File (*.tif *.tiff)</source>
         <translation>Fichier TIFF (*.tif *.tiff)</translation>
     </message>
+    <message>
+        <source>Generic image formats</source>
+        <translation>Formats image génériques</translation>
+    </message>
 </context>
 <context>
     <name>QDjViewThumbnails</name>
@@ -2070,24 +2093,16 @@ Voulez-vous le remplacer?</translation>
         <translation>Impossible d&apos;ouvrir le fichier destination.</translation>
     </message>
     <message>
-        <source>Cannot render page.</source>
-        <translation>Impossible de dessiner la page.</translation>
-    </message>
-    <message>
-        <source>TIFF error: %1.</source>
-        <translation>Erreur TIFF: %1.</translation>
-    </message>
-    <message>
-        <source>Unknown error.</source>
-        <translation>Erreur inconnue.</translation>
-    </message>
-    <message>
         <source>Out of memory.</source>
         <translation>Mémoire pleine.</translation>
     </message>
     <message>
         <source>TIFF export has not been compiled.</source>
         <translation>L&apos;exportation de fichier TIFF n&apos;est pas compilée.</translation>
+    </message>
+    <message>
+        <source>Internal error.</source>
+        <translation>Erreur interne.</translation>
     </message>
 </context>
 <context>

@@ -2105,7 +2105,7 @@ QDjViewImgExporter::filters()
   QStringList patterns;
   foreach(QByteArray format, QImageWriter::supportedImageFormats())
     patterns << "*." + QString(format).toLower();
-  return tr("Image formats (%1)").arg(patterns.join(" "));
+  return tr("Image files (%1)").arg(patterns.join(" "));
 }
 
 
