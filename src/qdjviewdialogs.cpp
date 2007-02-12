@@ -2181,21 +2181,21 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *djview)
                   "specifying format options.</html>"));
 
   addExporter(tr("DjVu Bundled Document"),
-              tr("DjVu File (*.djvu *.djv)"), ".djvu",
+              tr("DjVu Files (*.djvu *.djv)"), ".djvu",
               new QDjViewDjVuExporter(this, d->djview, false));
   addExporter(tr("DjVu Indirect Document"),
-              tr("DjVu File (*.djvu *.djv)"), ".djvu",
+              tr("DjVu Files (*.djvu *.djv)"), ".djvu",
               new QDjViewDjVuExporter(this, d->djview, true));
 #if HAVE_TIFF
   addExporter(tr("TIFF"),
-              tr("TIFF File (*.tif *.tiff)"), ".tif",
+              tr("TIFF Files (*.tif *.tiff)"), ".tif",
               new QDjViewTiffExporter(this, d->djview, "TIFF"));
 #endif
   addExporter(tr("PostScript"),
-              tr("PostScript File (*.ps)"), ".ps",
+              tr("PostScript Files (*.ps)"), ".ps",
               new QDjViewPSExporter(this, d->djview, "PS", false));
   addExporter(tr("Encapsulated PostScript"),
-              tr("Encapsulated PostScript File (*.eps)"), ".eps",
+              tr("Encapsulated PostScript Files (*.eps)"), ".eps",
               new QDjViewPSExporter(this, d->djview, "EPS", true));
   addExporter(tr("Generic image formats"),
               QDjViewImgExporter::filters(), ".ppm",

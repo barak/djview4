@@ -1946,10 +1946,6 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
         <translation>Document DjVu «bundled»</translation>
     </message>
     <message>
-        <source>DjVu File (*.djvu *.djv)</source>
-        <translation>Fichier DjVu (*.djvu *.djv)</translation>
-    </message>
-    <message>
         <source>DjVu Indirect Document</source>
         <translation>Document DjVu «indirect»</translation>
     </message>
@@ -1958,16 +1954,8 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
         <translation>PostScript</translation>
     </message>
     <message>
-        <source>PostScript File (*.ps)</source>
-        <translation>Fichier PostScript (*.ps)</translation>
-    </message>
-    <message>
         <source>Encapsulated PostScript</source>
         <translation>PostScript Encapsulé</translation>
-    </message>
-    <message>
-        <source>Encapsulated PostScript File (*.eps)</source>
-        <translation>Fichier PostScript Encapsulé (*.eps)</translation>
     </message>
     <message>
         <source>Error - DjView</source>
@@ -2029,12 +2017,24 @@ Voulez-vous le remplacer?</translation>
         <translation>TIFF</translation>
     </message>
     <message>
-        <source>TIFF File (*.tif *.tiff)</source>
-        <translation>Fichier TIFF (*.tif *.tiff)</translation>
-    </message>
-    <message>
         <source>Generic image formats</source>
         <translation>Formats image génériques</translation>
+    </message>
+    <message>
+        <source>DjVu Files (*.djvu *.djv)</source>
+        <translation>Fichiers DjVu (*.djvu *.djv)</translation>
+    </message>
+    <message>
+        <source>TIFF Files (*.tif *.tiff)</source>
+        <translation>Fichiers TIFF (*.tif *.tiff)</translation>
+    </message>
+    <message>
+        <source>PostScript Files (*.ps)</source>
+        <translation>Fichiers PostScript (*.ps)</translation>
+    </message>
+    <message>
+        <source>Encapsulated PostScript Files (*.eps)</source>
+        <translation>Fichiers PostScript Encapsulés (*.eps)</translation>
     </message>
 </context>
 <context>
