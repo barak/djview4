@@ -40,22 +40,35 @@ top_builddir = .
 
 SUBDIRS=src nsdejavu desktopfiles
 
-
 # make all
 
-all: all-subdirs all-djview-qm FORCE
-	@echo "Done."
+all: all-djview
 
-all-subdirs: FORCE
-	for d in ${SUBDIRS} ; do ( cd $$d && ${MAKE} all ) || break ; done
+@NSDEJAVU_YES@all: all-nsdejavu
+
+@DESKTOP_YES@all: all-desktopfiles
+
+all: all-djview-qm
+
+all-djview: FORCE
+	cd src && ${MAKE}
+
+all-nsdejavu: FORCE
+	cd nsdejavu && ${MAKE}
+
+all-desktopfiles: FORCE
+	cd desktopfiles && ${MAKE}
 
 all-djview-qm: FORCE
 	-cd src && test -x "${LRELEASE}" && "${LRELEASE}" djview.pro
 
 # make install
 
-install: install-djview install-nsdejavu install-desktop
-	@echo "Done."
+install: install-djview 
+
+@NSDEJAVU_YES@install: install-nsdejavu 
+
+@DESKTOP_YES@install: install-desktopfiles
 
 install-djview: install-djview-bin install-djview-man install-djview-qm
 
@@ -66,7 +79,8 @@ install-djview-bin: FORCE
 
 install-djview-man: FORCE
 	${INSTALL} -d ${DESTDIR}${mandir}/man1
-	${INSTALL_DATA} src/djview.1 ${DESTDIR}${mandir}/man1/djview4.1
+	${INSTALL_DATA} ${srcdir}/src/djview.1 \
+	   ${DESTDIR}${mandir}/man1/djview4.1
 	cd ${DESTDIR}${mandir}/man1 ; ${LN_S} djview4.1 djview.1 || true
 
 install-djview-qm: FORCE
@@ -79,7 +93,7 @@ install-nsdejavu: FORCE
 	( cd nsdejavu && ${MAKE} install )
 
 
-install-desktop: FORCE
+install-desktopfiles: FORCE
 	( cd desktopfiles && ${MAKE} install )
 
 # make clean

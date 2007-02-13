@@ -21,7 +21,7 @@
 /* hexadecimal version number */
 #undef DJVIEW_VERSION
 
-/* string version */
+/* string */
 #undef DJVIEW_VERSION_STR
 
 /* Define if you have ddjvuapi. */

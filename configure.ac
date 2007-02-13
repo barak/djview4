@@ -88,8 +88,6 @@ AC_PROG_INSTALL
 # Libtool & Compilers
 AC_PROG_CC
 AC_PROG_CXX
-AC_DISABLE_STATIC
-AC_PROG_LIBTOOL
 
 # C++
 AC_LANG(C++)
@@ -135,39 +133,67 @@ AC_PATH_TIFF([],[
 ])
 
 
+
 # ----------------------------------------
-# How to compile and install nsdejavu
+# nsdejavu
 # ----------------------------------------
 
-AC_PATH_X
-AC_PATH_XTRA
-NSDEJAVU_CFLAGS=
-NSDEJAVU_LIBS=
-NSDEJAVU_CFLAGS=${X_CFLAGS}
-case "$host" in
- *-cygwin* | *-mingw*)
-   NSDEJAVU_LIBS="`echo ${X_LIBS} | sed -e 's/-lXext/-lXt -lXext/'`"
-   NSDEJAVU_LIBS="-no-undefined $NSDEJAVU_LIBS"
-   ;;
-esac
-AC_SUBST(NSDEJAVU_CFLAGS)
-AC_SUBST(NSDEJAVU_LIBS)
+ac_nsdejavu=yes
+AC_ARG_ENABLE(nsdejavu,
+    AC_HELP_STRING([--disable-nsdejavu],
+        [Do not compile the nsdejavu browser plugin.]),
+    [ac_nsdejavu=$enableval])
 
-if test -z "$INSTALL_SHLIB" ; then
-  INSTALL_SHLIB="${INSTALL_DATA}"
-  case "$host" in
-    *-cygwin* | *-mingw*)
-        INSTALL_SHLIB="cp"
-        ;;
-  esac
+if test "$ac_nsdejavu" != no ; then
+    # need libtool
+    AC_DISABLE_STATIC
+    AC_PROG_LIBTOOL
+    # need x
+    AC_PATH_X
+    AC_PATH_XTRA
+    NSDEJAVU_CFLAGS=
+    NSDEJAVU_LIBS=
+    NSDEJAVU_CFLAGS=${X_CFLAGS}
+    case "$host" in
+        *-cygwin* | *-mingw*)
+            NSDEJAVU_LIBS="`echo ${X_LIBS} | sed -e 's/-lXext/-lXt -lXext/'`"
+            NSDEJAVU_LIBS="-no-undefined $NSDEJAVU_LIBS"
+            ;;
+    esac
+    AC_SUBST(NSDEJAVU_CFLAGS)
+    AC_SUBST(NSDEJAVU_LIBS)
+    # nsdejavu install
+    if test -z "$INSTALL_SHLIB" ; then
+        INSTALL_SHLIB="${INSTALL_DATA}"
+        case "$host" in
+            *-cygwin* | *-mingw*)
+                INSTALL_SHLIB="cp"
+                ;;
+        esac
+    fi
+    AC_SUBST(INSTALL_SHLIB)
+    NSDEJAVU_YES=''
+    NSDEJAVU_NO='#'
+else
+    NSDEJAVU_YES='#'
+    NSDEJAVU_NO=''
 fi
-AC_SUBST(INSTALL_SHLIB)
+AC_SUBST(NSDEJAVU_YES)
+AC_SUBST(NSDEJAVU_NO)
+
 
 
 # ----------------------------------------
-# XDG tools
+# Desktop files
 # ----------------------------------------
 
+ac_desktopfiles=yes
+AC_ARG_ENABLE(desktopfiles,
+    AC_HELP_STRING([--disable-desktopfiles],
+        [Do not install scripts to register icons and menus.]),
+    [ac_desktopfiles=$enableval])
+
+# Check for xdg tools
 AC_PATH_PROG(XDG_MIME, xdg-mime)
 AC_PATH_PROG(XDG_ICON_RESOURCE, xdg-icon-resource)
 AC_PATH_PROG(XDG_DESKTOP_MENU, xdg-desktop-menu)
@@ -176,24 +202,27 @@ if test -x ${XDG_MIME} && \
    test -x ${XDG_DESKTOP_MENU}
 then 
   true
-elif test $ac_desktopfiles != no ; then
-  ac_desktopfiles = no
+elif test "$ac_desktopfiles" = yes ; then
+  ac_desktopfiles=no
   AC_MSG_WARN([Cannot find the Xdg Portland tools.
 --------------------------------------------------------
-*** The Xdg Portland tools <http://portland.freedesktop.org>.
-*** are required to register the menu entries.
-*** You can install these tools later and then run the script
-*** ${datadir}/djvu/djview4/desktop/register-djview-menu.
---------------------------------------------------------])
-else
-  AC_MSG_WARN([Cannot find the Xdg Portland tools.
---------------------------------------------------------
-*** You will not be able to use the script
-*** ${datadir}/djvu/djview4/desktop/register-djview-menu.
-*** without first installing the Xdg Portland tools
-*** available at <http://portland.freedesktop.org>.
+*** The scripts to register icons and menus 
+*** ${datadir}/djvu/osi/desktop/register-djvu-mimetype, and
+*** ${datadir}/djvu/djview3/desktop/register-djview3-menu
+*** will not be installed.
 --------------------------------------------------------])
 fi
+
+if test ${ac_desktopfiles} != no ; then
+  DESKTOP_YES=''
+  DESKTOP_NO='#'
+else
+  DESKTOP_YES='#'
+  DESKTOP_NO=''
+fi
+AC_SUBST(DESKTOP_YES)
+AC_SUBST(DESKTOP_NO)
+
 
 
 # ----------------------------------------
@@ -203,7 +232,7 @@ fi
 # Define installation paths and version string
 AC_DEFINE_INSTALL_PATHS
 AC_DEFINE_VERSION([DJVIEW_VERSION], [${PACKAGE_VERSION}])
-AC_DEFINE_UNQUOTED([DJVIEW_VERSION_STR], ["${PACKAGE_VERSION}"], [string version])
+AC_DEFINE_UNQUOTED([DJVIEW_VERSION_STR], ["${PACKAGE_VERSION}"], [string])
 
 
 # ----------------------------------------
