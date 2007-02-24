@@ -1860,8 +1860,9 @@ QDjViewTiffExporter::QDjViewTiffExporter(QDialog *parent, QDjView *djview,
 }
 
 
-static QDjViewTiffExporter *tiffExporter;
+#if HAVE_TIFF
 
+static QDjViewTiffExporter *tiffExporter;
 
 static void 
 tiffHandler(const char *, const char *fmt, va_list ap)
@@ -1870,6 +1871,8 @@ tiffHandler(const char *, const char *fmt, va_list ap)
   message.vsprintf(fmt, ap);
   tiffExporter->error(message, __FILE__, __LINE__);
 }
+
+#endif
 
 
 void 
