@@ -346,7 +346,6 @@ QDjViewThumbnails::View::View(QDjViewThumbnails *widget)
   setWrapping(true);
   setMovement(QListView::Static);
   setResizeMode(QListView::Adjust);
-  setLayoutMode(QListView::Batched);
   setSpacing(8);
 #if QT_VERSION >= 0x040100
   setUniformItemSizes(true);
@@ -356,6 +355,8 @@ QDjViewThumbnails::View::View(QDjViewThumbnails *widget)
   // we cannot do it efficiently in Model::makeData().
   connect((QObject*)verticalScrollBar(), SIGNAL(sliderMoved(int)),
           (QObject*)widget->model, SLOT(scheduleRefresh()) );
+  // Really too slow without this.
+  setLayoutMode(QListView::Batched);
 #endif
 }
 
