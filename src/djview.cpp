@@ -29,7 +29,7 @@
 #include "qdjview.h"
 #include "qdjvuwidget.h"
 #ifdef Q_WS_X11
-# include "qdjviewplugin.h"
+#  include "qdjviewplugin.h"
 #endif
 
 #include <QtGlobal>
@@ -244,6 +244,7 @@ main(int argc, char *argv[])
         verbose = true;
         QDjViewPlugin dispatcher(argv[0]);
         return dispatcher.exec();
+        
       }
 #endif
 

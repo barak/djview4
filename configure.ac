@@ -145,12 +145,30 @@ AC_ARG_ENABLE(nsdejavu,
     [ac_nsdejavu=$enableval])
 
 if test "$ac_nsdejavu" != no ; then
+    AC_PATH_X
+    AC_PATH_XTRA
+    if test "$no_x" = yes; then
+        ac_nsdejavu = no
+        AC_MSG_WARN([Disabling plugin compilation (missing X11 include files).])
+    fi
+fi
+
+if test "$ac_nsdejavu" != no ; then
+    savedCFLAGS="$CFLAGS"
+    CFLAGS="$CFLAGS ${X_CFLAGS}"
+    AC_CHECK_HEADER(X11/Shell.h, [], [ac_nsdejavu=no])
+    AC_CHECK_HEADER(X11/IntrinsicP.h, [], [ac_nsdejavu=no])
+    CFLAGS="$savedCFLAGS"
+    if test "$ac_nsdejavu" = no ; then
+        AC_MSG_WARN([Disabling plugin compilation (missing Xt include files).])
+    fi
+fi
+
+if test "$ac_nsdejavu" != no ; then
     # need libtool
     AC_DISABLE_STATIC
     AC_PROG_LIBTOOL
-    # need x
-    AC_PATH_X
-    AC_PATH_XTRA
+    # prepare flags
     NSDEJAVU_CFLAGS=
     NSDEJAVU_LIBS=
     NSDEJAVU_CFLAGS=${X_CFLAGS}

@@ -45,32 +45,37 @@
 #include <libdjvu/miniexp.h>
 #include <libdjvu/ddjvuapi.h>
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+#include <signal.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #ifdef Q_WS_X11
+# ifndef X_DISPLAY_MISSING
+#  include <X11/Xlib.h>
+#  include <X11/Xutil.h>
+#  include <X11/Xatom.h>
+#  undef FocusOut
+#  undef FocusIn
+#  undef KeyPress
+#  undef KeyRelease
+#  undef None
+#  undef RevertToParent
+#  undef GrayScale
+#  undef CursorShape
+#  define HAVE_X11 1
+# endif
+#endif
 
-# include <stdlib.h>
-# include <stdio.h>
-# include <errno.h>
-# include <signal.h>
-# include <unistd.h>
-# include <fcntl.h>
-# include <X11/Xlib.h>
-# include <X11/Xutil.h>
-# include <X11/Xatom.h>
-# undef FocusOut
-# undef FocusIn
-# undef KeyPress
-# undef KeyRelease
-# undef None
-# undef RevertToParent
-# undef GrayScale
-# undef CursorShape
-
+#ifdef Q_WS_X11
 # include <QX11Info>
 # if QT_VERSION >= 0x040100
 #  include <QX11EmbedWidget>
+#  define HAVE_QX11EMBED 1
 # endif
-
+#endif
 
 // declared in djview.cpp
 extern void setupApplication(void);
@@ -135,7 +140,7 @@ struct QDjViewPlugin::Instance
   QPointer<QDjViewPlugin::Document> document;
   QPointer<QWidget>                 shell;
   QPointer<QDjView>                 djview;
-  Window                            container;
+  XID                               container;
   QStringList                    args;
   QByteArray                     saved;
   int                            savedformat;
@@ -154,6 +159,7 @@ struct QDjViewPlugin::Instance
 // FIXING TRANSIENT WINDOW PROPERTIES
 // ========================================
 
+#if HAVE_X11
 
 static Atom wm_state;
 static Atom wm_client_leader;
@@ -242,7 +248,7 @@ x11SetTransientForHint(QWidget *widget)
 }
 
 
-
+#endif
 
 
 
@@ -428,12 +434,14 @@ QDjViewPlugin::Instance::open()
       document = new QDjViewPlugin::Document(this);
       djview->open(document, url);
       restore(djview->getDjVuWidget());
-#if QT_VERSION < 0x40100
-      if (!dispatcher->xembedFlag)
+#if HAVE_X11
+# if QT_VERSION < 0x40100
+      if (! dispatcher->xembedFlag)
         {
           Display *dpy = QX11Info::display();
           XMapWindow(dpy, shell->winId());
         }
+# endif
 #endif
       shell->show();
     }
@@ -451,10 +459,12 @@ QDjViewPlugin::Instance::destroy()
     }
   if (shell)
     {
-      shell->close();
+#if HAVE_X11
       Display *dpy = QX11Info::display();
       XUnmapWindow(dpy, shell->winId());  
       XReparentWindow(dpy, shell->winId(), QX11Info::appRootWindow(), 0,0);
+#endif
+      shell->close();
       dispatcher->registerForDeletion(shell);
       container = 0;
       shell = 0;
@@ -817,7 +827,7 @@ QDjViewPlugin::cmdAttachWindow()
   Instance *instance = (Instance*) readPointer(pipeRead);
   QByteArray display = readRawString(pipeRead);
   QString protocol = readString(pipeRead);
-  Window window = (XID)readInteger(pipeRead);
+  XID window = (XID)readInteger(pipeRead);
   readInteger(pipeRead);   // colormap
   readInteger(pipeRead);   // visualid
   int width = readInteger(pipeRead);
@@ -832,6 +842,9 @@ QDjViewPlugin::cmdAttachWindow()
   // create application object
   if (! application)
     {
+      argc = 0;
+      argv[argc++] = progname;
+#if HAVE_X11
       Display *dpy = XOpenDisplay(display);
       if (!dpy)
         {
@@ -839,15 +852,16 @@ QDjViewPlugin::cmdAttachWindow()
                   "cannot open display %s\n", (const char*)display);
           throw 2;
         }
-      argc = 0;
-      argv[argc++] = progname;
       argv[argc++] = "-display";
       argv[argc++] = (const char*) display;
+#endif
       application = new QApplication(argc, const_cast<char**>(argv));
       setupApplication();
       argc = 1;
       application->setQuitOnLastWindowClosed(false);
+#if HAVE_X11
       XCloseDisplay(dpy);
+#endif
       context = new QDjVuContext(progname);
       forwarder = new Forwarder(this);
       application->installEventFilter(forwarder);
@@ -861,7 +875,7 @@ QDjViewPlugin::cmdAttachWindow()
       timer->start(5*60*1000);
       QObject::connect(timer, SIGNAL(timeout()), 
                        forwarder, SLOT(quit()));
-#if QT_VERSION >= 0x40100
+#if HAVE_QX11EMBED
       if (protocol.startsWith("XEMBED"))
         xembedFlag = true;
 #endif
@@ -872,7 +886,7 @@ QDjViewPlugin::cmdAttachWindow()
   QDjView *djview = instance->djview;
   if (! shell)
     {
-#if QT_VERSION >= 0x40100
+#if HAVE_QX11EMBED
       if (xembedFlag)
         {
           QX11EmbedWidget *embed = new QX11EmbedWidget();
@@ -887,8 +901,12 @@ QDjViewPlugin::cmdAttachWindow()
           shell = new QWidget();
           shell->setObjectName("djvu_shell");
           shell->setGeometry(0, 0, width, height);
+#if HAVE_X11
           Display *dpy = QX11Info::display();
-          XReparentWindow(dpy, shell->winId(), window, 0,0);
+          XReparentWindow(dpy, shell->winId(), (Window)window, 0,0);
+#else
+          qWarning("djview: unable to embed the djview window.");
+#endif
         }
       djview = new QDjView(*context, instance->viewerMode, shell);
       djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
@@ -935,16 +953,19 @@ QDjViewPlugin::cmdResize()
   Instance *instance = (Instance*) readPointer(pipeRead);
   int width = readInteger(pipeRead);
   int height = readInteger(pipeRead);
+#if HAVE_X11
   if (instance->container)
-    { // the plugin lies sometimes (why?)
+    { 
+      // the plugin lies sometimes (why?)
       int x, y; unsigned int w, h, b, d; Window r;
-      if (XGetGeometry(QX11Info::display(), instance->container, 
+      if (XGetGeometry(QX11Info::display(), (Window)(instance->container), 
                        &r, &x, &y, &w, &h, &b, &d))
         { 
           width = qMin(width, (int)w);
           height = qMin(height, (int)h);
         }
     }
+#endif
   if (instances.contains(instance) && width>0 && height>0)
     if (instance->shell && application)
       instance->shell->resize(width, height);
@@ -1508,7 +1529,6 @@ QUrl::queryItems() const
 // END
 
 
-#endif // Q_WS_X11
 
 /* -------------------------------------------------------------
    Local Variables:
