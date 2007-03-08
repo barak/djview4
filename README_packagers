@@ -71,7 +71,7 @@ scripts to register xdg menu entries for djview4.
 This script assumes that you have the xdg portland tools
 xdg-icon-resource and xdg-desktop-menu installed.
 
-
+See file desktopfiles/README for more information.
 
 
 

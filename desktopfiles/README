@@ -1,0 +1,56 @@
+
+This directory contains various files
+that can be used for registering the djvu icons,
+the djvu mime types, and the djview menu entries.
+
+There are two ways to exploit them.
+
+
+1 - Install desktop files with Portland tools.
+----------------------------------------------
+
+  When you pass option "--enable-desktopfiles" to 
+  the "configure" script, the "make install" procedure 
+  installs a scripts named
+    "${datadir}/djvu/djview4/desktop/register-djview-menu".
+  The directory "${datadir}" is usually "${prefix}/share".
+  This is "/usr/local/share" unless you specify an alternate
+  prefix when running "configure".
+
+  This script relies on the so called XDG Portland tools
+  to install or uninstall icons and menu entries 
+  for various desktop environment.
+  Calling  "${datadir}/djvu/djview4/desktop/register-djview-menu install",
+  installs menu icons and menu entries for the djview4 viewer.
+
+
+
+2 - Install desktop files by hand.
+----------------------------------
+
+  The XDG Portland tools are not very desirable 
+  when preparing binary packages because they do not
+  implement the DESTDIR variable (as of version 1.0.1.)
+  
+  Although it is possible to call the scripts during
+  the postinstallation or the preremove phases,
+  it is usually preferable to install the desktop
+  files by hand.
+
+  In the following we assume that "${prefix}" 
+  is "/usr" and "${datadir}" is then "/usr/share".
+  We also assume that the desktop environment
+  were installed with the same prefixes.
+
+  The following files should be installed:
+
+  * Menu icons for djview4:
+    - Install "hi32-djview4.png" 
+      as "${datadir}/icons/hicolor/32x32/apps/djvulibre-djview4.png".
+
+  * Menu entries for djview4:
+    - Install "djvulibre-djview4.desktop"
+      as "${datadir}/applications/djvulibre-djview4.desktop".
+    - Arrange to execute script "update-desktop-database".
+      at installation time.
+

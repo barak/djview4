@@ -299,7 +299,7 @@ QARG="$QARG QMAKE_CXXFLAGS+="'"'"$CXXFLAGS $AUTO_FLAGS"'"'
 # is now useless because we set QMAKE_COMMAND with read!
 
 # run
-AC_CONFIG_COMMANDS([src directory], [
+AC_CONFIG_COMMANDS([src], [
      echo "config.status: running $QMAKE_COMMAND."
      ( cd src ; eval "$QMAKE_COMMAND" )
 ],[

@@ -20,6 +20,8 @@ config.status: configure
 	dh_testdir
 	./configure \
 		--prefix=/usr \
+		--disable-nsdejavu \
+		--disable-desktopfiles \
 		--mandir=\$${prefix}/share/man \
 		--infodir=\$${prefix}/share/info
 
@@ -51,6 +53,13 @@ install: build
 	-rm debian/tmp/usr/share/man/man1/djview.*
 	-rm debian/tmp/usr/share/man/man1/nsdejavu.*
 	-rm debian/tmp/usr/lib/${plugsubdir}/nsdejavu.so
+	@echo "install djview4 icon and menu"
+	mkdir --parents debian/tmp/usr/share/icons/hicolor/32x32/apps
+	install --mode=644 debian/djvulibre-djview4.xpm \
+	  debian/tmp/usr/share/icons/hicolor/32x32/apps
+	mkdir --parents debian/tmp/usr/share/applications
+	install --mode=644 ${CURDIR}/desktopfiles/djvulibre-djview4.desktop \
+	  debian/tmp/usr/share/applications
 
 
 # Build architecture-independent files here.
