@@ -72,6 +72,7 @@
 #include <QPainter>
 #include <QPrinter>
 #include <QPrintDialog>
+#include <QPrintEngine>
 #include <QPushButton>
 #include <QRegExp>
 #include <QScrollBar>
@@ -99,7 +100,6 @@
 #if DDJVUAPI_VERSION < 18
 # error "DDJVUAPI_VERSION>=18 is required !"
 #endif
-
 
 
 
@@ -864,8 +864,9 @@ public:
   QDjViewExporter(QDialog *parent, QDjView *djview);
   virtual bool canExportOnePage()         { return true; }
   virtual bool canExportPageRange()       { return true; }
+  virtual bool canCollate()               { return true; }
   virtual void setFileName(QString s)     { fileName = s; }
-  virtual void setPrinter(QPrinter*)      { }
+  virtual void setPrinter(QPrinter*, int) { }
   virtual void iniPrinter(QPrinter*)      { }
   virtual void resetOptions()             { }
   virtual void setPageRange(int f, int t) { fromPage = f; toPage = t; }
@@ -1111,11 +1112,12 @@ public:
   virtual ddjvu_status_t status();
   virtual void resetOptions();
   virtual void setFileName(QString s);
-  virtual void setPrinter(QPrinter *p);
+  virtual void setPrinter(QPrinter *p, int copies);
   virtual void iniPrinter(QPrinter *p);
   virtual QWidget* propertyPage(int);
   virtual bool canExportOnePage()    { return true; }
   virtual bool canExportPageRange()  { return !encapsulated; }
+  virtual bool canCollate()          { return !cupsOptions.isEmpty(); }
   virtual int propertyPages()        { return encapsulated ? 1 : 3; }
 public slots:
   void refresh();
@@ -1130,6 +1132,7 @@ protected:
   QString group;
   QString printerName;
   int copies;
+  QList<QByteArray> cupsOptions;
   QPointer<QWidget> page1;
   QPointer<QWidget> page2;
   QPointer<QWidget> page3;
@@ -1329,7 +1332,7 @@ QDjViewPSExporter::setFileName(QString s)
 
 
 void 
-QDjViewPSExporter::setPrinter(QPrinter *p)
+QDjViewPSExporter::setPrinter(QPrinter *p, int ncopies)
 {
   if (! p->outputFileName().isEmpty())
     {
@@ -1349,8 +1352,33 @@ QDjViewPSExporter::setPrinter(QPrinter *p)
   QPrinter::Orientation orient = p->orientation();
   ui2.portraitButton->setChecked(orient == QPrinter::Portrait);
   ui2.landscapeButton->setChecked(orient == QPrinter::Landscape);
-  copies = p->numCopies();
+  copies = qMax(ncopies, p->numCopies());
   refresh();
+  
+#if QT_VERSION >= 0x40200
+# define PPK_CupsOptions QPrintEngine::PrintEnginePropertyKey(0xfe00)
+# define PPK_CupsStringPageSize QPrintEngine::PrintEnginePropertyKey(0xfe03)
+  cupsOptions.clear();
+  QPrintEngine *engine = p->printEngine();
+  QVariant cPageSize = engine->property(PPK_CupsStringPageSize);
+  if (! cPageSize.toString().isEmpty())
+    {
+      cupsOptions << "media=" + cPageSize.toString().toLocal8Bit();
+      if (p->collateCopies())
+        cupsOptions << "Collate=True";
+    }
+  QVariant cOptions = engine->property(PPK_CupsOptions);
+  QStringList options = cOptions.toStringList();
+  if (! options.isEmpty())
+    {
+      QStringList::const_iterator it = options.constBegin();
+      while (it != options.constEnd())
+        {
+          cupsOptions << (*it).toLocal8Bit() + "=" + (*(it+1)).toLocal8Bit();
+          it += 2;
+        }
+    }
+#endif
 }
 
 
@@ -1418,22 +1446,34 @@ QDjViewPSExporter::openFile()
 
       // Prepare lp/lpr arguments
       QByteArray pname = printerName.toLocal8Bit();
-      char *lpargs[8];
-      char *lprargs[8];
-      lpargs[0] = "lp";
-      lpargs[1] = 0;
-      lprargs[0] = "lpr";
-      lprargs[1] = 0;
+      QByteArray ncopies = QByteArray::number(copies);
+      QVector<const char*> lpargs;
+      QVector<const char*> lprargs;
+      lpargs << "lp";
+      lprargs << "lpr";
       if (! printerName.isEmpty())
         {
-          lpargs[1] = "-d";
-          lpargs[2] = pname.data();
-          lpargs[3] = 0;
-          lprargs[1] = "-P";
-          lprargs[2] = pname.data();
-          lprargs[3] = 0;
+          lpargs << "-d";
+          lpargs << pname.data();
+          lprargs << "-P";
+          lprargs << pname.data();
         }
-
+      if (! cupsOptions.isEmpty())
+        {
+          if (copies > 1)
+            {
+              lprargs << "-#";
+              lprargs << ncopies.data();
+            }
+          for(int i=0; i<cupsOptions.size(); i++)
+            {
+              lprargs << "-o";
+              lprargs << cupsOptions.at(i).data();
+            }
+        }
+      lpargs << 0;
+      lprargs << 0;
+      
       // Open pipe for lp/lpr.
       int fds[2];
       if (pipe(fds) == 0)
@@ -1458,12 +1498,12 @@ QDjViewPSExporter::openFile()
               if (fork() == 0)
                 {
                   // Try lp and lpr
-                  (void)execvp("lp", lpargs);
-                  (void)execvp("lpr", lprargs);
-                  (void)execv("/bin/lp", lpargs);
-                  (void)execv("/bin/lpr", lprargs);
-                  (void)execv("/usr/bin/lp", lpargs);
-                  (void)execv("/usr/bin/lpr", lprargs);
+                  (void)execvp("lpr", (char**)lprargs.data());
+                  (void)execv("/bin/lpr", (char**)lprargs.data());
+                  (void)execv("/usr/bin/lpr", (char**)lprargs.data());
+                  (void)execvp("lp", (char**)lpargs.data());
+                  (void)execv("/bin/lp", (char**)lpargs.data());
+                  (void)execv("/usr/bin/lp", (char**)lpargs.data());
                 }
               // Exit without running destructors
               (void)execlp("true", "true", (char *)0);
@@ -2626,7 +2666,7 @@ QDjViewPrintDialog::setCurrentExporter()
       else
 #endif
         d->exporter = new QDjViewPSExporter(this, d->djview, gps);
-      d->exporter->setPrinter(d->printer);
+      d->exporter->setPrinter(d->printer, d->ui.numCopiesSpinBox->value());
       connect(d->exporter, SIGNAL(progress(int)), this, SLOT(progress(int)));
     }
   // update ui pages
@@ -2739,12 +2779,9 @@ QDjViewPrintDialog::refresh()
       d->ui.documentButton->setEnabled(true);
       d->ui.toPageCombo->setEnabled(true);
       d->ui.toLabel->setEnabled(true);
-      d->ui.collateCheckBox->setEnabled(true);
-      if (d->exporter->inherits("QDjViewPSExporter"))
-        {
-          d->ui.collateCheckBox->setChecked(true);
-          d->ui.collateCheckBox->setEnabled(false);
-        }
+      d->ui.collateCheckBox->setEnabled(d->exporter->canCollate());
+      if (! d->exporter->canCollate())
+        d->ui.collateCheckBox->setChecked(true);
       if (d->exporter->canExportPageRange() || 
           d->exporter->canExportOnePage())
         {
@@ -2813,10 +2850,10 @@ QDjViewPrintDialog::start()
         { fPage = 0; lPage = npages-1; }
       if (d->ui.reverseCheckBox->isChecked() ^ (fPage > lPage))
         qSwap(fPage, lPage);
-      d->exporter->setPrinter(d->printer);
-      d->exporter->setPageRange(fPage, lPage);
       d->printer->setNumCopies(d->ui.numCopiesSpinBox->value());
       d->printer->setCollateCopies(d->ui.collateCheckBox->isChecked());
+      d->exporter->setPrinter(d->printer, d->ui.numCopiesSpinBox->value());
+      d->exporter->setPageRange(fPage, lPage);
       d->exporter->run();
     }
   // refresh ui
