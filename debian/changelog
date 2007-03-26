@@ -1,3 +1,9 @@
+djview4 (4.0-2) unstable; urgency=low
+
+  * binary dependency on libdjvulibre should be deb-o-matic!
+
+ --
+
 djview4 (4.0-1) unstable; urgency=low
 
   * Initial release
