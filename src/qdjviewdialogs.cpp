@@ -486,13 +486,17 @@ QDjViewInfoDialog::fillDocLabel()
     }
 }
 
+#if QT_VERSION < 0x040200
 static void
 setTableWhatsThis(QTableWidget *table, QString text)
 {
+  QTableWidgetItem *item;
   for (int i=0; i<table->rowCount(); i++)
     for (int j=0; j<table->columnCount(); j++)
-      table->item(i,j)->setWhatsThis(text);
+      if ((item = table->item(i,j)))
+        item->setWhatsThis(text);
 }
+#endif
 
 
 void 
@@ -501,6 +505,9 @@ QDjViewInfoDialog::fillDocTable()
   int filenum = d->files.size();
   QTableWidget *table = d->ui.docTable;
   table->setRowCount(filenum);
+#if QT_VERSION >= 0x040200
+  table->setSortingEnabled(false);
+#endif
   for (int i=0; i<filenum; i++)
     fillDocRow(i);
 #if QT_VERSION >= 0x040100
@@ -508,7 +515,9 @@ QDjViewInfoDialog::fillDocTable()
   table->resizeRowsToContents();
 #endif
   table->horizontalHeader()->setStretchLastSection(true);
+#if QT_VERSION < 0x040200
   setTableWhatsThis(table, d->ui.tabDocument->whatsThis());
+#endif
 }
 
 void 
@@ -518,11 +527,11 @@ QDjViewInfoDialog::fillDocRow(int i)
   QTableWidget *table = d->ui.docTable;
 
   QTableWidgetItem *numItem = new QTableWidgetItem();
-  numItem->setText(QString(" %1 ").arg(i+1));
+  numItem->setText(QString("%1 ").arg(i+1,5));
   numItem->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
   numItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
   table->setItem(i, 0, numItem);
-
+  
   QTableWidgetItem *nameItem = new QTableWidgetItem();
   QString name = (info.name) ? QString::fromUtf8(info.name) : tr("n/a");
   nameItem->setText(QString(" %1 ").arg(name));
@@ -714,6 +723,9 @@ metadataFill(QTableWidget *table, QMap<QString,QString> m)
   qSort(keys.begin(), keys.end());
   int nkeys = keys.size();
   table->setRowCount(nkeys);
+#if QT_VERSION >= 0x040200
+  table->setSortingEnabled(false);
+#endif
   for(int j = 0; j < nkeys; j++)
     {
       QTableWidgetItem *kitem = new QTableWidgetItem(keys[j]);
@@ -761,7 +773,9 @@ QDjViewMetaDialog::refresh()
         {
           QMap<QString,QString> docMeta = metadataFromAnnotations(d->docAnno);
           metadataFill(d->ui.docTable, docMeta);
+#if QT_VERSION < 0x040200
           setTableWhatsThis(d->ui.docTable, d->ui.docTab->whatsThis());
+#endif
         }
     }
   // page annotations
@@ -782,7 +796,9 @@ QDjViewMetaDialog::refresh()
                 = metadataFromAnnotations(d->pageAnno);
               metadataSubtract(pageMeta, docMeta);
               metadataFill(d->ui.pageTable, pageMeta);
+#if QT_VERSION < 0x040200
               setTableWhatsThis(d->ui.pageTable, d->ui.pageTab->whatsThis());
+#endif
             }
         }
     }
