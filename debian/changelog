@@ -2,7 +2,7 @@ djview4 (4.0-2) unstable; urgency=low
 
   * binary dependency on libdjvulibre should be deb-o-matic!
 
- --
+ -- Barak A. Pearlmutter <bap@debian.org>  Sun, 25 Mar 2007 22:46:43 +0000
 
 djview4 (4.0-1) unstable; urgency=low
 
