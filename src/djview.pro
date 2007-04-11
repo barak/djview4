@@ -99,3 +99,4 @@ x11 {
 
 # -- transations
 TRANSLATIONS += djview_fr.ts
+TRANSLATIONS += djview_uk.ts
