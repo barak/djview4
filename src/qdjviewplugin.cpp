@@ -387,6 +387,7 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
           break;
           // Try to fix transient windows properties.
           // - this does not work too well...
+#ifdef Q_WS_X11
         case QEvent::Show:
           if (w->windowFlags() & Qt::Window)
             QApplication::postEvent(w, new QEvent(QEvent::User));
@@ -395,6 +396,7 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
           if (w->windowFlags() & Qt::Window)
             x11SetTransientForHint(w);
           break;
+#endif
         default:
           break;
         }
