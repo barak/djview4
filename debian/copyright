@@ -18,9 +18,41 @@ Copyright:
   Starting with version 3.5.19, DjVuLibre is released under the 
   GNU General Public License, either version 2 or (at your option)
   any later version. Prior to version 3.5.19, DjVuLibre was
-  released under the   GNU General Public License, version 2.
+  released under the GNU General Public License, version 2.
 
   On Debian GNU/Linux systems, the complete text of the GNU General
   Public License version 2 can be found in
   `/usr/share/common-licenses/GPL-2'.
+
+  The source distribution contains files extracted from 
+  the Mozilla project, available Mozilla Public License version 1.1 
+  with permission to redistribute under either 
+  the GNU General Public License version 2 or 
+  the GNU Library General Public License version 2.1.
+  These files are NOT USED for the compilation 
+  of program djview4 under Debian. 
+
+
+
+
+
+
+
+
+
+but not under any later version.
+
+
+under the plugin library 'nsdejavu' also depends on files from the
+  Mozilla code base
+  is 
+
+
+  The source also contains program 'nsdejavu.so'.
+Program nsdejavu.so is distributed under 
+the GNU Public License version 2 only
+because it depends on the Mozilla Plugin SDK files
+which are distributed under the Mozilla Public License version 1.1
+and allow redistribution under the GNU Public License version 2
+but not under any later version.
 
