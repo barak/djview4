@@ -24,8 +24,9 @@ Copyright:
   Public License version 2 can be found in
   `/usr/share/common-licenses/GPL-2'.
 
-  The source distribution contains files extracted from 
-  the Mozilla project, available Mozilla Public License version 1.1 
+  In directory nsdejavu/npsdk, the source distribution 
+  contains files extracted from the Mozilla project.
+  These files are available under the Mozilla Public License version 1.1 
   with permission to redistribute under either 
   the GNU General Public License version 2 or 
   the GNU Library General Public License version 2.1.
