@@ -1,11 +1,9 @@
 
-This directory contains files copied 
-from the mozilla code (http://lxr.mozilla.org/seamonkey/)
-   source/modules/plugin/base/public/npapi.h
-   source/modules/plugin/base/public/nptypes.h
-   source/modules/plugin/base/public/npupp.h
-   source/nsprpub/pr/include/prtypes.h
-   source/nsprpub/pr/include/obsolete/protypes.h
+This directory contains files copied from the mozilla plugin sdk 
+from http://lxr.mozilla.org/seamonkey/source/modules/plugin/base/public:
+   npapi.h, nptypes.h, npupp.h, npruntime.h
+and files copied from the mozilla nspr library
+   prtypes.h, protypes.h, prcpucfg.h
 These files contain the following copyright notice:
 
 | Version: MPL 1.1/GPL 2.0/LGPL 2.1
@@ -41,10 +39,7 @@ These files contain the following copyright notice:
 | the provisions above, a recipient may use your version of this file under
 | the terms of any one of the MPL, the GPL or the LGPL.
 
-
-The file npruntime.h is also copied from the mozilla code
-   source/modules/plugin/base/public/npruntime.h
-but contains a different copyright notice (BSD style)
+The file npruntime.h contains a different copyright notice (BSD style)
 
 | Copyright © 2004, Apple Computer, Inc. and The Mozilla Foundation. 
 | All rights reserved.
@@ -76,6 +71,6 @@ but contains a different copyright notice (BSD style)
 | SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-The file jri.h contains stub to isolate the other files
-from complicated java stuff.  It contains a notice
-that places it in the public domain.
+The file jri.h simply contains dummy type definitions in
+order to isolate the other files from complicated java stuff.  
+It contains a notice that places it in the public domain.
