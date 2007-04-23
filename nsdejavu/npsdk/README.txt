@@ -1,2 +1,2 @@
-This is extracted from the netscape plugin sdk.
-We should probably resynchronize with firefox headers.
+This is extracted from the mozilla plugin SDK.
+Tri-licensed under NPL 1.1 / GPL 2.0 / LGPL 2.1.

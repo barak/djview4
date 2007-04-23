@@ -108,5 +108,4 @@ FORCE:
 # Dependencies
 
 nsdejavu.lo nsdejavu.o: nsdejavu.c 
-nsdejavu.lo nsdejavu.o: npsdk/npunix.c npsdk/npapi.h npsdk/npupp.h
-nsdejavu.lo nsdejavu.o: npsdk/jri.h npsdk/jritypes.h npsdk/jri_md.h
+nsdejavu.lo nsdejavu.o: npsdk/npapi.h npsdk/npupp.h npsdk/npruntime.h 
