@@ -1,4 +1,4 @@
-This package was debianized by Barak Pearlmutter <bap@cs.unm.edu> on
+This package was debianized by Barak Pearlmutter <bap@debian.org> on
 Tue, 16 Jan 2007 20:01:58 -0500.
 
 It was downloaded from http://djvu.sourceforge.net/
@@ -31,5 +31,4 @@ Copyright:
   the GNU General Public License version 2 or 
   the GNU Library General Public License version 2.1.
   These files are NOT USED for the compilation 
-  of program djview4 under Debian. 
-
+  of the program djview4 under Debian. 
