@@ -1,13 +1,7 @@
-djview4 (4.0-2) unstable; urgency=low
-
-  * binary dependency on libdjvulibre should be deb-o-matic!
-  * license clarification of mozilla plugin code
-    
- -- Barak A. Pearlmutter <bap@debian.org>  Tue, 24 Apr 2007 08:49:49 +0100
-
 djview4 (4.0-1) unstable; urgency=low
 
-  * Initial release
+  * Initial release.
+  * Binary dependency on libdjvulibre should be deb-o-matic!
+  * License clarification of mozilla plugin code.
 
- -- Leon Bottou <leon@bottou.org>  Tue, 16 Jan 2007 20:01:58 -0500
-
+ -- Barak A. Pearlmutter <bap@debian.org>  Thu, 26 Apr 2007 17:50:46 +0300
