@@ -233,9 +233,12 @@ main(int argc, char *argv[])
   if (s && strcmp(s,"0"))
     verbose = true;
 #endif
-
-  // Color specification
+  
+  // Color specification 
+  //  (cause XRender errors under Qt-4.2!)
+#if QT_VERSION >= 0x40300
   QApplication::setColorSpec(QApplication::ManyColor);
+#endif
   
   // Plugin mode
 #ifdef Q_WS_X11
