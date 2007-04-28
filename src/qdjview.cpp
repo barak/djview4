@@ -373,10 +373,16 @@ QDjView::createActions()
     << Trigger(QCoreApplication::instance(), SLOT(closeAllWindows()));
 
   actionSave = makeAction(tr("Save &as...", "File|"))
-    << QKeySequence(tr("Ctrl+S", "File|Save"))
+    << QKeySequence(tr("Ctrl+S", "File|SaveAs"))
     << QIcon(":/images/icon_save.png")
     << tr("Save the DjVu document.")
-    << Trigger(this, SLOT(save()));
+    << Trigger(this, SLOT(saveAs()));
+  
+  actionExport = makeAction(tr("&Export as...", "File|"))
+    << QKeySequence(tr("Ctrl+E", "File|ExportAs"))
+    << QIcon(":/images/icon_save.png")
+    << tr("Export DjVu page or document to other formats.")
+    << Trigger(this, SLOT(exportAs()));
 
   actionPrint = makeAction(tr("&Print...", "File|"))
     << QKeySequence(tr("Ctrl+P", "File|Print"))
@@ -647,6 +653,7 @@ QDjView::createMenus()
   if (viewerMode == STANDALONE)
     fileMenu->addSeparator();
   fileMenu->addAction(actionSave);
+  fileMenu->addAction(actionExport);
   fileMenu->addAction(actionPrint);
   if (viewerMode == STANDALONE)
     fileMenu->addSeparator();
@@ -755,6 +762,7 @@ QDjView::createMenus()
   contextMenu->addAction(actionMetadata);
   contextMenu->addSeparator();
   contextMenu->addAction(actionSave);
+  contextMenu->addAction(actionExport);
   contextMenu->addAction(actionPrint);
   contextMenu->addSeparator();
   contextMenu->addAction(actionViewSideBar);
@@ -2254,7 +2262,7 @@ QDjView::print()
 
 /*! Pops up a save dialog */
 void
-QDjView::save()
+QDjView::saveAs()
 {
   QDjViewSaveDialog *sd = saveDialog;
   if (! sd)
@@ -2266,6 +2274,23 @@ QDjView::save()
   sd->show();
   sd->raise();
 }
+
+
+/*! Pops up export dialog */
+void
+QDjView::exportAs()
+{
+  QDjViewExportDialog *sd = exportDialog;
+  if (! sd)
+    {
+      exportDialog = sd = new QDjViewExportDialog(this);
+      sd->setAttribute(Qt::WA_DeleteOnClose);
+      sd->setWindowTitle(tr("Export - DjView", "dialog caption"));
+    }
+  sd->show();
+  sd->raise();
+}
+
 
 
 /*! Start searching string \a find. 

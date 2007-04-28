@@ -1,15 +1,12 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QDjViewSaveDialog</class>
  <widget class="QDialog" name="QDjViewSaveDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>449</width>
-    <height>370</height>
+    <width>405</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -23,168 +20,158 @@
     <number>6</number>
    </property>
    <item>
-    <widget class="QTabWidget" name="tabWidget" >
-     <widget class="QWidget" name="saveTab" >
-      <attribute name="title" >
-       <string>Save</string>
-      </attribute>
-      <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item>
-        <widget class="QGroupBox" name="saveGroupBox" >
-         <property name="title" >
-          <string>Save</string>
-         </property>
-         <layout class="QVBoxLayout" >
-          <property name="margin" >
-           <number>9</number>
+    <widget class="QGroupBox" name="saveGroupBox" >
+     <property name="title" >
+      <string>Save</string>
+     </property>
+     <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QRadioButton" name="documentButton" >
+        <property name="text" >
+         <string>&amp;Document</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="currentPageButton" >
+        <property name="text" >
+         <string>C&amp;urrent page</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QRadioButton" name="pageRangeButton" >
+          <property name="text" >
+           <string>&amp;Pages</string>
           </property>
-          <property name="spacing" >
-           <number>6</number>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="fromPageCombo" />
+        </item>
+        <item>
+         <widget class="QLabel" name="toLabel" >
+          <property name="text" >
+           <string>to</string>
           </property>
-          <item>
-           <widget class="QRadioButton" name="documentButton" >
-            <property name="text" >
-             <string>&amp;Document</string>
-            </property>
-            <property name="checked" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="currentPageButton" >
-            <property name="text" >
-             <string>C&amp;urrent page</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QRadioButton" name="pageRangeButton" >
-              <property name="text" >
-               <string>&amp;Pages</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="fromPageCombo" />
-            </item>
-            <item>
-             <widget class="QLabel" name="toLabel" >
-              <property name="text" >
-               <string>to</string>
-              </property>
-              <property name="alignment" >
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="toPageCombo" />
-            </item>
-            <item>
-             <spacer>
-              <property name="orientation" >
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" >
-               <size>
-                <width>20</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="destinationGroupBox" >
-         <property name="title" >
-          <string>Destination</string>
-         </property>
-         <layout class="QVBoxLayout" >
-          <property name="margin" >
-           <number>9</number>
+          <property name="alignment" >
+           <set>Qt::AlignCenter</set>
           </property>
-          <property name="spacing" >
-           <number>6</number>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="toPageCombo" />
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
           </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Minimum</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>40</width>
+            <height>16</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="destinationGroupBox" >
+     <property name="title" >
+      <string>Destination</string>
+     </property>
+     <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="formatLabel" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>0</hsizetype>
+            <vsizetype>5</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text" >
+           <string>Format:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="formatCombo" >
           <item>
-           <layout class="QHBoxLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="formatLabel" >
-              <property name="text" >
-               <string>Format:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="formatCombo" >
-              <property name="sizePolicy" >
-               <sizepolicy>
-                <hsizetype>3</hsizetype>
-                <vsizetype>0</vsizetype>
-                <horstretch>1</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize" >
-               <size>
-                <width>280</width>
-                <height>0</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <property name="text" >
+            <string>Bundled DjVu Document</string>
+           </property>
           </item>
           <item>
-           <layout class="QHBoxLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>3</number>
-            </property>
-            <item>
-             <widget class="QLineEdit" name="fileNameEdit" />
-            </item>
-            <item>
-             <widget class="QToolButton" name="browseButton" >
-              <property name="icon" >
-               <iconset resource="qdjview.qrc" >:/images/icon_open.png</iconset>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <property name="text" >
+            <string>Indirect DjVu Document</string>
+           </property>
           </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QLineEdit" name="fileNameEdit" />
+        </item>
+        <item>
+         <widget class="QToolButton" name="browseButton" >
+          <property name="icon" >
+           <iconset resource="qdjview.qrc" >:/images/icon_open.png</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
@@ -201,24 +188,14 @@
         <number>6</number>
        </property>
        <item>
-        <widget class="QPushButton" name="resetButton" >
-         <property name="text" >
-          <string>&amp;Defaults</string>
-         </property>
-         <property name="autoDefault" >
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
         <spacer>
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
          </property>
          <property name="sizeHint" >
           <size>
-           <width>96</width>
-           <height>32</height>
+           <width>40</width>
+           <height>10</height>
           </size>
          </property>
         </spacer>
@@ -260,7 +237,11 @@
         <number>6</number>
        </property>
        <item>
-        <widget class="QProgressBar" name="progressBar" />
+        <widget class="QProgressBar" name="progressBar" >
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="stopButton" >
@@ -278,7 +259,6 @@
    </item>
   </layout>
  </widget>
- <pixmapfunction></pixmapfunction>
  <resources>
   <include location="qdjvuwidget.qrc" />
   <include location="qdjview.qrc" />

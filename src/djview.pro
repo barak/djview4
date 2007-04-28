@@ -73,23 +73,26 @@ RESOURCES += qdjvuwidget.qrc
 
 # -- djview files
 HEADERS += qdjviewprefs.h
-HEADERS += qdjviewdialogs.h 
 HEADERS += qdjviewsidebar.h
+HEADERS += qdjviewdialogs.h 
+HEADERS += qdjviewexporters.h
 HEADERS += qdjview.h
 SOURCES += qdjviewprefs.cpp 
-SOURCES += qdjviewdialogs.cpp
 SOURCES += qdjviewsidebar.cpp
+SOURCES += qdjviewdialogs.cpp
+SOURCES += qdjviewexporters.cpp
 SOURCES += qdjview.cpp
 RESOURCES += qdjview.qrc 
 FORMS += qdjviewerrordialog.ui
 FORMS += qdjviewinfodialog.ui 
 FORMS += qdjviewmetadialog.ui 
+FORMS += qdjviewsavedialog.ui 
+FORMS += qdjviewprintdialog.ui 
+FORMS += qdjviewexportdialog.ui 
 FORMS += qdjviewexportps1.ui
 FORMS += qdjviewexportps2.ui
 FORMS += qdjviewexportps3.ui
 FORMS += qdjviewexporttiff.ui
-FORMS += qdjviewsavedialog.ui 
-FORMS += qdjviewprintdialog.ui 
 FORMS += qdjviewprefsdialog.ui 
 SOURCES += djview.cpp
 x11 {

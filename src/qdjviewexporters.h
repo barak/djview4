@@ -31,12 +31,14 @@
 #include <QStringList>
 #include <QWidget>
 
+class QPrinter;
+class QPrintDialog;
+
 #include <libdjvu/miniexp.h>
 #include <libdjvu/ddjvuapi.h>
 
 #include "qdjview.h"
 #include "qdjviewdialogs.h"
-
 
 
 
@@ -52,12 +54,13 @@ public:
   virtual bool exportOnePageOnly();
   virtual void setFromTo(int fromPage, int toPage);
   virtual void setErrorCaption(QString);
-  virtual void     resetProperties();
-  virtual void     loadProperties(QString group);
-  virtual void     saveProperties(QString group);
+  virtual void resetProperties();
+  virtual void     loadProperties(QString group=QString::null);
+  virtual void     saveProperties(QString group=QString::null);
   virtual int      propertyPages();
   virtual QWidget* propertyPage(int num);
   virtual ddjvu_status_t status();
+  virtual QString name();
 public slots:
   virtual bool save(QString fileName) = 0;
   virtual bool print();
@@ -67,11 +70,12 @@ signals:
   void progress(int i);
 protected:
   friend class QDjViewExporterFactory;
-  QDjViewExporter(QDialog *parent, QDjView *djview);
+  QDjViewExporter(QDialog *parent, QDjView *djview, QString name);
   QDialog *parent;
   QDjView *djview;
   QDjViewErrorDialog *errorDialog;
   QString errorCaption;
+  QString exporterName;
   int fromPage;
   int toPage;
 public:

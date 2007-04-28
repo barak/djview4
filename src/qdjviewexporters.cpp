@@ -218,6 +218,12 @@ QDjViewExporter::status()
 }
 
 
+QString 
+QDjViewExporter::name()
+{
+  return exporterName;
+}
+
 bool
 QDjViewExporter::print() 
 { 
@@ -251,12 +257,15 @@ QDjViewExporter::error(QString message, QString filename, int lineno)
 }
 
 
-QDjViewExporter::QDjViewExporter(QDialog *parent, QDjView *djview)
+QDjViewExporter::QDjViewExporter(QDialog *parent, QDjView *djview, QString name)
   : parent(parent), djview(djview), 
     errorDialog(0),
-    fromPage(0), toPage(-1)
+    exporterName(name),
+    fromPage(0), 
+    toPage(-1)
 {
 }
+
 
 
 
@@ -276,7 +285,8 @@ public:
   static void setup();
 public:
   ~QDjViewDjVuExporter();
-  QDjViewDjVuExporter(QDialog *parent, QDjView *djview, bool indirect);
+  QDjViewDjVuExporter(QDialog *parent, QDjView *djview, 
+                      QString name, bool indirect);
   virtual bool save(QString fileName);
   virtual void stop();
   virtual ddjvu_status_t status();
@@ -292,10 +302,10 @@ protected:
 QDjViewExporter*
 QDjViewDjVuExporter::create(QDialog *parent, QDjView *djview, QString name)
 {
-  if (name == "DJVUBUNDLED")
-    return new QDjViewDjVuExporter(parent, djview, false);
-  if (name == "DJVUINDIRECT")
-    return new QDjViewDjVuExporter(parent, djview, true);
+  if (name == "DJVU/BUNDLED")
+    return new QDjViewDjVuExporter(parent, djview, name, false);
+  if (name == "DJVU/INDIRECT")
+    return new QDjViewDjVuExporter(parent, djview, name, true);
   return 0;
 }
 
@@ -303,20 +313,20 @@ QDjViewDjVuExporter::create(QDialog *parent, QDjView *djview, QString name)
 void
 QDjViewDjVuExporter::setup()
 {
-  addExporterData("DJVUBUNDLED", "djvu",
+  addExporterData("DJVU/BUNDLED", "djvu",
                   tr("DjVu Bundled Document"),
-                  tr("DjVu Files (*.djvu)"),
+                  tr("DjVu Files (*.djvu *.djv)"),
                   QDjViewDjVuExporter::create);
-  addExporterData("DJVUINDIRECT", "djvu",
+  addExporterData("DJVU/INDIRECT", "djvu",
                   tr("DjVu Indirect Document"),
-                  tr("DjVu Files (*.djvu)"),
+                  tr("DjVu Files (*.djvu *.djv)"),
                   QDjViewDjVuExporter::create);
 }
 
 
 QDjViewDjVuExporter::QDjViewDjVuExporter(QDialog *parent, QDjView *djview, 
-                                         bool indirect)
-  : QDjViewExporter(parent, djview),
+                                         QString name, bool indirect)
+  : QDjViewExporter(parent, djview, name),
     job(0), 
     output(0),
     indirect(indirect), 
@@ -468,7 +478,8 @@ public:
   static void setup();
 public:
   ~QDjViewPSExporter();
-  QDjViewPSExporter(QDialog *parent, QDjView *djview, bool eps);
+  QDjViewPSExporter(QDialog *parent, QDjView *djview, 
+                    QString name, bool eps);
   virtual bool exportOnePageOnly();
   virtual void     resetProperties();
   virtual void     loadProperties(QString group);
@@ -507,9 +518,9 @@ QDjViewExporter*
 QDjViewPSExporter::create(QDialog *parent, QDjView *djview, QString name)
 {
   if (name == "PS")
-    return new QDjViewPSExporter(parent, djview, false);
+    return new QDjViewPSExporter(parent, djview, name, false);
   if (name == "EPS")
-    return new QDjViewPSExporter(parent, djview, true);
+    return new QDjViewPSExporter(parent, djview, name, true);
   return 0;
 }
 
@@ -553,8 +564,8 @@ QDjViewPSExporter::~QDjViewPSExporter()
 
 
 QDjViewPSExporter::QDjViewPSExporter(QDialog *parent, QDjView *djview, 
-                                     bool eps)
-  : QDjViewExporter(parent, djview),
+                                     QString name, bool eps)
+  : QDjViewExporter(parent, djview, name),
     printer(0),
     job(0), 
     output(0),
@@ -648,7 +659,9 @@ QDjViewPSExporter::loadProperties(QString group)
 {
   // load settings (ui1)
   QSettings s(DJVIEW_ORG, DJVIEW_APP);
-  s.beginGroup("Export-" + group);
+  if (group.isEmpty()) 
+    group = "Export-" + name();
+  s.beginGroup(group);
   bool color = s.value("color", true).toBool();
   ui1.colorButton->setChecked(color);
   ui1.grayScaleButton->setChecked(!color);
@@ -684,7 +697,9 @@ QDjViewPSExporter::saveProperties(QString group)
 {
   // save properties
   QSettings s(DJVIEW_ORG, DJVIEW_APP);
-  s.beginGroup("Export-" + group);
+  if (group.isEmpty()) 
+    group = "Export-" + name();
+  s.beginGroup(group);
   s.setValue("color", ui1.colorButton->isChecked());
   s.setValue("frame", ui1.frameCheckBox->isChecked());
   s.setValue("cropMarks", ui1.cropMarksCheckBox->isChecked());
@@ -914,7 +929,6 @@ bool
 QDjViewPSExporter::print()
 {
   delete printer;
-  printer = 0;
   printer = new QPrinter();
   fileName = QString::null;
   // setup qprinter
@@ -926,6 +940,22 @@ QDjViewPSExporter::print()
     printer->setOrientation(QPrinter::Landscape);
   else
     printer->setOrientation(QPrinter::Portrait);
+  // load settings
+  QDjViewPrefs *prefs = QDjViewPrefs::instance();
+  if (! prefs->printFile.isEmpty())
+    printer->setOutputFileName(prefs->printFile);
+  else if (!prefs->printerName.isEmpty())
+    printer->setPrinterName(prefs->printerName);
+  if (prefs->printReverse)
+    printer->setPageOrder(QPrinter::LastPageFirst);
+  else
+    printer->setPageOrder(QPrinter::FirstPageFirst);
+  printer->setCollateCopies(prefs->printCollate);
+#if QT_VERSION >= 0x40200
+  printer->setOutputFormat(QPrinter::PostScriptFormat);
+#elif QT_VERSION >= 0x40100
+  printer->setOutputFormat(QPrinter::NativeFormat);
+#endif
   // prepare printdialog
   QPrintDialog *printDialog = new QPrintDialog(printer, parent);
   printDialog->addEnabledOption(QPrintDialog::PrintToFile);
@@ -938,6 +968,11 @@ QDjViewPSExporter::print()
       printer = 0;
       return false;
     }
+  // save settings
+  prefs->printFile = printer->outputFileName();
+  prefs->printerName = printer->printerName();
+  prefs->printReverse = (printer->pageOrder() == QPrinter::LastPageFirst);
+  prefs->printCollate = printer->collateCopies();
   // start printing
   delete printDialog;
   return start();
@@ -1081,7 +1116,7 @@ class QDjViewPageExporter : public QDjViewExporter
   Q_OBJECT
 public:
   ~QDjViewPageExporter();
-  QDjViewPageExporter(QDialog *parent, QDjView *djview);
+  QDjViewPageExporter(QDialog *parent, QDjView *djview, QString name);
   virtual ddjvu_status_t status() { return curStatus; }
 public slots:
   virtual bool start();
@@ -1106,8 +1141,9 @@ QDjViewPageExporter::~QDjViewPageExporter()
 }
 
 
-QDjViewPageExporter::QDjViewPageExporter(QDialog *parent, QDjView *djview)
-  : QDjViewExporter(parent, djview),
+QDjViewPageExporter::QDjViewPageExporter(QDialog *parent, QDjView *djview,
+                                         QString name)
+  : QDjViewExporter(parent, djview, name),
     curStatus(DDJVU_JOB_NOTSTARTED), 
     curPage(0), curProgress(0)
 {
@@ -1218,7 +1254,7 @@ public:
   static void setup();
 public:
   ~QDjViewTiffExporter();
-  QDjViewTiffExporter(QDialog *parent, QDjView *djview);
+  QDjViewTiffExporter(QDialog *parent, QDjView *djview, QString name);
   virtual void     resetProperties();
   virtual void     loadProperties(QString group);
   virtual void     saveProperties(QString group);
@@ -1244,7 +1280,7 @@ QDjViewExporter*
 QDjViewTiffExporter::create(QDialog *parent, QDjView *djview, QString name)
 {
   if (name == "TIFF")
-    return new QDjViewTiffExporter(parent, djview);
+    return new QDjViewTiffExporter(parent, djview, name);
   return 0;
 }
 
@@ -1266,8 +1302,9 @@ QDjViewTiffExporter::~QDjViewTiffExporter()
 }
 
 
-QDjViewTiffExporter::QDjViewTiffExporter(QDialog *parent, QDjView *djview)
-  : QDjViewPageExporter(parent, djview), 
+QDjViewTiffExporter::QDjViewTiffExporter(QDialog *parent, QDjView *djview,
+                                         QString name)
+  : QDjViewPageExporter(parent, djview, name), 
     tiff(0)
 {
   page = new QWidget();
@@ -1300,7 +1337,9 @@ void
 QDjViewTiffExporter::loadProperties(QString group)
 {
   QSettings s(DJVIEW_ORG, DJVIEW_APP);
-  s.beginGroup("Export-" + group);
+  if (group.isEmpty()) 
+    group = "Export-" + name();
+  s.beginGroup(group);
   ui.dpiSpinBox->setValue(s.value("dpi", 600).toInt());
   ui.bitonalCheckBox->setChecked(s.value("bitonal", false).toBool());
   ui.jpegCheckBox->setChecked(s.value("jpeg", true).toBool());
@@ -1312,7 +1351,9 @@ void
 QDjViewTiffExporter::saveProperties(QString group)
 {
   QSettings s(DJVIEW_ORG, DJVIEW_APP);
-  s.beginGroup("Export-" + group);
+  if (group.isEmpty()) 
+    group = "Export-" + name();
+  s.beginGroup(group);
   s.setValue("dpi", ui.dpiSpinBox->value());
   s.setValue("bitonal", ui.bitonalCheckBox->isChecked());
   s.setValue("jpeg", ui.jpegCheckBox->isChecked());
@@ -1477,6 +1518,8 @@ QDjViewTiffExporter::doPage()
         rowsize = rect.w;
       if (! (image = (char*)malloc(rowsize * rect.h)))
         message = tr("Out of memory.");
+      else if (! ddjvu_page_render(*page, mode, &rect, &rect, fmt, rowsize, image))
+        message = tr("Cannot render image");
       else if (rowsize != TIFFScanlineSize(tiff))
         message = tr("Internal error.");
       else
@@ -1514,7 +1557,8 @@ public:
   static QDjViewExporter *create(QDialog*, QDjView*, QString);
   static void setup();
 public:
-  QDjViewImgExporter(QDialog *parent, QDjView *djview, QByteArray format);
+  QDjViewImgExporter(QDialog *parent, QDjView *djview, 
+                     QString name, QByteArray format);
   virtual bool exportOnePageOnly();
   virtual bool save(QString fname);
 protected:
@@ -1529,8 +1573,9 @@ QDjViewImgExporter::create(QDialog *parent, QDjView *djview, QString name)
 {
   QByteArray format = name.toLocal8Bit();
   QList<QByteArray> formats = QImageWriter::supportedImageFormats();
+  
   if (formats.contains(format))
-    return new QDjViewImgExporter(parent, djview, format);
+    return new QDjViewImgExporter(parent, djview, name, format);
   return 0;
 }
 
@@ -1542,19 +1587,21 @@ QDjViewImgExporter::setup()
   QList<QByteArray> formats = QImageWriter::supportedImageFormats();
   foreach(format, formats)
     {
-      QString name = QString::fromLocal8Bit(format).toUpper();
+      QString name = QString::fromLocal8Bit(format);
+      QString uname = name.toUpper();
       QString suffix = name.toLower();
       addExporterData(name, suffix,
-                      tr("%1 Image").arg(name),
-                      tr("%1 Files (*.%2)").arg(name).arg(suffix),
+                      tr("%1 Image", "JPG Image").arg(uname),
+                      tr("%1 Files (*.%2)", "JPG Files").arg(uname).arg(suffix),
                       QDjViewImgExporter::create);
     }
 }
 
 
 QDjViewImgExporter::QDjViewImgExporter(QDialog *parent, QDjView *djview, 
-                                       QByteArray format)
-  : QDjViewPageExporter(parent, djview), format(format)
+                                       QString name, QByteArray format)
+  : QDjViewPageExporter(parent, djview, name), 
+    format(format)
 {
 }
 
@@ -1650,10 +1697,17 @@ static void
 createExporterData()
 {
   QDjViewDjVuExporter::setup();
-  QDjViewPSExporter::setup();
   QDjViewTiffExporter::setup();
+  QDjViewPSExporter::setup();
   QDjViewImgExporter::setup();
 }
+
+
+
+// ----------------------------------------
+// MOC
+
+#include "qdjviewexporters.moc"
 
 
 

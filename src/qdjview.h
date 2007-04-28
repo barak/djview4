@@ -121,7 +121,8 @@ public slots:
   bool  showSideBar(QString args, QStringList &errors);
   bool  showSideBar(QString args);
   void  print(void);
-  void  save(void);
+  void  saveAs(void);
+  void  exportAs(void);
   void  find(QString find = QString());
   
 signals:
@@ -202,6 +203,7 @@ protected:
   QPointer<QDjViewInfoDialog>  infoDialog;
   QPointer<QDjViewMetaDialog>  metaDialog;
   QPointer<QDjViewSaveDialog>  saveDialog;
+  QPointer<QDjViewExportDialog>  exportDialog;
   QPointer<QDjViewPrintDialog> printDialog;
   // widgets
   QLabel             *splash;
@@ -248,6 +250,7 @@ protected:
   QAction *actionClose;
   QAction *actionQuit;
   QAction *actionSave;
+  QAction *actionExport;
   QAction *actionPrint;
   QAction *actionFind;
   QAction *actionFindNext;

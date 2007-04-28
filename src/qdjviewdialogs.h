@@ -144,13 +144,36 @@ protected slots:
   void progress(int);
   void stop();
   void browse();
+  virtual void done(int);
+protected:
+  virtual void closeEvent(QCloseEvent *event);
+  struct Private;
+  Private *d;
+};
+
+
+
+
+
+// ----------- QDJVIEWEXPORTDIALOG
+
+
+class QDjViewExportDialog : public QDialog
+{
+  Q_OBJECT
+public:
+  QDjViewExportDialog(QDjView *djview);
+protected slots:
+  void refresh();
+  void clear();
+  void start();
+  void progress(int);
+  void stop();
+  void browse();
   void reset();
   virtual void done(int);
 protected:
   virtual void closeEvent(QCloseEvent *event);
-  QDjViewExporter *currentExporter();
-  int addExporter(QString name, QString filter, QString extension, 
-                  QDjViewExporter *exporter);
   struct Private;
   Private *d;
 };
@@ -164,7 +187,6 @@ class QDjViewPrintDialog : public QDialog
 {
   Q_OBJECT
 public:
-  ~QDjViewPrintDialog();
   QDjViewPrintDialog(QDjView *djview);
 protected slots:
   void refresh();
@@ -172,14 +194,10 @@ protected slots:
   void start();
   void progress(int);
   void stop();
-  void choose();
   void reset();
   virtual void done(int);
 protected:
   virtual void closeEvent(QCloseEvent *event);
-  void setCurrentExporter();
-  bool isPrinterPostScript();
-  bool isPrinterValid();
   struct Private;
   Private *d;
 };
