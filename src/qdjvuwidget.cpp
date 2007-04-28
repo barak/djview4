@@ -612,7 +612,9 @@ struct Cache
 {
   QRect    rect;   // desk coordinates
   QImage   image;
+#if QDJVUWIDGET_PIXMAP_CACHE
   QPixmap  pixmap;
+#endif
 };
 
 enum {
@@ -3584,19 +3586,27 @@ QDjVuPrivate::paintPage(QPainter &paint, Page *p, const QRegion &region)
       Cache *cache = cachelist[i];
       QImage img = cache->image;
       QRect r = cache->rect;
+#if QDJVUWIDGET_PIXMAP_CACHE
       if (cache->pixmap.isNull())
         cache->pixmap = QPixmap::fromImage(img, Qt::ThresholdDither);
       bool hastransient = paintMapAreas(img, p, r, false);
+#else
+      paintMapAreas(img, p, r, false);
+#endif
       r.translate(deskToView);
       QRegion dr = region.intersect(r) - displayed;
       if (dr.isEmpty()) continue;
       QRect d = dr.boundingRect();
       displayed += d;
       QRect s = d.translated(-r.topLeft());
+#if QDJVUWIDGET_PIXMAP_CACHE
       if (hastransient)
         paint.drawImage(d.topLeft(), img, s, Qt::ThresholdDither);
-      else 
+      else
         paint.drawPixmap(d.topLeft(), cachelist[i]->pixmap, s);
+#else
+      paint.drawImage(d.topLeft(), img, s, Qt::ThresholdDither);
+#endif
     }
   // mode for new segments
   ddjvu_render_mode_t mode = DDJVU_RENDER_COLOR;
