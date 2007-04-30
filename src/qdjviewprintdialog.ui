@@ -118,6 +118,9 @@
        </item>
        <item>
         <widget class="QGroupBox" name="destinationGroupBox" >
+         <property name="enabled" >
+          <bool>false</bool>
+         </property>
          <property name="title" >
           <string>Destination</string>
          </property>
