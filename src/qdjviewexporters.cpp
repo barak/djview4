@@ -51,6 +51,7 @@
 #endif
 
 #include <QApplication>
+#include <QCheckBox>
 #include <QDebug>
 #include <QDir>
 #include <QDialog>
@@ -62,11 +63,13 @@
 #include <QMap>
 #include <QMessageBox>
 #include <QObject>
+#include <QPointer>
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QPrintEngine>
 #include <QRegExp>
 #include <QSettings>
+#include <QSpinBox>
 #include <QString>
 #include <QTimer>
 
@@ -224,8 +227,16 @@ QDjViewExporter::name()
   return exporterName;
 }
 
+
 bool
-QDjViewExporter::print() 
+QDjViewExporter::printSetup(QPrintDialog *, bool) 
+{ 
+  return false;
+}
+
+
+bool
+QDjViewExporter::print(QPrinter *) 
 { 
   qWarning("QDjViewExporter does not support printing.");
   return false;
@@ -487,7 +498,8 @@ public:
   virtual int      propertyPages();
   virtual QWidget* propertyPage(int num);
   virtual bool save(QString fileName);
-  virtual bool print();
+  virtual bool printSetup(QPrintDialog *dialog, bool dir);
+  virtual bool print(QPrinter *printer);
   virtual ddjvu_status_t status();
   virtual void stop();
 public slots:
@@ -498,13 +510,15 @@ protected:
   void closeFile();
 protected:
   QString fileName;
-  QPrinter *printer;
   QDjVuJob *job;
   FILE *output;
   int copies;
   bool collate;
+  bool lastfirst;
+  bool duplex;
   bool failed;
   bool encapsulated;
+  QPrinter *printer;
   QPointer<QWidget> page1;
   QPointer<QWidget> page2;
   QPointer<QWidget> page3;
@@ -555,7 +569,6 @@ QDjViewPSExporter::~QDjViewPSExporter()
     default:
       break;
     }
-  // delete printer;
   // delete property pages
   delete page1;
   delete page2;
@@ -566,13 +579,15 @@ QDjViewPSExporter::~QDjViewPSExporter()
 QDjViewPSExporter::QDjViewPSExporter(QDialog *parent, QDjView *djview, 
                                      QString name, bool eps)
   : QDjViewExporter(parent, djview, name),
-    printer(0),
     job(0), 
     output(0),
     copies(1),
     collate(true),
+    lastfirst(false),
+    duplex(false),
     failed(false),
-    encapsulated(eps)
+    encapsulated(eps),
+    printer(0)
 {
   // create pages
   page1 = new QWidget();
@@ -775,8 +790,6 @@ QDjViewPSExporter::openFile()
   else if (printer)
     {
       QString printerName = printer->printerName();
-      copies = printer->numCopies();      // Arrgh!
-      collate = printer->collateCopies(); // Arrgh!
       // disable sigpipe
 #ifdef SIGPIPE
 # ifndef HAVE_SIGACTION
@@ -812,24 +825,22 @@ QDjViewPSExporter::openFile()
         }
       // Arguments for cups.
 #if QT_VERSION >= 0x40200
-# define PPK_CupsOptions QPrintEngine::PrintEnginePropertyKey(0xfe00)
-# define PPK_CupsStringPageSize QPrintEngine::PrintEnginePropertyKey(0xfe03)
+      bool cups = false;
       QList<QByteArray> cargs;
       QPrintEngine *engine = printer->printEngine();
+# define PPK_CupsOptions QPrintEngine::PrintEnginePropertyKey(0xfe00)
+# define PPK_CupsStringPageSize QPrintEngine::PrintEnginePropertyKey(0xfe03)
       QVariant cPageSize = engine->property(PPK_CupsStringPageSize);
+      QVariant cOptions = engine->property(PPK_CupsOptions);
       if (! cPageSize.toString().isEmpty())
         {
+          cups = true;
           cargs << "-o" << "media=" + cPageSize.toString().toLocal8Bit();
-          if (collate)
-            cargs << "-o" << "Collate=True";
-          if (copies > 1)
-            cargs << "-#" << QByteArray::number(copies);
-          copies = 1;
         }
-      QVariant cOptions = engine->property(PPK_CupsOptions);
       QStringList options = cOptions.toStringList();
       if (! options.isEmpty())
         {
+          cups = true;
           QStringList::const_iterator it = options.constBegin();
           while (it != options.constEnd())
             {
@@ -838,12 +849,35 @@ QDjViewPSExporter::openFile()
               it += 2;
             }
         }
-      for(int i=0; i<cargs.size(); i++)
-        lprargs << cargs.at(i).data();
+      QByteArray bCopies = QByteArray::number(copies);
+      if (cups)
+        {
+          if (collate)
+            cargs << "-o" << "Collate=True";
+          if (lastfirst)
+            cargs << "-o" << "outputorder=reverse";
+          lastfirst = false;
+          if (duplex)
+            cargs << "-o" << "sides=two-sided-long-edge";
+          // add cups option for number of copies
+          if (copies > 1)
+            {
+              lprargs << "-#" << bCopies.data();
+              lpargs << "-n" << bCopies.data();
+            }
+          // add remaining cups options
+          for(int i=0; i<cargs.size(); i++)
+            {
+              lprargs << cargs.at(i).data();
+              lpargs << cargs.at(i).data();
+            }
+          // reset copies since cups takes care of it
+          copies = 1;
+        }
 #endif
+      // open pipe for lp/lpr.
       lpargs << 0;
       lprargs << 0;
-      // open pipe for lp/lpr.
       int fds[2];
       if (pipe(fds) == 0)
         {
@@ -901,24 +935,16 @@ QDjViewPSExporter::openFile()
 void 
 QDjViewPSExporter::closeFile()
 {
-  if (printer)
-    delete printer;
-  printer = 0;
   if (output)
     ::fclose(output);
   output = 0;
-  // Special handling
-#if Q_OS_WIN
-  // TODO: windows postscript passthru
-  //       with {Open,Write,Close}Printer
-#endif
+  printer = 0;
 }
 
 
 bool
 QDjViewPSExporter::save(QString fname)
 {
-  delete printer;
   printer = 0;
   fileName = fname;
   return start();
@@ -926,56 +952,52 @@ QDjViewPSExporter::save(QString fname)
 
 
 bool
-QDjViewPSExporter::print()
+QDjViewPSExporter::print(QPrinter *qprinter)
 {
-  delete printer;
-  printer = new QPrinter();
+  printer = qprinter;
   fileName = QString::null;
-  // setup qprinter
-  if (ui1.grayScaleButton->isChecked())
-    printer->setColorMode(QPrinter::GrayScale);
-  else
-    printer->setColorMode(QPrinter::Color);
-  if (ui2.landscapeButton->isChecked())
-    printer->setOrientation(QPrinter::Landscape);
-  else
-    printer->setOrientation(QPrinter::Portrait);
-  // load settings
   QDjViewPrefs *prefs = QDjViewPrefs::instance();
-  if (! prefs->printFile.isEmpty())
-    printer->setOutputFileName(prefs->printFile);
-  else if (!prefs->printerName.isEmpty())
-    printer->setPrinterName(prefs->printerName);
-  if (prefs->printReverse)
-    printer->setPageOrder(QPrinter::LastPageFirst);
-  else
-    printer->setPageOrder(QPrinter::FirstPageFirst);
-  printer->setCollateCopies(prefs->printCollate);
-#if QT_VERSION >= 0x40200
-  printer->setOutputFormat(QPrinter::PostScriptFormat);
-#elif QT_VERSION >= 0x40100
-  printer->setOutputFormat(QPrinter::NativeFormat);
-#endif
-  // prepare printdialog
-  QPrintDialog *printDialog = new QPrintDialog(printer, parent);
-  printDialog->addEnabledOption(QPrintDialog::PrintToFile);
-  printDialog->addEnabledOption(QPrintDialog::PrintCollateCopies);
-  // show printdialog
-  if (printDialog->exec() != QDialog::Accepted)
-    {
-      delete printDialog;
-      delete printer;
-      printer = 0;
-      return false;
-    }
-  // save settings
-  prefs->printFile = printer->outputFileName();
-  prefs->printerName = printer->printerName();
-  prefs->printReverse = (printer->pageOrder() == QPrinter::LastPageFirst);
-  prefs->printCollate = printer->collateCopies();
-  // start printing
-  delete printDialog;
+  prefs->printReverse = lastfirst;
+  prefs->printCollate = collate;
   return start();
+}
+
+bool
+QDjViewPSExporter::printSetup(QPrintDialog *dialog, bool dir)
+{
+  printer = dialog->printer();
+  if (dir)
+    {
+      bool grayscale = (printer->colorMode() == QPrinter::GrayScale);
+      bool landscape = (printer->orientation() == QPrinter::Landscape);
+      ui1.grayScaleButton->setChecked(grayscale);  
+      ui1.colorButton->setChecked(!grayscale);  
+      ui2.landscapeButton->setChecked(landscape);
+      ui2.portraitButton->setChecked(!landscape);
+#if QT_VERSION <= 0x40400
+      copies = 1;
+      collate = true;
+      lastfirst = false;
+      // Directly steal settings from print dialog.
+      QSpinBox* lcop = qFindChild<QSpinBox*>(dialog, "sbNumCopies");
+      QCheckBox* lcol = qFindChild<QCheckBox*>(dialog, "chbCollate");
+      QCheckBox* lplf = qFindChild<QCheckBox*>(dialog, "chbPrintLastFirst");
+      if (lcop)
+        copies = qMax(1, lcop->value());
+      if (lcol)
+        collate = lcol->isChecked();
+      if (lplf)
+        lastfirst = lplf->isChecked();
+#endif
+    }
+  else
+    {
+      bool grayscale = ui1.grayScaleButton->isChecked();
+      bool landscape = ui2.landscapeButton->isChecked();
+      printer->setColorMode(grayscale ? QPrinter::GrayScale : QPrinter::Color);
+      printer->setOrientation(landscape ? QPrinter::Landscape : QPrinter::Portrait);
+    }
+  return true;
 }
 
 

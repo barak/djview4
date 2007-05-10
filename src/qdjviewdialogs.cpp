@@ -887,6 +887,11 @@ struct QDjViewSaveDialog::Private
 };
 
 
+QDjViewSaveDialog::~QDjViewSaveDialog()
+{
+  delete d;
+}
+
 
 QDjViewSaveDialog::QDjViewSaveDialog(QDjView *djview)
   : QDialog(djview), d(0)
@@ -1163,6 +1168,10 @@ struct QDjViewExportDialog::Private
 };
 
 
+QDjViewExportDialog::~QDjViewExportDialog()
+{
+  delete d;
+}
 
 
 QDjViewExportDialog::QDjViewExportDialog(QDjView *djview)
@@ -1497,9 +1506,20 @@ struct QDjViewPrintDialog::Private
   QDjView *djview;
   QDjVuDocument *document;
   Ui::QDjViewPrintDialog ui;
-  QDjViewExporter* exporter;
+  QDjViewExporter *exporter;
+  QString groupname;
+  QPrinter *printer;
   bool stopping;
 };
+
+
+QDjViewPrintDialog::~QDjViewPrintDialog()
+{
+  if (d && d->printer)
+     delete d->printer;
+  if (d)
+    delete d;
+}
 
 
 QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
@@ -1511,6 +1531,7 @@ QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
   d->document = 0;
   d->stopping = false;
   d->exporter = 0;
+  d->printer = new QPrinter;
 
   d->ui.setupUi(this);
   setAttribute(Qt::WA_GroupLeader, true);
@@ -1524,12 +1545,74 @@ QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
           this, SLOT(clear()));
   connect(djview, SIGNAL(documentReady(QDjVuDocument*)),
           this, SLOT(refresh()));
+  connect(d->ui.printToFileCheckBox, SIGNAL(clicked()),
+          this, SLOT(refresh()));
+  connect(d->ui.fileNameEdit, SIGNAL(textChanged(QString)), 
+          this, SLOT(refresh()));
+  connect(d->ui.printerButton, SIGNAL(clicked()),
+          this, SLOT(choose()));
+  connect(d->ui.browseButton, SIGNAL(clicked()),
+          this, SLOT(browse()));
   
   setWhatsThis(tr("<html><b>Printing.</b><br/> "
                   "You can print the whole document or a page range. "
-                  "Use the tabs to specify DjVu specific printing options. "
-                  "Then click button <tt>Print</tt> to choose a printer "
-                  "and specify generic printing options. </html>"));
+                  "Use the <tt>Choose</tt> button to select a print "
+                  "destination and specify printer options. Additional "
+                  "dialog tabs might appear to specify conversion "
+                  "options.</html>"));
+
+  // Load preferences
+  d->ui.printerLabel->setText(QString::null);
+  d->ui.fileNameEdit->setText("print.ps");
+  QDjViewPrefs *prefs = QDjViewPrefs::instance();
+  QString printerName = prefs->printerName;
+  QString printFile = prefs->printFile;
+  if (! printFile.isEmpty())
+    {
+      d->ui.printToFileCheckBox->setChecked(true);
+      d->ui.fileNameEdit->setText(printFile);
+      printerName = QString::null;
+    }
+  else if (! printerName.isEmpty())
+    {
+      d->ui.printToFileCheckBox->setChecked(false);
+      d->ui.printerLabel->setText(prefs->printerName);
+      d->printer->setPrinterName(printerName);
+    }
+  else
+    {
+      printFile = "print.ps";
+      d->ui.printToFileCheckBox->setChecked(true);
+      d->ui.fileNameEdit->setText(printFile);
+    }
+  d->printer->setCollateCopies(prefs->printCollate);
+  if (prefs->printReverse)
+    d->printer->setPageOrder(QPrinter::LastPageFirst);
+  else
+    d->printer->setPageOrder(QPrinter::FirstPageFirst);
+  
+  // Create exporter
+#if Q_WS_WIN
+  // ... maybe do windows specific things here.
+#endif
+#if Q_WS_MAC
+  // ... maybe do mac specific things here.
+#endif
+  if (! d->exporter)
+    d->exporter = QDjViewExporter::create(this, d->djview, "PS");
+  if (d->exporter)
+    {
+      QDjViewExporter *exporter = d->exporter;
+      exporter->loadProperties("Print-" + d->exporter->name());
+      // setup exporter property pages
+      QWidget *w;
+      for (int i=0; i<exporter->propertyPages(); i++)
+        if ((w = exporter->propertyPage(i)))
+          d->ui.tabWidget->addTab(w, w->objectName());
+      // setup exporter connections
+      connect(exporter, SIGNAL(progress(int)), this, SLOT(progress(int)));
+    }
+  // Refresh Ui
   refresh();
 }
 
@@ -1547,50 +1630,77 @@ QDjViewPrintDialog::refresh()
       d->djview->fillPageCombo(d->ui.toPageCombo);
       d->ui.toPageCombo->setCurrentIndex(d->djview->pageNum()-1);
     }
+  bool tofile = d->ui.printToFileCheckBox->isChecked();
+  bool noexp = !d->exporter;
   bool nojob = true;
-  bool noexp = true;
-  bool noopt = true;
-  QDjViewExporter *exporter = d->exporter;
-  QString exporterName = "PS";
-  if (exporter && 
-      exporter->status() >= DDJVU_JOB_STARTED &&
-      exporter->name() != exporterName )
-    {
-      exporter->saveProperties("Printer-" + exporter->name());
-      delete exporter;
-      exporter = d->exporter = 0;
-    }
-  if (! exporter)
-    {
-      exporter = QDjViewExporter::create(this, d->djview, exporterName);
-      if (exporter)
-        {
-          exporter->loadProperties("Printer-" + exporter->name());
-          connect(exporter, SIGNAL(progress(int)), this, SLOT(progress(int)));
-          d->exporter = exporter;
-          // update tabs
-          while (d->ui.tabWidget->count() > 1)
-            d->ui.tabWidget->removeTab(1);
-          QWidget *w;
-          for (int i=0; i<exporter->propertyPages(); i++)
-            if ((w = exporter->propertyPage(i)))
-              d->ui.tabWidget->addTab(w, w->objectName());
-        }
-    }
-  if (exporter)
+  bool notxt = true;
+  if (d->exporter)
     {
       noexp = false;
-      if (exporter->status() >= DDJVU_JOB_STARTED)
+      if (d->exporter->status() >= DDJVU_JOB_STARTED)
         nojob = false;
-      if (exporter->propertyPages() > 0)
-        noopt = false;
     }
+  if (tofile)
+    notxt = d->ui.fileNameEdit->text().isEmpty();
+  else
+    notxt = d->ui.printerLabel->text().isEmpty();
+  d->ui.pageFile->setEnabled(tofile);
+  d->ui.pagePrinter->setEnabled(!tofile);
+  d->ui.destStackedWidget->setCurrentIndex(tofile ? 0 : 1);
+  d->ui.destinationGroupBox->setEnabled(nojob && !noexp);
   d->ui.printGroupBox->setEnabled(nojob && !nodoc && !noexp);
   d->ui.resetButton->setEnabled(!noexp && nojob && !nodoc);
-  d->ui.okButton->setEnabled(nojob && !nodoc && !noexp);
+  d->ui.okButton->setEnabled(nojob && !nodoc && !notxt && !noexp);
   d->ui.cancelButton->setEnabled(nojob);
   d->ui.stopButton->setEnabled(!nojob);
   d->ui.stackedWidget->setCurrentIndex(nojob ? 0 : 1);
+}
+
+
+void 
+QDjViewPrintDialog::browse()
+{
+  QString fname = d->ui.fileNameEdit->text();
+  QDjViewExporter *exporter = d->exporter;
+  QString format = (exporter) ? exporter->name() : QString::null;
+  QStringList info = QDjViewExporter::info(format);
+  QString filters = tr("All files", "save filter") + " (*)";
+  QString suffix;
+  if (info.size() > 3)
+    filters = info[3] + ";;" + filters;
+  if (info.size() > 1)
+    suffix = info[1];
+  fname = QFileDialog::getSaveFileName(this, 
+                                       tr("Print To File - DjView", "dialog caption"),
+                                       fname, filters, 0, 0);
+  if (! fname.isEmpty())
+    {
+      QFileInfo finfo(fname);
+      if (finfo.completeSuffix().isEmpty() && !suffix.isEmpty())
+        fname = QFileInfo(finfo.dir(), finfo.baseName() 
+                          + "." + suffix).filePath();
+      d->ui.fileNameEdit->setText(fname);
+    }
+}
+
+
+void 
+QDjViewPrintDialog::choose()
+{
+  QPrinter *printer = d->printer;
+  QPrintDialog *dialog = new QPrintDialog(printer, this);
+  dialog->setEnabledOptions(QPrintDialog::PrintCollateCopies);
+  if (d->exporter)
+    {
+      d->exporter->printSetup(dialog, false);
+      if (dialog->exec() == QDialog::Accepted)
+        {
+          d->ui.printerLabel->setText(printer->printerName());
+          d->exporter->printSetup(dialog, true);
+        }
+    }
+  delete dialog;
+  refresh();
 }
 
 
@@ -1630,7 +1740,35 @@ QDjViewPrintDialog::start()
       else
         exporter->setFromTo(0, lastPage);
       // ignition!
-      exporter->print();
+      if (d->ui.printToFileCheckBox->isChecked())
+        {
+          QString fname = d->ui.fileNameEdit->text();
+          QFileInfo info(fname);
+          if (info.exists() &&
+              QMessageBox::question(this, 
+                                    tr("Question - DjView", "dialog caption"),
+                                    tr("A file with this name already exists.\n"
+                                       "Do you want to replace it?"),
+                                    tr("&Replace"),
+                                    tr("&Cancel") ))
+            return;
+          // save preferences
+          QDjViewPrefs *prefs = QDjViewPrefs::instance();
+          prefs->printerName = QString::null;
+          prefs->printFile = fname;
+          // print to file
+          exporter->save(fname);
+        }
+      else
+        {
+          QPrinter *printer = d->printer;
+          // save preferences
+          QDjViewPrefs *prefs = QDjViewPrefs::instance();
+          prefs->printFile = QString::null;
+          prefs->printerName = printer->printerName();
+          // print
+          exporter->print(d->printer);
+        }
     }
   // refresh ui
   refresh();

@@ -63,7 +63,8 @@ public:
   virtual QString name();
 public slots:
   virtual bool save(QString fileName) = 0;
-  virtual bool print();
+  virtual bool print(QPrinter *printer);
+  virtual bool printSetup(QPrintDialog *dialog, bool dir=true);
   virtual void stop();
   virtual void error(QString, QString, int);
 signals:

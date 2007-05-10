@@ -137,6 +137,7 @@ class QDjViewSaveDialog : public QDialog
   Q_OBJECT
 public:
   QDjViewSaveDialog(QDjView *djview);
+  ~QDjViewSaveDialog();
 protected slots:
   void refresh();
   void clear();
@@ -163,6 +164,7 @@ class QDjViewExportDialog : public QDialog
   Q_OBJECT
 public:
   QDjViewExportDialog(QDjView *djview);
+  ~QDjViewExportDialog();
 protected slots:
   void refresh();
   void clear();
@@ -188,9 +190,12 @@ class QDjViewPrintDialog : public QDialog
   Q_OBJECT
 public:
   QDjViewPrintDialog(QDjView *djview);
+  ~QDjViewPrintDialog();
 protected slots:
   void refresh();
   void clear();
+  void choose();
+  void browse();
   void start();
   void progress(int);
   void stop();
