@@ -548,7 +548,7 @@ QDjViewPSExporter::setup()
                   QDjViewPSExporter::create);
   addExporterData("EPS", "eps",
                   tr("Encapsulated PostScript"),
-                  tr("DjVu Files (*.ps *.eps)"),
+                  tr("PostScript Files (*.ps *.eps)"),
                   QDjViewPSExporter::create);
 }
 
