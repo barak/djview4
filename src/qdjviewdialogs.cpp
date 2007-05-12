@@ -22,10 +22,8 @@
 #else
 # define HAVE_STRING_H     1
 # define HAVE_SYS_TYPES_H  1
-# define HAVE_SYS_WAIT_H   1
 # define HAVE_UNISTD_H     1
 # define HAVE_STRERROR     1
-# define HAVE_WAITPID      1
 #endif
 
 #include <stdlib.h>
@@ -36,9 +34,6 @@
 #include <signal.h>
 #if HAVE_SYS_TYPES_H
 # include <sys/types.h>
-#endif
-#if HAVE_SYS_WAIT_H
-# include <sys/wait.h>
 #endif
 #if HAVE_STRING_H
 # include <string.h>
@@ -1592,10 +1587,10 @@ QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
     d->printer->setPageOrder(QPrinter::FirstPageFirst);
   
   // Create exporter
-#if Q_WS_WIN
+#ifdef Q_WS_WIN
   // ... maybe do windows specific things here.
 #endif
-#if Q_WS_MAC
+#ifdef Q_WS_MAC
   // ... maybe do mac specific things here.
 #endif
   if (! d->exporter)

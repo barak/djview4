@@ -157,7 +157,7 @@ setupApplication()
   QString varLanguage = ::getenv("LANGUAGE");
   if (varLanguage.size())
     langs += varLanguage.toLower().split(":", QString::SkipEmptyParts);
-#ifdef LC_ALL
+#ifdef LC_MESSAGES
   QString varLcMessages = ::setlocale(LC_MESSAGES, 0);
   if (varLcMessages.size())
     langs += varLcMessages;

@@ -22,10 +22,12 @@
 #else
 # define HAVE_STRING_H     1
 # define HAVE_SYS_TYPES_H  1
-# define HAVE_SYS_WAIT_H   1
 # define HAVE_UNISTD_H     1
 # define HAVE_STRERROR     1
-# define HAVE_WAITPID      1
+# ifndef WIN32
+#  define HAVE_SYS_WAIT_H   1
+#  define HAVE_WAITPID      1
+# endif
 #endif
 
 #include <stdlib.h>
@@ -878,6 +880,7 @@ QDjViewPSExporter::openFile()
       // open pipe for lp/lpr.
       lpargs << 0;
       lprargs << 0;
+#ifndef WIN32
       int fds[2];
       if (pipe(fds) == 0)
         {
@@ -919,15 +922,16 @@ QDjViewPSExporter::openFile()
           output = fdopen(fds[1], "w");
           if (pid >= 0)
             {
-#if HAVE_WAITPID
+# if HAVE_WAITPID
               ::waitpid(pid, 0, 0);
-#else
+# else
               ::wait(0);
-#endif
+# endif
             }
           else
             closeFile();
         }
+#endif
     }
 }
 
