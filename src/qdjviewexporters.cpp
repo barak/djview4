@@ -1723,7 +1723,9 @@ static void
 createExporterData()
 {
   QDjViewDjVuExporter::setup();
+#if HAVE_TIFF
   QDjViewTiffExporter::setup();
+#endif
   QDjViewPSExporter::setup();
   QDjViewImgExporter::setup();
 }
