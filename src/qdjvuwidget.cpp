@@ -3862,16 +3862,16 @@ QDjVuPrivate::changeSelectedRectangle(const QRect& rect)
   QRect oldRect = selectedRect;
   selectedRect = newRect;
   if (oldRect.isEmpty())
-    widget->viewport()->update(newRect);
+    widget->viewport()->update(newRect.adjusted(-2,-2,2,2));
   else if (newRect.isEmpty())
-    widget->viewport()->update(oldRect);    
+    widget->viewport()->update(oldRect.adjusted(-2,-2,2,2));    
   else
     {
       QRegion region = QRegion(newRect) ^ QRegion(oldRect);
       QVector<QRect> rects = region.rects();
       QRegion dilated;
       for(int i=0; i<rects.size(); i++)
-        dilated += rects[i].adjusted(-1,-1,1,1);
+        dilated += rects[i].adjusted(-2,-2,2,2);
       widget->viewport()->update(dilated);
     }   
 }
