@@ -161,6 +161,12 @@ setupApplication()
   QString varLcMessages = ::setlocale(LC_MESSAGES, 0);
   if (varLcMessages.size())
     langs += varLcMessages;
+#else
+# ifdef LC_ALL
+  QString varLcMessages = ::setlocale(LC_ALL, 0);
+  if (varLcMessages.size())
+    langs += varLcMessages;
+# endif
 #endif
   QString qtLocale =  QLocale::system().name();
   if (qtLocale.size())
