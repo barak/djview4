@@ -177,19 +177,22 @@ You can then use XCode to compile djview4.
 The compilation of djview 
 under Windows is still experimental.
 
-You must first edit the file djview4/src/djview.pro.
-Locate the section identified by the 
-comment "for use on other platforms".
-Define the variable LIBS with the linker flags 
-that are necessary for using DjVuLibre.
-Define the variable QMAKE_CXXFLAGS with the compiler 
-flags that are necessary for using DjVuLibre.
+* Using the MINGW compiler.
 
-Then run the Qt4 program
-   % qmake -win32
-to generate a MS Visual C++ project file.
-You can then use MS Visual C++ to compile djview4.
+  - Go to directory src
+  - Type command 
+       $ qmake DEFINES+=HAVE_TIFF \
+          LIBS+="-L$HOME/djvulibre-3.5/libdjvu/.libs -ldjvulibre -ltiff" \
+	  QMAKE_CXXFLAGS+="-I$HOME/djvulibre-3.5"
+    where you replace the paths by the actual djvulibre paths.
 
+  - Then compile using 
+       $ mingw32-make SHELL=cmd.exe
 
+* Using Visual C++
+
+  - Try Qt4 program
+       $ qmake -win32
+    to generate a MS Visual C++ project file.
 
 
