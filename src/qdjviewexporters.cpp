@@ -1374,7 +1374,7 @@ QDjViewTiffExporter::checkTiffSupport()
   ui.jpegCheckBox->setEnabled(false);
   ui.jpegSpinBox->setEnabled(false);
 #endif
-#if DEFLATE_SUPPORT
+#ifdef ZIP_SUPPORT
   ui.deflateCheckBox->setEnabled(true);
 #else
   ui.deflateCheckBox->setEnabled(false);
@@ -1476,6 +1476,7 @@ void
 QDjViewTiffExporter::doFinal()
 {
   // testing pdf output
+  //#define TEST_PDF_OUTPUT HAVE_TIFF
 #if TEST_PDF_OUTPUT
   tiffExporter = this;
   TIFFSetErrorHandler(tiffHandler);

@@ -1460,7 +1460,7 @@ QDjViewExportDialog::done(int reason)
       return;
     }
   if (exporter)
-    exporter->saveProperties(exporter->name());
+    exporter->saveProperties();
   delete exporter;
   d->exporter = 0;
   QDialog::done(reason);
