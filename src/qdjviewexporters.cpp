@@ -50,6 +50,7 @@
 #endif
 #if HAVE_TIFF
 # include <tiffio.h>
+# include "tiff2pdf.h"
 #endif
 
 #include <QApplication>
@@ -1153,6 +1154,7 @@ protected slots:
 protected:
   virtual void openFile() {}
   virtual void closeFile() {}
+  virtual void doFinal() {}
   virtual void doPage() = 0;
   ddjvu_status_t curStatus;
   QDjVuPage *curPage;
@@ -1244,7 +1246,10 @@ QDjViewPageExporter::checkPage()
       delete curPage;
       curPage = 0;
       if (curStatus < DDJVU_JOB_OK && nextPage > tpg)
-        curStatus = DDJVU_JOB_OK;
+        {
+          curStatus = DDJVU_JOB_OK;
+          doFinal();
+        }
       emit progress(curProgress);
       if (curStatus >= DDJVU_JOB_OK)
         closeFile();
@@ -1289,8 +1294,10 @@ public:
   virtual bool save(QString fileName);
 protected:
   virtual void closeFile();
+  virtual void doFinal();
   virtual void doPage();
 protected:
+  void checkTiffSupport();
   Ui::QDjViewExportTiff ui;
   QPointer<QWidget> page;
   QString fileName;
@@ -1345,7 +1352,33 @@ QDjViewTiffExporter::QDjViewTiffExporter(QDialog *parent, QDjView *djview,
                         "using the CCITT Group 4 compression. "
                         "Allowing JPEG compression uses lossy JPEG "
                         "for all non bitonal or subsampled images. "
+                        "Otherwise, allowing deflate compression "
+                        "produces more compact (but less portable) files "
+                        "than the default packbits compression."
                         "</html>") );
+}
+
+
+void 
+QDjViewTiffExporter::checkTiffSupport()
+{
+#ifdef CCITT_SUPPORT
+  ui.bitonalCheckBox->setEnabled(true);
+#else
+  ui.bitonalCheckBox->setEnabled(false);
+#endif
+#ifdef JPEG_SUPPORT
+  ui.jpegCheckBox->setEnabled(true);
+  ui.jpegSpinBox->setEnabled(true);
+#else
+  ui.jpegCheckBox->setEnabled(false);
+  ui.jpegSpinBox->setEnabled(false);
+#endif
+#if DEFLATE_SUPPORT
+  ui.deflateCheckBox->setEnabled(true);
+#else
+  ui.deflateCheckBox->setEnabled(false);
+#endif
 }
 
 
@@ -1356,6 +1389,8 @@ QDjViewTiffExporter::resetProperties()
   ui.bitonalCheckBox->setChecked(false);
   ui.jpegCheckBox->setChecked(true);
   ui.jpegSpinBox->setValue(75);
+  ui.deflateCheckBox->setChecked(true);
+  checkTiffSupport();
 }
 
 
@@ -1370,6 +1405,8 @@ QDjViewTiffExporter::loadProperties(QString group)
   ui.bitonalCheckBox->setChecked(s.value("bitonal", false).toBool());
   ui.jpegCheckBox->setChecked(s.value("jpeg", true).toBool());
   ui.jpegSpinBox->setValue(s.value("jpegQuality", 75).toInt());
+  ui.deflateCheckBox->setChecked(s.value("deflate", true).toBool());
+  checkTiffSupport();
 }
 
 
@@ -1384,6 +1421,7 @@ QDjViewTiffExporter::saveProperties(QString group)
   s.setValue("bitonal", ui.bitonalCheckBox->isChecked());
   s.setValue("jpeg", ui.jpegCheckBox->isChecked());
   s.setValue("jpegQuality", ui.jpegSpinBox->value());
+  s.setValue("deflate", ui.deflateCheckBox->isChecked());
 }
 
 
@@ -1427,9 +1465,37 @@ QDjViewTiffExporter::closeFile()
   if (tiff)
     TIFFClose(tiff);
 #endif
+  tiff = 0;
   if (curStatus > DDJVU_JOB_OK && !fileName.isEmpty())
     ::remove(QFile::encodeName(fileName).data());
+}
+
+
+
+void 
+QDjViewTiffExporter::doFinal()
+{
+  // testing pdf output
+#if TEST_PDF_OUTPUT
+  tiffExporter = this;
+  TIFFSetErrorHandler(tiffHandler);
+  TIFFSetWarningHandler(0);
+  if (tiff)
+    TIFFClose(tiff);
   tiff = 0;
+  QByteArray inameArray = QFile::encodeName(fileName);
+  QByteArray onameArray = QFile::encodeName(fileName+".pdf");
+  TIFF *input = TIFFOpen(inameArray.data(), "r");
+  FILE *output = fopen(onameArray.data(), "wb");
+  const char *argv[3];
+  argv[0] = "tiff2pdf";
+  argv[1] = "-o";
+  argv[2] = onameArray.data();
+  if (tiff2pdf(input, output, 2, argv) != EXIT_SUCCESS)
+    curStatus = DDJVU_JOB_FAILED;
+  TIFFClose(input);
+  fclose(output);
+# endif
 }
 
 
@@ -1491,15 +1557,27 @@ QDjViewTiffExporter::doPage()
         style = (dpi == imgdpi) 
           ? DDJVU_FORMAT_MSBTOLSB 
           : DDJVU_FORMAT_GREY8;
+#ifdef CCITT_SUPPORT
       if (style == DDJVU_FORMAT_MSBTOLSB 
           && TIFFFindCODEC(COMPRESSION_CCITT_T6))
         compression = COMPRESSION_CCITT_T6;
+#endif
+#ifdef JPEG_SUPPORT
       else if (ui.jpegCheckBox->isChecked()
                && style != DDJVU_FORMAT_MSBTOLSB 
                && TIFFFindCODEC(COMPRESSION_JPEG))
         compression = COMPRESSION_JPEG;
+#endif
+#ifdef ZIP_SUPPORT
+      else if (ui.deflateCheckBox->isChecked()
+               && style != DDJVU_FORMAT_MSBTOLSB 
+               && TIFFFindCODEC(COMPRESSION_DEFLATE))
+        compression = COMPRESSION_DEFLATE;
+#endif
+#ifdef PACKBITS_SUPPORT
       else if (TIFFFindCODEC(COMPRESSION_PACKBITS))
         compression = COMPRESSION_PACKBITS;
+#endif
       fmt = ddjvu_format_create(style, 0, 0);
       ddjvu_format_set_row_order(fmt, 1);
       ddjvu_format_set_gamma(fmt, 2.2);
@@ -1529,10 +1607,12 @@ QDjViewTiffExporter::doPage()
         } else {
           TIFFSetField(tiff, TIFFTAG_SAMPLESPERPIXEL, (uint16)3);
           TIFFSetField(tiff, TIFFTAG_COMPRESSION, compression);
+#ifdef JPEG_SUPPORT
           if (compression == COMPRESSION_JPEG) {
             TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_YCBCR);
             TIFFSetField(tiff, TIFFTAG_JPEGCOLORMODE, JPEGCOLORMODE_RGB);
           } else 
+#endif
             TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
         }
       }

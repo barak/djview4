@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QDjViewExportTiff</class>
  <widget class="QWidget" name="QDjViewExportTiff" >
   <property name="geometry" >
@@ -164,6 +161,16 @@
         </item>
        </layout>
       </item>
+      <item>
+       <widget class="QCheckBox" name="deflateCheckBox" >
+        <property name="text" >
+         <string>Allow &amp;deflate compression.</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -182,7 +189,6 @@
    </item>
   </layout>
  </widget>
- <pixmapfunction></pixmapfunction>
  <tabstops>
   <tabstop>bitonalCheckBox</tabstop>
   <tabstop>jpegCheckBox</tabstop>

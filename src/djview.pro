@@ -100,6 +100,10 @@ x11 {
   SOURCES += qdjviewplugin.cpp
 }
 
+# -- helper files
+HEADERS += tiff2pdf.h
+SOURCES += tiff2pdf.c
+
 # -- transations
 TRANSLATIONS += djview_fr.ts
 TRANSLATIONS += djview_uk.ts
