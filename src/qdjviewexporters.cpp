@@ -74,6 +74,7 @@
 #include <QSettings>
 #include <QSpinBox>
 #include <QString>
+#include <QTemporaryFile>
 #include <QTimer>
 
 #include <libdjvu/miniexp.h>
@@ -1294,7 +1295,6 @@ public:
   virtual bool save(QString fileName);
 protected:
   virtual void closeFile();
-  virtual void doFinal();
   virtual void doPage();
 protected:
   void checkTiffSupport();
@@ -1431,6 +1431,7 @@ QDjViewTiffExporter::propertyPages()
   return 1;
 }
 
+
 QWidget* 
 QDjViewTiffExporter::propertyPage(int num)
 {
@@ -1468,35 +1469,6 @@ QDjViewTiffExporter::closeFile()
   tiff = 0;
   if (curStatus > DDJVU_JOB_OK && !fileName.isEmpty())
     ::remove(QFile::encodeName(fileName).data());
-}
-
-
-
-void 
-QDjViewTiffExporter::doFinal()
-{
-  // testing pdf output
-  //#define TEST_PDF_OUTPUT HAVE_TIFF2PDF
-#if TEST_PDF_OUTPUT
-  tiffExporter = this;
-  TIFFSetErrorHandler(tiffHandler);
-  TIFFSetWarningHandler(0);
-  if (tiff)
-    TIFFClose(tiff);
-  tiff = 0;
-  QByteArray inameArray = QFile::encodeName(fileName);
-  QByteArray onameArray = QFile::encodeName(fileName+".pdf");
-  TIFF *input = TIFFOpen(inameArray.data(), "r");
-  FILE *output = fopen(onameArray.data(), "wb");
-  const char *argv[3];
-  argv[0] = "tiff2pdf";
-  argv[1] = "-o";
-  argv[2] = onameArray.data();
-  if (tiff2pdf(input, output, 3, argv) != EXIT_SUCCESS)
-    curStatus = DDJVU_JOB_FAILED;
-  TIFFClose(input);
-  fclose(output);
-# endif
 }
 
 
@@ -1661,6 +1633,145 @@ QDjViewTiffExporter::doPage()
 
 
 
+
+// ----------------------------------------
+// QDJVIEWPDFEXPORTER
+
+
+class QDjViewPdfExporter : public QDjViewTiffExporter
+{
+  Q_OBJECT
+public:
+  static QDjViewExporter *create(QDialog*, QDjView*, QString);
+  static void setup();
+public:
+  QDjViewPdfExporter(QDialog *parent, QDjView *djview, QString name);
+  virtual bool save(QString fileName);
+protected:
+  virtual void doFinal();
+protected:
+  QTemporaryFile tempFile;
+  QString pdfFileName;
+};
+
+
+QDjViewExporter*
+QDjViewPdfExporter::create(QDialog *parent, QDjView *djview, QString name)
+{
+  if (name == "PDF")
+    return new QDjViewPdfExporter(parent, djview, name);
+  return 0;
+}
+
+
+void
+QDjViewPdfExporter::setup()
+{
+  addExporterData("PDF", "pdf",
+                  tr("PDF Document"),
+                  tr("PDF Files (*.pdf)"),
+                  QDjViewPdfExporter::create);
+}
+
+
+QDjViewPdfExporter::QDjViewPdfExporter(QDialog *parent, QDjView *djview,
+                                         QString name)
+  : QDjViewTiffExporter(parent, djview, name)
+{
+  page->setObjectName(tr("PDF Options", "tab caption"));
+  page->setWhatsThis(tr("<html><b>PDF options.</b><br>"
+                        "These options control the characteristics of "
+                        "the images embedded in the exported PDF files. "
+                        "The resolution box limits their maximal resolution. "
+                        "Forcing bitonal G4 compression "
+                        "encodes all pages in black and white "
+                        "using the CCITT Group 4 compression. "
+                        "Allowing JPEG compression uses lossy JPEG "
+                        "for all non bitonal or subsampled images. "
+                        "Otherwise, allowing deflate compression "
+                        "produces more compact files. "
+                        "</html>") );
+}
+
+
+void 
+QDjViewPdfExporter::doFinal()
+{
+  // close tiff
+  tiffExporter = this;
+  TIFFSetErrorHandler(tiffHandler);
+  TIFFSetWarningHandler(0);
+  if (tiff)
+    TIFFClose(tiff);
+  tiff = 0;
+  // open files
+  QString message;
+  QByteArray inameArray = QFile::encodeName(fileName);
+  QByteArray onameArray = QFile::encodeName(pdfFileName);  
+  fileName = pdfFileName;
+  TIFF *input = TIFFOpen(inameArray.data(), "r");
+  FILE *output = fopen(onameArray.data(), "wb");
+  if (input && output)
+    {
+#if HAVE_TIFF2PDF
+      const char *argv[3];
+      argv[0] = "tiff2pdf";
+      argv[1] = "-o";
+      argv[2] = onameArray.data();
+      if (tiff2pdf(input, output, 3, argv) != EXIT_SUCCESS)
+        message = tr("Error while creating pdf file.");
+#else
+      message = tr("PDF export was not compiled.");
+#endif
+    }
+  else if (! output)
+    {
+      message = tr("Unable to create output file.");
+#ifdef HAVE_STRERROR
+      if (errno)
+        message = tr("System error: %1.").arg(strerror(errno));
+#endif
+    }
+  else
+    message = tr("Unable to reopen temporary file.");
+  // close all
+  if (input)
+    TIFFClose(input);
+  if (output)
+    fclose(output);
+  if (tempFile.exists())
+    tempFile.remove();
+  if (!message.isEmpty())
+    {
+      curStatus = DDJVU_JOB_FAILED;
+      error(message, __FILE__, __LINE__);
+    }
+}
+
+
+bool 
+QDjViewPdfExporter::save(QString fname)
+{
+  pdfFileName = fname;
+  tempFile.setFileTemplate(fname);
+  if (tempFile.open())
+    {
+      fileName = tempFile.fileName();
+      tempFile.close();
+      start();
+      return true;
+    }
+  // prepare error message
+  QString message = tr("Unable to create temporary file.");
+#ifdef HAVE_STRERROR
+  if (errno)
+    message = tr("System error: %1.").arg(strerror(errno));
+#endif
+  error(message, __FILE__, __LINE__);
+  return false;
+}
+
+
 // ----------------------------------------
 // QDJVIEWIMGEXPORTER
 
@@ -1795,6 +1906,7 @@ QDjViewImgExporter::doPage()
 
 
 
+
 // ----------------------------------------
 // QDJVIEWPRNEXPORTER
 
@@ -1813,6 +1925,9 @@ static void
 createExporterData()
 {
   QDjViewDjVuExporter::setup();
+#if HAVE_TIFF2PDF
+  QDjViewPdfExporter::setup();
+#endif
 #if HAVE_TIFF
   QDjViewTiffExporter::setup();
 #endif

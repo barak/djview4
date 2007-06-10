@@ -26,15 +26,19 @@
 #  include <stdio.h>
 #  include <stdlib.h>
 #  include "tiffio.h"
-#  if TIFF_VERSION > 20041104
-#   define HAVE_TIFF2PDF 1
-#   ifdef __cplusplus
+#  ifdef TIFFLIB_VERSION
+#   if TIFFLIB_VERSION > 20041104
+#    define HAVE_TIFF2PDF 1
+#   endif
+#  endif
+# endif
+# if HAVE_TIFF2PDF
+#  ifdef __cplusplus
 extern "C" {
-#   endif
+#  endif
 int tiff2pdf(TIFF *input, FILE *output, int argc, const char **argv);
-#   ifdef __cplusplus
+#  ifdef __cplusplus
 }
-#   endif
-#  endif /* HAVE_TIFF2PDF */
-# endif /* HAVE_TIFF */
+#  endif
+# endif  /* HAVE_TIFF2PDF */
 #endif /* TIFF2PDF_H */

@@ -1308,6 +1308,10 @@ QDjViewExportDialog::refresh()
         nojob = false;
       if (exporter->propertyPages() > 0)
         noopt = false;
+      QWidget *w = 0;
+      for (int i=0; i<exporter->propertyPages(); i++)
+        if ((w = exporter->propertyPage(i)))
+          w->setEnabled(nojob);
     }
   d->ui.destinationGroupBox->setEnabled(nojob && !nodoc);
   d->ui.saveGroupBox->setEnabled(nojob && !nodoc && !nofmt);
@@ -1629,16 +1633,20 @@ QDjViewPrintDialog::refresh()
   bool noexp = !d->exporter;
   bool nojob = true;
   bool notxt = true;
+  if (tofile)
+    notxt = d->ui.fileNameEdit->text().isEmpty();
+  else
+    notxt = d->ui.printerLabel->text().isEmpty();
   if (d->exporter)
     {
       noexp = false;
       if (d->exporter->status() >= DDJVU_JOB_STARTED)
         nojob = false;
+      QWidget *w = 0;
+      for (int i=0; i<d->exporter->propertyPages(); i++)
+        if ((w = d->exporter->propertyPage(i)))
+          w->setEnabled(nojob);
     }
-  if (tofile)
-    notxt = d->ui.fileNameEdit->text().isEmpty();
-  else
-    notxt = d->ui.printerLabel->text().isEmpty();
   d->ui.pageFile->setEnabled(tofile);
   d->ui.pagePrinter->setEnabled(!tofile);
   d->ui.destStackedWidget->setCurrentIndex(tofile ? 0 : 1);
