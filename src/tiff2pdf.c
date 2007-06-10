@@ -50,6 +50,8 @@
 
 #include "tiff2pdf.h"
 
+#if HAVE_TIFF2PDF
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -61,8 +63,6 @@
 #ifndef NULL
 # define NULL ((void*)0)
 #endif
-
-#define LBVERSION 1
 
 #ifdef __GNUC__
 # define unused __attribute__((unused))
@@ -248,11 +248,12 @@ typedef struct {
 	uint32 pdf_icccs;
 	uint32 tiff_iccprofilelength;
 	tdata_t tiff_iccprofile;
-#if LBVERSION
+
+  /* LB additional fields */
   FILE *outputfile;
   int outputdisable;
   tsize_t outputwritten;
-#endif
+
 
 } T2P;
 
@@ -266,13 +267,6 @@ static T2P* t2p_init(void);
 static void t2p_validate(T2P*);
 static tsize_t t2p_write_pdf(T2P*, TIFF*, TIFF*);
 static void t2p_free(T2P*);
-#if LBVERSION
-#else
-static tsize_t t2p_empty_readproc(thandle_t, tdata_t, tsize_t);
-static tsize_t t2p_empty_writeproc(thandle_t, tdata_t, tsize_t);
-static toff_t t2p_empty_seekproc(thandle_t, toff_t, int);
-static int t2p_empty_closeproc(thandle_t);
-#endif
 static void t2p_read_tiff_init(T2P*, TIFF*);
 static int t2p_cmp_t2p_page(const void*, const void*);
 static void t2p_read_tiff_data(T2P*, TIFF*);
@@ -866,12 +860,9 @@ static T2P* t2p_init()
 	t2p->pdf_defaultpagewidth=612.0;
 	t2p->pdf_defaultpagelength=792.0;
 	t2p->pdf_xrefcount=3; /* Catalog, Info, Pages */
-
-#if LBVERSION
         t2p->outputfile = NULL;
         t2p->outputdisable = 0;
         t2p->outputwritten = 0;
-#endif	
 	return(t2p);
 }
 
@@ -1763,14 +1754,14 @@ static void t2p_read_tiff_size(T2P* t2p, TIFF* input){
 	uint32* sbc=NULL;
 #if defined(JPEG_SUPPORT) || defined (OJPEG_SUPPORT)
 	unsigned char* jpt=NULL;
-	uint16 xuint16=0;
+	uint32 xuint32=0;
 	tstrip_t i=0;
 	tstrip_t stripcount=0;
 #endif
 #ifdef OJPEG_SUPPORT
         tsize_t k = 0;
 #endif
-
+        t2p->tiff_datasize = 0;
 	if(t2p->pdf_transcode == T2P_TRANSCODE_RAW){
 #ifdef CCITT_SUPPORT
 		if(t2p->pdf_compression == T2P_COMPRESS_G4 ){
@@ -1830,9 +1821,9 @@ static void t2p_read_tiff_size(T2P* t2p, TIFF* input){
 #endif
 #ifdef JPEG_SUPPORT
 		if(t2p->tiff_compression == COMPRESSION_JPEG){
-			if(TIFFGetField(input, TIFFTAG_JPEGTABLES, &xuint16, &jpt) != 0 ){
-				if(xuint16>4){
-					t2p->tiff_datasize+= xuint16;
+			if(TIFFGetField(input, TIFFTAG_JPEGTABLES, &xuint32, &jpt) != 0 ){
+				if(xuint32>4){
+                                        t2p->tiff_datasize+= xuint32;
 					t2p->tiff_datasize -=2; /* don't use EOI of header */
 				}
 			} else {
@@ -1851,6 +1842,7 @@ static void t2p_read_tiff_size(T2P* t2p, TIFF* input){
 				t2p->tiff_datasize -=4; /* don't use SOI or EOI of strip */
 			}
 			t2p->tiff_datasize +=2; /* use EOI of last strip */
+                        return;
 		}
 #endif
 		(void) 0;
@@ -1873,10 +1865,10 @@ static void t2p_read_tiff_size_tile(T2P* t2p, TIFF* input, ttile_t tile){
 	uint32* tbc = NULL;
 	uint16 edge=0;
 #ifdef JPEG_SUPPORT
-	uint16 xuint16=0;
+	uint32 xuint32=0;
 	unsigned char* jpt;
 #endif
-
+        
 	edge |= t2p_tile_is_right_edge(t2p->tiff_tiles[t2p->pdf_page], tile);
 	edge |= t2p_tile_is_bottom_edge(t2p->tiff_tiles[t2p->pdf_page], tile);
 	
@@ -1899,9 +1891,9 @@ static void t2p_read_tiff_size_tile(T2P* t2p, TIFF* input, ttile_t tile){
 #endif
 #ifdef JPEG_SUPPORT
 			if(t2p->tiff_compression==COMPRESSION_JPEG){
-				if(TIFFGetField(input, TIFFTAG_JPEGTABLES, &xuint16, &jpt)!=0){
-					if(xuint16>4){
-						t2p->tiff_datasize+=xuint16;
+				if(TIFFGetField(input, TIFFTAG_JPEGTABLES, &xuint32, &jpt)!=0){
+					if(xuint32>4){
+						t2p->tiff_datasize+=xuint32;
 						t2p->tiff_datasize-=4; /* don't use EOI of header or SOI of tile */
 					}
 				}
@@ -1953,56 +1945,6 @@ static int t2p_tile_is_bottom_edge(T2P_TILES tiles, ttile_t tile){
 	return(0);
 }
 
-#if LBVERSION
-#else
-/*
-	This function is an empty (dummy) TIFFReadWriteProc that returns the amount 
-	requested to be read without reading anything.
-*/
-
-static tsize_t t2p_empty_readproc(thandle_t fd, tdata_t buf, tsize_t size){
-
-	(void) fd; (void) buf; (void) size;
-
-	return (size);
-}
-
-/*
-	This function is an empty (dummy) TIFFReadWriteProc that returns the amount 
-	requested to be written without writing anything.
-*/
-
-static tsize_t t2p_empty_writeproc(thandle_t fd, tdata_t buf, tsize_t size){
-
-	(void) fd; (void) buf; (void) size;
-
-	return (size);
-}
-
-/*
-	This function is an empty (dummy) TIFFSeekProc that returns off.
-*/
-
-static toff_t t2p_empty_seekproc(thandle_t fd, toff_t off, int whence){
-	
-	(void) fd; (void) off; (void) whence;
-
-	return( off );
-}
-
-/*
-	This function is an empty (dummy) TIFFCloseProc that returns 0.
-*/
-
-static int t2p_empty_closeproc(thandle_t fd){
-	
-	(void) fd;
-	
-	return(0);
-}
-
-#endif
-
 /*
 	This function reads the raster image data from the input TIFF for an image and writes 
 	the data to the output PDF XObject image dictionary stream.  It returns the amount written 
@@ -2032,6 +1974,7 @@ static tsize_t t2p_readwrite_pdf_image(T2P* t2p, TIFF* input, TIFF* output){
 #endif
 #ifdef JPEG_SUPPORT
 	unsigned char* jpt;
+        uint32 xuint32=0;
 	uint16 xuint16_1=0;
 	uint16 xuint16_2=0;
 	float* xfloatp;
@@ -2198,10 +2141,10 @@ static tsize_t t2p_readwrite_pdf_image(T2P* t2p, TIFF* input, TIFF* output){
 				t2p->t2p_error = T2P_ERR_ERROR;
 				return(0);
 			}
-			if(TIFFGetField(input, TIFFTAG_JPEGTABLES, &xuint16_1, &jpt) != 0){
-				if(xuint16_1>4){
-					_TIFFmemcpy(buffer, jpt, xuint16_1);
-					bufferoffset+=xuint16_1-2;
+			if(TIFFGetField(input, TIFFTAG_JPEGTABLES, &xuint32, &jpt) != 0){
+				if(xuint32>4){
+					_TIFFmemcpy(buffer, jpt, xuint32);
+					bufferoffset+=xuint32-2;
 				}
 			}
 			stripcount=TIFFNumberOfStrips(input);
@@ -2439,12 +2382,7 @@ static tsize_t t2p_readwrite_pdf_image(T2P* t2p, TIFF* input, TIFF* output){
 	}
 
 	dataready:
-#if LBVERSION
         t2p_disable(output);
-#else
-	t2p->tiff_writeproc=output->tif_writeproc;
-	output->tif_writeproc=t2p_empty_writeproc;
-#endif
 	TIFFSetField(output, TIFFTAG_PHOTOMETRIC, t2p->tiff_photometric);
 	TIFFSetField(output, TIFFTAG_BITSPERSAMPLE, t2p->tiff_bitspersample);
 	TIFFSetField(output, TIFFTAG_SAMPLESPERPIXEL, t2p->tiff_samplesperpixel);
@@ -2527,12 +2465,8 @@ static tsize_t t2p_readwrite_pdf_image(T2P* t2p, TIFF* input, TIFF* output){
 		break;
 	}
 	
-#if LBVERSION
         t2p_enable(output);
         t2p->outputwritten = 0;
-#else
-	output->tif_writeproc=t2p->tiff_writeproc;
-#endif
 #ifdef JPEG_SUPPORT
 	if(t2p->pdf_compression==T2P_COMPRESS_JPEG && t2p->tiff_photometric==PHOTOMETRIC_YCBCR){
 		bufferoffset=TIFFWriteEncodedStrip(output, (tstrip_t)0, buffer,stripsize*stripcount); 
@@ -2552,11 +2486,7 @@ static tsize_t t2p_readwrite_pdf_image(T2P* t2p, TIFF* input, TIFF* output){
 		return(0);
 	}
 	
-#if LBVERSION
         written= t2p->outputwritten;
-#else
-	written= output->tif_dir.td_stripbytecount[0];
-#endif
 	return(written);
 }
 
@@ -2880,12 +2810,7 @@ static tsize_t t2p_readwrite_pdf_image_tile(T2P* t2p, TIFF* input, TIFF* output,
 			t2p->tiff_tiles[t2p->pdf_page].tiles_tilelength);
 	}
 
-#if LBVERSION
         t2p_disable(output);
-#else
-	t2p->tiff_writeproc=output->tif_writeproc;
-	output->tif_writeproc=t2p_empty_writeproc;
-#endif
 	TIFFSetField(output, TIFFTAG_PHOTOMETRIC, t2p->tiff_photometric);
 	TIFFSetField(output, TIFFTAG_BITSPERSAMPLE, t2p->tiff_bitspersample);
 	TIFFSetField(output, TIFFTAG_SAMPLESPERPIXEL, t2p->tiff_samplesperpixel);
@@ -2984,12 +2909,9 @@ static tsize_t t2p_readwrite_pdf_image_tile(T2P* t2p, TIFF* input, TIFF* output,
 	default:
 		break;
 	}
-#if LBVERSION
+
 	t2p_enable(output);
         t2p->outputwritten = 0;
-#else
-	output->tif_writeproc=t2p->tiff_writeproc;
-#endif
 	bufferoffset=TIFFWriteEncodedStrip(output, (tstrip_t) 0, buffer, TIFFStripSize(output)); 
 	if(buffer != NULL){
 		_TIFFfree(buffer);
@@ -3002,11 +2924,7 @@ static tsize_t t2p_readwrite_pdf_image_tile(T2P* t2p, TIFF* input, TIFF* output,
 		t2p->t2p_error = T2P_ERR_ERROR;
 		return(0);
 	}
-#if LBVERSION
         written= t2p->outputwritten;
-#else
-	written= output->tif_dir.td_stripbytecount[0];
-#endif
 	return(written);
 }
 
@@ -3377,17 +3295,7 @@ static void t2p_tile_collapse_left(
 */
 
 static void t2p_write_advance_directory(T2P* t2p, TIFF* output){
-#if LBVERSION
   	t2p_disable(output);
-#else
-	t2p->tiff_writeproc=output->tif_writeproc;
-	output->tif_writeproc=t2p_empty_writeproc;
-	t2p->tiff_readproc=output->tif_readproc;
-	output->tif_readproc=t2p_empty_readproc;
-	t2p->tiff_seekproc=output->tif_seekproc;
-	output->tif_seekproc=t2p_empty_seekproc;
-	output->tif_header.tiff_diroff=0;
-#endif
 	if(!TIFFWriteDirectory(output)){
 		TIFFError(TIFF2PDF_MODULE, 
 			"Error writing virtual directory to output PDF %s", 
@@ -3395,13 +3303,7 @@ static void t2p_write_advance_directory(T2P* t2p, TIFF* output){
 		t2p->t2p_error = T2P_ERR_ERROR;
 		return;
 	}
-#if LBVERSION
   	t2p_enable(output);
-#else
-	output->tif_writeproc=t2p->tiff_writeproc;
-	output->tif_readproc=t2p->tiff_readproc;
-	output->tif_seekproc=t2p->tiff_seekproc;
-#endif	
 	return;
 }
 
@@ -5229,13 +5131,10 @@ static tsize_t t2p_write_pdf(T2P* t2p, TIFF* input, TIFF* output){
 	t2p->pdf_startxref=written;
 	written += t2p_write_pdf_xreftable(t2p, output);
 	written += t2p_write_pdf_trailer(t2p, output);
-#if LBVERSION
         t2p_disable(output);
-#else
-	t2p->tiff_writeproc=output->tif_writeproc;
-	output->tif_writeproc=t2p_empty_writeproc;
-#endif
 	return(written);
 }
+
+#endif
 
 /* vim: set ts=8 sts=8 sw=8 noet: */

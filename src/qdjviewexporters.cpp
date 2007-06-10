@@ -1476,7 +1476,7 @@ void
 QDjViewTiffExporter::doFinal()
 {
   // testing pdf output
-#define TEST_PDF_OUTPUT HAVE_TIFF
+  //#define TEST_PDF_OUTPUT HAVE_TIFF2PDF
 #if TEST_PDF_OUTPUT
   tiffExporter = this;
   TIFFSetErrorHandler(tiffHandler);
