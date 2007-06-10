@@ -1476,7 +1476,7 @@ void
 QDjViewTiffExporter::doFinal()
 {
   // testing pdf output
-  //#define TEST_PDF_OUTPUT HAVE_TIFF
+#define TEST_PDF_OUTPUT HAVE_TIFF
 #if TEST_PDF_OUTPUT
   tiffExporter = this;
   TIFFSetErrorHandler(tiffHandler);
@@ -1492,7 +1492,7 @@ QDjViewTiffExporter::doFinal()
   argv[0] = "tiff2pdf";
   argv[1] = "-o";
   argv[2] = onameArray.data();
-  if (tiff2pdf(input, output, 2, argv) != EXIT_SUCCESS)
+  if (tiff2pdf(input, output, 3, argv) != EXIT_SUCCESS)
     curStatus = DDJVU_JOB_FAILED;
   TIFFClose(input);
   fclose(output);
@@ -1590,7 +1590,16 @@ QDjViewTiffExporter::doPage()
       TIFFSetField(tiff, TIFFTAG_YRESOLUTION, (float)(dpi));
       TIFFSetField(tiff, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
       TIFFSetField(tiff, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
-      TIFFSetField(tiff, TIFFTAG_ROWSPERSTRIP, (uint32)64);
+#if CCITT_SUPPORT
+      if (compression != COMPRESSION_CCITT_T6)
+#endif
+#if JPEG_SUPPORT
+        if (compression != COMPRESSION_JPEG)
+#endif
+#if ZIP_SUPPORT
+          if (compression != COMPRESSION_DEFLATE)
+#endif
+            TIFFSetField(tiff, TIFFTAG_ROWSPERSTRIP, (uint32)64);
       if (style == DDJVU_FORMAT_MSBTOLSB) {
         TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, (uint16)1);
         TIFFSetField(tiff, TIFFTAG_SAMPLESPERPIXEL, (uint16)1);
