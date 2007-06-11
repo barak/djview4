@@ -1761,7 +1761,6 @@ static void t2p_read_tiff_size(T2P* t2p, TIFF* input){
 #ifdef OJPEG_SUPPORT
         tsize_t k = 0;
 #endif
-        t2p->tiff_datasize = 0;
 	if(t2p->pdf_transcode == T2P_TRANSCODE_RAW){
 #ifdef CCITT_SUPPORT
 		if(t2p->pdf_compression == T2P_COMPRESS_G4 ){
@@ -1821,6 +1820,7 @@ static void t2p_read_tiff_size(T2P* t2p, TIFF* input){
 #endif
 #ifdef JPEG_SUPPORT
 		if(t2p->tiff_compression == COMPRESSION_JPEG){
+			t2p->tiff_datasize = 2048; /* safety margin (actually used!) */
 			if(TIFFGetField(input, TIFFTAG_JPEGTABLES, &xuint32, &jpt) != 0 ){
 				if(xuint32>4){
                                         t2p->tiff_datasize+= xuint32;
@@ -2174,7 +2174,7 @@ static tsize_t t2p_readwrite_pdf_image(T2P* t2p, TIFF* input, TIFF* output){
 						TIFFError(TIFF2PDF_MODULE, 
 							"Can't process JPEG data in input file %s", 
 							TIFFFileName(input));
-						_TIFFfree(samplebuffer);
+						_TIFFfree(stripbuffer);
 						_TIFFfree(buffer);
 						t2p->t2p_error = T2P_ERR_ERROR;
 						return(0);

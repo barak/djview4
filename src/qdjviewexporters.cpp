@@ -1713,6 +1713,10 @@ QDjViewPdfExporter::doFinal()
   FILE *output = fopen(onameArray.data(), "wb");
   if (input && output)
     {
+#ifdef Q_OS_UNIX
+      if (tempFile.exists())
+        tempFile.remove();
+#endif
 #if HAVE_TIFF2PDF
       const char *argv[3];
       argv[0] = "tiff2pdf";
