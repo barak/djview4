@@ -1,4 +1,5 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS><TS version="1.1" language="fr">
 <context>
     <name>QApplication</name>
     <message>
@@ -1333,6 +1334,10 @@ Voulez-vous le remplacer?</translation>
         <source>Allow &amp;lossy JPEG compression.</source>
         <translation>Autorise la com&amp;pression JPEG.</translation>
     </message>
+    <message>
+        <source>Allow &amp;deflate compression.</source>
+        <translation>Autorise la compression «&amp;deflate».</translation>
+    </message>
 </context>
 <context>
     <name>QDjViewFind</name>
@@ -1695,6 +1700,50 @@ Voulez-vous le remplacer?</translation>
     <message>
         <source>DjVu Files (*.ps *.eps)</source>
         <translation type="obsolete">Fichiers DjVu (*.ps *.eps)</translation>
+    </message>
+</context>
+<context>
+    <name>QDjViewPdfExporter</name>
+    <message>
+        <source>PDF Document</source>
+        <translation>Document PDF</translation>
+    </message>
+    <message>
+        <source>PDF Files (*.pdf)</source>
+        <translation>Fichiers PDF (*.pdf)</translation>
+    </message>
+    <message>
+        <source>PDF Options</source>
+        <comment>tab caption</comment>
+        <translation>Options PDF</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;PDF options.&lt;/b&gt;&lt;br&gt;These options control the characteristics of the images embedded in the exported PDF files. The resolution box limits their maximal resolution. Forcing bitonal G4 compression encodes all pages in black and white using the CCITT Group 4 compression. Allowing JPEG compression uses lossy JPEG for all non bitonal or subsampled images. Otherwise, allowing deflate compression produces more compact files. &lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Options PDF.&lt;/b&gt;&lt;br&gt;Ces options s&apos;appliquent aux images encapsulées dans les fichiers PDF exportés. La boite de résolution spécifie leur résolution maximale. Forcer la compression bitonale G4 encode toutes les pages en noir et blanc avec la compression CCITT Groupe 4. Autoriser la compression JPEG utilise JPEG pour toutes les images en niveaux de gris ou en couleurs. Sinon, autoriser la compression «deflate» produit des fichiers plus compacts.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Error while creating pdf file.</source>
+        <translation>Erreur pendant la création du fichier PDF.</translation>
+    </message>
+    <message>
+        <source>PDF export was not compiled.</source>
+        <translation>L&apos;exportation de fichiers PDF n&apos;a pas été compilée.</translation>
+    </message>
+    <message>
+        <source>Unable to create output file.</source>
+        <translation>Impossible de créer le fichier de sortie.</translation>
+    </message>
+    <message>
+        <source>System error: %1.</source>
+        <translation>Erreur système: %1.</translation>
+    </message>
+    <message>
+        <source>Unable to reopen temporary file.</source>
+        <translation>Impossible de réouvrir le fichier temporaire.</translation>
+    </message>
+    <message>
+        <source>Unable to create temporary file.</source>
+        <translation>Impossible de créer le fichier temporaire.</translation>
     </message>
 </context>
 <context>
@@ -2338,7 +2387,7 @@ Voulez-vous le remplacer?</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;b&gt;TIFF options.&lt;/b&gt;&lt;br&gt;The resolution box specifies an upper limit for the resolution of the TIFF images. Forcing bitonal G4 compression encodes all pages in black and white using the CCITT Group 4 compression. Allowing JPEG compression uses lossy JPEG for all non bitonal or subsampled images. &lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Options TIFF.&lt;/b&gt;&lt;br&gt;La boite de résolution spécifie la résolution maximale de chaque image dans le fichier TIFF. Forcer la compression bitonale G4 encode toutes les pages en noir et blanc avec la compression CCITT Groupe 4. Autoriser la compression JPEG utilise JPEG pour toutes les images en niveaux de gris ou en couleurs. &lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;b&gt;Options TIFF.&lt;/b&gt;&lt;br&gt;La boite de résolution spécifie la résolution maximale de chaque image dans le fichier TIFF. Forcer la compression bitonale G4 encode toutes les pages en noir et blanc avec la compression CCITT Groupe 4. Autoriser la compression JPEG utilise JPEG pour toutes les images en niveaux de gris ou en couleurs. &lt;/html&gt;</translation>
     </message>
     <message>
         <source>Cannot open output file.</source>
@@ -2367,6 +2416,10 @@ Voulez-vous le remplacer?</translation>
     <message>
         <source>Cannot render image</source>
         <translation>Impossible de dessiner l&apos;image</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;b&gt;TIFF options.&lt;/b&gt;&lt;br&gt;The resolution box specifies an upper limit for the resolution of the TIFF images. Forcing bitonal G4 compression encodes all pages in black and white using the CCITT Group 4 compression. Allowing JPEG compression uses lossy JPEG for all non bitonal or subsampled images. Otherwise, allowing deflate compression produces more compact (but less portable) files than the default packbits compression.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;b&gt;Options TIFF.&lt;/b&gt;&lt;br&gt;La boite de résolution spécifie la résolution maximale de chaque image dans le fichier TIFF. Forcer la compression bitonale G4 encode toutes les pages en noir et blanc avec la compression CCITT Groupe 4. Autoriser la compression JPEG utilise JPEG pour toutes les images en niveaux de gris ou en couleurs. Sinon, autoriser la compression «deflate» produit des fichiers plus compacts (mais moins portables) que la compression par défaut «packbits».&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
