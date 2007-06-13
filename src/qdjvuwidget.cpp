@@ -732,6 +732,7 @@ public:
   QString     currentComment;
   bool        currentLinkDisplayed;
   bool        allLinksDisplayed;
+  QTimer     *toolTipTimer;
   // messages
   int maxMessages;
   QList<QString> errorMessages;
@@ -777,6 +778,7 @@ public slots:
   void redisplayPage();
   void error(QString msg, QString filename, int lineno);
   void info(QString msg);
+  void makeToolTip();
 };
 
 QDjVuPrivate::~QDjVuPrivate()
@@ -859,9 +861,14 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   // cursors
   cursHandOpen = qcursor_by_name(":/images/cursor_hand_open.png");
   cursHandClosed = qcursor_by_name(":/images/cursor_hand_closed.png");
+  // tooltips
+  toolTipTimer = new QTimer(this);
+  toolTipTimer->setSingleShot(true);
   // connect
   connect(pageRequestTimer, SIGNAL(timeout()),
           this, SLOT(makePageRequests()) );
+  connect(toolTipTimer, SIGNAL(timeout()),
+          this, SLOT(makeToolTip()) );
   connect(widget->horizontalScrollBar(), SIGNAL(sliderReleased()),
           this, SLOT(makePageRequests()) );
   connect(widget->verticalScrollBar(), SIGNAL(sliderReleased()),
@@ -4339,9 +4346,20 @@ void
 QDjVuWidget::chooseTooltip(void)
 {
   QString comment = linkComment();
-  viewport()->setToolTip(comment);
+  priv->toolTipTimer->stop();
   if (comment.isEmpty())
-    QToolTip::showText(priv->cursorPoint, comment, viewport());
+    QToolTip::showText(QPoint(), comment, viewport());
+  else
+    priv->toolTipTimer->start(250);
+}
+
+
+void
+QDjVuPrivate::makeToolTip(void)
+{
+  QWidget *w = widget->viewport();
+  QPoint p = w->mapToGlobal(cursorPoint);
+  QToolTip::showText(p, currentComment, w);
 }
 
 
