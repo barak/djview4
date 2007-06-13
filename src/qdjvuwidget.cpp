@@ -2603,6 +2603,9 @@ MapArea::parse(miniexp_t full, int pageno)
       return error("Bad url", pageno, q);
     url = miniexp_cadr(q);
     target = miniexp_caddr(q);
+    const char *s = miniexp_to_str(url);
+    if (! (s && s[0]))
+      url = target = miniexp_nil;
   } else if (q)
     return error("Bad url", pageno, full);
   // comment
