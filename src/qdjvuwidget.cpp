@@ -1336,6 +1336,8 @@ QDjVuPrivate::makeLayout()
           layoutChange &= ~UPDATE_ALL;
           dragStart += QPoint(dx,dy);
           selectedRect.translate(dx, dy);
+          // Tooltips mess things up during scrolls
+          QToolTip::showText(QPoint(),QString());
           // Attention: scroll can generate a paintEvent
           // and call makeLayout again. This is why we
           // do these four things before.
