@@ -4347,11 +4347,9 @@ QDjVuWidget::paintEmpty(QPainter &p, const QRect &rect,
 void 
 QDjVuWidget::chooseTooltip(void)
 {
-  QString comment = linkComment();
+  QToolTip::showText(QPoint(), QString());
   priv->toolTipTimer->stop();
-  if (comment.isEmpty())
-    QToolTip::showText(QPoint(), comment, viewport());
-  else
+  if (!linkComment().isEmpty())
     priv->toolTipTimer->start(250);
 }
 
