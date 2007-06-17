@@ -241,8 +241,8 @@ main(int argc, char *argv[])
 #endif
   
   // Color specification 
-  //  (cause XRender errors under Qt-4.2!)
-#if QT_VERSION >= 0x40300
+  // (cause XRender errors under many versions of Qt/X11)
+#ifndef Q_WS_X11
   QApplication::setColorSpec(QApplication::ManyColor);
 #endif
   
