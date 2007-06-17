@@ -57,7 +57,9 @@
 #endif
 
 #if DDJVUAPI_VERSION >= 18
-# define QDJVUWIDGET_PIXMAP_CACHE 1
+# ifndef QDJVUWIDGET_PIXMAP_CACHE
+#  define QDJVUWIDGET_PIXMAP_CACHE 1
+# endif
 #endif
 
 #ifdef Q_NO_USING_KEYWORD
