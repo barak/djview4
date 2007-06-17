@@ -96,9 +96,11 @@ QDjVuHttpDocument::QDjVuHttpDocument(QObject *parent)
 QDjVuHttpDocument::~QDjVuHttpDocument()
 {
   for (int i=0; i<connections.size(); i++)
-    ddjvu_stream_close(*this, connections[i].streamid, true);
+    if (connections[i].streamid >= 0)
+      ddjvu_stream_close(*this, connections[i].streamid, true);
   foreach(Req req, requests)
-    ddjvu_stream_close(*this, req.streamid, true);
+    if (req.streamid >= 0)
+      ddjvu_stream_close(*this, req.streamid, true);
 }
 
 
@@ -128,6 +130,10 @@ QDjVuHttpDocument::setUrl(QDjVuContext *ctx, QUrl url, bool cache)
       QString scheme = url.scheme().toLower();
       if (scheme == "http")
         QDjVuDocument::setUrl(ctx, url, cache);
+#if QT_VERSION >= 0x40300
+      else if (scheme == "https")
+        QDjVuDocument::setUrl(ctx, url, cache);
+#endif
       else if (scheme == "file" && url.host().isEmpty())
         QDjVuDocument::setFileName(ctx, url.toLocalFile(), cache);
       else
