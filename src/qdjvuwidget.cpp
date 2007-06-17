@@ -2071,10 +2071,9 @@ QDjVuWidget::zoomFactor(void) const
 {
   if (priv->zoom >= ZOOM_MIN && priv->zoom <= ZOOM_MAX)
     return priv->zoom;
-  if (priv->zoomFactor >= ZOOM_MIN &&
-      priv->zoomFactor <= ZOOM_MIN  )
+  if (priv->zoomFactor >= ZOOM_MIN && priv->zoomFactor <= ZOOM_MAX)
     return priv->zoomFactor;
-  // Only when ZOOM_ONE2ONE is selected:
+  // Only when ZOOM_ONE2ONE or ZOOM_STRETCH is selected:
   priv->makeLayout();
   if (! priv->pageMap.contains(priv->currentPos.pageNo))
     return 100;
