@@ -1859,17 +1859,22 @@ QDjViewImgExporter::doPage()
   // determine rectangle
   ddjvu_rect_t rect;
   int imgdpi = ddjvu_page_get_resolution(*page);
-  int dpi = imgdpi; // no max resolution yet
+  int dpi = imgdpi; // (TODO: add property page with resolution!)
   rect.x = rect.y = 0;
   rect.w = ( ddjvu_page_get_width(*page) * dpi + imgdpi/2 ) / imgdpi;
   rect.h = ( ddjvu_page_get_height(*page) * dpi + imgdpi/2 ) / imgdpi;
   // prepare format
   ddjvu_format_t *fmt = 0;
-  unsigned int masks[4] = { 0xff0000, 0xff00, 0xff, 0xff000000 };
+#if DDJVUAPI_VERSION < 18
+  unsigned int masks[3] = { 0xff0000, 0xff00, 0xff };
   fmt = ddjvu_format_create(DDJVU_FORMAT_RGBMASK32, 3, masks);
+#else
+  unsigned int masks[4] = { 0xff0000, 0xff00, 0xff, 0xff000000 };
+  fmt = ddjvu_format_create(DDJVU_FORMAT_RGBMASK32, 4, masks);
+#endif
   ddjvu_format_set_row_order(fmt, true);
   ddjvu_format_set_gamma(fmt, 2.2);
-  // determine mode
+  // determine mode (TODO: add property page with mode!)
   ddjvu_render_mode_t mode = DDJVU_RENDER_COLOR;
   QDjVuWidget::DisplayMode displayMode;
   displayMode = djview->getDjVuWidget()->displayMode();
