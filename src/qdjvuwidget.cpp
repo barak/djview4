@@ -56,6 +56,9 @@
 # error "DDJVUAPI_VERSION>=17 is required !"
 #endif
 
+#if DDJVUAPI_VERSION >= 18
+# define QDJVUWIDGET_PIXMAP_CACHE 1
+#endif
 
 #ifdef Q_NO_USING_KEYWORD
 # define BEGIN_ANONYMOUS_NAMESPACE 
@@ -844,8 +847,13 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   pageRequestTimer->setSingleShot(true);
   // render format
   gamma = 2.2;
-  unsigned int masks[4] = { 0xff0000, 0xff00, 0xff, 0xff000000 };
+#if DDJVUAPI_VERSION < 18
+  unsigned int masks[3] = { 0xff0000, 0xff00, 0xff };
   renderFormat = ddjvu_format_create(DDJVU_FORMAT_RGBMASK32, 3, masks);
+#else
+  unsigned int masks[4] = { 0xff0000, 0xff00, 0xff, 0xff000000 };
+  renderFormat = ddjvu_format_create(DDJVU_FORMAT_RGBMASK32, 4, masks);
+#endif
   ddjvu_format_set_row_order(renderFormat, true);
   ddjvu_format_set_y_direction(renderFormat, true);
   ddjvu_format_set_ditherbits(renderFormat, QPixmap::defaultDepth());
