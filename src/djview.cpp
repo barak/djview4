@@ -254,7 +254,6 @@ main(int argc, char *argv[])
         verbose = true;
         QDjViewPlugin dispatcher(argv[0]);
         return dispatcher.exec();
-        
       }
 #endif
 
