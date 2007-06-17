@@ -6,8 +6,7 @@ NEW IN VERSION 4.0
 
 NEW IN VERSION 4.1
 ------------------
-- Fixes for Qt-4.2.
-- TIFF export.
-- Works on Windows.
-- PDF export.
-- Ukrainian translations (thanks to Yuri Chornoivan).
+- Fixes for Qt 4.2 and 4.3.
+- Fixes to enable compilation on Windows.
+- TIFF and PDF export.
+- New translations (ukrainian)

@@ -28,6 +28,7 @@
 #include <QAbstractListModel>
 #include <QAction>
 #include <QActionGroup>
+#include <QApplication>
 #include <QContextMenuEvent>
 #include <QCheckBox>
 #include <QDebug>
@@ -398,8 +399,13 @@ QDjViewThumbnails::Model::Model(QDjViewThumbnails *widget)
     pageInProgress(-1)
 {
   // create format
-  unsigned int masks[4] = { 0xff0000, 0xff00, 0xff, 0xff000000 };
+#if DDJVUAPI_VERSION < 18
+  unsigned int masks[3] = { 0xff0000, 0xff00, 0xff };
   format = ddjvu_format_create(DDJVU_FORMAT_RGBMASK32, 3, masks);
+#else
+  unsigned int masks[4] = { 0xff0000, 0xff00, 0xff, 0xff000000 };
+  format = ddjvu_format_create(DDJVU_FORMAT_RGBMASK32, 4, masks);
+#endif
   ddjvu_format_set_row_order(format, true);
   ddjvu_format_set_y_direction(format, true);
   ddjvu_format_set_ditherbits(format, QPixmap::defaultDepth());
@@ -419,17 +425,26 @@ QDjViewThumbnails::Model::Model(QDjViewThumbnails *widget)
 void 
 QDjViewThumbnails::Model::documentClosed(QDjVuDocument *doc)
 {
+  beginRemoveRows(QModelIndex(),0,names.size()-1);
   names.clear();
+  pageInProgress = -1;
   disconnect(doc, 0, this, 0);
-  emit layoutChanged();
+  endRemoveRows();
 }
 
 
 void 
 QDjViewThumbnails::Model::documentReady(QDjVuDocument *doc)
 {
-  names.clear();
+  if (names.size() > 0)
+    {
+      beginRemoveRows(QModelIndex(),0,names.size()-1);
+      names.clear();
+      pageInProgress = -1;
+      endRemoveRows();
+    }
   int pagenum = djview->pageNum();
+  beginInsertRows(QModelIndex(),0,pagenum-1);
   for (int pageno=0; pageno<pagenum; pageno++)
     names << djview->pageName(pageno);
   connect(doc, SIGNAL(thumbnail(int)),
@@ -438,8 +453,9 @@ QDjViewThumbnails::Model::documentReady(QDjVuDocument *doc)
           this, SLOT(scheduleRefresh()) );
   connect(doc, SIGNAL(idle()),
           this, SLOT(scheduleRefresh()) );
-  emit layoutChanged();
+  endInsertRows();
   widget->pageChanged(djview->getDjVuWidget()->page());
+  scheduleRefresh();
 }
 
 
