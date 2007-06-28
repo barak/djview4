@@ -93,6 +93,7 @@ FORMS += qdjviewexportps1.ui
 FORMS += qdjviewexportps2.ui
 FORMS += qdjviewexportps3.ui
 FORMS += qdjviewexporttiff.ui
+FORMS += qdjviewexportprn.ui
 FORMS += qdjviewprefsdialog.ui 
 SOURCES += djview.cpp
 x11 {

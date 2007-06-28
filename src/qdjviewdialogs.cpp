@@ -1206,7 +1206,7 @@ QDjViewExportDialog::QDjViewExportDialog(QDjView *djview)
                   "specifying format options.</html>"));
 
   foreach (QString name, QDjViewExporter::names())
-    if (! name.startsWith("DJVU"))
+    if (!name.startsWith("DJVU") && !name.startsWith("pRN"))
       {
         QStringList info = QDjViewExporter::info(name);
         if (info.size() > 2)
@@ -1530,7 +1530,7 @@ QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
   d->document = 0;
   d->stopping = false;
   d->exporter = 0;
-  d->printer = new QPrinter;
+  d->printer = new QPrinter(QPrinter::HighResolution);
 
   d->ui.setupUi(this);
   setAttribute(Qt::WA_GroupLeader, true);
@@ -1593,12 +1593,16 @@ QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
   // Create exporter
 #ifdef Q_WS_WIN
   // ... maybe do windows specific things here.
+  if (! d->exporter)
+    d->exporter = QDjViewExporter::create(this, d->djview, "PRN");
 #endif
 #ifdef Q_WS_MAC
   // ... maybe do mac specific things here.
 #endif
   if (! d->exporter)
     d->exporter = QDjViewExporter::create(this, d->djview, "PS");
+  if (! d->exporter)
+    d->exporter = QDjViewExporter::create(this, d->djview, "PRN");
   if (d->exporter)
     {
       QDjViewExporter *exporter = d->exporter;

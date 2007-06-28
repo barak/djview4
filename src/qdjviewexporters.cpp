@@ -1921,6 +1921,229 @@ QDjViewImgExporter::doPage()
 
 
 
+#include "ui_qdjviewexportprn.h"
+
+
+class QDjViewPrnExporter : public QDjViewPageExporter
+{
+  Q_OBJECT
+public:
+  static QDjViewExporter *create(QDialog*, QDjView*, QString);
+  static void setup();
+public:
+  ~QDjViewPrnExporter();
+  QDjViewPrnExporter(QDialog *parent, QDjView *djview, QString name);
+  virtual void     resetProperties();
+  virtual void     loadProperties(QString group);
+  virtual void     saveProperties(QString group);
+  virtual int      propertyPages();
+  virtual QWidget* propertyPage(int num);
+  virtual bool save(QString fileName);
+  virtual bool printSetup(QPrintDialog *dialog, bool dir);
+  virtual bool print(QPrinter *printer);
+protected:
+  virtual void closeFile();
+  virtual void doPage();
+protected:
+  Ui::QDjViewExportPrn ui;
+  QPointer<QWidget> page;
+  QPrinter *printer;
+  QPainter *painter;
+  QString   fileName;
+};
+
+
+QDjViewExporter*
+QDjViewPrnExporter::create(QDialog *parent, QDjView *djview, QString name)
+{
+  if (name == "PRN")
+    return new QDjViewPrnExporter(parent, djview, name);
+  return 0;
+}
+
+
+void
+QDjViewPrnExporter::setup()
+{
+  addExporterData("PRN", "prn",
+                  tr("Printer data"),
+                  tr("PRN Files (*.prn)"),
+                  QDjViewPrnExporter::create);
+}
+
+
+QDjViewPrnExporter::~QDjViewPrnExporter()
+{
+  closeFile();
+  delete page;
+}
+
+
+QDjViewPrnExporter::QDjViewPrnExporter(QDialog *parent, QDjView *djview,
+                                         QString name)
+  : QDjViewPageExporter(parent, djview, name),
+    printer(0),
+    painter(0)
+{
+  page = new QWidget();
+  ui.setupUi(page);
+  page->setObjectName(tr("Printing Options", "tab caption"));
+  resetProperties();
+  page->setWhatsThis(tr("<html><b>Printing options.</b><br>"
+                        "Option <tt>Color</tt> enables color printing. "
+                        "Document pages can be decorated with a frame. "
+                        "Option <tt>Scale to fit</tt> accomodates "
+                        "whatever paper size your printer uses. "
+                        "Zoom factor <tt>100%</tt> reproduces the initial "
+                        "document size. Orientation <tt>Automatic</tt> "
+                        "chooses portrait or landscape on a page per "
+                        "page basis.</html>") );
+}
+
+
+void     
+QDjViewPrnExporter::resetProperties()
+{
+  ui.colorButton->setChecked(true);
+  ui.frameCheckBox->setChecked(false);
+  ui.cropMarksCheckBox->setChecked(false);
+  ui.autoOrientCheckBox->setChecked(true);
+  ui.scaleToFitButton->setChecked(true);
+  ui.zoomSpinBox->setValue(100);
+}
+
+
+void
+QDjViewPrnExporter::loadProperties(QString group)
+{
+  QSettings s(DJVIEW_ORG, DJVIEW_APP);
+  if (group.isEmpty()) 
+    group = "Export-" + name();
+  s.beginGroup(group);
+  bool color = s.value("color", true).toBool();
+  ui.colorButton->setChecked(color);
+  ui.grayScaleButton->setChecked(!color);
+  ui.frameCheckBox->setChecked(s.value("frame", false).toBool());
+  ui.cropMarksCheckBox->setChecked(false);
+  ui.autoOrientCheckBox->setChecked(s.value("autoOrient", true).toBool());
+  bool landscape = s.value("landscape",false).toBool();
+  ui.portraitButton->setChecked(!landscape);
+  ui.landscapeButton->setChecked(landscape);
+  int zoom = s.value("zoom",0).toInt();
+  ui.scaleToFitButton->setChecked(zoom == 0);
+  ui.zoomButton->setChecked(zoom!=0);
+  ui.zoomSpinBox->setValue(zoom ? qBound(25,zoom,2400) : 100);
+}
+
+
+void
+QDjViewPrnExporter::saveProperties(QString group)
+{
+  QSettings s(DJVIEW_ORG, DJVIEW_APP);
+  if (group.isEmpty()) 
+    group = "Export-" + name();
+  s.beginGroup(group);
+  s.setValue("color", ui.colorButton->isChecked());
+  s.setValue("frame", ui.frameCheckBox->isChecked());
+  s.setValue("autoOrient", ui.autoOrientCheckBox->isChecked());
+  s.setValue("landscape", ui.landscapeButton->isChecked());
+  int zoom = ui.zoomSpinBox->value();
+  s.setValue("zoom", QVariant(ui.zoomButton->isChecked() ? zoom : 0));
+}
+
+
+bool
+QDjViewPrnExporter::printSetup(QPrintDialog *dialog, bool dir)
+{
+  printer = dialog->printer();
+  if (dir)
+    {
+      bool grayscale = (printer->colorMode() == QPrinter::GrayScale);
+      bool landscape = (printer->orientation() == QPrinter::Landscape);
+      ui.grayScaleButton->setChecked(grayscale);  
+      ui.colorButton->setChecked(!grayscale);  
+      ui.landscapeButton->setChecked(landscape);
+      ui.portraitButton->setChecked(!landscape);
+    }
+  else
+    {
+      bool grayscale = ui.grayScaleButton->isChecked();
+      bool landscape = ui.landscapeButton->isChecked();
+      printer->setColorMode(grayscale ? QPrinter::GrayScale : QPrinter::Color);
+      printer->setOrientation(landscape ? QPrinter::Landscape : QPrinter::Portrait);
+    }
+  return true;
+}
+
+
+int
+QDjViewPrnExporter::propertyPages()
+{
+  return 1;
+}
+
+
+QWidget* 
+QDjViewPrnExporter::propertyPage(int num)
+{
+  if (num == 0)
+    return page;
+  return 0;
+}
+
+
+bool
+QDjViewPrnExporter::save(QString fileName)
+{
+  closeFile();
+  this->fileName = fileName;
+  printer = new QPrinter(QPrinter::HighResolution);
+  printer->setOutputFileName(fileName);
+#if defined(Q_OS_UNIX) && !defined(Q_WS_MAC) && QT_VERSION >= 0x40200
+  printer->setOutputFormat(QPrinter::PostScriptFormat);
+#elif QT_VERSION >= 0x40100 
+  printer->setOutputFormat(QPrinter::NativeFormat);
+#endif
+  return start();
+}
+
+
+bool 
+QDjViewPrnExporter::print(QPrinter *printer)
+{
+  closeFile();
+  this->printer = printer;
+  return start();
+}
+
+
+void 
+QDjViewPrnExporter::closeFile()
+{
+  if (painter)
+    delete painter;
+  painter = 0;
+  if (printer && !fileName.isEmpty())
+    delete printer;
+  printer = 0;
+  if (curStatus > DDJVU_JOB_OK && !fileName.isEmpty())
+    ::remove(QFile::encodeName(fileName).data());
+  fileName = QString();
+}
+
+
+void 
+QDjViewPrnExporter::doPage()
+{
+  // prepare page
+  if (! painter)
+    painter = new QPainter(printer);
+  else
+    printer->newPage();
+  // decode
+  // print
+}
+
 
 
 
@@ -1942,6 +2165,7 @@ createExporterData()
 #endif
   QDjViewPSExporter::setup();
   QDjViewImgExporter::setup();
+  QDjViewPrnExporter::setup();
 }
 
 
