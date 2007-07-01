@@ -50,14 +50,19 @@ AC_DEFUN([AC_DEFINE_INSTALL_PATHS],[
   DIR_PREFIX="`eval echo \"$prefix\"`"
   AC_DEFINE_UNQUOTED(DIR_PREFIX,["${DIR_PREFIX}"],[directory "prefix"])
   DIR_EXEC_PREFIX="`eval echo \"$exec_prefix\"`"
+  DIR_EXEC_PREFIX="`eval echo \"$DIR_EXEC_PREFIX\"`"
   AC_DEFINE_UNQUOTED(DIR_EXEC_PREFIX,["${DIR_EXEC_PREFIX}"],[directory "exec_prefix"])
   DIR_BINDIR="`eval echo \"$bindir\"`"
+  DIR_BINDIR="`eval echo \"$DIR_BINDIR\"`"
   AC_DEFINE_UNQUOTED(DIR_BINDIR,["${DIR_BINDIR}"],[directory "bindir"])
   DIR_LIBDIR="`eval echo \"$libdir\"`"
+  DIR_LIBDIR="`eval echo \"$DIR_LIBDIR\"`"
   AC_DEFINE_UNQUOTED(DIR_LIBDIR,["${DIR_LIBDIR}"],[directory "libdir"])
   DIR_DATADIR="`eval echo \"$datadir\"`"
+  DIR_DATADIR="`eval echo \"$DIR_DATADIR\"`"
   AC_DEFINE_UNQUOTED(DIR_DATADIR,["${DIR_DATADIR}"],[directory "datadir"])
   DIR_MANDIR="`eval echo \"$mandir\"`"
+  DIR_MANDIR="`eval echo \"$DIR_MANDIR\"`"
   AC_DEFINE_UNQUOTED(DIR_MANDIR,["${DIR_MANDIR}"],[directory "mandir"])
   prefix="${save_prefix}"
   exec_prefix="${save_exec_prefix}"
