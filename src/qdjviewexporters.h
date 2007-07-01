@@ -55,9 +55,9 @@ public:
   virtual void setFromTo(int fromPage, int toPage);
   virtual void setErrorCaption(QString);
   virtual void resetProperties();
-  virtual void     loadProperties(QString group=QString::null);
-  virtual void     saveProperties(QString group=QString::null);
-  virtual int      propertyPages();
+  virtual void loadProperties(QString group=QString::null);
+  virtual void saveProperties(QString group=QString::null);
+  virtual int propertyPages();
   virtual QWidget* propertyPage(int num);
   virtual ddjvu_status_t status();
   virtual QString name();

@@ -25,8 +25,8 @@
 # define HAVE_UNISTD_H     1
 # define HAVE_STRERROR     1
 # ifndef WIN32
-#  define HAVE_SYS_WAIT_H   1
-#  define HAVE_WAITPID      1
+#  define HAVE_SYS_WAIT_H  1
+#  define HAVE_WAITPID     1
 # endif
 #endif
 
@@ -496,10 +496,10 @@ public:
   QDjViewPSExporter(QDialog *parent, QDjView *djview, 
                     QString name, bool eps);
   virtual bool exportOnePageOnly();
-  virtual void     resetProperties();
-  virtual void     loadProperties(QString group);
-  virtual void     saveProperties(QString group);
-  virtual int      propertyPages();
+  virtual void resetProperties();
+  virtual void loadProperties(QString group);
+  virtual void saveProperties(QString group);
+  virtual int propertyPages();
   virtual QWidget* propertyPage(int num);
   virtual bool save(QString fileName);
   virtual bool printSetup(QPrintDialog *dialog, bool dir);
@@ -1287,10 +1287,10 @@ public:
 public:
   ~QDjViewTiffExporter();
   QDjViewTiffExporter(QDialog *parent, QDjView *djview, QString name);
-  virtual void     resetProperties();
-  virtual void     loadProperties(QString group);
-  virtual void     saveProperties(QString group);
-  virtual int      propertyPages();
+  virtual void resetProperties();
+  virtual void loadProperties(QString group);
+  virtual void saveProperties(QString group);
+  virtual int propertyPages();
   virtual QWidget* propertyPage(int num);
   virtual bool save(QString fileName);
 protected:
@@ -1933,10 +1933,10 @@ public:
 public:
   ~QDjViewPrnExporter();
   QDjViewPrnExporter(QDialog *parent, QDjView *djview, QString name);
-  virtual void     resetProperties();
-  virtual void     loadProperties(QString group);
-  virtual void     saveProperties(QString group);
-  virtual int      propertyPages();
+  virtual void resetProperties();
+  virtual void loadProperties(QString group);
+  virtual void saveProperties(QString group);
+  virtual int propertyPages();
   virtual QWidget* propertyPage(int num);
   virtual bool save(QString fileName);
   virtual bool printSetup(QPrintDialog *dialog, bool dir);
