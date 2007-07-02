@@ -1206,7 +1206,7 @@ QDjViewExportDialog::QDjViewExportDialog(QDjView *djview)
                   "specifying format options.</html>"));
 
   foreach (QString name, QDjViewExporter::names())
-    if (!name.startsWith("DJVU") && !name.startsWith("pRN"))
+    if (!name.startsWith("DJVU") && !name.startsWith("PRN"))
       {
         QStringList info = QDjViewExporter::info(name);
         if (info.size() > 2)
