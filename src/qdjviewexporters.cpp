@@ -2165,7 +2165,7 @@ QDjViewPrnExporter::doPage()
   rect.h = ( rect.h * dpi + imgdpi/2 ) / imgdpi;
   // create image
   QImage::Format imageFormat = QImage::Format_RGB32;
-  if (ddjvu_page_get_type(*page) == DDJVU_PAGETYPE_BITONAL)
+  if (ddjvu_page_get_type(*page) == DDJVU_PAGETYPE_BITONAL && dpi >= imgdpi)
     imageFormat = QImage::Format_Mono;
   else if (ui.grayScaleButton->isChecked())
     imageFormat = QImage::Format_Indexed8;
