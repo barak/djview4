@@ -425,11 +425,14 @@ QDjViewThumbnails::Model::Model(QDjViewThumbnails *widget)
 void 
 QDjViewThumbnails::Model::documentClosed(QDjVuDocument *doc)
 {
-  beginRemoveRows(QModelIndex(),0,names.size()-1);
-  names.clear();
-  pageInProgress = -1;
+  if (names.size() > 0)
+    {
+      beginRemoveRows(QModelIndex(),0,names.size()-1);
+      names.clear();
+      pageInProgress = -1;
+      endRemoveRows();
+    }
   disconnect(doc, 0, this, 0);
-  endRemoveRows();
 }
 
 
