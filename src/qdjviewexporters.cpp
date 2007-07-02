@@ -2135,13 +2135,113 @@ QDjViewPrnExporter::closeFile()
 void 
 QDjViewPrnExporter::doPage()
 {
-  // prepare page
+  QDjVuPage *page = curPage;
+  // determine zoom factor and rectangles
+  ddjvu_rect_t rect;
+  rect.x = rect.y = 0;
+  rect.w = ddjvu_page_get_width(*page);
+  rect.h = ddjvu_page_get_height(*page);
+  QRect pageRect = printer->pageRect();
+  bool landscape = false;
+  if (ui.autoOrientCheckBox->isChecked())
+    landscape = (rect.w > rect.h) ^ (pageRect.width() > pageRect.height());
+  else if (ui.landscapeButton->isChecked())
+    landscape = true;
+  int pageW = (landscape) ? pageRect.height() : pageRect.width();
+  int pageH = (landscape) ? pageRect.width() : pageRect.height();
+  double zoom = 1.0;
+  if (ui.zoomButton->isChecked())
+    zoom = qBound(0.25, ui.zoomSpinBox->value()/100.0, 24.0);
+  else
+    zoom = qMin((double)pageW/rect.w,(double)pageH/rect.h);
+  int prndpi = printer->resolution();
+  int imgdpi = ddjvu_page_get_resolution(*page);
+  int dpi = qMin( (int)(prndpi * zoom), imgdpi);
+  rect.w = ( rect.w * dpi + imgdpi/2 ) / imgdpi;
+  rect.h = ( rect.h * dpi + imgdpi/2 ) / imgdpi;
+  // TODO int targetW = ...
+  // TODO int targetH = ...
+  // create image
+  QImage::Format imageFormat = QImage::Format_RGB32;
+  if (ddjvu_page_get_type(*page) == DDJVU_PAGETYPE_BITONAL)
+    imageFormat = QImage::Format_Mono;
+  else if (ui.grayScaleButton->isChecked())
+    imageFormat = QImage::Format_Indexed8;
+  QImage img(rect.w, rect.h, imageFormat);
+  // render
+  bool rendered = false;
+  ddjvu_format_t *fmt = 0;
+  ddjvu_render_mode_t mode = DDJVU_RENDER_COLOR;
+  QDjViewPrefs *prefs = QDjViewPrefs::instance();
+  if (imageFormat == QImage::Format_RGB32)
+    {
+#if DDJVUAPI_VERSION < 18
+      unsigned int masks[3] = { 0xff0000, 0xff00, 0xff };
+      fmt = ddjvu_format_create(DDJVU_FORMAT_RGBMASK32, 3, masks);
+#else
+      unsigned int masks[4] = { 0xff0000, 0xff00, 0xff, 0xff000000 };
+      fmt = ddjvu_format_create(DDJVU_FORMAT_RGBMASK32, 4, masks);
+#endif
+      if (prefs->printerGamma > 0)
+        ddjvu_format_set_gamma(fmt, prefs->printerGamma);
+      ddjvu_format_set_row_order(fmt, true);
+      if (ddjvu_page_render(*page, mode, &rect, &rect, fmt,
+                              img.bytesPerLine(), (char*)img.bits() ))
+        rendered = true;
+    }
+  else if (imageFormat == QImage::Format_Indexed8)
+    {
+      img.setNumColors(256);
+      for (int i=0; i<256; i++)
+        img.setColor(i, qRgb(i,i,i));
+      fmt = ddjvu_format_create(DDJVU_FORMAT_GREY8, 0, 0);
+      if (prefs->printerGamma > 0)
+        ddjvu_format_set_gamma(fmt, prefs->printerGamma);
+      ddjvu_format_set_row_order(fmt, true);
+      if (ddjvu_page_render(*page, mode, &rect, &rect, fmt,
+                              img.bytesPerLine(), (char*)img.bits() ))
+        rendered = true;
+    }
+  else if (imageFormat == QImage::Format_Mono)
+    {
+      fmt = ddjvu_format_create(DDJVU_FORMAT_MSBTOLSB, 0, 0);
+      ddjvu_format_set_row_order(fmt, true);
+      if (ddjvu_page_render(*page, mode, &rect, &rect, fmt,
+                              img.bytesPerLine(), (char*)img.bits() ))
+        rendered = true;
+    }
+  // paint
+  // prepare painter
   if (! painter)
     painter = new QPainter(printer);
   else
     printer->newPage();
-  // decode
-  // print
+  // prepare settings
+  painter->save();
+  
+  // print page
+  if (rendered)
+    {
+      // TODO...
+    }
+  // print frame
+  if (ui.frameCheckBox->isChecked())
+    {
+      // TODO...
+    }
+  // finish
+  painter->restore();
+  if (! rendered)
+    {
+      QString pageName = djview->pageName(curPage->pageNo());
+      error(tr("Cannot render page %1").arg(pageName), __FILE__, __LINE__);
+    }
+  if (painter)
+    delete painter;
+  painter = 0;
+  if (fmt)
+    ddjvu_format_release(fmt);
+  fmt = 0;
 }
 
 
