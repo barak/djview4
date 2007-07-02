@@ -447,16 +447,19 @@ QDjViewThumbnails::Model::documentReady(QDjVuDocument *doc)
       endRemoveRows();
     }
   int pagenum = djview->pageNum();
-  beginInsertRows(QModelIndex(),0,pagenum-1);
-  for (int pageno=0; pageno<pagenum; pageno++)
-    names << djview->pageName(pageno);
+  if (pagenum > 0)
+    {
+      beginInsertRows(QModelIndex(),0,pagenum-1);
+      for (int pageno=0; pageno<pagenum; pageno++)
+        names << djview->pageName(pageno);
+      endInsertRows();
+    }
   connect(doc, SIGNAL(thumbnail(int)),
           this, SLOT(thumbnail(int)) );
   connect(doc, SIGNAL(pageinfo()),
           this, SLOT(scheduleRefresh()) );
   connect(doc, SIGNAL(idle()),
           this, SLOT(scheduleRefresh()) );
-  endInsertRows();
   widget->pageChanged(djview->getDjVuWidget()->page());
   scheduleRefresh();
 }
