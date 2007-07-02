@@ -2143,24 +2143,26 @@ QDjViewPrnExporter::doPage()
   rect.h = ddjvu_page_get_height(*page);
   QRect pageRect = printer->pageRect();
   bool landscape = false;
+  int prndpi = printer->resolution();
+  int imgdpi = ddjvu_page_get_resolution(*page);
   if (ui.autoOrientCheckBox->isChecked())
     landscape = (rect.w > rect.h) ^ (pageRect.width() > pageRect.height());
   else if (ui.landscapeButton->isChecked())
     landscape = true;
-  int pageW = (landscape) ? pageRect.height() : pageRect.width();
-  int pageH = (landscape) ? pageRect.width() : pageRect.height();
-  double zoom = 1.0;
+  int printW = (landscape) ? pageRect.height() : pageRect.width();
+  int printH = (landscape) ? pageRect.width() : pageRect.height();
+  int targetW = (rect.w * prndpi + imgdpi/2 ) / imgdpi;
+  int targetH = (rect.h * prndpi + imgdpi/2 ) / imgdpi;
+  int zoom = 100;
   if (ui.zoomButton->isChecked())
-    zoom = qBound(0.25, ui.zoomSpinBox->value()/100.0, 24.0);
-  else
-    zoom = qMin((double)pageW/rect.w,(double)pageH/rect.h);
-  int prndpi = printer->resolution();
-  int imgdpi = ddjvu_page_get_resolution(*page);
-  int dpi = qMin( (int)(prndpi * zoom), imgdpi);
+    zoom = qBound(25, ui.zoomSpinBox->value(), 2400);
+  else if (ui.scaleToFitButton->isChecked())
+    zoom = qMin( printW * 100 / targetW, printH * 100 / targetH);
+  targetW = targetW * zoom / 100;
+  targetH = targetH * zoom / 100;
+  int dpi = qMin(prndpi * zoom / 100, imgdpi);
   rect.w = ( rect.w * dpi + imgdpi/2 ) / imgdpi;
   rect.h = ( rect.h * dpi + imgdpi/2 ) / imgdpi;
-  // TODO int targetW = ...
-  // TODO int targetH = ...
   // create image
   QImage::Format imageFormat = QImage::Format_RGB32;
   if (ddjvu_page_get_type(*page) == DDJVU_PAGETYPE_BITONAL)
@@ -2209,8 +2211,9 @@ QDjViewPrnExporter::doPage()
       if (ddjvu_page_render(*page, mode, &rect, &rect, fmt,
                               img.bytesPerLine(), (char*)img.bits() ))
         rendered = true;
+      if (rendered)
+        img.invertPixels();
     }
-  // paint
   // prepare painter
   if (! painter)
     painter = new QPainter(printer);
@@ -2218,27 +2221,30 @@ QDjViewPrnExporter::doPage()
     printer->newPage();
   // prepare settings
   painter->save();
-  
+  if (landscape)
+    {
+      painter->translate(QPoint(pageRect.width(),0));
+      painter->rotate(90);
+    }
+  painter->translate(qMax(0, (printW-targetW)/2), qMax(0, (printH-targetH)/2));
+
   // print page
+  QRect sourceRect(0,0,rect.w,rect.h);
+  QRect targetRect(0,0,targetW,targetH);
   if (rendered)
-    {
-      // TODO...
-    }
-  // print frame
+    painter->drawImage(targetRect, img, sourceRect);
+  QPen pen(Qt::black, 0, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
+  painter->setPen(pen);
+  painter->setBrush(Qt::NoBrush);
   if (ui.frameCheckBox->isChecked())
-    {
-      // TODO...
-    }
+    painter->drawRect(targetRect);
   // finish
   painter->restore();
   if (! rendered)
     {
       QString pageName = djview->pageName(curPage->pageNo());
-      error(tr("Cannot render page %1").arg(pageName), __FILE__, __LINE__);
+      error(tr("Cannot render page %1.").arg(pageName), __FILE__, __LINE__);
     }
-  if (painter)
-    delete painter;
-  painter = 0;
   if (fmt)
     ddjvu_format_release(fmt);
   fmt = 0;
