@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="fr">
-<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -205,12 +204,6 @@ Options fréquentes:
         <source>Save &amp;as...</source>
         <comment>File|</comment>
         <translation>&amp;Enregistrer sous...</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>Ctrl+S</source>
-        <comment>File|Save</comment>
-        <translation type="obsolete">Ctrl+S</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="379"/>
@@ -1638,27 +1631,27 @@ Voulez-vous le remplacer?</translation>
         <translation>&amp;Zoom</translation>
     </message>
     <message>
-        <location filename="qdjviewexportprn.ui" line="150"/>
+        <location filename="qdjviewexportprn.ui" line="153"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
-        <location filename="qdjviewexportprn.ui" line="174"/>
+        <location filename="qdjviewexportprn.ui" line="177"/>
         <source>Orientation</source>
         <translation>Orientation</translation>
     </message>
     <message>
-        <location filename="qdjviewexportprn.ui" line="195"/>
+        <location filename="qdjviewexportprn.ui" line="198"/>
         <source>Automatic</source>
         <translation>Automatique</translation>
     </message>
     <message>
-        <location filename="qdjviewexportprn.ui" line="205"/>
+        <location filename="qdjviewexportprn.ui" line="211"/>
         <source>&amp;Portrait</source>
         <translation>&amp;Portrait</translation>
     </message>
     <message>
-        <location filename="qdjviewexportprn.ui" line="212"/>
+        <location filename="qdjviewexportprn.ui" line="221"/>
         <source>&amp;Landscape</source>
         <translation>P&amp;aysage</translation>
     </message>
@@ -1800,29 +1793,9 @@ Voulez-vous le remplacer?</translation>
         <translation>Impossible de dessiner la page.</translation>
     </message>
     <message>
-        <location filename="" line="7471221"/>
-        <source>File name has no file format suffix.</source>
-        <translation type="obsolete">Nom de fichier sans suffixe indiquant le format d&apos;image.</translation>
-    </message>
-    <message>
         <location filename="qdjviewexporters.cpp" line="1903"/>
         <source>Image format %1 not supported.</source>
         <translation>Le format de fichier image «%1» n&apos;est pas supporté.</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>Image files (%1)</source>
-        <translation type="obsolete">Fichiers image (%1)</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>%1 Image</source>
-        <translation type="obsolete">Images %1</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>%1 Files (*.%2)</source>
-        <translation type="obsolete">Fichiers %1 (*.%2)</translation>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="1825"/>
@@ -2128,16 +2101,6 @@ Voulez-vous le remplacer?</translation>
         <translation>&lt;html&gt;&lt;b&gt;Position and aggrandissement.&lt;/b&gt;&lt;br&gt;L&apos;option &lt;tt&gt;Agrandir à la page&lt;/tt&gt; choisit un grossissement adapté a la taille de papier utilisée par votre imprimante. Le facteur de grossissement &lt;tt&gt;100%&lt;/tt&gt; reproduit la taille originale du document. L&apos;orientation &lt;tt&gt;Automatique&lt;/tt&gt; sélectionne portrait ou paysage en fonction de la taille de chaque page.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7471221"/>
-        <source>Unknown error.</source>
-        <translation type="obsolete">Erreur inconnue.</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>System error: %1.</source>
-        <translation type="obsolete">Erreur système: %1.</translation>
-    </message>
-    <message>
         <location filename="qdjviewexporters.cpp" line="550"/>
         <source>PostScript</source>
         <translation>PostScript</translation>
@@ -2151,11 +2114,6 @@ Voulez-vous le remplacer?</translation>
         <location filename="qdjviewexporters.cpp" line="554"/>
         <source>Encapsulated PostScript</source>
         <translation>PostScript Encapsulé</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>DjVu Files (*.ps *.eps)</source>
-        <translation type="obsolete">Fichiers DjVu (*.ps *.eps)</translation>
     </message>
 </context>
 <context>
@@ -2581,44 +2539,9 @@ Voulez-vous le remplacer?</translation>
         <translation>à</translation>
     </message>
     <message>
-        <location filename="" line="7471221"/>
-        <source>Copies</source>
-        <translation type="obsolete">Copies</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>1 copy</source>
-        <translation type="obsolete">1 copie</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source> copies</source>
-        <translation type="obsolete"> copies</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>Co&amp;llate</source>
-        <translation type="obsolete">Trier &amp;les copies</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>Print in reverse</source>
-        <translation type="obsolete">Dernière page d&apos;abord</translation>
-    </message>
-    <message>
         <location filename="qdjviewprintdialog.ui" line="122"/>
         <source>Destination</source>
         <translation>Destination</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>No destination</source>
-        <translation type="obsolete">Pas de destination</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>C&amp;hange</source>
-        <translation type="obsolete">C&amp;hanger</translation>
     </message>
     <message>
         <location filename="qdjviewprintdialog.ui" line="264"/>
@@ -2636,22 +2559,12 @@ Voulez-vous le remplacer?</translation>
         <translation>Stop</translation>
     </message>
     <message>
-        <location filename="" line="7471221"/>
-        <source>File: %1</source>
-        <translation type="obsolete">Fichier: %1</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>Printer: %1</source>
-        <translation type="obsolete">Imprimante: %1</translation>
-    </message>
-    <message>
-        <location filename="qdjviewdialogs.cpp" line="1797"/>
+        <location filename="qdjviewdialogs.cpp" line="1799"/>
         <source>This operation has failed.</source>
         <translation>Cette opération a échoué.</translation>
     </message>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="1801"/>
+        <location filename="qdjviewdialogs.cpp" line="1803"/>
         <source>This operation has been interrupted.</source>
         <translation>Cette opération a été interrompue.</translation>
     </message>
@@ -2664,31 +2577,6 @@ Voulez-vous le remplacer?</translation>
         <location filename="qdjviewprintdialog.ui" line="238"/>
         <source>&amp;Defaults</source>
         <translation>&amp;Défaults</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>Driver</source>
-        <translation type="obsolete">Convertisseur</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>PostScript</source>
-        <translation type="obsolete">PostScript</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>QPrinter</source>
-        <translation type="obsolete">QPrinter</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>&amp;Print</source>
-        <translation type="obsolete">&amp;Imprimer</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>&lt;html&gt;&lt;b&gt;Printing.&lt;/b&gt;&lt;br/&gt; You can print the whole document or a page range. Use the tabs to specify DjVu specific printing options. Then click button &lt;tt&gt;Print&lt;/tt&gt; to choose a printer and specify generic printing options. &lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;b&gt;Impression.&lt;/b&gt;&lt;br/&gt; Vous pouvez imprimer le document entier ou un intervalle de pages. Utilisez les onglets pour sélectionner les options d&apos;impression propres à DjVu. Ensuite cliquez le bouton «Imprimer» pour sélectionner une imprimante et les options  d&apos;impression génériques.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprintdialog.ui" line="134"/>
@@ -2706,32 +2594,32 @@ Voulez-vous le remplacer?</translation>
         <translation>Choisir</translation>
     </message>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="1672"/>
+        <location filename="qdjviewdialogs.cpp" line="1674"/>
         <source>All files</source>
         <comment>save filter</comment>
         <translation>Tous les fichiers</translation>
     </message>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="1679"/>
+        <location filename="qdjviewdialogs.cpp" line="1681"/>
         <source>Print To File - DjView</source>
         <comment>dialog caption</comment>
         <translation>Imprimer vers un fichier - DjView</translation>
     </message>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="1754"/>
+        <location filename="qdjviewdialogs.cpp" line="1756"/>
         <source>Question - DjView</source>
         <comment>dialog caption</comment>
         <translation>Question - DjView</translation>
     </message>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="1756"/>
+        <location filename="qdjviewdialogs.cpp" line="1758"/>
         <source>A file with this name already exists.
 Do you want to replace it?</source>
         <translation>Ce fichier existe déjà.
 Voulez-vous le remplacer?</translation>
     </message>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="1757"/>
+        <location filename="qdjviewdialogs.cpp" line="1759"/>
         <source>&amp;Replace</source>
         <translation>&amp;Remplacer</translation>
     </message>
@@ -2753,11 +2641,6 @@ Voulez-vous le remplacer?</translation>
         <source>Printing Options</source>
         <comment>tab caption</comment>
         <translation>Options d&apos;impression</translation>
-    </message>
-    <message>
-        <location filename="qdjviewexporters.cpp" line="1993"/>
-        <source>&lt;html&gt;&lt;b&gt;Printing options.&lt;/b&gt;&lt;br&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;b&gt;Options d&apos;impression.&lt;/b&gt;&lt;br&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="2000"/>
@@ -2823,26 +2706,6 @@ Voulez-vous le remplacer?</translation>
         <translation>&amp;Ok</translation>
     </message>
     <message>
-        <location filename="" line="7471221"/>
-        <source>DjVu Bundled Document</source>
-        <translation type="obsolete">Document DjVu «bundled»</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>DjVu Indirect Document</source>
-        <translation type="obsolete">Document DjVu «indirect»</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>PostScript</source>
-        <translation type="obsolete">PostScript</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>Encapsulated PostScript</source>
-        <translation type="obsolete">PostScript Encapsulé</translation>
-    </message>
-    <message>
         <location filename="qdjviewdialogs.cpp" line="1008"/>
         <source>Error - DjView</source>
         <comment>dialog caption</comment>
@@ -2894,74 +2757,8 @@ Voulez-vous le remplacer?</translation>
         <translation>Enregistrer - DjView</translation>
     </message>
     <message>
-        <location filename="" line="7471221"/>
-        <source>Save Error - DjView</source>
-        <comment>dialog caption</comment>
-        <translation type="obsolete">Erreur d&apos;enregistrement - DjView</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>&lt;html&gt;&lt;b&gt;Saving.&lt;/b&gt;&lt;br/&gt; You can save the whole document or a page range under a variety of formats. Selecting certain formats creates additional dialog pages for specifying format options.&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;b&gt;Enregistrer.&lt;/b&gt;&lt;br/&gt; Vous pouvez enregistrer le document entier ou un intervalle de pages sous divers formats. Certain formats font apparaître des pages supplémentaires permettant de spécifier les options de conversion.&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>&amp;Defaults</source>
-        <translation type="obsolete">&amp;Défaults</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>TIFF</source>
-        <translation type="obsolete">TIFF</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>Generic image formats</source>
-        <translation type="obsolete">Formats image génériques</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>DjVu Files (*.djvu *.djv)</source>
-        <translation type="obsolete">Fichiers DjVu (*.djvu *.djv)</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>TIFF Files (*.tif *.tiff)</source>
-        <translation type="obsolete">Fichiers TIFF (*.tif *.tiff)</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>PostScript Files (*.ps)</source>
-        <translation type="obsolete">Fichiers PostScript (*.ps)</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>Encapsulated PostScript Files (*.eps)</source>
-        <translation type="obsolete">Fichiers PostScript Encapsulés (*.eps)</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>Other image formats</source>
-        <translation type="obsolete">Autre image formats</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>Format</source>
-        <translation type="obsolete">Format</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>Bundled</source>
-        <translation type="obsolete">DjVu «bundled»</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>Indirect</source>
-        <translation type="obsolete">DjVu «indirect»</translation>
-    </message>
-    <message>
         <location filename="qdjviewdialogs.cpp" line="923"/>
-        <source>&lt;html&gt;&lt;b&gt;Saving.&lt;/b&gt;&lt;br/&gt; You can save the whole document or a page range. The bundled format creates a single page. The indirect format creates multiple files suitable for web serving.&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;b&gt;Saving.&lt;/b&gt;&lt;br/&gt; You can save the whole document or a page range. The bundled format creates a single file. The indirect format creates multiple files suitable for web serving.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Saving.&lt;/b&gt;&lt;br/&gt; Vous pouvez enregistrer le document entier ou quelques pages. Le format DjVu «bundled» consiste en un fichier unique contenant toutes les pages. Le format DjVu «indirect» consiste en une collection de fichiers appropriés pour un serveur Web.&lt;/html&gt;</translation>
     </message>
     <message>
@@ -3030,11 +2827,6 @@ Voulez-vous le remplacer?</translation>
         <source>TIFF Options</source>
         <comment>tab caption</comment>
         <translation>Options TIFF</translation>
-    </message>
-    <message>
-        <location filename="" line="7471221"/>
-        <source>&lt;html&gt;&lt;b&gt;TIFF options.&lt;/b&gt;&lt;br&gt;The resolution box specifies an upper limit for the resolution of the TIFF images. Forcing bitonal G4 compression encodes all pages in black and white using the CCITT Group 4 compression. Allowing JPEG compression uses lossy JPEG for all non bitonal or subsampled images. &lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;b&gt;Options TIFF.&lt;/b&gt;&lt;br&gt;La boite de résolution spécifie la résolution maximale de chaque image dans le fichier TIFF. Forcer la compression bitonale G4 encode toutes les pages en noir et blanc avec la compression CCITT Groupe 4. Autoriser la compression JPEG utilise JPEG pour toutes les images en niveaux de gris ou en couleurs. &lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="1500"/>

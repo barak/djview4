@@ -918,7 +918,7 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *djview)
   
   setWhatsThis(tr("<html><b>Saving.</b><br/> "
                   "You can save the whole document or a page range. "
-                  "The bundled format creates a single page. "
+                  "The bundled format creates a single file. "
                   "The indirect format creates multiple files "
                   "suitable for web serving.</html>"));
   refresh();
