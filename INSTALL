@@ -39,10 +39,12 @@ the variabled DDJVUAPI_CFLAGS and DDJVUAPI_LIBS.
 1.4 XDG-UTILS
 -------------
 
-Under Unix, the installation process creates
-shell script to install the djview4 menu entry and icon.
-These scripts depend on the XDG "Portland" utilities.
-See http://portland.freedesktop.org
+Optionally, the installation process under unix creates
+a shell script that installs the djview4 menu entry and icon.
+This script depends on the XDG "Portland" utilities
+available at http://portland.freedesktop.org.
+
+See file desktopfiles/README for more information.
 
 
 

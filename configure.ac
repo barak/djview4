@@ -22,7 +22,7 @@
 # ----------------------------------------
 
 AC_PREREQ(2.50)
-AC_INIT(djview, 4.0)
+AC_INIT(djview, 4.1)
 AC_REVISION($Id$)
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_SRCDIR(README)

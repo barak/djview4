@@ -1,3 +1,11 @@
+djview4 (4.1-1) unstable; urgency=low
+
+  * Temporary upstream changelog entry for release 4.1.
+  * Bug fixes for Qt-4.2 and Qt-4.3.
+  * PDF and TIFF Export.
+
+ -- Leon Bottou <leonb@users.sourceforge.net>  Sun, 7 Jul 2007 07:50:46 +0500
+
 djview4 (4.0-1) unstable; urgency=low
 
   * Initial release.
