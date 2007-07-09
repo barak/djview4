@@ -904,7 +904,7 @@ void
 QDjView::createWhatsThis()
 {
   QString mc, ms, ml;
-#if Q_WS_MAC
+#ifdef Q_WS_MAC
   mc = tr("Control Left Mouse Button");
 #else
   mc = tr("Right Mouse Button");
