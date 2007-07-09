@@ -211,7 +211,7 @@ QDjViewPrefs::stringToModifiers(QString s)
       key = key.toLower();
       if (key == "shift")
         m |= Qt::ShiftModifier;
-#if Q_WS_MAC
+#ifdef Q_WS_MAC
       else if (key == "control")
         m |= Qt::MetaModifier;
       else if (key == "command")
