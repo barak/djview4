@@ -151,26 +151,42 @@ You will need the appropriate version of Qt4.
 There are two options under Mac OS X.
 
 * Installing the X11 system and its development files.
-  Installing the X11 version of Qt4.
+  First install the X11 version of Qt4.
   Proceding as for normal Unix systems.
   Please refer to section 2 for details.      
 
 * Installing the native Mac OS X version of Qt4.
-  This is still experimental but has been reported to work.
-  The procedure is described below.
+  First install the native Mac version of Qt4.
+  This is still experimental but has been reported to work:
 
-You must first edit the file djview4/src/djview.pro.
-Locate the section identified by the 
-comment "for use on other platforms".
-Define the variable LIBS with the linker flags 
-that are necessary for using DjVuLibre.
-Define the variable QMAKE_CXXFLAGS with the compiler 
-flags that are necessary for using DjVuLibre.
+    You must first edit the file djview4/src/djview.pro.
+    Locate the section identified by the 
+    comment "for use on other platforms".
+    Define the variable LIBS with the linker flags 
+    that are necessary for using DjVuLibre.
+    Define the variable QMAKE_CXXFLAGS with the compiler 
+    flags that are necessary for using DjVuLibre.
 
-Then run the Qt4 program
-   % qmake -macx
-to generate a XCode project file.
-You can then use XCode to compile djview4.
+    Then run the Qt4 program
+      % qmake
+    to generate a makefile.
+    Then use command 
+      % make
+    to compile the djview4 application.
+
+    Note1: The Qt4 documentation states that qmake can 
+    also be used to generate an XCode project file.
+    But this is more dependent on the exact XCode version
+    you are using.
+   
+    Note2: To our surprise the configure script has been reported
+    to work using Qt/Mac!  But make install does not work
+    since the make command generates an application bundle.
+
+    Note3: There should be a way to declare the djview application
+    as the default program to open djvu files. Any volunteer to 
+    sort out these mac specific issues?
+
 
 
 3.2 WINDOWS
@@ -190,6 +206,9 @@ under Windows is still experimental.
 
   - Then compile using 
        $ mingw32-make SHELL=cmd.exe
+
+  - You still do not get a proper installer.
+    Any volunteer to make a nice binary package?
 
 * Using Visual C++
 
