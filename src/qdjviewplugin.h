@@ -37,6 +37,7 @@
 
 #include "qdjvu.h"
 #include "qdjview.h"
+#include "djview.h"
 
 
 class QMutex;
@@ -101,17 +102,17 @@ private:
   void lastViewerClosed();
   void registerForDeletion(QObject*);
 
-  QByteArray       progname;
-  QDjVuContext    *context;
-  QTimer          *timer;
-  QSocketNotifier *notifier;
-  QApplication    *application;
-  Forwarder       *forwarder;
-  QSet<Instance*>  instances;
-  QSet<Stream*>    streams;
-  bool             xembedFlag;
-  int              argc;
-  const char*      argv[4];
+  QByteArray          progname;
+  QDjVuContext       *context;
+  QTimer             *timer;
+  QSocketNotifier    *notifier;
+  QDjViewApplication *application;
+  Forwarder          *forwarder;
+  QSet<Instance*> instances;
+  QSet<Stream*>   streams;
+  bool            xembedFlag;
+  int             argc;
+  const char*     argv[4];
   QEventLoop   *eventLoop;
   QObjectList   pendingDelete;
   int           returnCode;

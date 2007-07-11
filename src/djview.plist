@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
+     "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIconFile</key>
+	<string>@ICON@</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+        <key>CFBundleGetInfoString</key>
+	<string>DjView - viewer for DjVu files</string>
+	<key>CFBundleSignature</key>
+	<string>DJVU</string>
+	<key>CFBundleExecutable</key>
+	<string>@EXECUTABLE@</string>
+        <key>CFBundleDocumentTypes</key>
+        <array>
+                <dict>
+                        <key>CFBundleTypeExtensions</key>
+                        <array>
+                                <string>djvu</string>
+                                <string>djv</string>
+                        </array>
+                        <key>CFBundleTypeMIMETypes</key>
+                        <array>
+                                <string>image/vnd.djvu</string>
+                                <string>image/x-dejavu</string>
+                                <string>image/djvu</string>
+                                <string>image/x.djvu</string>
+                                <string>image/x-djvu</string>
+                                <string>image/x-iw44</string>
+                        </array>
+                        <key>CFBundleTypeIconFile</key>
+                        <string>@ICON@</string>
+                        <key>CFBundleTypeName</key>
+                        <string>DjVu File</string>
+                        <key>CFBundleTypeRole</key>
+                        <string>Viewer</string>
+                        <key>LSIsAppleDefaultForType</key>
+                        <true/>
+                </dict>
+        </array>
+</dict>
+</plist>

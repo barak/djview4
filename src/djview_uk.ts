@@ -19,7 +19,7 @@ Common options include:
 -continuous=&lt;yn&gt;~~~Set continuous layout.
 -sidebyside=&lt;yn&gt;~~~Set side-by-side layout.
 </source>
-        <translation>Використання: djview [параметри] [назва-файла-або адреса]
+        <translation type="obsolete">Використання: djview [параметри] [назва-файла-або адреса]
 Звичайні параметри такі:
 -help~~~Надрукувати це повідомлення
 -verbose~~~Друкувати всі попереджувальні повідомлення.
@@ -1200,6 +1200,45 @@ Filename &apos;%1&apos; has no suffix.</source>
         <source>Metadata - DjView</source>
         <comment>dialog caption</comment>
         <translation>Метадані - DjView</translation>
+    </message>
+</context>
+<context>
+    <name>QDjViewApplication</name>
+    <message>
+        <location filename="" line="0"/>
+        <source>Usage: djview [options] [filename-or-url]
+Common options include:
+-help~~~Prints this message.
+-verbose~~~Prints all warning messages.
+-display &lt;xdpy&gt;~~~Select the X11 display &lt;xdpy&gt;.
+-geometry &lt;xgeom&gt;~~~Select the initial window geometry.
+-font &lt;xlfd&gt;~~~Select the X11 name of the main font.
+-style &lt;qtstyle&gt;~~~Select the QT user interface style.
+-fullscreen, -fs~~~Start djview in full screen mode.
+-page=&lt;page&gt;~~~Jump to page &lt;page&gt;.
+-zoom=&lt;zoom&gt;~~~Set zoom factor.
+-continuous=&lt;yn&gt;~~~Set continuous layout.
+-sidebyside=&lt;yn&gt;~~~Set side-by-side layout.
+</source>
+        <translation>Використання: djview [параметри] [назва-файла-або адреса]
+Звичайні параметри такі:
+-help~~~Надрукувати це повідомлення
+-verbose~~~Друкувати всі попереджувальні повідомлення.
+-display &lt;xdpy&gt;~~~Обрати дисплей X11 &lt;xdpy&gt;.
+-geometry &lt;xgeom&gt;~~~Обрати початкову геометрію вікна.
+-font &lt;xlfd&gt;~~~Обрати назву основного шрифту X11.
+-style &lt;qt-стиль&gt;~~~Обрати стиль відображення QT.
+-fullscreen, -fs~~~Виконати djview у повноекранному режимі.
+-page=&lt;сторінка&gt;~~~Перейти до сторінки &lt;сторінка&gt;.
+-zoom=&lt;масштаб&gt;~~~Встановити масштаб.
+-continuous=&lt;yn&gt;~~~Встановити режим неперервного перегляду.
+-sidebyside=&lt;yn&gt;~~~Встановити розміщення поряд.
+</translation>
+    </message>
+    <message>
+        <location filename="" line="0"/>
+        <source>cannot open &apos;%1&apos;.</source>
+        <translation>неможливо відкрити &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>

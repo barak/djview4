@@ -302,7 +302,7 @@ QDjViewPrefs::loadGroup(QSettings &s, QString name, Saved &saved)
 void
 QDjViewPrefs::load()
 {
-  QSettings s(DJVIEW_ORG, DJVIEW_APP);
+  QSettings s;
 
   loadGroup(s, "forEmbeddedPlugin", forEmbeddedPlugin);
   loadGroup(s, "forFullPagePlugin", forFullPagePlugin);
@@ -382,7 +382,7 @@ QDjViewPrefs::saveGroup(QSettings &s, QString name, Saved &saved)
 void
 QDjViewPrefs::save(void)
 {
-  QSettings s(DJVIEW_ORG, DJVIEW_APP);
+  QSettings s;
   
   s.setValue("version", versionString());
 

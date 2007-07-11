@@ -29,6 +29,7 @@
 #include "qdjvu.h"
 #include "qdjview.h"
 #include "qdjvuwidget.h"
+#include "djview.h"
 #ifdef Q_WS_X11
 #  include "qdjviewplugin.h"
 #endif
@@ -38,6 +39,7 @@
 #include <QByteArray>
 #include <QDebug>
 #include <QDir>
+#include <QFileOpenEvent>
 #include <QLibraryInfo>
 #include <QLocale>
 #include <QRegExp>
@@ -103,7 +105,7 @@ message(QStringList sl)
 static void 
 usage()
 {
-  QString msg = QApplication::tr
+  QString msg = QDjViewApplication::tr
     ("Usage: djview [options] [filename-or-url]\n"
      "Common options include:\n"
      "-help~~~Prints this message.\n"
@@ -144,14 +146,17 @@ addDirectory(QStringList &dirs, QString path)
 }
 
 
-void
-setupApplication()
+QDjViewApplication::QDjViewApplication(int &argc, char **argv)
+  : QApplication(argc, argv), context(argv[0])
 {
-  // Translations
-  QCoreApplication *app = QCoreApplication::instance();
-  QTranslator *qtTrans = new QTranslator(app);
-  QTranslator *djviewTrans = new QTranslator(app);
+  // Application data
+  setOrganizationName(DJVIEW_ORG);
+  setOrganizationDomain(DJVIEW_DOMAIN);
+  setApplicationName(DJVIEW_APP);
   
+  // Translators
+  QTranslator *qtTrans = new QTranslator(this);
+  QTranslator *djviewTrans = new QTranslator(this);
   // - determine preferred languages
   QStringList langs; 
   QString varLanguage = ::getenv("LANGUAGE");
@@ -171,10 +176,9 @@ setupApplication()
   QString qtLocale =  QLocale::system().name();
   if (qtLocale.size())
     langs += qtLocale.toLower();
-  
   // - determine potential directories
   QStringList dirs;
-  QDir dir = app->applicationDirPath();
+  QDir dir = applicationDirPath();
   QString dirPath = dir.canonicalPath();
 #ifdef DIR_DATADIR
   QString datadir = DIR_DATADIR;
@@ -194,7 +198,6 @@ setupApplication()
   addDirectory(dirs, "/usr/share/djvu/djview4");
   addDirectory(dirs, "/usr/share/djview4");
   addDirectory(dirs, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-  
   // - load translators
   bool qtTransValid = false;
   bool djviewTransValid = false;
@@ -208,15 +211,39 @@ setupApplication()
             djviewTransValid= djviewTrans->load("djview_" + lang, directory);
         }
     }
-  
   // - install tranlators
   if (qtTransValid)
-    app->installTranslator(qtTrans);
+    installTranslator(qtTrans);
   if (djviewTransValid)
-    app->installTranslator(djviewTrans);
+    installTranslator(djviewTrans);
 }
 
 
+bool 
+QDjViewApplication::event(QEvent *ev)
+{
+  if (ev->type() == QEvent::FileOpen)
+    {
+      QString name = static_cast<QFileOpenEvent*>(ev)->file();
+      QDjView *main = new QDjView(context);
+      if (main->open(name))
+        {
+          main->setAttribute(Qt::WA_DeleteOnClose);
+          main->show();
+        }
+      else
+        {
+          message(tr("cannot open '%1'.").arg(name));
+          delete main;
+        }
+      return true;
+    }
+  else if (ev->type() == QEvent::Close)
+    {
+      closeAllWindows();
+    }
+  return QApplication::event(ev);
+}
 
 
 int 
@@ -258,10 +285,9 @@ main(int argc, char *argv[])
 #endif
 
   // Start
-  QDjVuContext djvuContext(argv[0]);
-  QApplication app(argc, argv);
-  setupApplication();
-  QDjView *main = new QDjView(djvuContext);
+  QDjViewApplication app(argc, argv);
+  QDjVuContext *context = app.djvuContext();
+  QDjView *main = new QDjView(*context);
   main->setAttribute(Qt::WA_DeleteOnClose);
   
   // Process command line

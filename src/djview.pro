@@ -54,8 +54,9 @@ CONFIG(release,debug|release) {
 
 # -- check for x11
 macx {
-  contains(DEFINES,__USE_WS_X11__): CONFIG += x11
   ICON = images/DjVuApp.icns
+  QMAKE_INFO_PLIST = djview.plist
+  contains(DEFINES,__USE_WS_X11__): CONFIG += x11
 } else:win32 {
   contains(DEFINES,_WIN32_X11_): CONFIG += x11
 } else:unix {
@@ -77,11 +78,13 @@ HEADERS += qdjviewsidebar.h
 HEADERS += qdjviewdialogs.h 
 HEADERS += qdjviewexporters.h
 HEADERS += qdjview.h
+HEADERS += djview.h
 SOURCES += qdjviewprefs.cpp 
 SOURCES += qdjviewsidebar.cpp
 SOURCES += qdjviewdialogs.cpp
 SOURCES += qdjviewexporters.cpp
 SOURCES += qdjview.cpp
+SOURCES += djview.cpp
 RESOURCES += qdjview.qrc 
 FORMS += qdjviewerrordialog.ui
 FORMS += qdjviewinfodialog.ui 
@@ -95,7 +98,6 @@ FORMS += qdjviewexportps3.ui
 FORMS += qdjviewexporttiff.ui
 FORMS += qdjviewexportprn.ui
 FORMS += qdjviewprefsdialog.ui 
-SOURCES += djview.cpp
 x11 {
   HEADERS += qdjviewplugin.h
   SOURCES += qdjviewplugin.cpp

@@ -42,6 +42,9 @@
 #ifndef DJVIEW_ORG
 # define DJVIEW_ORG "DjVuLibre"
 #endif
+#ifndef DJVIEW_DOMAIN
+# define DJVIEW_DOMAIN "djvu.org"
+#endif
 #ifndef DJVIEW_APP
 # define DJVIEW_APP "DjView"
 #endif

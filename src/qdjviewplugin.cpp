@@ -42,6 +42,7 @@
 #include "qdjvu.h"
 #include "qdjview.h"
 #include "qdjviewplugin.h"
+#include "djview.h"
 
 #include <libdjvu/miniexp.h>
 #include <libdjvu/ddjvuapi.h>
@@ -858,14 +859,13 @@ QDjViewPlugin::cmdAttachWindow()
       argv[argc++] = "-display";
       argv[argc++] = (const char*) display;
 #endif
-      application = new QApplication(argc, const_cast<char**>(argv));
-      setupApplication();
-      argc = 1;
+      application = new QDjViewApplication(argc, const_cast<char**>(argv));
       application->setQuitOnLastWindowClosed(false);
+      argc = 1;
 #if HAVE_X11
       XCloseDisplay(dpy);
 #endif
-      context = new QDjVuContext(progname);
+      context = application->djvuContext();
       forwarder = new Forwarder(this);
       application->installEventFilter(forwarder);
       QObject::connect(application, SIGNAL(lastWindowClosed()), 

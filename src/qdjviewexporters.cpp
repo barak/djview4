@@ -677,7 +677,7 @@ void
 QDjViewPSExporter::loadProperties(QString group)
 {
   // load settings (ui1)
-  QSettings s(DJVIEW_ORG, DJVIEW_APP);
+  QSettings s;
   if (group.isEmpty()) 
     group = "Export-" + name();
   s.beginGroup(group);
@@ -715,7 +715,7 @@ void
 QDjViewPSExporter::saveProperties(QString group)
 {
   // save properties
-  QSettings s(DJVIEW_ORG, DJVIEW_APP);
+  QSettings s;
   if (group.isEmpty()) 
     group = "Export-" + name();
   s.beginGroup(group);
@@ -1397,7 +1397,7 @@ QDjViewTiffExporter::resetProperties()
 void
 QDjViewTiffExporter::loadProperties(QString group)
 {
-  QSettings s(DJVIEW_ORG, DJVIEW_APP);
+  QSettings s;
   if (group.isEmpty()) 
     group = "Export-" + name();
   s.beginGroup(group);
@@ -1413,7 +1413,7 @@ QDjViewTiffExporter::loadProperties(QString group)
 void
 QDjViewTiffExporter::saveProperties(QString group)
 {
-  QSettings s(DJVIEW_ORG, DJVIEW_APP);
+  QSettings s;
   if (group.isEmpty()) 
     group = "Export-" + name();
   s.beginGroup(group);
@@ -2016,7 +2016,7 @@ QDjViewPrnExporter::resetProperties()
 void
 QDjViewPrnExporter::loadProperties(QString group)
 {
-  QSettings s(DJVIEW_ORG, DJVIEW_APP);
+  QSettings s;
   if (group.isEmpty()) 
     group = "Export-" + name();
   s.beginGroup(group);
@@ -2039,7 +2039,7 @@ QDjViewPrnExporter::loadProperties(QString group)
 void
 QDjViewPrnExporter::saveProperties(QString group)
 {
-  QSettings s(DJVIEW_ORG, DJVIEW_APP);
+  QSettings s;
   if (group.isEmpty()) 
     group = "Export-" + name();
   s.beginGroup(group);
