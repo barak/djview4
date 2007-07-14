@@ -3189,7 +3189,12 @@ QDjView::performOpen(void)
     return;
   QString caption = tr("Open", "dialog caption");
   QString filters = tr("DjVu files") + " (*.djvu *.djv)";
-  QString filename = QFileDialog::getOpenFileName(this, caption, "", filters);
+  QString dirname = QDir::currentPath();
+  QDir dir = QFileInfo(documentFileName).absoluteDir();
+  if (dir.exists() && !documentFileName.isEmpty())
+    dirname = dir.absolutePath();
+  qDebug() << dirname;
+  QString filename = QFileDialog::getOpenFileName(this, caption, dirname, filters);
   if (! filename.isEmpty())
     open(filename);
 }
