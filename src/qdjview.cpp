@@ -52,6 +52,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QFontMetrics>
 #include <QBoxLayout>
 #include <QFont>
 #include <QFrame>
@@ -647,20 +648,23 @@ QDjView::createMenus()
   // Layout main menu
   QMenu *fileMenu = menuBar->addMenu(tr("&File", "File|"));
   if (viewerMode == STANDALONE)
-    fileMenu->addAction(actionNew);
-  if (viewerMode == STANDALONE)
-    fileMenu->addAction(actionOpen);
-  if (viewerMode == STANDALONE)
-    fileMenu->addSeparator();
+    {
+      fileMenu->addAction(actionNew);
+      fileMenu->addAction(actionOpen);
+      recentMenu = fileMenu->addMenu(tr("Open &Recent"));
+      recentMenu->menuAction()->setIcon(QIcon(":/images/icon_open.png"));
+      connect(recentMenu, SIGNAL(aboutToShow()), this, SLOT(fillRecent()));
+      fileMenu->addSeparator();
+    }
   fileMenu->addAction(actionSave);
   fileMenu->addAction(actionExport);
   fileMenu->addAction(actionPrint);
   if (viewerMode == STANDALONE)
-    fileMenu->addSeparator();
-  if (viewerMode == STANDALONE)
-    fileMenu->addAction(actionClose);
-  if (viewerMode == STANDALONE)
-    fileMenu->addAction(actionQuit);
+    {
+      fileMenu->addSeparator();
+      fileMenu->addAction(actionClose);
+      fileMenu->addAction(actionQuit);
+    }
   QMenu *editMenu = menuBar->addMenu(tr("&Edit", "Edit|"));
   editMenu->addAction(actionSelect);
   editMenu->addAction(actionFind);
@@ -1815,6 +1819,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 
   // Create context menu
   contextMenu = new QMenu(this);
+  recentMenu = 0;
 
   // Create menubar
   menuBar = new QMenuBar(this);
@@ -1989,6 +1994,7 @@ QDjView::open(QString filename)
   QUrl url = QUrl::fromLocalFile(fileinfo.absoluteFilePath());
   open(doc, url);
   documentFileName = filename;
+  addRecent(url);
   setWindowTitle(tr("Djview - %1[*]").arg(getShortFileName()));
   return true;
 }
@@ -2029,6 +2035,7 @@ QDjView::open(QUrl url)
       return false;
     }
   open(doc, url);
+  addRecent(url);
   setWindowTitle(tr("Djview - %1[*]").arg(getShortFileName()));
   return true;
 }
@@ -3290,6 +3297,71 @@ QDjView::performViewFullScreen(bool checked)
       if (actions().contains(actionViewFullScreen))
         removeAction(actionViewFullScreen);
     }
+}
+
+
+void 
+QDjView::addRecent(QUrl url)
+{
+  QString name = url.toString();
+  prefs->recentFiles.removeAll(name);
+  prefs->recentFiles.prepend(name);
+  while(prefs->recentFiles.size() > 6)
+    prefs->recentFiles.pop_back();
+}
+
+
+void 
+QDjView::fillRecent()
+{
+  if (recentMenu)
+    {
+      int n = prefs->recentFiles.size();
+      recentMenu->clear();
+      for (int i=0; i<n; i++)
+        {
+          QUrl url = prefs->recentFiles[i];
+          QString base = url.path().section("/",-1);
+          QString name = url.toLocalFile();
+          if (name.isEmpty())
+            name = url.toString();
+#if QT_VERSION >= 0x40200
+          QFontMetrics metrics = QFont();
+          name = metrics.elidedText(name, Qt::ElideMiddle, 400);
+#endif
+          name = QString("%1 [%2]").arg(base).arg(name);
+          QAction *action = recentMenu->addAction(name);
+          action->setData(url);
+          connect(action,SIGNAL(triggered()), this, SLOT(openRecent()));
+        }
+      recentMenu->addSeparator();
+    }
+  QAction *action = recentMenu->addAction(tr("&Clear History"));
+  connect(action, SIGNAL(triggered()), this, SLOT(clearRecent()));
+}
+
+
+void 
+QDjView::openRecent()
+{
+  QAction *action = qobject_cast<QAction*>(sender());
+  if (action && viewerMode == STANDALONE)
+    {
+      QUrl url = action->data().toUrl();
+      QFileInfo file = url.toLocalFile();
+      if (file.exists())
+        open(file.absoluteFilePath());
+      else
+        open(url);
+    }
+}
+
+
+void 
+QDjView::clearRecent()
+{
+  prefs->recentFiles.clear();
+  prefs->save();
 }
 
 

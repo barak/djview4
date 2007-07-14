@@ -34,6 +34,7 @@
 #include <QSettings>
 #include <QSize>
 #include <QString>
+#include <QStringList>
 #include <QUrl>
 #include <QVariant>
 #include <QWidget>
@@ -164,10 +165,13 @@ public:
   QString    printFile;         //!< Output file for print data
   bool       printReverse;      //!< Print revere flag
   bool       printCollate;      //!< Print collate flag
+
+  // Recent files
+  QStringList recentFiles;      //!< Recently opened files
   
 public:
   static QDjViewPrefs *instance(void);
-
+  
 public slots:
   void load();
   void save();

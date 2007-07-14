@@ -361,6 +361,9 @@ QDjViewPrefs::load()
     printCollate = s.value("printCollate").toBool();
   if (s.contains("printReverse"))
     printCollate = s.value("printReverse").toBool();
+
+  if (s.contains("recentFiles"))
+    recentFiles = s.value("recentFiles").toStringList();
 }
 
 
@@ -417,6 +420,8 @@ QDjViewPrefs::save(void)
   s.setValue("printFile", printFile);
   s.setValue("printCollate", printCollate);
   s.setValue("printReverse", printReverse);
+
+  s.setValue("recentFiles", recentFiles);
 }
 
 

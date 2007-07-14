@@ -189,7 +189,10 @@ protected slots:
   void performZoom(void);
   void performSelect(bool);
   void performViewFullScreen(bool);
-
+  void addRecent(QUrl);
+  void fillRecent();
+  void openRecent();
+  void clearRecent();
 protected:
   // mode
   const ViewerMode   viewerMode;
@@ -210,6 +213,7 @@ protected:
   QDjVuWidget        *widget;
   QStackedLayout     *layout;
   QMenu              *contextMenu;
+  QMenu              *recentMenu;
   QMenuBar           *menuBar;
   QStatusBar         *statusBar;
   QLabel             *pageLabel;
