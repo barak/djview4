@@ -10,3 +10,9 @@ NEW IN VERSION 4.1
 - Fixes to enable compilation on Windows.
 - TIFF and PDF export.
 - New translations (ukrainian)
+
+
+NEW IN VERSION 4.2
+------------------
+- Better support of Qt/Mac
+- Recent files menu

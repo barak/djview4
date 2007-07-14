@@ -180,12 +180,12 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   QStringList dirs;
   QDir dir = applicationDirPath();
   QString dirPath = dir.canonicalPath();
+  addDirectory(dirs, dirPath);
 #ifdef DIR_DATADIR
   QString datadir = DIR_DATADIR;
   addDirectory(dirs, datadir + "/djvu/djview4");
   addDirectory(dirs, datadir + "/djview4");
 #endif
-  addDirectory(dirs, dirPath);
   addDirectory(dirs, dirPath + "/share/djvu/djview4");
   addDirectory(dirs, dirPath + "/share/djview4");
   addDirectory(dirs, dirPath + "/Resources/translations");
