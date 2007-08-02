@@ -515,6 +515,7 @@ protected:
 protected:
   QString fileName;
   QDjVuJob *job;
+  int   outputfd;
   FILE *output;
   int copies;
   bool collate;
@@ -584,6 +585,7 @@ QDjViewPSExporter::QDjViewPSExporter(QDialog *parent, QDjView *djview,
                                      QString name, bool eps)
   : QDjViewExporter(parent, djview, name),
     job(0), 
+    outputfd(-1),
     output(0),
     copies(1),
     collate(true),
@@ -789,6 +791,7 @@ QDjViewPSExporter::openFile()
     {
       QByteArray fname = QFile::encodeName(fileName);
       ::remove(fname.data());
+      outputfd = -1;
       output = ::fopen(fname.data(), "w");
     }
   else if (printer)
@@ -921,7 +924,8 @@ QDjViewPSExporter::openFile()
               ::exit(0);
             }
           ::close(fds[0]);
-          output = fdopen(fds[1], "w");
+          outputfd = fds[1];
+          output = fdopen(outputfd, "w");
           if (pid >= 0)
             {
 # if HAVE_WAITPID
@@ -943,7 +947,10 @@ QDjViewPSExporter::closeFile()
 {
   if (output)
     ::fclose(output);
+  if (outputfd >= 0)
+    ::close(outputfd);
   output = 0;
+  outputfd = -1;
   printer = 0;
 }
 
