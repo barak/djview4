@@ -802,6 +802,7 @@ QDjView::updateActions()
   
   // Some actions are explicitly disabled
   actionSave->setEnabled(savingAllowed);
+  actionExport->setEnabled(savingAllowed);
   actionPrint->setEnabled(printingAllowed);
   
   // Some actions are only available in standalone mode
@@ -1249,7 +1250,8 @@ string_is_off(QString val)
 }
 
 static bool
-parse_boolean(QString, QString val, QList<QString> &errors, bool &answer)
+parse_boolean(QString key, QString val, 
+              QList<QString> &errors, bool &answer)
 {
   answer = false;
   if (string_is_off(val))
@@ -1257,7 +1259,7 @@ parse_boolean(QString, QString val, QList<QString> &errors, bool &answer)
   answer = true;
   if (string_is_on(val) || val.isNull())
     return true;
-  errors << QDjView::tr("Option '%1' requires boolean argument.").arg(val);
+  errors << QDjView::tr("Option '%1' requires boolean argument.").arg(key);
   return false;
 }
 
