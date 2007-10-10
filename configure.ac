@@ -34,7 +34,8 @@ AC_ARG_WITH(extra-includes,
             AC_HELP_STRING([--with-extra-includes=DIR],
                        [Define an additional directory for include files]),
         [ if test -d "$withval" ; then
-            CPPFLAGS="$CPPFLAGS -I$withval" 
+            CFLAGS="$CFLAGS -I$withval" 
+            CXXFLAGS="$CXXFLAGS -I$withval" 
           else
             AC_MSG_ERROR([Cannot stat directory $withval])
           fi ] )
@@ -51,7 +52,8 @@ AC_ARG_WITH(extra-libraries,
 # Always look into a "gnu" directory.
 curwd=`pwd`
 if test -d $curwd/gnu/include ; then
-   CPPFLAGS="$CPPFLAGS -I$curwd/gnu/include"
+   CFLAGS="$CFLAGS -I$curwd/gnu/include"
+   CXXFLAGS="$CXXFLAGS -I$curwd/gnu/include"
 fi
 if test -d $curwd/gnu/lib ; then
    LDFLAGS="$LDFLAGS -L$curwd/gnu/lib"
@@ -61,10 +63,12 @@ fi
 case "$host" in
   *-darwin* | *-macos10*)
      if test -d /opt/local ; then
-       CPPFLAGS="$CPPFLAGS -I/opt/local/include"
+       CFLAGS="$CFLAGS -I/opt/local/include"
+       CXXFLAGS="$CXXFLAGS -I/opt/local/include"
        LDFLAGS="$LDFLAGS -L/opt/local/lib"
      elif test -d /sw ; then
-       CPPFLAGS="$CPPFLAGS -I/sw/include"
+       CFLAGS="$CFLAGS -I/sw/include"
+       CXXFLAGS="$CXXFLAGS -I/sw/include"
        LDFLAGS="$LDFLAGS -L/sw/lib"
      fi
   ;;
@@ -291,7 +295,7 @@ QARG="$QARG QMAKE_UIC="'"'"$UIC"'"'
 QARG="$QARG QMAKE_MOC="'"'"$MOC"'"'
 QARG="$QARG QMAKE_RCC="'"'"$RCC"'"'
 QARG="$QARG LIBS+="'"'"$AUTO_LIBS"'"'
-QARG="$QARG QMAKE_CFLAGS+="'"'"$LDFLAGS"'"'
+QARG="$QARG QMAKE_LFLAGS+="'"'"$LDFLAGS"'"'
 QARG="$QARG QMAKE_CFLAGS+="'"'"$CFLAGS $AUTO_FLAGS"'"'
 QARG="$QARG QMAKE_CXXFLAGS+="'"'"$CXXFLAGS $AUTO_FLAGS"'"'
 
