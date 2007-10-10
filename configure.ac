@@ -28,6 +28,7 @@ AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_SRCDIR(README)
 AC_CONFIG_HEADER(config.h:config/config.h.in)
 AC_PREFIX_DEFAULT(/usr/local)
+AC_CANONICAL_HOST
 
 # Additional libraries
 AC_ARG_WITH(extra-includes,
