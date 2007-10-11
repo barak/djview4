@@ -1704,7 +1704,9 @@ QDjViewPdfExporter::QDjViewPdfExporter(QDialog *parent, QDjView *djview,
 void 
 QDjViewPdfExporter::doFinal()
 {
+  QString message;
   // close tiff
+#if HAVE_TIFF
   tiffExporter = this;
   TIFFSetErrorHandler(tiffHandler);
   TIFFSetWarningHandler(0);
@@ -1712,7 +1714,6 @@ QDjViewPdfExporter::doFinal()
     TIFFClose(tiff);
   tiff = 0;
   // open files
-  QString message;
   QByteArray inameArray = QFile::encodeName(fileName);
   QByteArray onameArray = QFile::encodeName(pdfFileName);  
   fileName = pdfFileName;
@@ -1720,28 +1721,28 @@ QDjViewPdfExporter::doFinal()
   FILE *output = fopen(onameArray.data(), "wb");
   if (input && output)
     {
-#ifdef Q_OS_UNIX
+# ifdef Q_OS_UNIX
       if (tempFile.exists())
         tempFile.remove();
-#endif
-#if HAVE_TIFF2PDF
+# endif
+# if HAVE_TIFF2PDF
       const char *argv[3];
       argv[0] = "tiff2pdf";
       argv[1] = "-o";
       argv[2] = onameArray.data();
       if (tiff2pdf(input, output, 3, argv) != EXIT_SUCCESS)
         message = tr("Error while creating pdf file.");
-#else
+# else
       message = tr("PDF export was not compiled.");
-#endif
+# endif
     }
   else if (! output)
     {
       message = tr("Unable to create output file.");
-#ifdef HAVE_STRERROR
+# ifdef HAVE_STRERROR
       if (errno)
         message = tr("System error: %1.").arg(strerror(errno));
-#endif
+# endif
     }
   else
     message = tr("Unable to reopen temporary file.");
@@ -1752,6 +1753,9 @@ QDjViewPdfExporter::doFinal()
     fclose(output);
   if (tempFile.exists())
     tempFile.remove();
+#else
+  message = tr("PDF export was not compiled.");
+#endif
   if (!message.isEmpty())
     {
       curStatus = DDJVU_JOB_FAILED;

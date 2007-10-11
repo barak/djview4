@@ -7,6 +7,8 @@
 	<string>@ICON@</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleName</key>
+	<string>DjView</string>
         <key>CFBundleGetInfoString</key>
 	<string>DjView - viewer for DjVu files</string>
 	<key>CFBundleSignature</key>
