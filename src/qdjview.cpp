@@ -1753,8 +1753,10 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   // Main window setup
   setWindowTitle(tr("DjView"));
   setWindowIcon(QIcon(":/images/djvu.png"));
+#ifndef Q_WS_MAC
   if (QApplication::windowIcon().isNull())
     QApplication::setWindowIcon(windowIcon());
+#endif
 
   // Basic preferences
   prefs = QDjViewPrefs::instance();
