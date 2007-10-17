@@ -302,7 +302,17 @@ operator<<(QAction *action, QActionGroup &group)
 static inline QAction * 
 operator<<(QAction *action, QKeySequence shortcut)
 {
+#if QT_VERSION >= 0x040200
+  QList<QKeySequence> shortcuts = action->shortcuts();
+# ifdef Q_WS_MAC
+  shortcuts.append(shortcut);
+# else
+  shortcuts.prepend(shortcut);
+# endif
+  action->setShortcuts(shortcuts);
+#else
   action->setShortcut(shortcut);
+#endif
   return action;
 }
 
@@ -398,6 +408,7 @@ QDjView::createActions()
     << Trigger(this, SLOT(find()));
 
   actionFindNext = makeAction(tr("Find &Next", "Edit|"))
+    << QKeySequence(tr("Ctrl+F3", "Edit|Find Next"))
     << QKeySequence(tr("F3", "Edit|Find Next"))
     << tr("Find next occurence of search text in the document.")
     << Trigger(findWidget, SLOT(findNext()));
@@ -408,6 +419,7 @@ QDjView::createActions()
     << Trigger(findWidget, SLOT(findPrev()));
 
   actionSelect = makeAction(tr("&Select", "Edit|"), false)
+    << QKeySequence(tr("Ctrl+F2", "Edit|Select"))
     << QKeySequence(tr("F2", "Edit|Select"))
     << QIcon(":/images/icon_select.png")
     << tr("Select a rectangle in the document.")
@@ -597,6 +609,7 @@ QDjView::createActions()
 
   actionViewSideBar = sideBar->toggleViewAction() 
     << tr("Show &side bar", "Settings|")
+    << QKeySequence(tr("Ctrl+F9", "Settings|Show sidebar"))
     << QKeySequence(tr("F9", "Settings|Show sidebar"))
     << QIcon(":/images/icon_sidebar.png")
     << tr("Show/hide the side bar.")
@@ -604,6 +617,7 @@ QDjView::createActions()
 
   actionViewToolBar = toolBar->toggleViewAction()
     << tr("Show &tool bar", "Settings|")
+    << QKeySequence(tr("Ctrl+F10", "Settings|Show toolbar"))
     << QKeySequence(tr("F10", "Settings|Show toolbar"))
     << tr("Show/hide the standard tool bar.")
     << Trigger(this, SLOT(updateActionsLater()));
@@ -615,6 +629,7 @@ QDjView::createActions()
 
   actionViewFullScreen 
     = makeAction(tr("F&ull Screen","View|"), false)
+    << QKeySequence(tr("Ctrl+F11","View|FullScreen"))
     << QKeySequence(tr("F11","View|FullScreen"))
     << QIcon(":/images/icon_fullscreen.png")
     << tr("Toggle full screen mode.")
@@ -622,6 +637,7 @@ QDjView::createActions()
 
   actionLayoutContinuous = makeAction(tr("&Continuous", "Layout|"), false)
     << QIcon(":/images/icon_continuous.png")
+    << QKeySequence(tr("Ctrl+F4", "Layout|Continuous"))
     << QKeySequence(tr("F4", "Layout|Continuous"))
     << tr("Toggle continuous layout mode.")
     << Trigger(widget, SLOT(setContinuous(bool)))
@@ -629,6 +645,7 @@ QDjView::createActions()
 
   actionLayoutSideBySide = makeAction(tr("Side &by side", "Layout|"), false)
     << QIcon(":/images/icon_sidebyside.png")
+    << QKeySequence(tr("Ctrl+F5", "Layout|SideBySide"))
     << QKeySequence(tr("F5", "Layout|SideBySide"))
     << tr("Toggle side-by-side layout mode.")
     << Trigger(widget, SLOT(setSideBySide(bool)))
@@ -2020,7 +2037,7 @@ QDjView::open(QUrl url)
     {
       QUrl proxyUrl = prefs->proxyUrl;
       QString host =  proxyUrl.host();
-#if QT_VERSION >= 0x40100
+#if QT_VERSION >= 0x040100
       int port = proxyUrl.port(8080);
 #else
       int port = proxyUrl.port();
@@ -3336,7 +3353,7 @@ QDjView::fillRecent()
           QString name = url.toLocalFile();
           if (name.isEmpty())
             name = url.toString();
-#if QT_VERSION >= 0x40200
+#if QT_VERSION >= 0x040200
           QFontMetrics metrics = QFont();
           name = metrics.elidedText(name, Qt::ElideMiddle, 400);
 #endif
