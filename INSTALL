@@ -183,10 +183,15 @@ There are two options under Mac OS X.
     to work using Qt/Mac!  But make install does not work
     since the make command generates an application bundle.
 
-    Note3: There should be a way to declare the djview application
-    as the default program to open djvu files. Any volunteer to 
-    sort out these mac specific issues?
+    Note3: The qmake command that comes with certain versions
+    of Qt generates an Xcode project file instead of a
+    Makefile. When this is the case, use Xcode!
 
+    Note4: This procedure generates a nice application bundle.
+    However the binaries inside the bundle may depend on 
+    shared libraries located elsewhere. To produce a distributable
+    application bundle, check the Qt documentation about the
+    deployment of Mac applications.
 
 
 3.2 WINDOWS

@@ -1613,7 +1613,8 @@ QDjViewTiffExporter::doPage()
         rowsize = rect.w;
       if (! (image = (char*)malloc(rowsize * rect.h)))
         message = tr("Out of memory.");
-      else if (! ddjvu_page_render(*page, mode, &rect, &rect, fmt, rowsize, image))
+      else if (! ddjvu_page_render(*page, mode, &rect, &rect, 
+                                   fmt, rowsize, image))
         message = tr("Cannot render image");
       else if (rowsize != TIFFScanlineSize(tiff))
         message = tr("Internal error.");
@@ -1706,7 +1707,7 @@ QDjViewPdfExporter::doFinal()
 {
   QString message;
   // close tiff
-#if HAVE_TIFF
+#if HAVE_TIFF2PDF
   tiffExporter = this;
   TIFFSetErrorHandler(tiffHandler);
   TIFFSetWarningHandler(0);
@@ -1725,16 +1726,12 @@ QDjViewPdfExporter::doFinal()
       if (tempFile.exists())
         tempFile.remove();
 # endif
-# if HAVE_TIFF2PDF
       const char *argv[3];
       argv[0] = "tiff2pdf";
       argv[1] = "-o";
       argv[2] = onameArray.data();
       if (tiff2pdf(input, output, 3, argv) != EXIT_SUCCESS)
         message = tr("Error while creating pdf file.");
-# else
-      message = tr("PDF export was not compiled.");
-# endif
     }
   else if (! output)
     {
