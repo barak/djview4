@@ -85,6 +85,7 @@ QDjViewPrefs::defaultTools
 = TOOLBAR_TOP | TOOLBAR_BOTTOM
 | TOOL_ZOOMCOMBO | TOOL_ZOOMBUTTONS
 | TOOL_PAGECOMBO | TOOL_PREVNEXT | TOOL_FIRSTLAST 
+| TOOL_BACKFORW
 | TOOL_OPEN | TOOL_FIND | TOOL_SELECT
 | TOOL_PRINT | TOOL_LAYOUT
 | TOOL_WHATSTHIS;
@@ -304,6 +305,10 @@ QDjViewPrefs::load()
 {
   QSettings s;
 
+  int versionFix = 0;
+  if (s.contains("versionFix"))
+    versionFix = s.value("versionFix").toInt();
+
   loadGroup(s, "forEmbeddedPlugin", forEmbeddedPlugin);
   loadGroup(s, "forFullPagePlugin", forFullPagePlugin);
   loadGroup(s, "forStandalone", forStandalone);
@@ -313,6 +318,8 @@ QDjViewPrefs::load()
     windowSize = s.value("windowSize").toSize();
   if (s.contains("tools"))
     tools = stringToTools(s.value("tools").toString());
+  if (versionFix < 0x40200)
+    tools |= TOOL_BACKFORW;
   if (s.contains("gamma"))
     gamma = s.value("gamma").toDouble();
   if (s.contains("cacheSize"))
@@ -389,6 +396,12 @@ QDjViewPrefs::save(void)
   
   s.setValue("version", versionString());
 
+  int versionFix = 0;
+  if (s.contains("versionFix"))
+    versionFix = s.value("versionFix").toInt();
+  if (DJVIEW_VERSION > versionFix)
+    s.setValue("versionFix", DJVIEW_VERSION);
+  
   saveGroup(s, "forEmbeddedPlugin", forEmbeddedPlugin);
   saveGroup(s, "forFullPagePlugin", forFullPagePlugin);
   saveGroup(s, "forStandalone", forStandalone);

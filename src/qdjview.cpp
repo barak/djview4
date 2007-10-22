@@ -515,11 +515,15 @@ QDjView::createActions()
 
   actionBack = makeAction(tr("&Backward", "Go|"))
     << QIcon(":/images/icon_back.png")
-    << tr("Backward in history.");
+    << tr("Backward in history.")
+    << Trigger(this, SLOT(performUndo()))
+    << Trigger(this, SLOT(updateActionsLater()));
 
   actionForw = makeAction(tr("&Forward", "Go|"))
     << QIcon(":/images/icon_forw.png")
-    << tr("Forward in history.");
+    << tr("Forward in history.")
+    << Trigger(this, SLOT(performRedo()))
+    << Trigger(this, SLOT(updateActionsLater()));
 
   actionRotateLeft = makeAction(tr("Rotate &Left", "Rotate|"))
     << QIcon(":/images/icon_rotateleft.png")
@@ -732,6 +736,9 @@ QDjView::createMenus()
   gotoMenu->addAction(actionNavPrev);
   gotoMenu->addAction(actionNavNext);
   gotoMenu->addAction(actionNavLast);
+  gotoMenu->addSeparator();
+  gotoMenu->addAction(actionBack);
+  gotoMenu->addAction(actionForw);
   QMenu *settingsMenu = menuBar->addMenu(tr("&Settings", "Settings|"));
   settingsMenu->addAction(actionViewSideBar);
   settingsMenu->addAction(actionViewToolBar);
@@ -815,10 +822,6 @@ QDjView::updateActions()
   foreach(QAction *action, allActions)
     action->setEnabled(true);
 
-  // Some actions are not yet implemented
-  actionBack->setVisible(false);
-  actionForw->setVisible(false);
-  
   // Some actions are explicitly disabled
   actionSave->setEnabled(savingAllowed);
   actionExport->setEnabled(savingAllowed);
@@ -887,6 +890,18 @@ QDjView::updateActions()
   // Layout actions
   actionLayoutContinuous->setChecked(widget->continuous());  
   actionLayoutSideBySide->setChecked(widget->sideBySide());
+
+  // UndoRedo
+  UndoRedo past = here;
+  here.set(this);
+  if (here.different(past))
+    {
+      undoList.prepend(past);
+      while (undoList.size() > 1024)
+        undoList.removeLast();
+    }
+  actionBack->setEnabled(undoList.size() > 0);
+  actionForw->setEnabled(redoList.size() > 0);
 
   // Disable almost everything when document==0
   if (! document)
@@ -2077,7 +2092,10 @@ QDjView::goToPage(int pageno)
   else
     {
       if (pageno>=0 && pageno<pagenum)
-        widget->setPage(pageno);
+        {
+          here.set(this);
+          widget->setPage(pageno);
+        }
       else
         {
           QString msg = tr("Cannot find page numbered: %1").arg(pageno+1);
@@ -2107,7 +2125,10 @@ QDjView::goToPage(QString name, int from)
     {
       int pageno = pageNumber(name, from);
       if (pageno >= 0 && pageno < pagenum)
-        widget->setPage(pageno);
+        {
+          here.set(this);
+          widget->setPage(pageno);
+        }
       else
         {
           QString msg = tr("Cannot find page named: %1").arg(name);
@@ -3268,7 +3289,9 @@ void
 QDjView::performRotation(void)
 {
   QAction *action = qobject_cast<QAction*>(sender());
-  widget->setRotation(action->data().toInt());
+  int rotation = action->data().toInt();
+  here.set(this);
+  widget->setRotation(rotation);
 }
 
 
@@ -3276,7 +3299,9 @@ void
 QDjView::performZoom(void)
 {
   QAction *action = qobject_cast<QAction*>(sender());
-  widget->setZoom(action->data().toInt());
+  int zoom = action->data().toInt();
+  here.set(this);
+  widget->setZoom(zoom);
 }
 
 
@@ -3392,6 +3417,82 @@ QDjView::clearRecent()
   prefs->save();
 }
 
+
+QDjView::UndoRedo::UndoRedo()
+  : valid(false)
+{
+}
+
+
+void
+QDjView::UndoRedo::set(QDjView *djview)
+{
+  QDjVuWidget *djvu = djview->getDjVuWidget();
+  position = djvu->position();
+  rotation = djvu->rotation();
+  zoom = djvu->zoom();
+  valid = true;
+}
+
+
+void 
+QDjView::UndoRedo::apply(QDjView *djview)
+{
+  if (valid)
+    {
+      QDjVuWidget *djvu = djview->getDjVuWidget();
+      djvu->setZoom(zoom);
+      djvu->setRotation(rotation);
+      djvu->setPosition(position);
+    }
+}
+
+
+bool 
+QDjView::UndoRedo::different(const UndoRedo &other) const
+{
+  if (valid && other.valid)
+    {
+      if (zoom != other.zoom ||
+          rotation != other.rotation ||
+          position.pageNo != other.position.pageNo)
+        return true;
+      if (position.inPage && other.position.inPage &&
+          position.posPage != other.position.posPage )
+        return true;
+    }
+  return false;
+}
+
+
+void 
+QDjView::performUndo()
+{
+  if (undoList.size() > 0)
+    {
+      UndoRedo target = undoList.takeFirst();
+      UndoRedo saved;
+      saved.set(this);
+      target.apply(this);
+      here = UndoRedo();
+      redoList.prepend(saved);
+    }
+}
+
+
+void 
+QDjView::performRedo()
+{
+  if (redoList.size() > 0)
+    {
+      UndoRedo target = redoList.takeFirst();
+      UndoRedo saved;
+      saved.set(this);
+      target.apply(this);
+      here = UndoRedo();
+      undoList.prepend(saved);
+    }
+}
 
 
 

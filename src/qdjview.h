@@ -189,6 +189,8 @@ protected slots:
   void performZoom(void);
   void performSelect(bool);
   void performViewFullScreen(bool);
+  void performUndo();
+  void performRedo();
   void addRecent(QUrl);
   void fillRecent();
   void openRecent();
@@ -305,6 +307,23 @@ protected:
   Saved fsSavedNormal;
   Saved fsSavedFullScreen;
   Qt::WindowStates fsWindowState;
+  // undo/redo
+  class UndoRedo 
+  {
+  public:
+    UndoRedo();
+    void set(QDjView *djview);
+    void apply(QDjView *djview);
+    bool different(const UndoRedo &other) const;
+  protected:
+    bool valid;
+    QDjVuWidget::Position position;
+    int rotation;
+    int zoom;
+  };
+  UndoRedo here;
+  QList<UndoRedo> undoList;
+  QList<UndoRedo> redoList;
 };
 
 
