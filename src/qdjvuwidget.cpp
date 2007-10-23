@@ -3368,14 +3368,14 @@ QDjVuWidget::getImageForRect(const QRect &rect)
 }
 
 
-/*! Do not use this. It will disappear soon. */
+/*! Indicate whether the page size if known */
 
-QDjVuPage *
-QDjVuWidget::getDjVuPage(int pageno)
+bool
+QDjVuWidget::pageSizeKnown(int pageno) const
 {
-  if (pageno>=0 && pageno<priv->pageData.size())
-    return priv->pageData[pageno].page;
-  return 0;
+  if (pageno >= 0 && pageno < priv->pageData.size())
+    return (priv->pageData[pageno].dpi > 0);
+  return false;
 }
 
 

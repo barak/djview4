@@ -216,7 +216,7 @@ public:
   QString linkComment(void);
   QString getTextForRect(const QRect &rect);
   QImage  getImageForRect(const QRect &rect);
-  QDjVuPage *getDjVuPage(int pageno);
+  bool pageSizeKnown(int pageno) const;
   void clearHighlights(int pageno);
   void addHighlight(int pageno, int x, int y, int w, int h, QColor color);
   

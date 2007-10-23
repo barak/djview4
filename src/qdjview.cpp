@@ -894,7 +894,7 @@ QDjView::updateActions()
   // UndoRedo
   UndoRedo past = here;
   here.set(this);
-  if (here.different(past))
+  if (here.cmp(past, widget))
     {
       undoList.prepend(past);
       while (undoList.size() > 1024)
@@ -3449,7 +3449,8 @@ QDjView::UndoRedo::apply(QDjView *djview)
 
 
 bool 
-QDjView::UndoRedo::different(const UndoRedo &other) const
+QDjView::UndoRedo::cmp(const UndoRedo &other, 
+                       const QDjVuWidget *widget) const
 {
   if (valid && other.valid)
     {
@@ -3460,6 +3461,10 @@ QDjView::UndoRedo::different(const UndoRedo &other) const
       if (position.inPage && other.position.inPage &&
           position.posPage != other.position.posPage )
         return true;
+      if (widget && widget->pageSizeKnown(position.pageNo))
+        if (position.inPage == other.position.inPage &&
+            position.posView != other.position.posView )
+          return true;
     }
   return false;
 }

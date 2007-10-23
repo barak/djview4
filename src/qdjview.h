@@ -314,7 +314,7 @@ protected:
     UndoRedo();
     void set(QDjView *djview);
     void apply(QDjView *djview);
-    bool different(const UndoRedo &other) const;
+    bool cmp(const UndoRedo &other, const QDjVuWidget *widget) const;
   protected:
     bool valid;
     QDjVuWidget::Position position;
