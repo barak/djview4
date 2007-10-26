@@ -9,8 +9,7 @@ This new viewer relies on the DjVulibre library and the Qt4 toolkit.
 Highlights:
 - entirely based on the public djvulibre api.
 - entirely written in portable Qt4.
-- has been reported to work with Qt/Mac.
-- should work with Qt/Windows as well.
+- works natively under Unix/X11, MS Windows, and MacOS X.
 - continuous scrolling of pages
 - side-by-side display of pages
 - ability to specify a url to the djview command
