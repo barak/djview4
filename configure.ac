@@ -53,7 +53,8 @@ AC_ARG_WITH(extra-libraries,
 # Always look into a "gnu" directory.
 curwd=`pwd`
 if test -d $curwd/gnu/include ; then
-   CPPFLAGS="$CPPFLAGS -I$curwd/gnu/include"
+   CFLAGS="$CFLAGS -I$curwd/gnu/include"   
+   CXXFLAGS="$CXXFLAGS -I$curwd/gnu/include"
 fi
 if test -d $curwd/gnu/lib ; then
    LDFLAGS="$LDFLAGS -L$curwd/gnu/lib"
@@ -63,10 +64,12 @@ fi
 case "$host" in
   *-darwin* | *-macos10*)
      if test -d /opt/local ; then
-       CPPFLAGS="$CPPFLAGS -I/opt/local/include"
+       CFLAGS="$CFLAGS -I/opt/local/include"
+       CXXFLAGS="$CXXFLAGS -I/opt/local/include"
        LDFLAGS="$LDFLAGS -L/opt/local/lib"
      elif test -d /sw ; then
-       CPPFLAGS="$CPPFLAGS -I/sw/include"
+       CFLAGS="$CFLAGS -I/sw/include"
+       CXXFLAGS="$CXXFLAGS -I/sw/include"
        LDFLAGS="$LDFLAGS -L/sw/lib"
      fi
   ;;
