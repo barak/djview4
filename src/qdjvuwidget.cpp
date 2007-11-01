@@ -4455,7 +4455,11 @@ QDjVuLens::moveEvent(QMoveEvent *event)
   refocus();
   QPoint delta = event->pos() - event->oldPos();
   QRect r = rect().adjusted(1,1,-1,-1);
+#ifdef Q_WS_MAC
+  repaint(r);  // scroll broken ?
+#else
   scroll(-mag*delta.x(), -mag*delta.y(), r);
+#endif
 }
 
 void 
