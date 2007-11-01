@@ -1239,7 +1239,7 @@ Filename &apos;%1&apos; has no suffix.</source>
     </message>
     <message>
         <location filename="qdjview.cpp" line="635"/>
-        <source>Show Stat&amp;us Bar</source>
+        <source>Show Stat&amp;usbar</source>
         <comment>Settings|</comment>
         <translation>Показ панелі &amp;стану</translation>
     </message>

@@ -632,7 +632,7 @@ QDjView::createActions()
     << tr("Show/hide the standard tool bar.")
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionViewStatusBar = makeAction(tr("Show Stat&us Bar", "Settings|"), true)
+  actionViewStatusBar = makeAction(tr("Show Stat&usbar", "Settings|"), true)
     << tr("Show/hide the status bar.")
     << Trigger(statusBar,SLOT(setVisible(bool)))
     << Trigger(this, SLOT(updateActionsLater()));

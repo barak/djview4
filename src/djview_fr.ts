@@ -1240,7 +1240,7 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="635"/>
-        <source>Show Stat&amp;us Bar</source>
+        <source>Show Stat&amp;usbar</source>
         <comment>Settings|</comment>
         <translation>Ligne d&apos;é&amp;tat</translation>
     </message>
