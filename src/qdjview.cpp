@@ -915,6 +915,7 @@ QDjView::updateActions()
       undoList.prepend(past);
       while (undoList.size() > 1024)
         undoList.removeLast();
+      redoList.clear();
     }
   actionBack->setEnabled(undoList.size() > 0);
   actionForw->setEnabled(redoList.size() > 0);
@@ -1976,6 +1977,8 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 void 
 QDjView::closeDocument()
 {
+  undoList.clear();
+  redoList.clear();
   layout->setCurrentWidget(splash);
   QDjVuDocument *doc = document;
   if (doc)
@@ -2025,6 +2028,7 @@ QDjView::open(QDjVuDocument *doc, QUrl url)
     parseDjVuCgiArguments(url);
   // newly set options get cgi priority
   widget->reduceOptionsToPriority(QDjVuWidget::PRIORITY_CGI);
+  widget->setFocus();
 }
 
 
