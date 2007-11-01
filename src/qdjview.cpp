@@ -3248,7 +3248,7 @@ QDjView::performOpen(void)
 {
   if (viewerMode != STANDALONE)
     return;
-  QString caption = tr("Open", "dialog caption");
+  QString caption = tr("Open - DjView", "dialog caption");
   QString filters = tr("DjVu files") + " (*.djvu *.djv)";
   QString dirname = QDir::currentPath();
   QDir dir = QFileInfo(documentFileName).absoluteDir();
@@ -3266,7 +3266,7 @@ QDjView::performOpenLocation(void)
 {
   if (viewerMode != STANDALONE)
     return;
-  QString caption = tr("Open Location", "dialog caption");
+  QString caption = tr("Open Location - DjView", "dialog caption");
   QString label = tr("Enter the URL of a DjVu document.");
   QString text = "http://";
   bool ok;
