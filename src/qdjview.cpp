@@ -374,9 +374,7 @@ QDjView::createActions()
 
   actionOpenLocation = makeAction(tr("Open &Location...", "File|"))
     << tr("Open a remote DjVu document.")
-#ifdef Q_WS_MAC
-    << QIcon(":/images/icon_open.png")
-#endif
+    << QIcon(":/images/icon_web.png")
     << Trigger(this, SLOT(performOpenLocation()));
 
   actionClose = makeAction(tr("&Close", "File|"))
@@ -620,28 +618,22 @@ QDjView::createActions()
     << Trigger(this, SLOT(performPreferences()));
 
   actionViewSideBar = sideBar->toggleViewAction() 
-    << tr("Show &side bar", "Settings|")
+    << tr("Show &Sidebar", "Settings|")
     << QKeySequence(tr("Ctrl+F9", "Settings|Show sidebar"))
     << QKeySequence(tr("F9", "Settings|Show sidebar"))
-    << QIcon(":/images/icon_sidebar.png")
+    // << QIcon(":/images/icon_sidebar.png")
     << tr("Show/hide the side bar.")
     << Trigger(this, SLOT(updateActionsLater()));
 
   actionViewToolBar = toolBar->toggleViewAction()
-    << tr("Show &tool bar", "Settings|")
+    << tr("Show &Toolbar", "Settings|")
     << QKeySequence(tr("Ctrl+F10", "Settings|Show toolbar"))
     << QKeySequence(tr("F10", "Settings|Show toolbar"))
-#ifdef Q_WS_MAC
-    << QIcon(":/images/icon_sidebar.png")
-#endif
     << tr("Show/hide the standard tool bar.")
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionViewStatusBar = makeAction(tr("Show stat&us bar", "Settings|"), true)
+  actionViewStatusBar = makeAction(tr("Show Stat&us Bar", "Settings|"), true)
     << tr("Show/hide the status bar.")
-#ifdef Q_WS_MAC
-    << QIcon(":/images/icon_sidebar.png")
-#endif
     << Trigger(statusBar,SLOT(setVisible(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
 
@@ -688,10 +680,10 @@ QDjView::createMenus()
     {
       fileMenu->addAction(actionNew);
       fileMenu->addAction(actionOpen);
+      fileMenu->addAction(actionOpenLocation);
       recentMenu = fileMenu->addMenu(tr("Open &Recent"));
       recentMenu->menuAction()->setIcon(QIcon(":/images/icon_open.png"));
       connect(recentMenu, SIGNAL(aboutToShow()), this, SLOT(fillRecent()));
-      fileMenu->addAction(actionOpenLocation);
       fileMenu->addSeparator();
     }
   fileMenu->addAction(actionSave);
