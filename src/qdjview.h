@@ -56,6 +56,7 @@ class QFileDialog;
 class QLabel;
 class QMenu;
 class QMenuBar;
+class QShortcut;
 class QStackedLayout;
 class QStatusBar;
 class QStringList;
@@ -182,6 +183,7 @@ protected slots:
   void performAbout(void);
   void performNew(void);
   void performOpen(void);
+  void performOpenLocation(void);
   void performInformation(void);
   void performMetadata(void);
   void performPreferences(void);
@@ -189,6 +191,7 @@ protected slots:
   void performZoom(void);
   void performSelect(bool);
   void performViewFullScreen(bool);
+  void performEscape();
   void performUndo();
   void performRedo();
   void addRecent(QUrl);
@@ -253,6 +256,7 @@ protected:
   // all actions
   QAction *actionNew;
   QAction *actionOpen;
+  QAction *actionOpenLocation;
   QAction *actionClose;
   QAction *actionQuit;
   QAction *actionSave;
@@ -300,6 +304,7 @@ protected:
   QAction *actionViewFullScreen;
   QAction *actionLayoutContinuous;
   QAction *actionLayoutSideBySide;
+  QShortcut *shortcutEscape;
   // permission
   bool printingAllowed;
   bool savingAllowed;

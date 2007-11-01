@@ -58,6 +58,7 @@
 #include <QFrame>
 #include <QIcon>
 #include <QImageWriter>
+#include <QInputDialog>
 #include <QLabel>
 #include <QLineEdit>
 #include <QList>
@@ -371,6 +372,13 @@ QDjView::createActions()
     << tr("Open a DjVu document.")
     << Trigger(this, SLOT(performOpen()));
 
+  actionOpenLocation = makeAction(tr("Open &Location...", "File|"))
+    << tr("Open a remote DjVu document.")
+#ifdef Q_WS_MAC
+    << QIcon(":/images/icon_open.png")
+#endif
+    << Trigger(this, SLOT(performOpenLocation()));
+
   actionClose = makeAction(tr("&Close", "File|"))
     << QKeySequence(tr("Ctrl+W", "File|Close"))
     << QIcon(":/images/icon_close.png")
@@ -623,11 +631,17 @@ QDjView::createActions()
     << tr("Show &tool bar", "Settings|")
     << QKeySequence(tr("Ctrl+F10", "Settings|Show toolbar"))
     << QKeySequence(tr("F10", "Settings|Show toolbar"))
+#ifdef Q_WS_MAC
+    << QIcon(":/images/icon_sidebar.png")
+#endif
     << tr("Show/hide the standard tool bar.")
     << Trigger(this, SLOT(updateActionsLater()));
 
   actionViewStatusBar = makeAction(tr("Show stat&us bar", "Settings|"), true)
     << tr("Show/hide the status bar.")
+#ifdef Q_WS_MAC
+    << QIcon(":/images/icon_sidebar.png")
+#endif
     << Trigger(statusBar,SLOT(setVisible(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
 
@@ -677,6 +691,7 @@ QDjView::createMenus()
       recentMenu = fileMenu->addMenu(tr("Open &Recent"));
       recentMenu->menuAction()->setIcon(QIcon(":/images/icon_open.png"));
       connect(recentMenu, SIGNAL(aboutToShow()), this, SLOT(fillRecent()));
+      fileMenu->addAction(actionOpenLocation);
       fileMenu->addSeparator();
     }
   fileMenu->addAction(actionSave);
@@ -830,6 +845,7 @@ QDjView::updateActions()
   // Some actions are only available in standalone mode
   actionNew->setVisible(viewerMode == STANDALONE);
   actionOpen->setVisible(viewerMode == STANDALONE);
+  actionOpenLocation->setVisible(viewerMode == STANDALONE);
   actionClose->setVisible(viewerMode == STANDALONE);
   actionQuit->setVisible(viewerMode == STANDALONE);
   actionViewFullScreen->setVisible(viewerMode == STANDALONE);  
@@ -909,6 +925,7 @@ QDjView::updateActions()
       foreach(QAction *action, allActions)
         if (action != actionNew &&
             action != actionOpen &&
+            action != actionOpenLocation &&
             action != actionClose &&
             action != actionQuit &&
             action != actionPreferences &&
@@ -1930,8 +1947,8 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   sideBar->setWidget(sideToolBox);
 
   // Create escape shortcut for sidebar
-  QShortcut *esc = new QShortcut(QKeySequence("Esc"), sideToolBox);
-  connect(esc, SIGNAL(activated()), sideBar, SLOT(hide()));
+  shortcutEscape = new QShortcut(QKeySequence("Esc"), this);
+  connect(shortcutEscape, SIGNAL(activated()), this, SLOT(performEscape()));
   
   // Create sidebar components
   thumbnailWidget = new QDjViewThumbnails(this);
@@ -3244,6 +3261,22 @@ QDjView::performOpen(void)
 }
 
 
+void
+QDjView::performOpenLocation(void)
+{
+  if (viewerMode != STANDALONE)
+    return;
+  QString caption = tr("Open Location", "dialog caption");
+  QString label = tr("Enter the URL of a DjVu document.");
+  QString text = "http://";
+  bool ok;
+  QUrl url  = QInputDialog::getText(this, caption, label, 
+                                    QLineEdit::Normal, text, &ok);
+  if (ok && url.isValid())
+	open(url);
+}
+
+
 void 
 QDjView::performInformation(void)
 {
@@ -3350,6 +3383,16 @@ QDjView::performViewFullScreen(bool checked)
       if (actions().contains(actionViewFullScreen))
         removeAction(actionViewFullScreen);
     }
+}
+
+
+void 
+QDjView::performEscape()
+{
+  if (sideBar && !sideBar->isHidden())
+    sideBar->hide();
+  else if (actionViewFullScreen->isChecked())
+    actionViewFullScreen->activate(QAction::Trigger);
 }
 
 
