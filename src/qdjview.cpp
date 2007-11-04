@@ -2624,13 +2624,18 @@ QDjView::saveImageFile(QImage image, QString filename)
   if (filename.isEmpty())
     {
       QString filters;
-      foreach(QByteArray format, QImageWriter::supportedImageFormats())
-	    filters += tr("%1 files (*.%2);;", "save image filter")
-			.arg(QString(format).toUpper()).arg(QString(format).toLower());
+      QList<QByteArray> formats = QImageWriter::supportedImageFormats(); 
+      foreach(QByteArray format, formats)
+        filters += tr("%1 files (*.%2);;", "save image filter")
+        .arg(QString(format).toUpper())
+        .arg(QString(format).toLower());
       filters += tr("All files", "save filter") + " (*)";
       QString caption = tr("Save Image - DjView", "dialog caption");
-	  filename = getShortFileName();
-      filename = QFileDialog::getSaveFileName(this, caption, filename, filters);
+      filename = QFileInfo(getShortFileName()).baseName();
+      if (formats.size())
+        filename += "." + QString(formats[0]);
+      filename = QFileDialog::getSaveFileName(this, caption, 
+                                              filename, filters);
       if (filename.isEmpty())
         return false;
     }
