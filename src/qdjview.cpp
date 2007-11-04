@@ -581,7 +581,7 @@ QDjView::createActions()
 
   actionAbout = makeAction(tr("&About DjView..."))
 #ifndef Q_WS_MAC
-    << QIcon(":/images/icon_djvu.png")
+    << QIcon(":/images/djvu.png")
 #endif
     << tr("Show information about this program.")
     << Trigger(this, SLOT(performAbout()));
