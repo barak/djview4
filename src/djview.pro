@@ -55,6 +55,9 @@ CONFIG(release,debug|release) {
 # -- check for x11
 macx {
   ICON = images/DjVuApp.icns
+  RESOURCES.path = Contents/Resources
+  RESOURCES.files = images/DjVu.icns
+  QMAKE_BUNDLE_DATA += RESOURCES
   QMAKE_INFO_PLIST = djview.plist
   contains(DEFINES,__USE_WS_X11__): CONFIG += x11
 } else:win32 {
