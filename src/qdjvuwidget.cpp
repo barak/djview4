@@ -1964,6 +1964,14 @@ QDjVuWidget::position(void) const
   return position(topLeft);
 }
 
+
+QPoint
+QDjVuWidget::hotSpot() const
+{
+  return priv->currentPoint;
+}
+
+
 Position 
 QDjVuWidget::position(const QPoint &point) const
 {

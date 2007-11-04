@@ -60,6 +60,7 @@ class QShortcut;
 class QStackedLayout;
 class QStatusBar;
 class QStringList;
+class QTimer;
 class QToolBar;
 class QToolBox;
 
@@ -198,6 +199,7 @@ protected slots:
   void fillRecent();
   void openRecent();
   void clearRecent();
+  void saveUndoData();
 protected:
   // mode
   const ViewerMode   viewerMode;
@@ -317,16 +319,19 @@ protected:
   {
   public:
     UndoRedo();
+    void clear();
     void set(QDjView *djview);
     void apply(QDjView *djview);
-    bool cmp(const UndoRedo &other, const QDjVuWidget *widget) const;
+    bool changed(const QDjVuWidget *widget) const;
   protected:
     bool valid;
+    QPoint hotSpot;
     QDjVuWidget::Position position;
     int rotation;
     int zoom;
   };
   UndoRedo here;
+  QTimer *undoTimer;
   QList<UndoRedo> undoList;
   QList<UndoRedo> redoList;
 };

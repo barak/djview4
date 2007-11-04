@@ -898,20 +898,13 @@ QDjView::updateActions()
   // Layout actions
   actionLayoutContinuous->setChecked(widget->continuous());  
   actionLayoutSideBySide->setChecked(widget->sideBySide());
-
+  
   // UndoRedo
-  UndoRedo past = here;
-  here.set(this);
-  if (here.cmp(past, widget))
-    {
-      undoList.prepend(past);
-      while (undoList.size() > 1024)
-        undoList.removeLast();
-      redoList.clear();
-    }
+  undoTimer->stop();
+  undoTimer->start(250);
   actionBack->setEnabled(undoList.size() > 0);
   actionForw->setEnabled(redoList.size() > 0);
-
+  
   // Disable almost everything when document==0
   if (! document)
     {
@@ -1951,6 +1944,11 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   findWidget = new QDjViewFind(this);
   sideToolBox->addItem(findWidget, tr("&Find")); 
 
+  // Create undoTimer.
+  undoTimer = new QTimer(this);
+  undoTimer->setSingleShot(true);
+  connect(undoTimer,SIGNAL(timeout()), this, SLOT(saveUndoData()));
+
   // Actions
   createActions();
   createMenus();
@@ -1964,11 +1962,10 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 }
 
 
-
-
 void 
 QDjView::closeDocument()
 {
+  here.clear();
   undoList.clear();
   redoList.clear();
   layout->setCurrentWidget(splash);
@@ -2106,7 +2103,6 @@ QDjView::goToPage(int pageno)
     {
       if (pageno>=0 && pageno<pagenum)
         {
-          here.set(this);
           widget->setPage(pageno);
         }
       else
@@ -2139,7 +2135,6 @@ QDjView::goToPage(QString name, int from)
       int pageno = pageNumber(name, from);
       if (pageno >= 0 && pageno < pagenum)
         {
-          here.set(this);
           widget->setPage(pageno);
         }
       else
@@ -3319,7 +3314,6 @@ QDjView::performRotation(void)
 {
   QAction *action = qobject_cast<QAction*>(sender());
   int rotation = action->data().toInt();
-  here.set(this);
   widget->setRotation(rotation);
 }
 
@@ -3329,7 +3323,6 @@ QDjView::performZoom(void)
 {
   QAction *action = qobject_cast<QAction*>(sender());
   int zoom = action->data().toInt();
-  here.set(this);
   widget->setZoom(zoom);
 }
 
@@ -3464,12 +3457,20 @@ QDjView::UndoRedo::UndoRedo()
 
 
 void
+QDjView::UndoRedo::clear()
+{
+  valid = false;
+}
+
+
+void
 QDjView::UndoRedo::set(QDjView *djview)
 {
   QDjVuWidget *djvu = djview->getDjVuWidget();
-  position = djvu->position();
   rotation = djvu->rotation();
   zoom = djvu->zoom();
+  hotSpot = djvu->hotSpot();
+  position = djvu->position(hotSpot);
   valid = true;
 }
 
@@ -3482,30 +3483,54 @@ QDjView::UndoRedo::apply(QDjView *djview)
       QDjVuWidget *djvu = djview->getDjVuWidget();
       djvu->setZoom(zoom);
       djvu->setRotation(rotation);
-      djvu->setPosition(position);
+      djvu->setPosition(position, hotSpot);
     }
 }
 
 
 bool 
-QDjView::UndoRedo::cmp(const UndoRedo &other, 
-                       const QDjVuWidget *widget) const
+QDjView::UndoRedo::changed(const QDjVuWidget *djvu) const
 {
-  if (valid && other.valid)
+  if (valid)
     {
-      if (zoom != other.zoom ||
-          rotation != other.rotation ||
-          position.pageNo != other.position.pageNo)
+      if (zoom != djvu->zoom() || 
+          rotation != djvu->rotation())
         return true;
-      if (position.inPage && other.position.inPage &&
-          position.posPage != other.position.posPage )
+      Position curpos = djvu->position(hotSpot);
+      if (curpos.pageNo != position.pageNo ||
+          curpos.inPage != position.inPage)
         return true;
-      if (widget && widget->pageSizeKnown(position.pageNo))
-        if (position.inPage == other.position.inPage &&
-            position.posView != other.position.posView )
-          return true;
+      if (curpos.inPage)
+        return (curpos.posPage != position.posPage);
+      else
+        return (curpos.posView != position.posView);
     }
   return false;
+}
+
+
+void
+QDjView::saveUndoData()
+{
+  if (QApplication::mouseButtons() == Qt::NoButton
+      && widget->pageSizeKnown(widget->page()) )
+    {
+      if (here.changed(widget))
+        {
+          undoList.prepend(here);
+          while (undoList.size() > 1024)
+            undoList.removeLast();
+          redoList.clear();
+        }
+      here.set(this);
+      actionBack->setEnabled(undoList.size() > 0);
+      actionForw->setEnabled(redoList.size() > 0);
+    }
+  else
+    {
+      undoTimer->stop();
+      undoTimer->start(250);
+    }
 }
 
 
@@ -3518,7 +3543,7 @@ QDjView::performUndo()
       UndoRedo saved;
       saved.set(this);
       target.apply(this);
-      here = UndoRedo();
+      here.clear();
       redoList.prepend(saved);
     }
 }
@@ -3533,7 +3558,7 @@ QDjView::performRedo()
       UndoRedo saved;
       saved.set(this);
       target.apply(this);
-      here = UndoRedo();
+      here.clear();
       undoList.prepend(saved);
     }
 }

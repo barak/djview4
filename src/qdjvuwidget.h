@@ -148,6 +148,7 @@ public:
   
   QDjVuDocument *document(void) const;
   int page(void) const;
+  QPoint hotSpot(void) const;
   Position position(void) const;
   Position position(const QPoint &point) const;
   int rotation(void) const;
