@@ -2623,15 +2623,14 @@ QDjView::saveImageFile(QImage image, QString filename)
   // obtain filename with suitable suffix
   if (filename.isEmpty())
     {
-      QStringList patterns;
-      foreach(QByteArray format, QImageWriter::supportedImageFormats())
-        patterns << "*." + QString(format).toLower();
       QString filters;
-      filters += tr("All supported files", "save filter") + " (%1);;";
+      foreach(QByteArray format, QImageWriter::supportedImageFormats())
+	    filters += tr("%1 files (*.%2);;", "save image filter")
+			.arg(QString(format).toUpper()).arg(QString(format).toLower());
       filters += tr("All files", "save filter") + " (*)";
       QString caption = tr("Save Image - DjView", "dialog caption");
-      filters = filters.arg(patterns.join(" "));
-      filename = QFileDialog::getSaveFileName(this, caption, "", filters);
+	  filename = getShortFileName();
+      filename = QFileDialog::getSaveFileName(this, caption, filename, filters);
       if (filename.isEmpty())
         return false;
     }
