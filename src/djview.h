@@ -27,18 +27,22 @@
 #include <Qt>
 #include <QObject>
 #include <QApplication>
+#include <QPointer>
 #include <QEvent>
 
 #include "qdjvu.h"
 
+class QDjView;
 
 class QDjViewApplication : public QApplication
 {
   Q_OBJECT
   QDjVuContext context;
+  QPointer<QDjView> lastWindow;
  public:
   QDjViewApplication(int &argc, char **argv);
   QDjVuContext *djvuContext() { return &context; }
+  QDjView *newWindow();
  protected:
   bool event(QEvent *ev);
 };

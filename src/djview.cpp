@@ -219,16 +219,27 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
 }
 
 
+QDjView * 
+QDjViewApplication::newWindow()
+{
+  if (lastWindow && !lastWindow->getDocument())
+    return lastWindow;
+  QDjView *main = new QDjView(context);
+  main->setAttribute(Qt::WA_DeleteOnClose);
+  lastWindow = main;
+  return main;
+}
+
+
 bool 
 QDjViewApplication::event(QEvent *ev)
 {
   if (ev->type() == QEvent::FileOpen)
     {
       QString name = static_cast<QFileOpenEvent*>(ev)->file();
-      QDjView *main = new QDjView(context);
+      QDjView *main = newWindow();
       if (main->open(name))
         {
-          main->setAttribute(Qt::WA_DeleteOnClose);
           main->show();
         }
       else
@@ -286,9 +297,7 @@ main(int argc, char *argv[])
 
   // Start
   QDjViewApplication app(argc, argv);
-  QDjVuContext *context = app.djvuContext();
-  QDjView *main = new QDjView(*context);
-  main->setAttribute(Qt::WA_DeleteOnClose);
+  QDjView *main = app.newWindow();
   
   // Process command line
   while (argc > 1 && argv[1][0] == '-')
