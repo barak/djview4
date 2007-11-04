@@ -581,7 +581,7 @@ QDjView::createActions()
 
   actionAbout = makeAction(tr("&About DjView..."))
 #ifndef Q_WS_MAC
-    << QIcon(":/images/djvu.png")
+    << QIcon(":/images/djview.png")
 #endif
     << tr("Show information about this program.")
     << Trigger(this, SLOT(performAbout()));
@@ -1787,7 +1787,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 {
   // Main window setup
   setWindowTitle(tr("DjView"));
-  setWindowIcon(QIcon(":/images/djvu.png"));
+  setWindowIcon(QIcon(":/images/djview.png"));
 #ifndef Q_WS_MAC
   if (QApplication::windowIcon().isNull())
     QApplication::setWindowIcon(windowIcon());
