@@ -16,7 +16,7 @@
     <key>CFBundleExecutable</key>
     <string>@EXECUTABLE@</string>
     <key>CFBundleIdentifier</key>
-    <string>org.djvuzone.DjView</string>
+    <string>org.djvu.DjView</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleDocumentTypes</key>
