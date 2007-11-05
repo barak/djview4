@@ -43,6 +43,7 @@
 #include <QLibraryInfo>
 #include <QLocale>
 #include <QRegExp>
+#include <QSettings>
 #include <QString>
 #include <QStringList>
 #include <QTranslator>
@@ -159,16 +160,19 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   QTranslator *djviewTrans = new QTranslator(this);
   // - determine preferred languages
   QStringList langs; 
+#ifdef Q_WS_MAC
+  langs += QSettings(".", "globalPreferences").value("AppleLanguages").toStringList();
+#endif
   QString varLanguage = ::getenv("LANGUAGE");
   if (varLanguage.size())
     langs += varLanguage.toLower().split(":", QString::SkipEmptyParts);
 #ifdef LC_MESSAGES
-  QString varLcMessages = ::setlocale(LC_MESSAGES, 0);
+  QString varLcMessages = ::setlocale(LC_MESSAGES, "");
   if (varLcMessages.size())
     langs += varLcMessages;
 #else
 # ifdef LC_ALL
-  QString varLcMessages = ::setlocale(LC_ALL, 0);
+  QString varLcMessages = ::setlocale(LC_ALL, "");
   if (varLcMessages.size())
     langs += varLcMessages;
 # endif
@@ -176,6 +180,7 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   QString qtLocale =  QLocale::system().name();
   if (qtLocale.size())
     langs += qtLocale.toLower();
+
   // - determine potential directories
   QStringList dirs;
   QDir dir = applicationDirPath();
