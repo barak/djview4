@@ -161,7 +161,8 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   // - determine preferred languages
   QStringList langs; 
 #ifdef Q_WS_MAC
-  langs += QSettings(".", "globalPreferences").value("AppleLanguages").toStringList();
+  langs += QSettings(".", "globalPreferences")
+    .value("AppleLanguages").toStringList();
 #endif
   QString varLanguage = ::getenv("LANGUAGE");
   if (varLanguage.size())
@@ -213,13 +214,15 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
       foreach (QString directory, dirs)
         {
 #ifdef Q_WS_MAC
-		  if (directory.endsWith("/Resources"))
-			directory += "/" + lang + ".lproj";
+          if (directory.endsWith("/Resources"))
+            directory += "/" + lang + ".lproj";
 #endif
           if (! qtTransValid)
-            qtTransValid = qtTrans->load("qt_" + lang, directory, "_.-");
+            qtTransValid = qtTrans->load("qt_" + lang, 
+                                         directory, "_.-");
           if (! djviewTransValid)
-            djviewTransValid= djviewTrans->load("djview_" + lang, directory, "_.-");
+            djviewTransValid= djviewTrans->load("djview_" + lang, 
+                                                directory, "_.-");
         }
 	  if (lang == "en")
 		break;
