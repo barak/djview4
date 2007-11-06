@@ -661,6 +661,12 @@ QDjView::createActions()
     << Trigger(widget, SLOT(setSideBySide(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
 
+#if QT_VERSION >= 0x40200
+	actionAbout->setMenuRole(QAction::AboutRole);
+	actionQuit->setMenuRole(QAction::QuitRole);
+	actionPreferences->setMenuRole(QAction::PreferencesRole);
+#endif
+
   // Enumerate all actions
   QAction *a;
   QObject *o;

@@ -191,15 +191,17 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   addDirectory(dirs, datadir + "/djvu/djview4");
   addDirectory(dirs, datadir + "/djview4");
 #endif
+#ifdef Q_WS_MAC
+  addDirectory(dirs, dirPath + "/Resources");
+  addDirectory(dirs, dirPath + "/../Resources");
+  addDirectory(dirs, dirPath + "/../../Resources");
+#endif
   addDirectory(dirs, dirPath + "/share/djvu/djview4");
   addDirectory(dirs, dirPath + "/share/djview4");
-  addDirectory(dirs, dirPath + "/Resources/translations");
   addDirectory(dirs, dirPath + "/../share/djvu/djview4");
   addDirectory(dirs, dirPath + "/../share/djview4");
-  addDirectory(dirs, dirPath + "/../Resources/translations");
   addDirectory(dirs, dirPath + "/../../share/djvu/djview4");
   addDirectory(dirs, dirPath + "/../../share/djview4");
-  addDirectory(dirs, dirPath + "/../../Resources/translations");
   addDirectory(dirs, "/usr/share/djvu/djview4");
   addDirectory(dirs, "/usr/share/djview4");
   addDirectory(dirs, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
@@ -210,10 +212,14 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
     {
       foreach (QString directory, dirs)
         {
+#ifdef Q_WS_MAC
+		  if (directory.endsWith("/Resources"))
+			directory += "/" + lang + ".lproj";
+#endif
           if (! qtTransValid)
-            qtTransValid = qtTrans->load("qt_" + lang, directory);
+            qtTransValid = qtTrans->load("qt_" + lang, directory, "_.-");
           if (! djviewTransValid)
-            djviewTransValid= djviewTrans->load("djview_" + lang, directory);
+            djviewTransValid= djviewTrans->load("djview_" + lang, directory, "_.-");
         }
     }
   // - install tranlators
