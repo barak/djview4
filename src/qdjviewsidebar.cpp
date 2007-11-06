@@ -1470,7 +1470,7 @@ QDjViewFind::Model::textChanged()
       s = QRegExp::escape(widget->text());
       s.replace(QRegExp("\\s+"), " ");
       if (wordOnly)
-        s = "\\b" + s + "\\b";
+        s = "\\b" + s;
       find = QRegExp(s);
       if (caseSensitive)
         find.setCaseSensitivity(Qt::CaseSensitive);
