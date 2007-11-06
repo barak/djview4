@@ -363,6 +363,7 @@ QDjVuDocument::QDjVuDocument(QObject *parent)
   : QObject(parent), document(0), priv(new QDjVuDocumentPrivate)
 {
   connect(priv, SIGNAL(idle()), this, SIGNAL(idle()));
+  connect(this, SIGNAL(docinfo()), priv, SLOT(docinfo()));
 }
 
 /*! Increments the reference count. */
