@@ -168,12 +168,12 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   if (varLanguage.size())
     langs += varLanguage.toLower().split(":", QString::SkipEmptyParts);
 #ifdef LC_MESSAGES
-  QString varLcMessages = ::setlocale(LC_MESSAGES, "");
+  QString varLcMessages = ::setlocale(LC_MESSAGES, 0);
   if (varLcMessages.size())
     langs += varLcMessages;
 #else
 # ifdef LC_ALL
-  QString varLcMessages = ::setlocale(LC_ALL, "");
+  QString varLcMessages = ::setlocale(LC_ALL, 0);
   if (varLcMessages.size())
     langs += varLcMessages;
 # endif
@@ -211,21 +211,19 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   bool djviewTransValid = false;
   foreach (QString lang, langs)
     {
-      foreach (QString directory, dirs)
+      foreach (QString dir, dirs)
         {
 #ifdef Q_WS_MAC
-          if (directory.endsWith("/Resources"))
-            directory += "/" + lang + ".lproj";
+          if (dir.endsWith("/Resources"))
+            dir += "/" + lang + ".lproj";
 #endif
           if (! qtTransValid)
-            qtTransValid = qtTrans->load("qt_" + lang, 
-                                         directory, "_.-");
+            qtTransValid = qtTrans->load("qt_" + lang, dir, "_.-");
           if (! djviewTransValid)
-            djviewTransValid= djviewTrans->load("djview_" + lang, 
-                                                directory, "_.-");
+            djviewTransValid= djviewTrans->load("djview_" + lang, dir, "_.-");
         }
-	  if (lang == "en")
-		break;
+      if (lang == "en") 
+        break;
     }
   // - install tranlators
   if (qtTransValid)
