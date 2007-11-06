@@ -362,6 +362,8 @@ QDjVuDocument::QDjVuDocument(bool autoDelete, QObject *parent)
 QDjVuDocument::QDjVuDocument(QObject *parent)
   : QObject(parent), document(0), priv(new QDjVuDocumentPrivate)
 {
+  priv->autoDelete = false;
+  priv->docPointer = this;
   connect(priv, SIGNAL(idle()), this, SIGNAL(idle()));
   connect(this, SIGNAL(docinfo()), priv, SLOT(docinfo()));
 }
