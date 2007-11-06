@@ -230,13 +230,15 @@ QDjVuHttpDocument::response(const QHttpResponseHeader &resp)
         QString msg;
         QString type = resp.contentType();
         if (type.startsWith("text/"))
-          msg = tr("Received %1 data while retrieving %2.",
-                   "%1 is a mime type").arg(type);
-        if (status != 200 && status != 203)
-          msg = tr("Received http status %1 while retrieving %2.",
-                   "%1 is an http status code").arg(status);
-        if (! msg.isEmpty())
           {
+            msg = tr("Received %1 data while retrieving %2.", 
+                     "%1 is a mime type").arg(type);
+            emit error(msg.arg(url.toString()), __FILE__, __LINE__);
+          }
+        if (status != 200 && status != 203)
+          {
+            msg = tr("Received http status %1 while retrieving %2.",
+                     "%1 is an http status code").arg(status);
             if (conn.streamid >= 0)
               ddjvu_stream_close(*this, conn.streamid, false);
             conn.streamid = -1;
