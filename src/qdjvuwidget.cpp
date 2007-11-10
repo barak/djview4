@@ -1775,8 +1775,10 @@ QDjVuWidget::QDjVuWidget(QWidget *parent)
 #if QT_VERSION >= 0x040100
   viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
 #endif
-  viewport()->setAttribute(Qt::WA_NoSystemBackground);
+#ifndef Q_WS_WIN
   viewport()->setAttribute(Qt::WA_PaintOnScreen);
+#endif
+  viewport()->setAttribute(Qt::WA_NoSystemBackground);
   viewport()->setAttribute(Qt::WA_StaticContents);
   viewport()->setMouseTracking(true);
 }
