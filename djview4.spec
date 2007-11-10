@@ -7,7 +7,7 @@ Version: %{version}
 Release: %{release}
 License: GPL
 Group: Applications/Publishing
-Source: djview4-4.0.tar.gz
+Source: djview4-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-root
 URL: http://djvu.sourceforge.net
 
