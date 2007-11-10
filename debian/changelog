@@ -1,3 +1,10 @@
+djview4 (4.2-1) unstable; urgency=low
+
+  * New feature "Undo/Redo".
+  * New entry "Open Location" in "File" menu.
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Fri, 9 Nov 2007 23:26:46 +0500
+
 djview4 (4.1-2) unstable; urgency=low
 
   * Compatibility fixes for Qt-4.2.
