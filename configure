@@ -6961,11 +6961,11 @@ fi
   if test -n "QTDIR" && test -d "$QTDIR/include" ; then
     if test -d "$QTDIR/include/Qt" ; then :
     elif test -f "$QTDIR/include/qobject.h" ; then
-      unset QTDIR
-      { echo "$as_me:$LINENO: WARNING: We want Qt4 but your QTDIR variable points to a Qt3 install.
-Ignoring QTDIR and continuing with the search for Qt4." >&5
-echo "$as_me: WARNING: We want Qt4 but your QTDIR variable points to a Qt3 install.
-Ignoring QTDIR and continuing with the search for Qt4." >&2;}
+      { { echo "$as_me:$LINENO: error: We want Qt4 but your QTDIR variable points to a Qt3 install.
+Please check variables QTDIR, QMAKE, QMAKESPEC, etc." >&5
+echo "$as_me: error: We want Qt4 but your QTDIR variable points to a Qt3 install.
+Please check variables QTDIR, QMAKE, QMAKESPEC, etc." >&2;}
+   { (exit 1); exit 1; }; }
     fi
   fi
   if test -n "$QTDIR" && test -d "$QTDIR/bin" ; then

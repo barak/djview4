@@ -275,9 +275,8 @@ AC_DEFUN([AC_PROGS_QT4],
   if test -n "QTDIR" && test -d "$QTDIR/include" ; then
     if test -d "$QTDIR/include/Qt" ; then :
     elif test -f "$QTDIR/include/qobject.h" ; then
-      unset QTDIR
-      AC_MSG_WARN([We want Qt4 but your QTDIR variable points to a Qt3 install.
-Ignoring QTDIR and continuing with the search for Qt4.])
+      AC_MSG_ERROR([We want Qt4 but your QTDIR variable points to a Qt3 install.
+Please check variables QTDIR, QMAKE, QMAKESPEC, etc.])
     fi
   fi
   if test -n "$QTDIR" && test -d "$QTDIR/bin" ; then
