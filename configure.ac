@@ -300,17 +300,19 @@ QARG="$QARG QMAKE_LFLAGS+="'"'"$LDFLAGS"'"'
 QARG="$QARG QMAKE_CFLAGS+="'"'"$CFLAGS $AUTO_FLAGS"'"'
 QARG="$QARG QMAKE_CXXFLAGS+="'"'"$CXXFLAGS $AUTO_FLAGS"'"'
 
-# quoting QARG with
-#  QARG=`echo $QARG | sed -e 's/"/"'"'"'"'"'"'"/g'`
-# is now useless because we set QMAKE_COMMAND with read!
+# qmake environment variables
+QENV=
+if test -n "$QMAKESPEC" ; then
+    QENV="$QENV QMAKESPEC="'"'"$QMAKESPEC"'"'
+fi
 
 # run
 AC_CONFIG_COMMANDS([src], [
-     echo "config.status: running $QMAKE_COMMAND."
-     ( cd src ; eval "$QMAKE_COMMAND" )
+    echo "config.status: running $QMAKE_COMMAND."
+    ( cd src ; eval "$QMAKE_COMMAND" )
 ],[
-     read QMAKE_COMMAND <<QMAKE_COMMAND_EOF
-$QMAKE $QARG
+    read QMAKE_COMMAND <<QMAKE_COMMAND_EOF
+$QENV $QMAKE $QARG
 QMAKE_COMMAND_EOF
 ] )
 

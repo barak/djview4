@@ -262,15 +262,24 @@ AC_DEFUN([AC_PROGS_QT4],
 [
   AC_REQUIRE([AC_PATH_X])
   AC_REQUIRE([AC_PATH_XTRA])
-  AC_ARG_VAR(QTDIR,[Location of the Qt package.])
-  AC_ARG_VAR(QMAKE,[Location of the MOC program.])
+  AC_ARG_VAR(QMAKE,[Location of the QMAKE program.])
+  AC_ARG_VAR(QMAKESPEC,[Location of the QMAKE specifications.])
   AC_ARG_VAR(MOC,[Location of the MOC program.])
   AC_ARG_VAR(UIC,[Location of the UIC program.])
   AC_ARG_VAR(RCC,[Location of the RCC program.])
   AC_ARG_VAR(LUPDATE,[Location of the LUPDATE program.])
   AC_ARG_VAR(LRELEASE,[Location of the LRELEASE program.])
+  AC_ARG_VAR(QTDIR,[Location of the Qt package (deprecated).])
 
   path=$PATH
+  if test -n "QTDIR" && test -d "$QTDIR/include" ; then
+    if test -d "$QTDIR/include/Qt" ; then :
+    elif test -f "$QTDIR/include/qobject.h" ; then
+      unset QTDIR
+      AC_MSG_WARN([We want Qt4 but your QTDIR variable points to a Qt3 install.
+Ignoring QTDIR and continuing with the search for Qt4.])
+    fi
+  fi
   if test -n "$QTDIR" && test -d "$QTDIR/bin" ; then
     path=$QTDIR/bin:$PATH
   fi
@@ -278,8 +287,9 @@ AC_DEFUN([AC_PROGS_QT4],
     AC_PATH_PROGS([QMAKE], [qmake-qt4 qmake], [], [$path])
   fi
   if test -z "$QMAKE" ; then
-    AC_MSG_ERROR([Cannot find Qt4 program qmake. 
-Please define variable QMAKE or QTDIR.])
+    AC_MSG_ERROR([Cannot find the Qt4 program qmake. 
+Please define variable QMAKE and possibly QMAKESPEC.
+Defining QTDIR can help although it is deprecated.])
   fi
   mkdir conftest.d
   cat > conftest.d/conftest.pro <<\EOF
@@ -290,8 +300,6 @@ message(QT_VERSION="$$[QT_VERSION]")
 message(QT_INSTALL_PREFIX="$$[QT_INSTALL_PREFIX]")
 message(QT_INSTALL_DATA="$$[QT_INSTALL_DATA]")
 message(QT_INSTALL_BINS="$$[QT_INSTALL_BINS]")
-message(QMAKE_RUN_CC="$$QMAKE_RUN_CC")
-message(QMAKE_RUN_CXX="$$QMAKE_RUN_CXX")
 changequote([, ])dnl
 EOF
   if ( cd conftest.d && $QMAKE > conftest.out 2>&1 ) ; then
@@ -301,7 +309,8 @@ EOF
   else
     rm -rf conftest.d
     AC_MSG_ERROR([Cannot successfully run Qt4 program qmake. 
-Please define variable QMAKE to a working qmake.])
+Please define variable QMAKE to a working qmake.
+If you define QMAKESPEC, make sure it is correct.])
   fi
   case "$QT_VERSION" in
     4.*)
@@ -319,43 +328,44 @@ Please define variable QMAKE to a suitable qmake.])
     AC_MSG_RESULT([Defining QTDIR=$QTDIR])
   fi
   path=$PATH
+  if test -n "$QTDIR" && test -d "$QTDIR/bin" ; then
+    path=$QTDIR/bin:$path
+  fi
   if test -d "$QT_INSTALL_BINS" ; then
     path=$QT_INSTALL_BINS:$path
   fi
-  if test -n "$QTDIR" && test -d "$QTDIR/bin" ; then
-    path=$QTDIR/bin:$PATH
-  fi
   if test -z "$MOC" ; then
-    if test -d "$QTDIR" && test -d "$QTDIR/bin" && test -x "$QTDIR/bin/moc" ; then
-      MOC="$QTDIR/bin/moc"
-      AC_MSG_RESULT([Defining MOC=$MOC])
-    elif test -x "$QMAKE_MOC" ; then
+    if test -x "$QMAKE_MOC" ; then
       MOC=$QMAKE_MOC
       AC_MSG_RESULT([Defining MOC=$MOC])
+    elif test -d "$QTDIR" && test -d "$QTDIR/bin" && test -x "$QTDIR/bin/moc" ; then
+      MOC="$QTDIR/bin/moc"
+      AC_MSG_RESULT([Defining MOC=$MOC])
     else
-      AC_PATH_PROGS([UIC], [moc-qt4 moc], [], [$path])
+      AC_PATH_PROGS([MOC], [moc-qt4 moc], [], [$path])
     fi
   fi
   if test -z "$UIC" ; then
-    if test -d "$QTDIR" && test -d "$QTDIR/bin" && test -x "$QTDIR/bin/uic" ; then
-      UIC="$QTDIR/bin/uic"
-      AC_MSG_RESULT([Defining UIC=$UIC])
-    elif test -x "$QMAKE_UIC" ; then
+    if test -x "$QMAKE_UIC" ; then
       UIC=$QMAKE_UIC
+      AC_MSG_RESULT([Defining UIC=$UIC])
+    elif test -d "$QTDIR" && test -d "$QTDIR/bin" && test -x "$QTDIR/bin/uic" ; then
+      UIC="$QTDIR/bin/uic"
       AC_MSG_RESULT([Defining UIC=$UIC])
     else
       AC_PATH_PROGS([UIC], [uic-qt4 uic], [], [$path])
     fi
   fi
   if test -z "$RCC" ; then
-    AC_PATH_PROGS([RCC], [rcc], [], [$path])
+    AC_PATH_PROGS([RCC], [rcc-qt4 rcc], [], [$path])
   fi
   if test -z "$LUPDATE" ; then
-    AC_PATH_PROGS([LUPDATE], [lupdate], [], [$path])
+    AC_PATH_PROGS([LUPDATE], [lupdate-qt4 lupdate], [], [$path])
   fi
   if test -z "$LRELEASE" ; then
-    AC_PATH_PROGS([LRELEASE], [lrelease], [], [$path])
+    AC_PATH_PROGS([LRELEASE], [lrelease-qt4 lrelease], [], [$path])
   fi
+  PATH=$path
 ])
 
 
