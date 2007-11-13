@@ -940,17 +940,18 @@ QDjView::updateActions()
 // WHATSTHIS HELP
 
 
-struct Help {
-  QString s;
-  Help(QString s) : s(s) { }
-  Help& operator>>(QWidget *w) { w->setWhatsThis(s); return *this; }
-  Help& operator>>(QAction *a) { a->setWhatsThis(s); return *this; }
-};
-
-
 void
 QDjView::createWhatsThis()
 {
+#define HELP(x,y) { QString s(x); Help h(s); h y; }
+  
+  struct Help {
+    QString s;
+    Help(QString s) : s(s) { }
+    Help& operator>>(QWidget *w) { w->setWhatsThis(s); return *this; }
+    Help& operator>>(QAction *a) { a->setWhatsThis(s); return *this; }
+  };
+  
   QString mc, ms, ml;
 #ifdef Q_WS_MAC
   mc = tr("Control Left Mouse Button");
@@ -962,83 +963,83 @@ QDjView::createWhatsThis()
   ml = prefs->modifiersToString(prefs->modifiersForLens);
   ml = ml.replace("+"," ");
   
-  Help(tr("<html><b>Selecting a rectangle.</b><br/> "
+  HELP(tr("<html><b>Selecting a rectangle.</b><br/> "
           "Once a rectangular area is selected, a popup menu "
           "lets you copy the corresponding text or image. "
           "Instead of using this tool, you can also hold %1 "
           "and use the Left Mouse Button."
-          "</html>").arg(ms))
-            >> actionSelect;
+          "</html>").arg(ms),
+       >> actionSelect );
   
-  Help(tr("<html><b>Zooming.</b><br/> "
+  HELP(tr("<html><b>Zooming.</b><br/> "
           "Choose a zoom level for viewing the document. "
           "Zoom level 100% displays the document for a 100 dpi screen. "
           "Zoom levels <tt>Fit Page</tt> and <tt>Fit Width</tt> ensure "
           "that the full page or the page width fit in the window. "
-          "</html>"))
-            >> actionZoomIn >> actionZoomOut
-            >> actionZoomFitPage >> actionZoomFitWidth
-            >> actionZoom300 >> actionZoom200 >> actionZoom150
-            >> actionZoom75 >> actionZoom50
-            >> zoomCombo;
+          "</html>"),
+       >> actionZoomIn >> actionZoomOut
+       >> actionZoomFitPage >> actionZoomFitWidth
+       >> actionZoom300 >> actionZoom200 >> actionZoom150
+       >> actionZoom75 >> actionZoom50
+       >> zoomCombo );
   
-  Help(tr("<html><b>Rotating the pages.</b><br/> "
+  HELP(tr("<html><b>Rotating the pages.</b><br/> "
           "Choose to display pages in portrait or landscape mode. "
-          "You can also turn them upside down.</html>"))
-            >> actionRotateLeft >> actionRotateRight
-            >> actionRotate0 >> actionRotate90
-            >> actionRotate180 >> actionRotate270;
+          "You can also turn them upside down.</html>"),
+       >> actionRotateLeft >> actionRotateRight
+       >> actionRotate0 >> actionRotate90
+       >> actionRotate180 >> actionRotate270 );
 
-  Help(tr("<html><b>Display mode.</b><br/> "
+  HELP(tr("<html><b>Display mode.</b><br/> "
           "DjVu images compose a background layer and a foreground layer "
           "using a stencil. The display mode specifies with layers "
-          "should be displayed.</html>"))
+          "should be displayed.</html>"),
             >> actionDisplayColor >> actionDisplayBW
             >> actionDisplayForeground >> actionDisplayBackground
-            >> modeCombo;
+            >> modeCombo );
 
-  Help(tr("<html><b>Navigating the document.</b><br/> "
+  HELP(tr("<html><b>Navigating the document.</b><br/> "
           "The page selector lets you jump to any page by name. "
           "The navigation buttons jump to the first page, the previous "
-          "page, the next page, or the last page. </html>"))
-            >> actionNavFirst >> actionNavPrev 
-            >> actionNavNext >> actionNavLast
-            >> pageCombo;
+          "page, the next page, or the last page. </html>"),
+       >> actionNavFirst >> actionNavPrev 
+       >> actionNavNext >> actionNavLast
+       >> pageCombo );
 
-  Help(tr("<html><b>Document and page information.</b><br> "
+  HELP(tr("<html><b>Document and page information.</b><br> "
           "Display a dialog window for viewing "
           "encoding information pertaining to the document "
-          "or to a specific page.</html>"))
-            >> actionInformation;
+          "or to a specific page.</html>"),
+       >> actionInformation );
   
-  Help(tr("<html><b>Document and page metadata.</b><br> "
+  HELP(tr("<html><b>Document and page metadata.</b><br> "
           "Display a dialog window for viewing metadata "
           "pertaining to the document "
-          "or to a specific page.</html>"))
-            >> actionMetadata;
+          "or to a specific page.</html>"),
+       >> actionMetadata );
 
-  Help(tr("<html><b>Continuous layout.</b><br/> "
+  HELP(tr("<html><b>Continuous layout.</b><br/> "
           "Display all the document pages arranged vertically "
-          "inside the scrollable document viewing area.</html>"))
-            >> actionLayoutContinuous;
+          "inside the scrollable document viewing area.</html>"),
+       >> actionLayoutContinuous );
   
-  Help(tr("<html><b>Side by side layout.</b><br/> "
+  HELP(tr("<html><b>Side by side layout.</b><br/> "
           "Display pairs of pages side by side "
-          "inside the scrollable document viewing area.</html>"))
-            >> actionLayoutSideBySide;
+          "inside the scrollable document viewing area.</html>"),
+       >> actionLayoutSideBySide );
   
-  Help(tr("<html><b>Page information.</b><br/> "
+  HELP(tr("<html><b>Page information.</b><br/> "
           "Display information about the page located under the cursor: "
           "the sequential page number, the page size in pixels, "
-          "and the page resolution in dots per inch. </html>"))
-            >> pageLabel;
+          "and the page resolution in dots per inch. </html>"),
+       >> pageLabel );
   
-  Help(tr("<html><b>Cursor information.</b><br/> "
+  HELP(tr("<html><b>Cursor information.</b><br/> "
           "Display the position of the mouse cursor "
-          "expressed in page coordinates. </html>"))
-            >> mouseLabel;
+          "expressed in page coordinates. </html>"),
+       >> mouseLabel );
 
-  Help(tr("<html><b>Document viewing area.</b><br/> "
+  HELP(tr("<html><b>Document viewing area.</b><br/> "
           "This is the main display area for the DjVu document. <ul>"
           "<li>Arrows and page keys to navigate the document.</li>"
           "<li>Space and BackSpace to read the document.</li>"
@@ -1048,15 +1049,16 @@ QDjView::createWhatsThis()
           "<li>%3 for displaying the contextual menu.</li>"
           "<li>%1 Left Mouse Button for selecting text or images.</li>"
           "<li>%2 for popping the magnification lens.</li>"
-          "</ul></html>").arg(ms).arg(ml).arg(mc))
-            >> widget;
+          "</ul></html>").arg(ms).arg(ml).arg(mc),
+       >> widget );
   
-  Help(tr("<html><b>Document viewing area.</b><br/> "
+  HELP(tr("<html><b>Document viewing area.</b><br/> "
           "This is the main display area for the DjVu document. "
           "But you must first open a DjVu document to see anything."
-          "</html>"))
-            >> splash;
-    
+          "</html>"),
+       >> splash );
+
+#undef HELP    
 }
 
 
@@ -1270,6 +1272,7 @@ void
 QDjView::preferencesChanged(void)
 {
   applyPreferences();
+  createWhatsThis();
   updateActions();
 }
 
