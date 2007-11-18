@@ -160,10 +160,6 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   QTranslator *djviewTrans = new QTranslator(this);
   // - determine preferred languages
   QStringList langs; 
-#ifdef Q_WS_MAC
-  langs += QSettings(".", "globalPreferences")
-    .value("AppleLanguages").toStringList();
-#endif
   QString varLanguage = ::getenv("LANGUAGE");
   if (varLanguage.size())
     langs += varLanguage.toLower().split(":", QString::SkipEmptyParts);
@@ -177,6 +173,10 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   if (varLcMessages.size())
     langs += varLcMessages;
 # endif
+#endif
+#ifdef Q_WS_MAC
+  langs += QSettings(".", "globalPreferences")
+    .value("AppleLanguages").toStringList();
 #endif
   QString qtLocale =  QLocale::system().name();
   if (qtLocale.size())
