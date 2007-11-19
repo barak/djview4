@@ -140,9 +140,8 @@ usage()
 static void
 addDirectory(QStringList &dirs, QString path)
 {
-  QDir dir = path;
-  QString dirname = dir.canonicalPath();
-  if (dir.exists() && !dirs.contains(dirname))
+  QString dirname = QDir::cleanPath(path);
+  if (! dirs.contains(dirname))
     dirs << dirname;
 }
 
@@ -193,9 +192,9 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   addDirectory(dirs, datadir + "/djview4");
 #endif
 #ifdef Q_WS_MAC
-  addDirectory(dirs, dirPath + "/Resources");
-  addDirectory(dirs, dirPath + "/../Resources");
-  addDirectory(dirs, dirPath + "/../../Resources");
+  addDirectory(dirs, dirPath + "/Resources/$LANG.lproj");
+  addDirectory(dirs, dirPath + "/../Resources/$LANG.lproj");
+  addDirectory(dirs, dirPath + "/../../Resources/$LANG.lproj");
 #endif
   addDirectory(dirs, dirPath + "/share/djvu/djview4");
   addDirectory(dirs, dirPath + "/share/djview4");
@@ -213,13 +212,11 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
     {
       foreach (QString dir, dirs)
         {
-#ifdef Q_WS_MAC
-          if (dir.endsWith("/Resources"))
-            dir += "/" + lang + ".lproj";
-#endif
-          if (! qtTransValid)
+          dir = dir.replace(QRegExp("\\$LANG(?!\\w)"),lang);
+          QDir qdir(dir);
+          if (! qtTransValid && qdir.exists())
             qtTransValid = qtTrans->load("qt_" + lang, dir, "_.-");
-          if (! djviewTransValid)
+          if (! djviewTransValid && qdir.exists())
             djviewTransValid= djviewTrans->load("djview_" + lang, dir, "_.-");
         }
       if (lang == "en") 
