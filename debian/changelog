@@ -2,8 +2,9 @@ djview4 (4.2-1) unstable; urgency=low
 
   * New feature "Undo/Redo".
   * New entry "Open Location" in "File" menu.
+  * Add vcs-cvs and homepage fields to debian/control
 
- -- Barak A. Pearlmutter <bap@debian.org>  Fri, 9 Nov 2007 23:26:46 +0500
+ -- Barak A. Pearlmutter <bap@debian.org>  Tue, 20 Nov 2007 18:02:38 +0000
 
 djview4 (4.1-2) unstable; urgency=low
 
