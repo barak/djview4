@@ -113,3 +113,4 @@ SOURCES += tiff2pdf.c
 # -- transations
 TRANSLATIONS += djview_fr.ts
 TRANSLATIONS += djview_uk.ts
+TRANSLATIONS += djview_de.ts

@@ -931,10 +931,13 @@ QDjViewFind::Model::data(const QModelIndex &index, int role) const
             case Qt::DisplayRole:
               return info.name;
             case Qt::ToolTipRole:
-              if (info.hits <= 1)
-                return tr("%1 hit").arg(info.hits);
-              else
-                return tr("%1 hits").arg(info.hits);
+              if (info.hits == 1)
+                return tr("1 hit");
+#if QT_VERSION >= 0x40020
+              return tr("%n hits", "qt>=4.2", info.hits);
+#else
+              return tr("%1 hits", "qt<4.2").arg(info.hits);
+#endif
             case Qt::WhatsThisRole:
               return widget->whatsThis();
             default:
