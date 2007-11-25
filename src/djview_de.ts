@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="de">
-<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -1835,11 +1834,6 @@ Soll die Datei überschrieben werden?</translation>
         <location filename="qdjviewsidebar.cpp" line="1008"/>
         <source>Page %1 (1 hit)</source>
         <translation>Seite %1 (1 Treffer)</translation>
-    </message>
-    <message>
-        <location filename="qdjviewsidebar.cpp" line="1010"/>
-        <source>Page %1 (%2 hits)</source>
-        <translation type="obsolete">Seite %1 (%2 Treffer)</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1302"/>

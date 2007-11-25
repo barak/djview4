@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="fr">
-<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -1837,11 +1836,6 @@ Voulez-vous le remplacer?</translation>
         <location filename="qdjviewsidebar.cpp" line="1008"/>
         <source>Page %1 (1 hit)</source>
         <translation>Page %1 (1 occurrence)</translation>
-    </message>
-    <message>
-        <location filename="qdjviewsidebar.cpp" line="1010"/>
-        <source>Page %1 (%2 hits)</source>
-        <translation type="obsolete">Page %1 (%2 fois)</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1302"/>
