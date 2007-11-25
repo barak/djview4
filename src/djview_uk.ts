@@ -1189,7 +1189,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="642"/>
         <source>Ctrl+F11</source>
         <comment>View|FullScreen</comment>
-        <translation>Ctrl+F11</translation>
+        <translation type="unfinished">Ctrl+F11</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="650"/>
@@ -1865,10 +1865,10 @@ Do you want to replace it?</source>
         <location filename="qdjviewsidebar.cpp" line="937"/>
         <source>%n hits</source>
         <comment>qt&gt;=4.2</comment>
-        <translation>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation type="unfinished">
+            <numerusform>%n збіг</numerusform>
+            <numerusform>%n збіги</numerusform>
+            <numerusform>%n збігів</numerusform>
         </translation>
     </message>
     <message>
