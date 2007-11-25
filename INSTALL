@@ -157,41 +157,31 @@ There are two options under Mac OS X.
 
 * Installing the native Mac OS X version of Qt4.
   First install the native Mac version of Qt4.
-  This is still experimental but has been reported to work:
+  We recommend that you first install macports
+  with the libraries zlib, libpng, jpeg and tiff.
+  You must also install Qt and compile djvulibre.
+  Assuming Qt is in the default location and
+  djvulibre in /usr/local, configure with
 
-    You must first edit the file djview4/src/djview.pro.
-    Locate the section identified by the 
-    comment "for use on other platforms".
-    Define the variable LIBS with the linker flags 
-    that are necessary for using DjVuLibre.
-    Define the variable QMAKE_CXXFLAGS with the compiler 
-    flags that are necessary for using DjVuLibre.
+    $ ./configure --disable-nsdejavu \
+        PKG_CONFIG_PATH=/usr/local/lib/pkgconfig \
+        QMAKE=/Developer/Tools/Qt/qmake \
+        QMAKESPEC=macx-g++
+        
+  Then compile with
+  
+    $ make
 
-    Then run the Qt4 program
-      % qmake
-    to generate a makefile.
-    Then use command 
-      % make
-    to compile the djview4 application.
-
-    Note1: The Qt4 documentation states that qmake can 
-    also be used to generate an XCode project file.
-    But this is more dependent on the exact XCode version
-    you are using.
+  Note1: The Qt4 documentation states that qmake can 
+  also be used to generate an XCode project file.
+  But this is more dependent on the exact XCode version
+  you are using. Use QMAKESPEC=macx-xcode
    
-    Note2: To our surprise the configure script has been reported
-    to work using Qt/Mac!  But make install does not work
-    since the make command generates an application bundle.
-
-    Note3: The qmake command that comes with certain versions
-    of Qt generates an Xcode project file instead of a
-    Makefile. When this is the case, use Xcode!
-
-    Note4: This procedure generates a nice application bundle.
-    However the binaries inside the bundle may depend on 
-    shared libraries located elsewhere. To produce a distributable
-    application bundle, check the Qt documentation about the
-    deployment of Mac applications.
+  Note2: This procedure generates a nice application bundle.
+  However the binaries inside the bundle may depend on 
+  shared libraries located elsewhere. To produce a distributable
+  application bundle, you must fix that with command install_name_tool.
+  See the Qt documentation about the deployment of Mac applications.
 
 
 3.2 WINDOWS
