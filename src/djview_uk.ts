@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="uk">
+<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -1142,23 +1143,23 @@ Filename &apos;%1&apos; has no suffix.</source>
     <message>
         <location filename="qdjview.cpp" line="690"/>
         <source>Open &amp;Recent</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити &amp;нещодавній</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3437"/>
         <source>&amp;Clear History</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Очистити журнал</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="375"/>
         <source>Open &amp;Location...</source>
         <comment>File|</comment>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити &amp;адресу...</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="377"/>
         <source>Open a remote DjVu document.</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити нелокальний документ DjVu.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="417"/>
@@ -1188,7 +1189,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="642"/>
         <source>Ctrl+F11</source>
         <comment>View|FullScreen</comment>
-        <translation type="unfinished">Ctrl+F11</translation>
+        <translation>Ctrl+F11</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="650"/>
@@ -1206,12 +1207,12 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="3273"/>
         <source>Open Location - DjView</source>
         <comment>dialog caption</comment>
-        <translation type="unfinished"></translation>
+        <translation>Відкриття адреси - DjView</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3274"/>
         <source>Enter the URL of a DjVu document.</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть адресу документа DjVu.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3255"/>
