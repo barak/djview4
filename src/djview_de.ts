@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="de">
+<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -1788,37 +1789,37 @@ Soll die Datei überschrieben werden?</translation>
 <context>
     <name>QDjViewFind</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1525"/>
+        <location filename="qdjviewsidebar.cpp" line="1530"/>
         <source>Erase text</source>
         <translation>Lösche Text</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1527"/>
+        <location filename="qdjviewsidebar.cpp" line="1532"/>
         <source>Case sensitive</source>
         <translation>Groß- und Kleinschreibung beachten</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1530"/>
+        <location filename="qdjviewsidebar.cpp" line="1535"/>
         <source>Words only</source>
         <translation>&amp;Nur ganze Wörter</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1547"/>
+        <location filename="qdjviewsidebar.cpp" line="1552"/>
         <source>Find Previous (Shift+F3) </source>
         <translation>Rück&amp;wärts suchen (Shift+F3) </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1551"/>
+        <location filename="qdjviewsidebar.cpp" line="1556"/>
         <source>Find Next (F3) </source>
         <translation>Weitersuchen (F3) </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1554"/>
+        <location filename="qdjviewsidebar.cpp" line="1559"/>
         <source>Options</source>
         <translation>Optionen</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1604"/>
+        <location filename="qdjviewsidebar.cpp" line="1609"/>
         <source>&lt;html&gt;&lt;b&gt;Finding text.&lt;/b&gt;&lt;br/&gt; Search hits appear progressively as soon as you type a search string. Typing enter jumps to the next hit. To move to the previous or next hit, you can also use the arrow buttons or the shortcuts &lt;tt&gt;F3&lt;/tt&gt; or &lt;tt&gt;Shift-F3&lt;/tt&gt;. You can also double click a page name. Use the &lt;tt&gt;Options&lt;/tt&gt; menu to search words only or to specify the case sensitivity.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Text Suchen.&lt;/b&gt;&lt;br/&gt; Die Treffer der Suche werden sofort angezeigt. Durch drücken der Retruntaste gelangt man zum nächsten Treffer. Zum Navigieren können ebenfalls die Pfeiltasten, bzw &lt;tt&gt;F3&lt;/tt&gt; und &lt;tt&gt;Shift-F3&lt;/tt&gt; genutzt werden. Ein Doppelklick auf dem Seitennamen würde auch funktionieren. Mit Hilfe der Optionen können die Suchparameter angepasst werden.&lt;/html&gt;</translation>
     </message>
@@ -1832,31 +1833,31 @@ Soll die Datei überschrieben werden?</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1008"/>
-        <source>Page %1 (%2 hit)</source>
-        <translation>Seite %1 (%2 Treffer)</translation>
+        <source>Page %1 (1 hit)</source>
+        <translation>Seite %1 (1 Treffer)</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1010"/>
         <source>Page %1 (%2 hits)</source>
-        <translation>Seite %1 (%2 Treffer)</translation>
+        <translation type="obsolete">Seite %1 (%2 Treffer)</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1297"/>
+        <location filename="qdjviewsidebar.cpp" line="1302"/>
         <source>Searching page %1 (waiting for data.)</source>
-        <translation>Durchsuche Seite %1 (warte auf Daten).</translation>
+        <translation>Durchsuche Seite %1 (warte auf Daten.)</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1309"/>
+        <location filename="qdjviewsidebar.cpp" line="1314"/>
         <source>Searching page %1.</source>
         <translation>Durchsuche Seite %1.</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1344"/>
+        <location filename="qdjviewsidebar.cpp" line="1349"/>
         <source>No hits!</source>
         <translation>Keine Treffer!</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1351"/>
+        <location filename="qdjviewsidebar.cpp" line="1356"/>
         <source>&lt;html&gt;Document is not searchable. No page contains information about its textual content.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Dokument ist nicht durchsuchbar. Keine Seite enthält Informationen über seinen textlichen Inhalt.&lt;/html&gt;</translation>
     </message>
@@ -1874,6 +1875,21 @@ Soll die Datei überschrieben werden?</translation>
         <source>%1 hits</source>
         <comment>qt&lt;4.2</comment>
         <translation>%1 Treffer</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="qdjviewsidebar.cpp" line="1011"/>
+        <source>Page %1 (%n hits)</source>
+        <comment>qt&gt;=4.2</comment>
+        <translation>
+            <numerusform>Seite %1 (%n Treffer)</numerusform>
+            <numerusform>Seite %1 (%n Treffer)</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="qdjviewsidebar.cpp" line="1013"/>
+        <source>Page %1 (%2 hits)</source>
+        <comment>qt&lt;4.2</comment>
+        <translation>Seite %1 (%2 Treffer)</translation>
     </message>
 </context>
 <context>

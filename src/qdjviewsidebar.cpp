@@ -1004,10 +1004,15 @@ QDjViewFind::Model::modelAdd(int pageno, int hits)
   RowInfo info;
   info.pageno = pageno;
   info.hits = hits;
-  if (hits <= 1)
-    info.name = tr("Page %1 (%2 hit)").arg(name).arg(hits);
-  else
-    info.name = tr("Page %1 (%2 hits)").arg(name).arg(hits);
+  if (hits == 1)
+    info.name = tr("Page %1 (1 hit)").arg(name);
+  else {
+#if QT_VERSION >= 0x40200
+    info.name = tr("Page %1 (%n hits)", "qt>=4.2", hits).arg(name);
+#else
+    info.name = tr("Page %1 (%2 hits)", "qt<4.2").arg(name).arg(hits);
+#endif
+  }
   int lo = modelFind(pageno);
   if (lo < pages.size() && pages[lo].pageno == pageno)
     {

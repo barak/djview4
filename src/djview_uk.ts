@@ -1789,37 +1789,37 @@ Do you want to replace it?</source>
 <context>
     <name>QDjViewFind</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1525"/>
+        <location filename="qdjviewsidebar.cpp" line="1530"/>
         <source>Erase text</source>
         <translation>Видалити текст</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1527"/>
+        <location filename="qdjviewsidebar.cpp" line="1532"/>
         <source>Case sensitive</source>
         <translation>З врахування регістру</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1530"/>
+        <location filename="qdjviewsidebar.cpp" line="1535"/>
         <source>Words only</source>
         <translation>Тільки слова</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1547"/>
+        <location filename="qdjviewsidebar.cpp" line="1552"/>
         <source>Find Previous (Shift+F3) </source>
         <translation>Шукати попереднє (Shift+F3) </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1551"/>
+        <location filename="qdjviewsidebar.cpp" line="1556"/>
         <source>Find Next (F3) </source>
         <translation>Шукати наступне (F3) </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1554"/>
+        <location filename="qdjviewsidebar.cpp" line="1559"/>
         <source>Options</source>
         <translation>Параметри</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1604"/>
+        <location filename="qdjviewsidebar.cpp" line="1609"/>
         <source>&lt;html&gt;&lt;b&gt;Finding text.&lt;/b&gt;&lt;br/&gt; Search hits appear progressively as soon as you type a search string. Typing enter jumps to the next hit. To move to the previous or next hit, you can also use the arrow buttons or the shortcuts &lt;tt&gt;F3&lt;/tt&gt; or &lt;tt&gt;Shift-F3&lt;/tt&gt;. You can also double click a page name. Use the &lt;tt&gt;Options&lt;/tt&gt; menu to search words only or to specify the case sensitivity.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Пошук тексту.&lt;/b&gt;&lt;br/&gt; Співпадіння під час пошуку з&apos;являються поступово паралельно з введенням Вами рядку для пошуку. Натиснення вводу задає перехід до наступного співпадіння. Щоб перейти до попереднього чи наступного співпадіння, Ви також можете використовувати стрілки та гарячі клавіші &lt;tt&gt;F3&lt;/tt&gt; або &lt;tt&gt;Shift-F3&lt;/tt&gt;. Також можна двічі клацнути на назві сторінки. Використовуйте меню &lt;tt&gt;Параметри&lt;/tt&gt; щоб шукати тільки цілі слова або задати чутливість до регістру.&lt;/html&gt;</translation>
     </message>
@@ -1833,31 +1833,31 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1008"/>
-        <source>Page %1 (%2 hit)</source>
-        <translation>Сторінка %1 (%2 збіг)</translation>
+        <source>Page %1 (1 hit)</source>
+        <translation>Сторінка %1 (1 збіг)</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1010"/>
         <source>Page %1 (%2 hits)</source>
-        <translation>Сторінка %1 (%2 збігів)</translation>
+        <translation type="obsolete">Сторінка %1 (%2 збігів)</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1297"/>
+        <location filename="qdjviewsidebar.cpp" line="1302"/>
         <source>Searching page %1 (waiting for data.)</source>
         <translation>Пошук сторінки %1 (очікування на дані.)</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1309"/>
+        <location filename="qdjviewsidebar.cpp" line="1314"/>
         <source>Searching page %1.</source>
         <translation>Пошук сторінки %1.</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1344"/>
+        <location filename="qdjviewsidebar.cpp" line="1349"/>
         <source>No hits!</source>
         <translation>Не знайдено!</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1351"/>
+        <location filename="qdjviewsidebar.cpp" line="1356"/>
         <source>&lt;html&gt;Document is not searchable. No page contains information about its textual content.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Пошук у документі неможливий. Жодна сторінка не містить інформації про свій текстовий вміст.&lt;/html&gt;</translation>
     </message>
@@ -1865,7 +1865,7 @@ Do you want to replace it?</source>
         <location filename="qdjviewsidebar.cpp" line="937"/>
         <source>%n hits</source>
         <comment>qt&gt;=4.2</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>%n збіг</numerusform>
             <numerusform>%n збіги</numerusform>
             <numerusform>%n збігів</numerusform>
@@ -1876,6 +1876,22 @@ Do you want to replace it?</source>
         <source>%1 hits</source>
         <comment>qt&lt;4.2</comment>
         <translation>%1 збігів</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="qdjviewsidebar.cpp" line="1011"/>
+        <source>Page %1 (%n hits)</source>
+        <comment>qt&gt;=4.2</comment>
+        <translation>
+            <numerusform>Сторінка %1 (%n збіг)</numerusform>
+            <numerusform>Сторінка %1 (%n збіги)</numerusform>
+            <numerusform>Сторінка %1 (%n збігів)</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="qdjviewsidebar.cpp" line="1013"/>
+        <source>Page %1 (%2 hits)</source>
+        <comment>qt&lt;4.2</comment>
+        <translation>Сторінка %1 (%2 збігів)</translation>
     </message>
 </context>
 <context>
