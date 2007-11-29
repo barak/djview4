@@ -1402,6 +1402,8 @@ QDjVuPrivate::makePageRequests(void)
   Page *p;
   QRect &rv = visibleRect;
   bool found = false;
+  if (! doc)
+    return;
   // visible pages
   foreach(p, pageVisible)
     if (p && rv.intersects(p->rect)) 
