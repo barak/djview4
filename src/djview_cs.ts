@@ -1870,10 +1870,10 @@ Chcete jej nahradit?</translation>
         <location filename="qdjviewsidebar.cpp" line="937"/>
         <source>%n hits</source>
         <comment>qt&gt;=4.2</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>%n shoda</numerusform>
-            <numerusform>%n shod(y)</numerusform>
-            <numerusform>%n shod(y)</numerusform>
+            <numerusform>%n shody</numerusform>
+            <numerusform>%n shod</numerusform>
         </translation>
     </message>
     <message>
@@ -1891,10 +1891,10 @@ Chcete jej nahradit?</translation>
         <location filename="qdjviewsidebar.cpp" line="1011"/>
         <source>Page %1 (%n hits)</source>
         <comment>qt&gt;=4.2</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Strana %1 (%n shoda)</numerusform>
-            <numerusform>Strana %1 (%n shod(y))</numerusform>
-            <numerusform>Strana %1 (%n shod(y))</numerusform>
+            <numerusform>Strana %1 (%n shody)</numerusform>
+            <numerusform>Strana %1 (%n shod)</numerusform>
         </translation>
     </message>
     <message>
