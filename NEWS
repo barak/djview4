@@ -9,7 +9,7 @@ NEW IN VERSION 4.1
 - Fixes for Qt 4.2 and 4.3.
 - Fixes to enable compilation on Windows.
 - TIFF and PDF export.
-- New translations (ukrainian)
+- New translation (ukrainian)
 
 
 NEW IN VERSION 4.2
@@ -19,3 +19,4 @@ NEW IN VERSION 4.2
 - Open Location
 - Undo/Redo
 - Escape can be used to exit full screen mode
+- New translation (german)
