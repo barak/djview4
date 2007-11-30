@@ -2639,7 +2639,7 @@ MapArea::parse(miniexp_t full, int pageno)
   } else if (q)
     return error("Bad url", pageno, full);
   else
-    error("For best compatibility, use empty url strings "".",
+    error("For best compatibility, use empty urls "" instead of ().",
           pageno, full );
   // comment
   anno = miniexp_cdr(anno);
@@ -2649,7 +2649,7 @@ MapArea::parse(miniexp_t full, int pageno)
   else if (q)
     return error("Bad comment", pageno, full);
   else
-    error("For best compatibility, use empty comment strings "".",
+    error("For best compatibility, use empty comments "" instead of ().",
           pageno, full );
   // area 
   anno = miniexp_cdr(anno);
