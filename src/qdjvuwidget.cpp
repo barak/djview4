@@ -2639,17 +2639,21 @@ MapArea::parse(miniexp_t full, int pageno)
   } else if (q)
     return error("Bad url", pageno, full);
   else
-    error("For best compatibility, use empty urls "" instead of ().",
+    error("Some viewers prefer \"\" over () for empty urls.",
           pageno, full );
   // comment
   anno = miniexp_cdr(anno);
   q = miniexp_car(anno);
   if (miniexp_stringp(q))
-    comment = q;
+    {
+      const char *s = miniexp_to_str(q);
+      if (s && s[0])
+        comment = q;
+    }
   else if (q)
     return error("Bad comment", pageno, full);
   else
-    error("For best compatibility, use empty comments "" instead of ().",
+    error("Some viewers prefer \"\" over () for empty comments.",
           pageno, full );
   // area 
   anno = miniexp_cdr(anno);
