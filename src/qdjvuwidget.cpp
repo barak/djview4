@@ -2645,6 +2645,9 @@ MapArea::parse(miniexp_t full, int pageno)
     comment = q;
   else if (q)
     return error("Bad comment", pageno, full);
+  else
+    error("For best compatibility, use empty comment strings "".",
+          pageno, full );
   // area 
   anno = miniexp_cdr(anno);
   q = miniexp_car(anno);
