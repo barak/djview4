@@ -2638,6 +2638,9 @@ MapArea::parse(miniexp_t full, int pageno)
       url = target = miniexp_nil;
   } else if (q)
     return error("Bad url", pageno, full);
+  else
+    error("For best compatibility, use empty url strings "".",
+          pageno, full );
   // comment
   anno = miniexp_cdr(anno);
   q = miniexp_car(anno);
