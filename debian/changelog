@@ -1,3 +1,10 @@
+djview4 (4.2-1-1) unstable; urgency=low
+
+  * New upstream release.
+  * Fix bug number 452947 which occured here as well as in djvulibre.
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Thu,  6 Dec 2007 14:22:57 +0000
+
 djview4 (4.2-1) unstable; urgency=low
 
   * New feature "Undo/Redo".
