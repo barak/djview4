@@ -1,7 +1,8 @@
-djview4 (4.2-1-1) unstable; urgency=low
+djview4 (4.2-2) unstable; urgency=low
 
-  * New upstream release.
-  * Fix bug number 452947 which occured here as well as in djvulibre.
+  * New upstream release named 4.2-1; treating here as Debian patch, which
+    includes fix for bug number 452947 which occurs here as well as in
+    djvulibre against which it was first reported.
 
  -- Barak A. Pearlmutter <bap@debian.org>  Thu,  6 Dec 2007 14:22:57 +0000
 
