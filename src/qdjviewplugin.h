@@ -94,7 +94,7 @@ private:
   void reportError(int err);
   void streamCreated(Stream *s);
   void streamDestroyed(Stream *s);
-  Instance *findInstance(QDjView *djview);
+  Instance *findInstance(QWidget *widget);
   void getUrl(Instance *instance, QUrl url, QString target);
   void showStatus(Instance *instance, QString message);
   void continueExec();

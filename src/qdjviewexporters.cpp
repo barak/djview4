@@ -88,12 +88,6 @@
 #include "qdjvu.h"
 
 
-#if DDJVUAPI_VERSION < 18
-# error "DDJVUAPI_VERSION>=18 is required !"
-#endif
-
-
-
 
 // ----------------------------------------
 // FACTORY
@@ -261,11 +255,7 @@ QDjViewExporter::error(QString message, QString filename, int lineno)
       errorDialog = new QDjViewErrorDialog(parent);
       errorDialog->prepare(QMessageBox::Critical, errorCaption);
       connect(errorDialog, SIGNAL(closing()), parent, SLOT(reject()));
-#if QT_VERSION >= 0x040100
       errorDialog->setWindowModality(Qt::WindowModal);
-#else
-      errorDialog->setModal(true);
-#endif
     }
   errorDialog->error(message, filename, lineno);
   errorDialog->show();
@@ -380,7 +370,6 @@ QDjViewDjVuExporter::save(QString fname)
   int pagenum = djview->pageNum();
   if (document==0 || pagenum <= 0 || fileName.isEmpty())
     return false;
-#if QT_VERSION >= 0x40100
   QFileInfo info(fileName);
   QDir::Filters filters = QDir::AllEntries|QDir::NoDotAndDotDot;
   if (indirect && !info.dir().entryList(filters).isEmpty() &&
@@ -395,7 +384,6 @@ QDjViewDjVuExporter::save(QString fname)
                             tr("Con&tinue"),
                             tr("&Cancel") ) )
     return false;
-#endif
   toPage = qBound(0, toPage, pagenum-1);
   fromPage = qBound(0, fromPage, pagenum-1);
   QByteArray pagespec;
@@ -831,7 +819,6 @@ QDjViewPSExporter::openFile()
           lprargs << pname.data();
         }
       // Arguments for cups.
-#if QT_VERSION >= 0x40200
       bool cups = false;
       QList<QByteArray> cargs;
       QPrintEngine *engine = printer->printEngine();
@@ -881,7 +868,6 @@ QDjViewPSExporter::openFile()
           // reset copies since cups takes care of it
           copies = 1;
         }
-#endif
       // open pipe for lp/lpr.
       lpargs << 0;
       lprargs << 0;
@@ -987,11 +973,11 @@ QDjViewPSExporter::printSetup(QPrintDialog *dialog, bool dir)
       ui1.colorButton->setChecked(!grayscale);  
       ui2.landscapeButton->setChecked(landscape);
       ui2.portraitButton->setChecked(!landscape);
-#if QT_VERSION <= 0x40400
+      // BEGIN HACK //
+      // Directly steal settings from print dialog.
       copies = 1;
       collate = true;
       lastfirst = false;
-      // Directly steal settings from print dialog.
       QSpinBox* lcop = qFindChild<QSpinBox*>(dialog, "sbNumCopies");
       QCheckBox* lcol = qFindChild<QCheckBox*>(dialog, "chbCollate");
       QCheckBox* lplf = qFindChild<QCheckBox*>(dialog, "chbPrintLastFirst");
@@ -1001,7 +987,7 @@ QDjViewPSExporter::printSetup(QPrintDialog *dialog, bool dir)
         collate = lcol->isChecked();
       if (lplf)
         lastfirst = lplf->isChecked();
-#endif
+      // END HACK //
     }
   else
     {
@@ -2107,10 +2093,8 @@ QDjViewPrnExporter::save(QString fileName)
   this->fileName = fileName;
   printer = new QPrinter(QPrinter::HighResolution);
   printer->setOutputFileName(fileName);
-#if defined(Q_OS_UNIX) && !defined(Q_WS_MAC) && QT_VERSION >= 0x40200
+#if defined(Q_OS_UNIX) && !defined(Q_WS_MAC) 
   printer->setOutputFormat(QPrinter::PostScriptFormat);
-#elif QT_VERSION >= 0x40100 
-  printer->setOutputFormat(QPrinter::NativeFormat);
 #endif
   return start();
 }

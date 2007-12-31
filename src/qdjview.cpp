@@ -94,10 +94,6 @@
 #include "qdjviewdialogs.h"
 #include "qdjviewsidebar.h"
 
-#if DDJVUAPI_VERSION < 18
-# error "DDJVUAPI_VERSION>=18 is required !"
-#endif
-
 
 
 /*! \class QDjView
@@ -303,7 +299,6 @@ operator<<(QAction *action, QActionGroup &group)
 static inline QAction * 
 operator<<(QAction *action, QKeySequence shortcut)
 {
-#if QT_VERSION >= 0x040200
   QList<QKeySequence> shortcuts = action->shortcuts();
 # ifdef Q_WS_MAC
   shortcuts.append(shortcut);
@@ -311,9 +306,6 @@ operator<<(QAction *action, QKeySequence shortcut)
   shortcuts.prepend(shortcut);
 # endif
   action->setShortcuts(shortcuts);
-#else
-  action->setShortcut(shortcut);
-#endif
   return action;
 }
 
@@ -661,11 +653,9 @@ QDjView::createActions()
     << Trigger(widget, SLOT(setSideBySide(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
 
-#if QT_VERSION >= 0x40200
   actionAbout->setMenuRole(QAction::AboutRole);
   actionQuit->setMenuRole(QAction::QuitRole);
   actionPreferences->setMenuRole(QAction::PreferencesRole);
-#endif
 
   // Enumerate all actions
   QAction *a;
@@ -1856,9 +1846,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   QPalette palette = splash->palette();
   palette.setColor(QPalette::Background, Qt::white);
   splash->setPalette(palette);
-#if QT_VERSION >= 0x040100
   splash->setAutoFillBackground(true);
-#endif
 
   // Create central layout
   layout = new QStackedLayout(central);
@@ -2071,11 +2059,7 @@ QDjView::open(QUrl url)
     {
       QUrl proxyUrl = prefs->proxyUrl;
       QString host =  proxyUrl.host();
-#if QT_VERSION >= 0x040100
       int port = proxyUrl.port(8080);
-#else
-      int port = proxyUrl.port();
-#endif
       QString user = proxyUrl.userName();
       QString pass = proxyUrl.password();
       if (!host.isEmpty() && proxyUrl.path().isEmpty() && port >=0 )
@@ -2988,13 +2972,12 @@ QDjView::pointerEnter(const Position&, miniexp_t)
       link.contains(QRegExp("^#[-+]\\d+$")) )
     {
       int n = link.mid(2).toInt();
-      if (link[1]=='+')  // i18n: fix plural forms.
-        message = (n>1) ? tr("Go: %1 pages forward.") 
-          : tr("Go: %1 page forward.");
+      if (link[1]=='+')
+        message = (n==1) ? tr("Go: 1 page forward.") 
+          : tr("Go: %n pages forward.", 0, n);
       else
-        message = (n>1) ? tr("Go: %1 pages backward.") 
-          : tr("Go: %1 page backward.");
-      message = message.arg(n);
+        message = (n==1) ? tr("Go: 1 page backward.")
+          : tr("Go: %n pages backward.", 0, n);
     }
   else if (link.startsWith("#$"))
     message = tr("Go: page %1.").arg(link.mid(2));
@@ -3104,7 +3087,7 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
   int l = text.size();
   int w = rect.width();
   int h = rect.height();
-  QString s = tr("%1 characters").arg(l);
+  QString s = tr("%n characters", 0, l);
   
   // Prepare menu
   QMenu *menu = new QMenu(this);
@@ -3423,10 +3406,8 @@ QDjView::fillRecent()
           QString name = url.toLocalFile();
           if (name.isEmpty())
             name = url.toString();
-#if QT_VERSION >= 0x040200
           QFontMetrics metrics = QFont();
           name = metrics.elidedText(name, Qt::ElideMiddle, 400);
-#endif
           name = QString("%1 [%2]").arg(base).arg(name);
           QAction *action = recentMenu->addAction(name);
           action->setData(url);

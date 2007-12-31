@@ -68,7 +68,6 @@
 
 
 
-
 // =======================================
 // QDJVIEWOUTLINE
 // =======================================
@@ -352,17 +351,7 @@ QDjViewThumbnails::View::View(QDjViewThumbnails *widget)
   setMovement(QListView::Static);
   setResizeMode(QListView::Adjust);
   setSpacing(8);
-#if QT_VERSION >= 0x040100
   setUniformItemSizes(true);
-#endif
-#if QT_VERSION < 0x040100
-  // Hack to request thumbnail computations because
-  // we cannot do it efficiently in Model::makeData().
-  connect((QObject*)verticalScrollBar(), SIGNAL(sliderMoved(int)),
-          (QObject*)widget->model, SLOT(scheduleRefresh()) );
-  // Really too slow without this.
-  setLayoutMode(QListView::Batched);
-#endif
 }
 
 
@@ -591,14 +580,6 @@ QDjViewThumbnails::Model::makeIcon(int pageno) const
           painter.end();
           return QIcon(pixmap);
         }
-#if QT_VERSION >= 0x40100
-      // We know this is not a sizehint request because the
-      // sizehint code calls Model::data(Qt::SizeHintRole) first.
-      // Therefore it must be a paint request and we can
-      // safely request thumbnail calculations.
-      else if (ddjvu_thumbnail_status(*doc,pageno,0)==DDJVU_JOB_NOTSTARTED)
-        const_cast<Model*>(this)->scheduleRefresh();
-#endif
     }
   return icon;
 }
@@ -638,10 +619,8 @@ QDjViewThumbnails::Model::data(const QModelIndex &index, int role) const
               return widget->whatsThis();
             case Qt::UserRole:
               return pageno;
-#if QT_VERSION >= 0x040100
             case Qt::SizeHintRole:
               return makeHint(pageno);
-#endif
             default:
               break;
             }
@@ -936,11 +915,7 @@ QDjViewFind::Model::data(const QModelIndex &index, int role) const
             case Qt::ToolTipRole:
               if (info.hits == 1)
                 return tr("1 hit");
-#if QT_VERSION >= 0x40020
-              return tr("%n hits", "qt>=4.2", info.hits);
-#else
-              return tr("%1 hits", "qt<4.2").arg(info.hits);
-#endif
+              return tr("%n hits", 0, info.hits);
             case Qt::WhatsThisRole:
               return widget->whatsThis();
             default:
@@ -1009,13 +984,8 @@ QDjViewFind::Model::modelAdd(int pageno, int hits)
   info.hits = hits;
   if (hits == 1)
     info.name = tr("Page %1 (1 hit)").arg(name);
-  else {
-#if QT_VERSION >= 0x40200
-    info.name = tr("Page %1 (%n hits)", "qt>=4.2", hits).arg(name);
-#else
-    info.name = tr("Page %1 (%2 hits)", "qt<4.2").arg(name).arg(hits);
-#endif
-  }
+  else
+    info.name = tr("Page %1 (%n hits)", 0, hits).arg(name);
   int lo = modelFind(pageno);
   if (lo < pages.size() && pages[lo].pageno == pageno)
     {

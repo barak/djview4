@@ -94,11 +94,6 @@
 #include "qdjvu.h"
 
 
-#if DDJVUAPI_VERSION < 18
-# error "DDJVUAPI_VERSION>=18 is required !"
-#endif
-
-
 
 // =======================================
 // QDJVIEWERRORDIALOG
@@ -475,25 +470,12 @@ QDjViewInfoDialog::fillDocLabel()
           
           int pagenum = ddjvu_document_get_pagenum(*doc);
           int filenum = ddjvu_document_get_filenum(*doc);
-          msg << tr("%1 files").arg(filenum);
-          msg << tr("%1 pages").arg(pagenum);
+          msg << ((filenum==1) ? tr("1 file") : tr("%n files", 0, filenum));
+          msg << ((pagenum==1) ? tr("1 page") : tr("%n pages", 0, pagenum));
         }
       d->ui.docLabel->setText(msg.join(" - "));
     }
 }
-
-#if QT_VERSION < 0x040200
-static void
-setTableWhatsThis(QTableWidget *table, QString text)
-{
-  QTableWidgetItem *item;
-  for (int i=0; i<table->rowCount(); i++)
-    for (int j=0; j<table->columnCount(); j++)
-      if ((item = table->item(i,j)))
-        item->setWhatsThis(text);
-}
-#endif
-
 
 void 
 QDjViewInfoDialog::fillDocTable()
@@ -501,19 +483,12 @@ QDjViewInfoDialog::fillDocTable()
   int filenum = d->files.size();
   QTableWidget *table = d->ui.docTable;
   table->setRowCount(filenum);
-#if QT_VERSION >= 0x040200
   table->setSortingEnabled(false);
-#endif
   for (int i=0; i<filenum; i++)
     fillDocRow(i);
-#if QT_VERSION >= 0x040100
   table->resizeColumnsToContents();
   table->resizeRowsToContents();
-#endif
   table->horizontalHeader()->setStretchLastSection(true);
-#if QT_VERSION < 0x040200
-  setTableWhatsThis(table, d->ui.tabDocument->whatsThis());
-#endif
 }
 
 void 
@@ -719,9 +694,7 @@ metadataFill(QTableWidget *table, QMap<QString,QString> m)
   qSort(keys.begin(), keys.end());
   int nkeys = keys.size();
   table->setRowCount(nkeys);
-#if QT_VERSION >= 0x040200
   table->setSortingEnabled(false);
-#endif
   for(int j = 0; j < nkeys; j++)
     {
       QTableWidgetItem *kitem = new QTableWidgetItem(keys[j]);
@@ -731,11 +704,8 @@ metadataFill(QTableWidget *table, QMap<QString,QString> m)
       table->setItem(j, 0, kitem);
       table->setItem(j, 1, vitem);
     }
-#if QT_VERSION >= 0x040100
   table->resizeColumnsToContents();
   table->resizeRowsToContents();
-#endif
-  table->horizontalHeader()->setStretchLastSection(true);
 }
 
 void 
@@ -769,9 +739,6 @@ QDjViewMetaDialog::refresh()
         {
           QMap<QString,QString> docMeta = metadataFromAnnotations(d->docAnno);
           metadataFill(d->ui.docTable, docMeta);
-#if QT_VERSION < 0x040200
-          setTableWhatsThis(d->ui.docTable, d->ui.docTab->whatsThis());
-#endif
         }
     }
   // page annotations
@@ -792,9 +759,6 @@ QDjViewMetaDialog::refresh()
                 = metadataFromAnnotations(d->pageAnno);
               metadataSubtract(pageMeta, docMeta);
               metadataFill(d->ui.pageTable, pageMeta);
-#if QT_VERSION < 0x040200
-              setTableWhatsThis(d->ui.pageTable, d->ui.pageTab->whatsThis());
-#endif
             }
         }
     }

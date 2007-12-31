@@ -73,10 +73,8 @@
 
 #ifdef Q_WS_X11
 # include <QX11Info>
-# if QT_VERSION >= 0x040100
-#  include <QX11EmbedWidget>
-#  define HAVE_QX11EMBED 1
-# endif
+# include <QX11EmbedWidget>
+# define HAVE_QX11EMBED 1
 #endif
 
 // declared in djview.cpp
@@ -107,12 +105,14 @@ public:
   Forwarder(QDjViewPlugin *dispatcher);
   virtual bool eventFilter(QObject*, QEvent*);
 public slots:
+  void containerClosed();
   void showStatus(QString message);
   void getUrl(QUrl url, QString target);
   void quit();
   void dispatch();
   void lastViewerClosed();
   void continueExec();
+  
 };
 
 
@@ -322,6 +322,18 @@ QDjViewPlugin::Forwarder::Forwarder(QDjViewPlugin *dispatcher)
 
 
 void 
+QDjViewPlugin::Forwarder::containerClosed()
+{
+#if HAVE_QX11EMBED
+  QX11EmbedWidget *shell = qobject_cast<QX11EmbedWidget*>(sender());
+  Instance *instance = dispatcher->findInstance(shell);
+  if (instance && dispatcher->xembedFlag)
+    instance->destroy();
+#endif
+}
+
+
+void 
 QDjViewPlugin::Forwarder::showStatus(QString message)
 {
   QDjView *viewer = qobject_cast<QDjView*>(sender());
@@ -438,15 +450,6 @@ QDjViewPlugin::Instance::open()
       document = new QDjViewPlugin::Document(this);
       djview->open(document, url);
       restore(djview->getDjVuWidget());
-#if HAVE_X11
-# if QT_VERSION < 0x40100
-      if (! dispatcher->xembedFlag)
-        {
-          Display *dpy = QX11Info::display();
-          XMapWindow(dpy, shell->winId());
-        }
-# endif
-#endif
       shell->show();
     }
 }
@@ -489,7 +492,7 @@ QDjViewPlugin::Instance::save(QDjVuWidget *widget)
       bool continuous = widget->continuous();
       QDjVuWidget::DisplayMode mode = widget->displayMode();
       QDjVuWidget::Position pos = widget->position();
-      // pack info (four bytes for compatibility)
+      // pack info into four bytes for compatibility.
       q[0] = 0;
       q[1] = pos.pageNo;
       q[2] = pos.posView.x();
@@ -504,6 +507,9 @@ QDjViewPlugin::Instance::save(QDjVuWidget *widget)
       if (continuous)
         q[0] |= 0x8000;
       q[0] |= (((int)mode) & 0xf) << 16;
+      // make sure first two integers are positive.
+      q[0] |= 0x40000000;
+      q[1] |= 0x40000000;
       // store
       saved = QByteArray((const char*)q, sizeof(q));
     }
@@ -529,7 +535,7 @@ QDjViewPlugin::Instance::restore(QDjVuWidget *widget)
       pos.anchorRight = false;
       pos.anchorBottom = false;
       pos.inPage = false;
-      pos.pageNo = q[1];
+      pos.pageNo = (q[1] & 0xfffffff);
       pos.posView.rx() = q[2];
       pos.posView.ry() = q[3];
       // apply
@@ -894,6 +900,8 @@ QDjViewPlugin::cmdAttachWindow()
         {
           QX11EmbedWidget *embed = new QX11EmbedWidget();
           shell = embed;
+          QObject::connect(shell, SIGNAL(containerClosed()),
+                           forwarder, SLOT(containerClosed()) );
           shell->setObjectName("djvu_xembed");
           shell->setGeometry(0, 0, width, height);
           embed->embedInto(window);
@@ -1206,7 +1214,6 @@ QDjViewPlugin::~QDjViewPlugin()
   delete forwarder;
   delete notifier;
   delete timer;
-  delete context;
   delete application;
 }
 
@@ -1313,9 +1320,10 @@ QDjViewPlugin::continueExec()
           eventLoop->exec();
           eventLoop = 0;
           // see registerForDeletion()
-          foreach(QObject *o, pendingDelete)
-            delete o;
+          QObjectList toDelete = pendingDelete;
           pendingDelete.clear();
+          foreach(QObject *o, toDelete)
+            delete o;
         }
     }
   catch(int err)
@@ -1385,11 +1393,12 @@ QDjViewPlugin::streamDestroyed(Stream *stream)
 
 
 QDjViewPlugin::Instance*
-QDjViewPlugin::findInstance(QDjView *djview)
+QDjViewPlugin::findInstance(QWidget *widget)
 {
-  foreach(Instance *instance, instances)
-    if (djview && instance->djview == djview)
-      return instance;
+  if (widget)
+    foreach(Instance *instance, instances)
+      if (widget == instance->djview || widget == instance->shell)
+        return instance;
   return 0;
 }
 
@@ -1450,6 +1459,7 @@ QDjViewPlugin::dispatch()
         case CMD_DESTROY_STREAM: cmdDestroyStream(); break;
         case CMD_URL_NOTIFY:     cmdUrlNotify(); break;
         case CMD_HANDSHAKE:      cmdHandshake(); break;
+        case CMD_SET_OPTION:     cmdSetOption(); break;
         default:                 throw 3;
         }
     }
@@ -1497,29 +1507,6 @@ QDjViewPlugin::registerForDeletion(QObject *p)
 
 
 
-
-// ----------------------------------------
-// HOT FIXES FOR EARLY QT4...
-
-#if QT_VERSION < 0x40100
-QList<QPair<QString, QString> > 
-QUrl::queryItems() const
-{
-  QList<QPair<QString, QString> > items;
-  QByteArray query = encodedQuery();
-  QList<QByteArray> pairs = query.split('&');
-  for (int i=0; i<pairs.count(); i++)
-    {
-      QList<QByteArray> pair = pairs[i].split('=');
-      if (pair.size() == 1)
-        items << qMakePair(QUrl::fromPercentEncoding(pair.at(0)), QString());
-      else if (pair.size() == 2)
-        items << qMakePair(QUrl::fromPercentEncoding(pair.at(0)),
-                           QUrl::fromPercentEncoding(pair.at(1)) );
-    }
-  return items;
-}
-#endif
 
 
 // ----------------------------------------

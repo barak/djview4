@@ -65,6 +65,15 @@ class QToolBar;
 class QToolBox;
 
 
+#if DDJVUAPI_VERSION < 18
+# error "DDJVUAPI_VERSION>=18 is required !"
+#endif
+
+#if QT_VERSION < 0x40200
+# error "QT_VERSION>=0x40200 is required !"
+#endif
+
+
 class QDjView : public QMainWindow
 {
   Q_OBJECT
@@ -336,8 +345,8 @@ protected:
   QList<UndoRedo> redoList;
 };
 
-
 #endif
+
 /* -------------------------------------------------------------
    Local Variables:
    c++-font-lock-extra-types: ( "\\sw+_t" "[A-Z]\\sw*[a-z]\\sw*" )

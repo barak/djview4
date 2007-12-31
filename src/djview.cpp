@@ -279,10 +279,6 @@ main(int argc, char *argv[])
 
   // Message verbosity
   qtDefaultHandler = qInstallMsgHandler(qtMessageHandler);
-#if QT_VERSION < 0x40100
-  verbose = true;
-  qWarning("Using Qt < 4.1.0 with prejudice.");
-#endif
 #ifdef Q_OS_UNIX
   const char *s = ::getenv("DJVIEW_VERBOSE");
   if (s && strcmp(s,"0"))
