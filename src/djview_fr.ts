@@ -2287,7 +2287,7 @@ Voulez-vous le remplacer?</translation>
 <context>
     <name>QDjViewPlugin::Document</name>
     <message>
-        <location filename="qdjviewplugin.cpp" line="298"/>
+        <location filename="qdjviewplugin.cpp" line="300"/>
         <source>Requesting %1.</source>
         <translation>Chargement de %1.</translation>
     </message>

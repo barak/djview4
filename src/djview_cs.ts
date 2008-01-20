@@ -455,12 +455,12 @@
         <location filename="qdjview.cpp" line="514"/>
         <source>&amp;Backward</source>
         <comment>Go|</comment>
-        <translation>&amp;Pozpátku</translation>
+        <translation>&amp;Zpět</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="517"/>
         <source>Backward in history.</source>
-        <translation>Pozpátku v historii.</translation>
+        <translation>Zpět v historii.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="520"/>
@@ -471,7 +471,7 @@
     <message>
         <location filename="qdjview.cpp" line="523"/>
         <source>Forward in history.</source>
-        <translation>Dopředně v historii.</translation>
+        <translation>Dopředu v historii.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="526"/>
@@ -1050,19 +1050,19 @@ Soubor „%1“ nemá žádnou příponu.</translation>
     <message numerus="yes">
         <location filename="qdjview.cpp" line="2977"/>
         <source>Go: %n pages forward.</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Přejít: %n stranu vpřed.</numerusform>
-            <numerusform>Přejít: %n stranu vpřed.</numerusform>
-            <numerusform>Přejít: %n stranu vpřed.</numerusform>
+            <numerusform>Přejít: %n strany vpřed.</numerusform>
+            <numerusform>Přejít: %n stran vpřed.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="qdjview.cpp" line="2980"/>
         <source>Go: %n pages backward.</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Přejít: %n stranu zpět.</numerusform>
-            <numerusform>Přejít: %n stranu zpět.</numerusform>
-            <numerusform>Přejít: %n stranu zpět.</numerusform>
+            <numerusform>Přejít: %n strany zpět.</numerusform>
+            <numerusform>Přejít: %n stran zpět.</numerusform>
         </translation>
     </message>
     <message>
@@ -1249,21 +1249,21 @@ Soubor „%1“ nemá žádnou příponu.</translation>
     <message numerus="yes">
         <location filename="qdjview.cpp" line="3090"/>
         <source>%n characters</source>
-        <translation type="unfinished">
-            <numerusform>%n znaků(y)</numerusform>
-            <numerusform>%n znaků(y)</numerusform>
-            <numerusform>%n znaků(y)</numerusform>
+        <translation>
+            <numerusform>%n znak</numerusform>
+            <numerusform>%n znaky</numerusform>
+            <numerusform>%n znaků</numerusform>
         </translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2977"/>
         <source>Go: 1 page forward.</source>
-        <translation type="unfinished">Přejít: 1 stranu vpřed.</translation>
+        <translation>Přejít: 1 stranu vpřed.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2980"/>
         <source>Go: 1 page backward.</source>
-        <translation type="unfinished">Přejít: 1 stranu zpět.</translation>
+        <translation>Přejít: 1 stranu zpět.</translation>
     </message>
 </context>
 <context>
@@ -2083,29 +2083,29 @@ Chcete jej nahradit?</translation>
     <message>
         <location filename="qdjviewdialogs.cpp" line="473"/>
         <source>1 file</source>
-        <translation type="unfinished">1 soubor</translation>
+        <translation>1 soubor</translation>
     </message>
     <message numerus="yes">
         <location filename="qdjviewdialogs.cpp" line="473"/>
         <source>%n files</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>%n soubor</numerusform>
-            <numerusform>%n soubor</numerusform>
-            <numerusform>%n soubor</numerusform>
+            <numerusform>%n soubory</numerusform>
+            <numerusform>%n souborů</numerusform>
         </translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="474"/>
         <source>1 page</source>
-        <translation type="unfinished">1 strana</translation>
+        <translation>1 strana</translation>
     </message>
     <message numerus="yes">
         <location filename="qdjviewdialogs.cpp" line="474"/>
         <source>%n pages</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>%n strana</numerusform>
-            <numerusform>%n stran(y)</numerusform>
-            <numerusform>%n stran(y)</numerusform>
+            <numerusform>%n strany</numerusform>
+            <numerusform>%n stran</numerusform>
         </translation>
     </message>
 </context>
@@ -2318,7 +2318,7 @@ Chcete jej nahradit?</translation>
 <context>
     <name>QDjViewPlugin::Document</name>
     <message>
-        <location filename="qdjviewplugin.cpp" line="298"/>
+        <location filename="qdjviewplugin.cpp" line="300"/>
         <source>Requesting %1.</source>
         <translation>Požaduji %1.</translation>
     </message>
