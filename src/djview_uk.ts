@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="uk">
+<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -574,19 +575,19 @@ Filename &apos;%1&apos; has no suffix.</source>
     <message numerus="yes">
         <location filename="qdjview.cpp" line="2977"/>
         <source>Go: %n pages forward.</source>
-        <translation type="unfinished">
-            <numerusform>Перехід: %n сторінка вперед.</numerusform>
-            <numerusform>Перехід: %n сторінка вперед.</numerusform>
-            <numerusform>Перехід: %n сторінка вперед.</numerusform>
+        <translation>
+            <numerusform>Перехід: %n сторінку вперед.</numerusform>
+            <numerusform>Перехід: %n сторінки вперед.</numerusform>
+            <numerusform>Перехід: %n сторінок вперед.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="qdjview.cpp" line="2980"/>
         <source>Go: %n pages backward.</source>
-        <translation type="unfinished">
-            <numerusform>Перехід: %n сторінка назад.</numerusform>
-            <numerusform>Перехід: %n сторінка назад.</numerusform>
-            <numerusform>Перехід: %n сторінка назад.</numerusform>
+        <translation>
+            <numerusform>Перехід: %n сторінку назад.</numerusform>
+            <numerusform>Перехід: %n сторінки назад.</numerusform>
+            <numerusform>Перехід: %n сторінок назад.</numerusform>
         </translation>
     </message>
     <message>
@@ -1239,21 +1240,21 @@ Filename &apos;%1&apos; has no suffix.</source>
     <message numerus="yes">
         <location filename="qdjview.cpp" line="3090"/>
         <source>%n characters</source>
-        <translation type="unfinished">
-            <numerusform>%n символів</numerusform>
-            <numerusform>%n символів</numerusform>
+        <translation>
+            <numerusform>%n символ</numerusform>
+            <numerusform>%n символа</numerusform>
             <numerusform>%n символів</numerusform>
         </translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2977"/>
         <source>Go: 1 page forward.</source>
-        <translation type="unfinished">Перехід: 1 сторінка вперед.</translation>
+        <translation>Перехід: 1 сторінка вперед.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2980"/>
         <source>Go: 1 page backward.</source>
-        <translation type="unfinished">Перехід: 1 сторінка назад.</translation>
+        <translation>Перехід: 1 сторінка назад.</translation>
     </message>
 </context>
 <context>
@@ -1807,7 +1808,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1505"/>
         <source>Case sensitive</source>
-        <translation>З врахування регістру</translation>
+        <translation>З врахуванням регістру</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1508"/>
@@ -2066,28 +2067,28 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewdialogs.cpp" line="473"/>
         <source>1 file</source>
-        <translation type="unfinished">1 файлів</translation>
+        <translation>1 файл</translation>
     </message>
     <message numerus="yes">
         <location filename="qdjviewdialogs.cpp" line="473"/>
         <source>%n files</source>
-        <translation type="unfinished">
-            <numerusform>%n файлів</numerusform>
-            <numerusform>%n файлів</numerusform>
+        <translation>
+            <numerusform>%n файл</numerusform>
+            <numerusform>%n файли</numerusform>
             <numerusform>%n файлів</numerusform>
         </translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="474"/>
         <source>1 page</source>
-        <translation type="unfinished">1 сторінок</translation>
+        <translation>1 сторінка</translation>
     </message>
     <message numerus="yes">
         <location filename="qdjviewdialogs.cpp" line="474"/>
         <source>%n pages</source>
-        <translation type="unfinished">
-            <numerusform>%n сторінок</numerusform>
-            <numerusform>%n сторінок</numerusform>
+        <translation>
+            <numerusform>%n сторінка</numerusform>
+            <numerusform>%n сторінки</numerusform>
             <numerusform>%n сторінок</numerusform>
         </translation>
     </message>
@@ -2127,12 +2128,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewdialogs.cpp" line="595"/>
         <source> Key </source>
-        <translation> Клавіша </translation>
+        <translation> Ключ </translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="595"/>
         <source> Value </source>
-        <translation> Величина </translation>
+        <translation> Значення </translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="636"/>
@@ -2387,7 +2388,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="384"/>
         <source>Sc&amp;rollbars</source>
-        <translation>Смуги прокручування</translation>
+        <translation>Смуги про&amp;кручування</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="391"/>
