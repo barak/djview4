@@ -1,5 +1,5 @@
 %define release 1
-%define version 4.2
+%define version 4.3
 
 Summary: DjVu viewer
 Name: djview4
@@ -11,13 +11,13 @@ Source: djview4-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-root
 URL: http://djvu.sourceforge.net
 
-# BuildRequires: qt4-devel >= 4.1
-# BuildRequires: qt4-designer >= 4.1
+# BuildRequires: qt4-devel >= 4.2
+# BuildRequires: qt4-designer >= 4.2
 # BuildRequires: libjpeg-devel
 # BuildRequires: libtiff-devel
 # BuildRequires: glibc-devel
 # BuildRequires: gcc-c++
-# BuildRequires: djvulibre >= 3.5.18
+# BuildRequires: djvulibre >= 3.5.19
 # BuildRequires: xdg-utils
 # Requires xdg-utils
 

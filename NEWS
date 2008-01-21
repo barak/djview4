@@ -17,6 +17,11 @@ NEW IN VERSION 4.2
 - Better support of Qt/Mac
 - Recent files menu
 - Open Location
+
+
+NEW IN VERSION 4.3
+------------------
 - Undo/Redo
 - Escape can be used to exit full screen mode
 - New translations (german,czech)
+- Fixed double free bug in plugin mode.
