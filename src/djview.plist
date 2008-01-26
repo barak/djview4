@@ -55,8 +55,12 @@
       <dict>
 	<key>UTTypeConformsTo</key>
 	<array>
-	  <string>public.data</string>
+          <string>org.djvuzone.djvulibre.djvu</string>
+          <string>com.lizardtech.djvu</string>
+          <string>public.djvu</string>
+          <string>public.composite-content</string>
 	  <string>public.content</string>
+	  <string>public.data</string>
 	</array>
 	<key>UTTypeDescription</key>
 	<string>DjVu File</string>
