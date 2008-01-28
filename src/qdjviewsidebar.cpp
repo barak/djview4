@@ -1365,7 +1365,7 @@ QDjViewFind::Model::nextHit(bool backwards)
     {
       pending = true;
       doPending();
-      if (working && pending>0 && !workTimer->isActive())
+      if (working && pending && !workTimer->isActive())
         workTimer->start(0);
     }
 }

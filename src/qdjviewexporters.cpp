@@ -22,11 +22,11 @@
 #else
 # define HAVE_STRING_H     1
 # define HAVE_SYS_TYPES_H  1
-# define HAVE_UNISTD_H     1
 # define HAVE_STRERROR     1
 # ifndef WIN32
 #  define HAVE_SYS_WAIT_H  1
 #  define HAVE_WAITPID     1
+#  define HAVE_UNISTD_H     1
 # endif
 #endif
 
@@ -51,6 +51,9 @@
 #if HAVE_TIFF
 # include <tiffio.h>
 # include "tiff2pdf.h"
+#endif
+#ifdef WIN32
+# include <io.h>
 #endif
 
 #include <QApplication>

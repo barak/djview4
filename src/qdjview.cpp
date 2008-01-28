@@ -21,8 +21,10 @@
 # include "config.h"
 #else
 # define HAVE_STRING_H 1
-# define HAVE_UNISTD_H 1
 # define HAVE_STRERROR 1
+# ifndef WIN32
+#  define HAVE_UNISTD_H 1
+# endif
 #endif
 
 #if HAVE_STRING_H

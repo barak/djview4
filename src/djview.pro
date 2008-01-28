@@ -39,7 +39,7 @@ CONFIG(autoconf) {
     PKGCONFIG += ddjvuapi
 } else {
     # for use on other platforms
-    LIBS += -ldjvulibre
+    # LIBS += -ldjvulibre
     # QMAKE_CXXFLAGS +=  ... (c++ flags)
     # QMAKE_CFLAGS += ...    (c flags)
     # QMAKE_LFLAGS += ...    (link flags)
