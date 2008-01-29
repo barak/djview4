@@ -1794,6 +1794,22 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
     QApplication::setWindowIcon(windowIcon());
 #endif
 
+  // Determine unique object name
+  if (mode == STANDALONE) 
+    {
+      int num = 0;
+      QString name;
+      QWidgetList wl = QApplication::topLevelWidgets();
+      while(name.isEmpty()) 
+        {
+          name = QString("%1").arg(num++, 4, 10, QLatin1Char('0'));
+          foreach(QWidget *w, wl)
+            if (w->objectName() == name)
+              name = QString::null;
+        }
+      setObjectName(name);
+    }
+  
   // Basic preferences
   prefs = QDjViewPrefs::instance();
   options = QDjViewPrefs::defaultOptions;
