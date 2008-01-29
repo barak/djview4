@@ -207,8 +207,17 @@ under Windows is still experimental.
 
 * Using Visual C++
 
-  - Try Qt4 program
-       $ qmake -win32
-    to generate a MS Visual C++ project file.
+  - Run 
+       $ qmake -win32 -tp vc
+    from the "src" directory to generate a MS Visual C++ project file.
+    You must then tweak the project file to properly link with
+    the djvulibre library and the tiff library.
+    One good way to do so is to open the file "djvulibre.sln"
+    that comes with the cvs version of djvulibre. Then add the
+    project "djview.vcproj" and insert the property sheets
+    "dirs.vsprops", "warnings.vsprops" and "tools.vsprops".
+    This works well despite requiring a lot of clicks.
+
+    
 
 
