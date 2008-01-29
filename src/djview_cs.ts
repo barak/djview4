@@ -788,7 +788,7 @@
     <message>
         <location filename="qdjview.cpp" line="969"/>
         <source>&lt;html&gt;&lt;b&gt;Zooming.&lt;/b&gt;&lt;br/&gt; Choose a zoom level for viewing the document. Zoom level 100% displays the document for a 100 dpi screen. Zoom levels &lt;tt&gt;Fit Page&lt;/tt&gt; and &lt;tt&gt;Fit Width&lt;/tt&gt; ensure that the full page or the page width fit in the window. &lt;/html&gt;</source>
-        <translation>&lt;htm&gt;&lt;b&gt;Zvětšení.&lt;/b&gt;&lt;br/&gt;Vybere míru zvětšení při prohlížení dokumentu. Hodnota 100 % zobrazí dokument pro 100dpi obrazovku. Hodnoty &lt;tt&gt;Celá stránka&lt;tt&gt; a &lt;tt&gt;Na šířku&lt;/tt&gt; zajistí, že celá stránka nebo celá šířka stránky se vměstná do okna.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Zvětšení.&lt;/b&gt;&lt;br/&gt;Vybere míru zvětšení při prohlížení dokumentu. Hodnota 100 % zobrazí dokument pro 100dpi obrazovku. Hodnoty &lt;tt&gt;Celá stránka&lt;/tt&gt; a &lt;tt&gt;Na šířku&lt;/tt&gt; zajistí, že celá stránka nebo celá šířka stránky se vměstná do okna.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="978"/>
@@ -1845,7 +1845,7 @@ Chcete jej nahradit?</translation>
         <source>&lt;html&gt;&lt;b&gt;Finding text.&lt;/b&gt;&lt;br/&gt; Search hits appear progressively as soon as you type a search string. Typing enter jumps to the next hit. To move to the previous or next hit, you can also use the arrow buttons or the shortcuts &lt;tt&gt;F3&lt;/tt&gt; or &lt;tt&gt;Shift-F3&lt;/tt&gt;. You can also double click a page name. Use the &lt;tt&gt;Options&lt;/tt&gt; menu to search words only or to specify the case sensitivity.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Najít
             text.&lt;/b&gt;&lt;br/&gt;Nalezené řetězce se objevují již
-            v průběhu zadávání hledané fráze. Klávesou Enter se přesunete da
+            v průběhu zadávání hledané fráze. Klávesou Enter se přesunete na
             další místo nálezu. Pro přesun na následující nebo předcházející
             nález použijte tlačítka se šipkou nebo klávesové zkratky
             &lt;tt&gt;F3&lt;/tt&gt; nebo &lt;tt&gt;Shift-F3&lt;/tt&gt;. Taktéž můžete dva krát kliknout na jméno stránky. Nabídka &lt;tt&gt;Možnosti&lt;/tt&gt; umožňuje omezit hledání na celá slova nebo velikost písmen.&lt;/html&gt;</translation>
@@ -2355,7 +2355,7 @@ Chcete jej nahradit?</translation>
         <source>&lt;b&gt;Caches.&lt;/b&gt;&lt;br&gt;The &lt;i&gt;pixel cache&lt;/i&gt; stores image data located outside the visible area. This cache makes panning smoother. The &lt;i&gt;decoded page cache&lt;/i&gt; contains partially decoded pages. It provides faster response times when navigating a multipage document or when returning to a previously viewed page. Clearing this cache might be useful to reflect a change in the page data without restarting the DjVu viewer.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Keše&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Pixelová
             keš&lt;/i&gt; uchovává obrazová data, která se nachází mimo
-            viditelnou oblast. Tato keš umožňuje plynulé pohyn po stránce.
+            viditelnou oblast. Tato keš umožňuje plynulý pohyb po stránce.
             &lt;i&gt;Keš pro dekódované stránky&lt;/i&gt; uchovává částečně
             dekódované stránky. Umožňuje rychlejší reakční dobu při listování
             mezi stránkami nebo při návratu na dříve viděnou stránku.
