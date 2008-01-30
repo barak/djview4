@@ -34,7 +34,6 @@ build-stamp:  config.status
 
 clean:
 	dh_testdir
-	dh_testroot
 	rm -f build-stamp 
 	-$(MAKE) distclean
 	dh_clean 
@@ -43,7 +42,6 @@ plugsubdir=netscape/plugins-libc6
 
 install: build
 	dh_testdir
-	dh_testroot
 	dh_clean -k 
 	dh_installdirs
 	$(MAKE) install \
