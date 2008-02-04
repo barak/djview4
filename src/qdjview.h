@@ -57,6 +57,7 @@ class QLabel;
 class QMenu;
 class QMenuBar;
 class QShortcut;
+class QSettings;
 class QStackedLayout;
 class QStatusBar;
 class QStringList;
@@ -135,6 +136,8 @@ public slots:
   void  saveAs(void);
   void  exportAs(void);
   void  find(QString find = QString());
+  void  saveSession(QSettings *s);
+  void  restoreSession(QSettings *s);
   
 signals:
   void  documentClosed(QDjVuDocument *doc);

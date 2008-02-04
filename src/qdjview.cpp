@@ -76,6 +76,7 @@
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QScrollBar>
+#include <QSettings>
 #include <QShortcut>
 #include <QSlider>
 #include <QStackedLayout>
@@ -1267,6 +1268,58 @@ QDjView::preferencesChanged(void)
   createWhatsThis();
   updateActions();
 }
+
+
+
+// ----------------------------------------
+// SESSION MANAGEMENT
+
+
+void
+QDjView::saveSession(QSettings *s)
+{
+  Saved saved;
+  updateSaved(&saved);
+  s->setValue("options", prefs->optionsToString(saved.options));
+  s->setValue("zoom", saved.zoom);
+  s->setValue("state", saved.state);
+  s->setValue("sidebarTab", saved.sidebarTab);
+  s->setValue("tools", prefs->toolsToString(tools));
+  s->setValue("documentFileName", documentFileName);
+  s->setValue("documentUrl", documentUrl.toString());
+  s->setValue("pageNo", widget->page());
+}
+
+void  
+QDjView::restoreSession(QSettings *s)
+{
+  QString df = s->value("documentFileName").toString();
+  QUrl du = QUrl(s->value("documentUrl").toString());
+  Tools tools = this->tools;
+  Saved saved;
+  updateSaved(&saved);
+  if (s->contains("sidebarTab"))
+    saved.sidebarTab = s->value("sidebarTab").toInt();
+  if (s->contains("options"))
+    saved.options = prefs->stringToOptions(s->value("options").toString());
+  if (s->contains("zoom"))
+    saved.zoom = s->value("zoom").toInt();
+  if (s->contains("state"))
+    saved.state = s->value("state").toByteArray();
+  if (s->contains("tools"))
+    tools = prefs->stringToTools(s->value("tools").toString());
+  applySaved(&saved);
+  updateActionsLater();
+  // open document 
+  if (! df.isEmpty())
+    open(df);
+  else if (du.isValid())
+    open(du);
+  if (document)
+    goToPage(s->value("pageNo", 0).toInt());
+}
+
+
 
 
 // ----------------------------------------

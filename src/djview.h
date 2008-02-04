@@ -27,8 +27,9 @@
 #include <Qt>
 #include <QObject>
 #include <QApplication>
-#include <QPointer>
 #include <QEvent>
+#include <QPointer>
+#include <QString>
 
 #include "qdjvu.h"
 
@@ -45,7 +46,18 @@ class QDjViewApplication : public QApplication
   QDjView *newWindow();
  protected:
   bool event(QEvent *ev);
+#if defined(Q_WS_X11) && defined(Q_OS_UNIX)
+  void saveState(QSessionManager &sm);
+  QString sessionConfigFile();
+#endif
 };
 
 
 #endif
+
+
+/* -------------------------------------------------------------
+   Local Variables:
+   c++-font-lock-extra-types: ( "\\sw+_t" "[A-Z]\\sw*[a-z]\\sw*" )
+   End:
+   ------------------------------------------------------------- */

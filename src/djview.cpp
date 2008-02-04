@@ -44,6 +44,7 @@
 #include <QLocale>
 #include <QRegExp>
 #include <QSettings>
+#include <QSessionManager>
 #include <QString>
 #include <QStringList>
 #include <QTranslator>
@@ -266,6 +267,60 @@ QDjViewApplication::event(QEvent *ev)
     }
   return QApplication::event(ev);
 }
+
+
+#if defined(Q_WS_X11) && defined(Q_OS_UNIX)
+
+QString
+QDjViewApplication::sessionConfigFile()
+{
+  QString path = QDir::homePath();
+  QString sid = sessionId();
+  char *env = getenv("XDG_CONFIG_HOME");
+  if (env == 0) 
+    path += QLatin1String("/.config");
+  else if (env[0] == '/') 
+    path += QLatin1String(env);
+  else
+    path += QLatin1String("/") + QLatin1String(env);
+  path += QString("/" DJVIEW_ORG "/" DJVIEW_APP "__" );
+  return path + sid + QLatin1String(".conf");
+}
+
+void 
+QDjViewApplication::saveState(QSessionManager &sm)
+{
+  QStringList sessions;
+  QSettings *settings = 0;
+  foreach(QWidget *w, topLevelWidgets())
+    {
+      QDjView *djview = qobject_cast<QDjView*>(w);
+      if (djview && !djview->objectName().isEmpty() &&
+          djview->getViewerMode() == QDjView::STANDALONE )
+        {
+          QString name = djview->objectName();
+          sessions << name;
+          if (! settings) 
+            {
+              QString path = sessionConfigFile();
+              QStringList discard;
+              discard << QLatin1String("rm") << path;
+              sm.setDiscardCommand(discard);
+              settings = new QSettings(path, QSettings::NativeFormat, this);
+              settings->remove("");
+            }
+          settings->beginGroup(name);
+          djview->saveSession(settings);
+          settings->endGroup();
+        }
+    }
+  if (settings)
+    settings->setValue("sessions", sessions);
+  if (settings)
+    delete settings;
+}
+
+#endif
 
 
 int 
