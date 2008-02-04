@@ -275,7 +275,6 @@ QString
 QDjViewApplication::sessionConfigFile()
 {
   QString path = QDir::homePath();
-  QString sid = sessionId();
   char *env = getenv("XDG_CONFIG_HOME");
   if (env == 0) 
     path += QLatin1String("/.config");
@@ -284,7 +283,8 @@ QDjViewApplication::sessionConfigFile()
   else
     path += QLatin1String("/") + QLatin1String(env);
   path += QString("/" DJVIEW_ORG "/" DJVIEW_APP "__" );
-  return path + sid + QLatin1String(".conf");
+  path += sessionId() + QLatin1String("_") + sessionKey();
+  return path + QLatin1String(".conf");
 }
 
 void 
@@ -292,6 +292,7 @@ QDjViewApplication::saveState(QSessionManager &sm)
 {
   QStringList sessions;
   QSettings *settings = 0;
+  QString path = sessionConfigFile();
   foreach(QWidget *w, topLevelWidgets())
     {
       QDjView *djview = qobject_cast<QDjView*>(w);
@@ -301,23 +302,21 @@ QDjViewApplication::saveState(QSessionManager &sm)
           QString name = djview->objectName();
           sessions << name;
           if (! settings) 
-            {
-              QString path = sessionConfigFile();
-              QStringList discard;
-              discard << QLatin1String("rm") << path;
-              sm.setDiscardCommand(discard);
-              settings = new QSettings(path, QSettings::NativeFormat, this);
-              settings->remove("");
-            }
+            settings = new QSettings(path, QSettings::NativeFormat, this);
+          settings->remove("");
           settings->beginGroup(name);
           djview->saveSession(settings);
           settings->endGroup();
         }
     }
   if (settings)
-    settings->setValue("sessions", sessions);
-  if (settings)
-    delete settings;
+    {
+      settings->setValue("sessions", sessions);
+      delete settings;
+      QStringList discard;
+      discard << QLatin1String("rm") << path;
+      sm.setDiscardCommand(discard);
+    }
 }
 
 #endif
