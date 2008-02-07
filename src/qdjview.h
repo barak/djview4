@@ -108,7 +108,7 @@ class QDjView : public QMainWindow
   int         pageNum(void);
   QString     pageName(int pageno, bool titleonly=false);
   int         pageNumber(QString name, int from = -1);
-  QDjView    *copyWindow(void);
+  QDjView    *copyWindow(bool openDocument=true);
   bool        saveTextFile(QString text, QString filename=QString());
   bool        saveImageFile(QImage image, QString filename=QString());
   bool        startBrowser(QUrl url);

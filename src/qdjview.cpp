@@ -1280,6 +1280,7 @@ QDjView::saveSession(QSettings *s)
 {
   Saved saved;
   updateSaved(&saved);
+  s->setValue("name", objectName());
   s->setValue("options", prefs->optionsToString(saved.options));
   s->setValue("zoom", saved.zoom);
   s->setValue("state", saved.state);
@@ -1308,6 +1309,8 @@ QDjView::restoreSession(QSettings *s)
     saved.state = s->value("state").toByteArray();
   if (s->contains("tools"))
     tools = prefs->stringToTools(s->value("tools").toString());
+  if (s->contains("name"))
+    setObjectName(s->value("name").toString());
   applySaved(&saved);
   updateActionsLater();
   // open document 
@@ -2597,7 +2600,7 @@ QDjView::pageNumber(QString name, int from)
   contents, zoom and position as the current one. */
 
 QDjView*
-QDjView::copyWindow(void)
+QDjView::copyWindow(bool openDocument)
 {
   // update preferences
   if (viewerMode == STANDALONE)
@@ -2606,7 +2609,6 @@ QDjView::copyWindow(void)
   QDjView *other = new QDjView(djvuContext, STANDALONE);
   QDjVuWidget *otherWidget = other->widget;
   other->setAttribute(Qt::WA_DeleteOnClose);
-  other->setWindowTitle(windowTitle());
   // copy window geometry
   if (! (windowState() & unusualWindowStates))
     {
@@ -2622,7 +2624,7 @@ QDjView::copyWindow(void)
   otherWidget->setRotation( widget->rotation() );
   otherWidget->setZoom( widget->zoom() );
   // copy document
-  if (document)
+  if (document && openDocument)
     {
       other->open(document);
       other->documentFileName = documentFileName;
@@ -3296,7 +3298,7 @@ QDjView::performNew(void)
 {
   if (viewerMode != STANDALONE)
     return;
-  QDjView *other = copyWindow();
+  QDjView *other = copyWindow(false);
   other->show();
 }
 

@@ -150,11 +150,6 @@ addDirectory(QStringList &dirs, QString path)
 QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   : QApplication(argc, argv), context(argv[0])
 {
-  // Application data
-  setOrganizationName(DJVIEW_ORG);
-  setOrganizationDomain(DJVIEW_DOMAIN);
-  setApplicationName(DJVIEW_APP);
-  
   // Translators
   QTranslator *qtTrans = new QTranslator(this);
   QTranslator *djviewTrans = new QTranslator(this);
@@ -269,53 +264,44 @@ QDjViewApplication::event(QEvent *ev)
 }
 
 
-#if defined(Q_WS_X11) && defined(Q_OS_UNIX)
+#ifdef Q_WS_X11
 
-QString
-QDjViewApplication::sessionConfigFile()
+void 
+QDjViewApplication::commitData(QSessionManager &)
 {
-  QString path = QDir::homePath();
-  char *env = getenv("XDG_CONFIG_HOME");
-  if (env == 0) 
-    path += QLatin1String("/.config");
-  else if (env[0] == '/') 
-    path += QLatin1String(env);
-  else
-    path += QLatin1String("/") + QLatin1String(env);
-  path += QString("/" DJVIEW_ORG "/" DJVIEW_APP "__" );
-  path += sessionId() + QLatin1String("_") + sessionKey();
-  return path + QLatin1String(".conf");
 }
+ 
 
 void 
 QDjViewApplication::saveState(QSessionManager &sm)
 {
-  QStringList sessions;
-  QSettings *settings = 0;
-  QString path = sessionConfigFile();
+  int n = 0;
+  QSettings s;
   foreach(QWidget *w, topLevelWidgets())
     {
       QDjView *djview = qobject_cast<QDjView*>(w);
       if (djview && !djview->objectName().isEmpty() &&
           djview->getViewerMode() == QDjView::STANDALONE )
         {
-          QString name = djview->objectName();
-          sessions << name;
-          if (! settings) 
-            settings = new QSettings(path, QSettings::NativeFormat, this);
-          settings->remove("");
-          settings->beginGroup(name);
-          djview->saveSession(settings);
-          settings->endGroup();
+          if (++n == 1)
+            {
+              QString id = sessionId() + QLatin1String("_") + sessionKey();
+              QStringList discard = QStringList(applicationFilePath());
+              discard << QLatin1String("-discard") << id;
+              sm.setDiscardCommand(discard);
+              id = QLatin1String("session_") + id;
+              s.remove(id);
+              s.beginGroup(id);
+            }
+          s.beginGroup(QString::number(n));
+          djview->saveSession(&s);
+          s.endGroup();
         }
     }
-  if (settings)
+  if (n > 0)
     {
-      settings->setValue("sessions", sessions);
-      delete settings;
-      QStringList discard;
-      discard << QLatin1String("rm") << path;
-      sm.setDiscardCommand(discard);
+      s.setValue("windows", n);
+      s.endGroup();
     }
 }
 
@@ -331,6 +317,11 @@ main(int argc, char *argv[])
   ::setlocale(LC_NUMERIC, "C");
 #endif
 
+  // Application data
+  QApplication::setOrganizationName(DJVIEW_ORG);
+  QApplication::setOrganizationDomain(DJVIEW_DOMAIN);
+  QApplication::setApplicationName(DJVIEW_APP);
+  
   // Message verbosity
   qtDefaultHandler = qInstallMsgHandler(qtMessageHandler);
 #ifdef Q_OS_UNIX
@@ -355,12 +346,46 @@ main(int argc, char *argv[])
         return dispatcher.exec();
       }
 #endif
-
-  // Start
+  
+  // Discard session
+#ifdef Q_WS_X11
+  if (argc==3 && !strcmp(argv[1],"-discard"))
+    {
+      QSettings s;
+      s.remove(QLatin1String("session_")+QLatin1String(argv[2]));
+      return 0;
+    }
+#endif
+  
+  // Create application
   QDjViewApplication app(argc, argv);
-  QDjView *main = app.newWindow();
+
+  // Restore session
+#ifdef Q_WS_X11
+  if (app.isSessionRestored())
+    {
+      QSettings s;
+      QString id = app.sessionId() + QLatin1String("_") + app.sessionKey();
+      s.beginGroup(QLatin1String("session_") + id);
+      int windows = s.value("windows").toInt();
+      if (windows > 0)
+        {
+          for (int n=1; n<=windows; n++)
+            {
+              QDjView *w = new QDjView(*app.djvuContext());
+              w->setAttribute(Qt::WA_DeleteOnClose);
+              s.beginGroup(QString::number(n));
+              w->restoreSession(&s);
+              s.endGroup();
+              w->show();
+            }
+          return app.exec();
+        }
+    }
+#endif
   
   // Process command line
+  QDjView *main = app.newWindow();
   while (argc > 1 && argv[1][0] == '-')
     {
       QString arg = QString::fromLocal8Bit(argv[1]).replace(QRegExp("^-+"),"");
@@ -396,7 +421,7 @@ main(int argc, char *argv[])
         }
     }
 
-  // process events
+  // Process events
   main->show();
   return app.exec();
 }

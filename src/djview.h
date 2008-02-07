@@ -46,9 +46,9 @@ class QDjViewApplication : public QApplication
   QDjView *newWindow();
  protected:
   bool event(QEvent *ev);
-#if defined(Q_WS_X11) && defined(Q_OS_UNIX)
+#ifdef Q_WS_X11
+  void commitData(QSessionManager &sm);
   void saveState(QSessionManager &sm);
-  QString sessionConfigFile();
 #endif
 };
 
