@@ -289,6 +289,7 @@ QDjViewApplication::saveState(QSessionManager &sm)
               discard << QLatin1String("-discard") << sessionId();
               sm.setDiscardCommand(discard);
               QString id = QLatin1String("session_") + sessionId();
+              s.sync();
               s.remove(id);
               s.beginGroup(id);
             }
