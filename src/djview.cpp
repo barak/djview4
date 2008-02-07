@@ -285,11 +285,10 @@ QDjViewApplication::saveState(QSessionManager &sm)
         {
           if (++n == 1)
             {
-              QString id = sessionId() + QLatin1String("_") + sessionKey();
               QStringList discard = QStringList(applicationFilePath());
-              discard << QLatin1String("-discard") << id;
+              discard << QLatin1String("-discard") << sessionId();
               sm.setDiscardCommand(discard);
-              id = QLatin1String("session_") + id;
+              QString id = QLatin1String("session_") + sessionId();
               s.remove(id);
               s.beginGroup(id);
             }
@@ -302,6 +301,7 @@ QDjViewApplication::saveState(QSessionManager &sm)
     {
       s.setValue("windows", n);
       s.endGroup();
+      s.sync();
     }
 }
 
@@ -353,6 +353,7 @@ main(int argc, char *argv[])
     {
       QSettings s;
       s.remove(QLatin1String("session_")+QLatin1String(argv[2]));
+      s.sync();
       return 0;
     }
 #endif
@@ -365,8 +366,7 @@ main(int argc, char *argv[])
   if (app.isSessionRestored())
     {
       QSettings s;
-      QString id = app.sessionId() + QLatin1String("_") + app.sessionKey();
-      s.beginGroup(QLatin1String("session_") + id);
+      s.beginGroup(QLatin1String("session_") + app.sessionId());
       int windows = s.value("windows").toInt();
       if (windows > 0)
         {
