@@ -323,7 +323,7 @@ main(int argc, char *argv[])
   QApplication::setOrganizationDomain(DJVIEW_DOMAIN);
   QApplication::setApplicationName(DJVIEW_APP);
   
-  // Message verbosity
+  // Message handler
   qtDefaultHandler = qInstallMsgHandler(qtMessageHandler);
 #ifdef Q_OS_UNIX
   const char *s = ::getenv("DJVIEW_VERBOSE");
@@ -339,13 +339,12 @@ main(int argc, char *argv[])
   
   // Plugin mode
 #ifdef Q_WS_X11
-  for (int i=1; i<argc; i++)
-    if (!strcmp(argv[i],"-netscape") || !strcmp(argv[i],"--netscape"))
-      { // run as plugin
-        verbose = true;
-        QDjViewPlugin dispatcher(argv[0]);
-        return dispatcher.exec();
-      }
+  if (argc==2 && !strcmp(argv[1],"-netscape"))
+    {
+      verbose = true;
+      QDjViewPlugin dispatcher(argv[0]);
+      return dispatcher.exec();
+    }
 #endif
   
   // Discard session
