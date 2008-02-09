@@ -25,3 +25,8 @@ NEW IN VERSION 4.3
 - Undo/Redo
 - New translations (german,czech)
 - Fixed double free bug in plugin mode.
+
+
+NEW SINCE VERSION 4.3
+---------------------
+- Full session management under X11.
