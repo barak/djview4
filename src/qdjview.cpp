@@ -3314,10 +3314,10 @@ QDjView::performOpen(void)
   QDir dir = QFileInfo(documentFileName).absoluteDir();
   if (dir.exists() && !documentFileName.isEmpty())
     dirname = dir.absolutePath();
-  qDebug() << dirname;
-  QString filename = QFileDialog::getOpenFileName(this, caption, dirname, filters);
-  if (! filename.isEmpty())
-    open(filename);
+  QString fname;
+  fname = QFileDialog::getOpenFileName(this, caption, dirname, filters);
+  if (! fname.isEmpty())
+    open(fname);
 }
 
 
