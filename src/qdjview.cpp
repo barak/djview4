@@ -1853,12 +1853,12 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   // Determine unique object name
   if (mode == STANDALONE) 
     {
-      int num = 0;
-      QString name;
       QWidgetList wl = QApplication::topLevelWidgets();
+      static int num = 0;
+      QString name;
       while(name.isEmpty()) 
         {
-          name = QString("%1").arg(num++, 4, 10, QLatin1Char('0'));
+          name = QString("djview%1").arg(num++);
           foreach(QWidget *w, wl)
             if (w->objectName() == name)
               name = QString::null;
