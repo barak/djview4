@@ -136,9 +136,10 @@ public:
   };
 
   struct PageInfo {
-    int width;
-    int height;
-    int dpi;
+    int   width;
+    int   height;
+    int   dpi;
+    QRect selected;
   };
 
   ~QDjVuWidget();

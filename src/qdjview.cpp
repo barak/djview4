@@ -3018,12 +3018,21 @@ QDjView::pointerPosition(const Position &pos, const PageInfo &page)
   // setup page label
   QString p = "";
   QString m = "";
-  if (pos.inPage)
+  if (pos.inPage || !page.selected.isEmpty())
     {
-      p = tr(" P%1 %2x%3 %4dpi ").arg(pos.pageNo+1) 
-             .arg(page.width).arg(page.height).arg(page.dpi);
-      m = tr(" x=%1 y=%2 ").
-             arg(pos.posPage.x()).arg(pos.posPage.y());
+      p = tr(" P%1 %2x%3 %4dpi ")
+        .arg(pos.pageNo+1) 
+        .arg(page.width).arg(page.height).arg(page.dpi);
+      if (page.selected.isEmpty())
+        m = tr(" x=%1 y=%2 ")
+          .arg(pos.posPage.x())
+          .arg(pos.posPage.y());
+      else
+        m = QString(" %3x%4+%1+%2 ")
+          .arg(page.selected.left())
+          .arg(page.selected.top())
+          .arg(page.selected.width())
+          .arg(page.selected.height());
     }
   setPageLabelText(p);
   setMouseLabelText(m);

@@ -1554,12 +1554,15 @@ QDjVuPrivate::updatePosition(const QPoint &point, bool click, bool links)
     updateCurrentPoint(pos);
   if (! changed)
     return;
-  // emit pointerPosition
+  // emit pointerposition signal
   PageInfo info;
   Page *p = pageMap[pos.pageNo];
   info.width = p->width;
   info.height = p->height;
   info.dpi = p->dpi;
+  QRect r = selectedRect.intersected(p->viewRect);
+  if (! r.isEmpty())
+    info.selected = p->mapper.unMapped(r.translated(visibleRect.topLeft()));
   emit widget->pointerPosition(pos, info);
   // check mapareas
   if (links)
