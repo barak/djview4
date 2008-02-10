@@ -2850,6 +2850,10 @@ QDjView::eventFilter(QObject *watched, QEvent *event)
           return false;
         }
       break;
+    case QEvent::StatusTip:
+      if (qobject_cast<QMenu*>(watched))
+        return QApplication::sendEvent(this, event);
+      break;
     default:
       break;
     }
@@ -3203,6 +3207,9 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
                                    "annotation expression for program "
                                    "djvused."));
     }
+  
+  // Make sure that status tips work (hack)
+  menu->installEventFilter(this);
 
   // Execute menu
   QAction *action = menu->exec(pointerPos-QPoint(5,5), copyText);
