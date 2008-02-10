@@ -3179,13 +3179,31 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
   QAction *saveText = menu->addAction(tr("Save text as..."));
   copyText->setEnabled(l>0);
   saveText->setEnabled(l>0);
+  copyText->setStatusTip(tr("Save text into the clipboard."));
+  saveText->setStatusTip(tr("Save text into a file."));
   menu->addSeparator();
   QString copyImageString = tr("Copy image (%1x%2 pixels)").arg(w).arg(h);
   QAction *copyImage = menu->addAction(copyImageString);
   QAction *saveImage = menu->addAction(tr("Save image as..."));
+  copyImage->setStatusTip(tr("Save image into the clipboard."));
+  saveImage->setStatusTip(tr("Save image into a file."));
   menu->addSeparator();
   QAction *zoom = menu->addAction(tr("Zoom to rectangle"));
-  
+  zoom->setStatusTip(tr("Zoom the selection to fit the window."));
+  QAction *copyUrl = 0;
+  QAction *copyMaparea = 0;
+  if (prefs->advancedFeatures)
+    {
+      menu->addSeparator();
+      copyUrl = menu->addAction(tr("Copy URL"));
+      copyUrl->setStatusTip(tr("Save into the clipboard an URL that "
+                               "highlights the selection."));
+      copyMaparea = menu->addAction(tr("Copy Maparea"));
+      copyMaparea->setStatusTip(tr("Save into the clipboard a maparea "
+                                   "annotation expression for program "
+                                   "djvused."));
+    }
+
   // Execute menu
   QAction *action = menu->exec(pointerPos-QPoint(5,5), copyText);
   if (action == zoom)
@@ -3198,6 +3216,39 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
     QApplication::clipboard()->setImage(widget->getImageForRect(rect));
   else if (action == saveImage)
     saveImageFile(widget->getImageForRect(rect));
+  else if (action && action == copyMaparea)
+    {
+      Position pos = widget->position(pointerPos);
+      QRect seg = widget->getSegmentForRect(rect, pos.pageNo);
+      if (! rect.isEmpty())
+        {
+          QString s = QString("(maparea \"url\"\n"
+                              "         \"comment\"\n"
+                              "         (rect %1 %2 %3 %4))")
+                        .arg(seg.left()).arg(seg.top())
+                        .arg(seg.width()).arg(seg.height());
+          QApplication::clipboard()->setText(s);
+        }
+    }
+  else if (action && action == copyUrl)
+    {
+      QUrl url = removeDjVuCgiArguments(documentUrl);
+      Position pos = widget->position(pointerPos);
+      QRect seg = widget->getSegmentForRect(rect, pos.pageNo);
+      if (url.isValid() && pos.pageNo>=0 && pos.pageNo<pageNum())
+        {
+          QList<QPair<QString,QString> > args = url.queryItems();
+          args += qMakePair<QString,QString>("djvuopts", QString::null);
+          args += qMakePair<QString,QString>("page", pageName(pos.pageNo));
+          if (! rect.isEmpty())
+            args += qMakePair(QString("highlight"),
+                              QString("%1,%2,%3,%4")
+                              .arg(seg.left()).arg(seg.top())
+                              .arg(seg.width()).arg(seg.height()) );
+          url.setQueryItems(args);
+          QApplication::clipboard()->setText(url.toString());
+        }
+    }
   
   // Cancel select mode.
   updateActionsLater();
