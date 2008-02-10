@@ -954,8 +954,10 @@ QDjViewPrefsDialog::apply()
   prefs->printerGamma = 0;
   if (d->ui.printerManualCheckBox->isChecked())
     prefs->printerGamma = d->ui.printerGammaSpinBox->value();
+  prefs->advancedFeatures = d->ui.advancedCheckBox->isChecked();
   // broadcast change
   setWindowModified(false);
+  d->ui.applyButton->setEnabled(false);
   prefs->save();
   prefs->update();
 }
@@ -1000,6 +1002,7 @@ QDjViewPrefsDialog::reset()
   d->ui.pageCacheSpinBox->setValue(10);
   d->ui.printerManualCheckBox->setChecked(false);
   d->ui.printerGammaSpinBox->setValue(2.2);
+  d->ui.advancedCheckBox->setChecked(false);
 }
 
 
