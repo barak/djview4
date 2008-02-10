@@ -135,10 +135,12 @@ QDjViewPrefs::QDjViewPrefs(void)
     windowSize(640,400),
     tools(defaultTools),
     gamma(2.2),
+    resolution(100),
     cacheSize(10*1024*1024),
     pixelCacheSize(256*1024),
     lensSize(300),
     lensPower(3),
+    advancedFeatures(false),
     modifiersForLens(Qt::ControlModifier|Qt::ShiftModifier),
     modifiersForSelect(Qt::ControlModifier),
     modifiersForLinks(Qt::ShiftModifier),
@@ -322,6 +324,8 @@ QDjViewPrefs::load()
     tools |= TOOL_BACKFORW;
   if (s.contains("gamma"))
     gamma = s.value("gamma").toDouble();
+  if (s.contains("resolution"))
+    resolution = s.value("resolution").toInt();
   if (s.contains("cacheSize"))
     cacheSize = s.value("cacheSize").toLongLong();
   if (s.contains("pixelCacheSize"))
@@ -334,6 +338,8 @@ QDjViewPrefs::load()
     browserProgram = s.value("browserProgram").toString();
   if (s.contains("proxyUrl"))
     proxyUrl = s.value("proxyUrl").toString();
+  if (s.contains("advancedFeatures"))
+    advancedFeatures = s.value("advancedFeatures").toBool();
   if (s.contains("modifiersForLens"))
     modifiersForLens 
       = stringToModifiers(s.value("modifiersForLens").toString());
@@ -410,12 +416,14 @@ QDjViewPrefs::save(void)
   s.setValue("windowSize", windowSize);
   s.setValue("tools", toolsToString(tools));
   s.setValue("gamma", gamma);
+  s.setValue("resolution", resolution);
   s.setValue("cacheSize", cacheSize);
   s.setValue("pixelCacheSize", pixelCacheSize);
   s.setValue("lensSize", lensSize);
   s.setValue("lensPower", lensPower);
   s.setValue("browserProgram", browserProgram);
   s.setValue("proxyUrl", proxyUrl.toString());
+  s.setValue("advancedFeatures", advancedFeatures);
   s.setValue("modifiersForLens", modifiersToString(modifiersForLens));
   s.setValue("modifiersForSelect", modifiersToString(modifiersForSelect));
   s.setValue("modifiersForLinks", modifiersToString(modifiersForLinks));
@@ -699,7 +707,6 @@ struct QDjViewPrefsDialog::Private
 {
   QDjVuContext          *context;
   Ui::QDjViewPrefsDialog ui;
-  QDjViewGammaWidget    *gammaWidget;
   QDjViewPrefs::Saved    saved[4];
   int                    currentSaved;
 };
@@ -723,31 +730,19 @@ QDjViewPrefsDialog::QDjViewPrefsDialog()
 {
   // sanitize
   d->context = 0;
-  d->gammaWidget = 0;
   d->currentSaved = -1;
   
   // prepare ui
   setAttribute(Qt::WA_GroupLeader, true);
   d->ui.setupUi(this);
   
-  // insert gamma widget
-  d->gammaWidget = new QDjViewGammaWidget(this);
-  d->gammaWidget->setMinimumSize(119,119);
-  d->gammaWidget->setMaximumSize(119,119);
-  QLayout *layout = d->ui.gammaTab->layout();
-  if (qobject_cast<QGridLayout*>(layout))
-    {
-      QGridLayout *gridLayout = (QGridLayout*)layout;
-      int cols = gridLayout->columnCount();
-      d->gammaWidget->setParent(0);
-      gridLayout->addWidget(d->gammaWidget, 0, cols-1, Qt::AlignCenter);
-    }
-  
   // connect buttons (some are connected in the ui file)
   connect(d->ui.applyButton, SIGNAL(clicked()),
           this, SLOT(apply()) );
   connect(d->ui.gammaSlider, SIGNAL(valueChanged(int)),
-          d->gammaWidget, SLOT(setGammaTimesTen(int)) );
+          d->ui.gammaWidget, SLOT(setGammaTimesTen(int)) );
+  connect(d->ui.forceResolutionCheckBox, SIGNAL(toggled(bool)),
+          this, SLOT(forceResolutionChanged()) );
   connect(d->ui.resetButton, SIGNAL(clicked()),
           this, SLOT(reset()) );
   connect(d->ui.cacheClearButton, SIGNAL(clicked()),
@@ -758,28 +753,27 @@ QDjViewPrefsDialog::QDjViewPrefsDialog()
           this, SLOT(zoomComboEdited()) );
 
   // modified
-  connectModified(d->ui.gammaTab);
+  connectModified(d->ui.screenTab);
   connectModified(d->ui.rememberCheckBox);
   connectModified(d->ui.showGroupBox);
   connectModified(d->ui.modeGroupBox);
   connectModified(d->ui.keysTab);
   connectModified(d->ui.lensTab);
-  connectModified(d->ui.pixelCacheSpinBox);
-  connectModified(d->ui.pageCacheSpinBox);
   connectModified(d->ui.networkTab);
+  connectModified(d->ui.advancedTab);
   
   // whatsthis
-  setHelp(d->ui.gammaTab,
+  setHelp(d->ui.screenTab,
           tr("<html><b>Screen gamma correction.</b>"
              "<br>The best color rendition is achieved"
              " by adjusting the gamma correction slider"
              " and choosing the position that makes the"
              " gray square as uniform as possible."
-             "<p><b>Printer color correction.</b>"
-             "<br>The <tt>Automatic color</tt> option"
-             " works best with PostScript printers"
-             " and ICC profiled printers."
-             " The slider might be useful in other cases."
+             "<p><b>Screen resolution.</b>"
+             "<br>This option forces a particular resolution instead"
+             " of using the resolution advertised by the systems."
+             " Forcing the resolution to 100 dpi matches the behavior"
+             " of the djvulibre command line tools."
              "</html>") );
   
   setHelp(d->ui.interfaceTab,
@@ -807,7 +801,7 @@ QDjViewPrefsDialog::QDjViewPrefsDialog()
              " of the magnifying lens."
              "</html>") );
   
-  setHelp(d->ui.cacheTab,
+  setHelp(d->ui.advancedTab,
           tr("<b>Caches.</b>"
              "<br>The <i>pixel cache</i> stores image data"
              " located outside the visible area."
@@ -818,6 +812,12 @@ QDjViewPrefsDialog::QDjViewPrefsDialog()
              " to a previously viewed page. Clearing this cache"
              " might be useful to reflect a change in the page"
              " data without restarting the DjVu viewer."
+
+             "<p><b>Miscellaneous.</b>"
+             "<br>Forcing a manual color correction can be useful"
+             " when using ancient printers."
+             " The advanced features check box enables a small number"
+             " of additional menu entries useful for authoring DjVu files."
              "</html>"));
 
   setHelp(d->ui.networkTab,
@@ -854,11 +854,11 @@ QDjViewPrefsDialog::load(QDjView *djview)
   // load preferences into ui
   QDjViewPrefs *prefs = QDjViewPrefs::instance();
   d->context = &djview->getDjVuContext();
-  // 1- gamma tab
+  // 1- screen tab
   d->ui.gammaSlider->setValue((int)(prefs->gamma * 10));
-  int gamma = (int)(prefs->printerGamma * 10);
-  d->ui.printerAutoCheckBox->setChecked(gamma <= 0);
-  d->ui.printerGammaSlider->setValue(gamma ? qBound(5, gamma, 50) : 22);
+  int res = prefs->resolution;
+  d->ui.forceResolutionCheckBox->setChecked(res > 0);
+  d->ui.resolutionSpinBox->setValue((res>0) ? res : logicalDpiY());
   // 2- interface tab
   d->saved[0] = prefs->forStandalone;
   d->saved[1] = prefs->forFullScreen;
@@ -883,12 +883,7 @@ QDjViewPrefsDialog::load(QDjView *djview)
   d->ui.lensEnableCheckBox->setChecked(lens);
   d->ui.lensPowerSpinBox->setValue(lens ? qBound(2,prefs->lensPower,10) : 3);
   d->ui.lensSizeSpinBox->setValue(lens ? qBound(50,prefs->lensSize,500) : 300);
-  // 5- cache tab
-  qreal k256 = 256 * 1024;
-  qreal k1024 = 1024 * 1024;
-  d->ui.pixelCacheSpinBox->setValue(qRound(prefs->pixelCacheSize / k256));
-  d->ui.pageCacheSpinBox->setValue(qRound(prefs->cacheSize / k1024));
-  // 6- network tab
+  // 5- network tab
   bool proxy = prefs->proxyUrl.isValid();
   if (prefs->proxyUrl.scheme() != "http" ||
       prefs->proxyUrl.host().isEmpty())
@@ -903,8 +898,18 @@ QDjViewPrefsDialog::load(QDjView *djview)
       d->ui.proxyPasswordLineEdit->setText(url.password());
     }
   d->ui.proxyCheckBox->setChecked(proxy);
+  // 6- advanced tab
+  qreal k256 = 256 * 1024;
+  qreal k1024 = 1024 * 1024;
+  d->ui.pixelCacheSpinBox->setValue(qRound(prefs->pixelCacheSize / k256));
+  d->ui.pageCacheSpinBox->setValue(qRound(prefs->cacheSize / k1024));
+  double pgamma = prefs->printerGamma;
+  d->ui.printerManualCheckBox->setChecked(pgamma > 0);
+  d->ui.printerGammaSpinBox->setValue((pgamma > 0) ? pgamma : 2.2);
+  d->ui.advancedCheckBox->setChecked(prefs->advancedFeatures);
   // no longer modified
   setWindowModified(false);
+  d->ui.applyButton->setEnabled(false);
 }
 
 
@@ -913,12 +918,11 @@ QDjViewPrefsDialog::apply()
 {
   // save ui into preferences
   QDjViewPrefs *prefs = QDjViewPrefs::instance();
-  // 1- gamma tab
+  // 1- screen tab
   prefs->gamma = d->ui.gammaSlider->value() / 10.0;
-  if (d->ui.printerAutoCheckBox->isChecked())
-    prefs->printerGamma = 0;
-  else
-    prefs->printerGamma = d->ui.printerGammaSlider->value() / 10.0;
+  prefs->resolution = 0;
+  if (d->ui.forceResolutionCheckBox->isChecked())
+    prefs->resolution = d->ui.resolutionSpinBox->value();
   // 2- interface tab
   int n = d->ui.modeComboBox->currentIndex();
   modeComboChanged(n);
@@ -934,10 +938,7 @@ QDjViewPrefsDialog::apply()
   bool lens = d->ui.lensEnableCheckBox->isChecked();
   prefs->lensPower = (lens) ? d->ui.lensPowerSpinBox->value() : 0;
   prefs->lensSize = d->ui.lensSizeSpinBox->value();
-  // 5- cache tab
-  prefs->pixelCacheSize = d->ui.pixelCacheSpinBox->value() * 256 * 1024;
-  prefs->cacheSize = d->ui.pageCacheSpinBox->value() * 1024 * 1024;
-  // 6- network tab
+  // 5- network tab
   prefs->proxyUrl = QUrl();
   if (d->ui.proxyCheckBox->isChecked())
     {
@@ -947,7 +948,12 @@ QDjViewPrefsDialog::apply()
       prefs->proxyUrl.setUserName(d->ui.proxyUserLineEdit->text());
       prefs->proxyUrl.setPassword(d->ui.proxyPasswordLineEdit->text());
     }
-
+  // 6- advanced tab
+  prefs->pixelCacheSize = d->ui.pixelCacheSpinBox->value() * 256 * 1024;
+  prefs->cacheSize = d->ui.pageCacheSpinBox->value() * 1024 * 1024;
+  prefs->printerGamma = 0;
+  if (d->ui.printerManualCheckBox->isChecked())
+    prefs->printerGamma = d->ui.printerGammaSpinBox->value();
   // broadcast change
   setWindowModified(false);
   prefs->save();
@@ -960,8 +966,8 @@ QDjViewPrefsDialog::reset()
 {
   // 1- gamma tab
   d->ui.gammaSlider->setValue(22);
-  d->ui.printerGammaSlider->setValue(22);
-  d->ui.printerAutoCheckBox->setChecked(true);
+  d->ui.forceResolutionCheckBox->setChecked(true);
+  d->ui.resolutionSpinBox->setValue(100);
   // 2- interface tab
   QDjViewPrefs::Saved defsaved;
   QDjViewPrefs::Options optMSS = (QDjViewPrefs::SHOW_MENUBAR|
@@ -987,17 +993,20 @@ QDjViewPrefsDialog::reset()
   d->ui.lensEnableCheckBox->setChecked(true);
   d->ui.lensPowerSpinBox->setValue(3);
   d->ui.lensSizeSpinBox->setValue(300);
-  // 5- cache tab
+  // 5- network tab
+  d->ui.proxyCheckBox->setChecked(false);
+  // 6- advanced tab
   d->ui.pixelCacheSpinBox->setValue(1);
   d->ui.pageCacheSpinBox->setValue(10);
-  // 6- network tab
-  d->ui.proxyCheckBox->setChecked(false);
+  d->ui.printerManualCheckBox->setChecked(false);
+  d->ui.printerGammaSpinBox->setValue(2.2);
 }
 
 
 void
 QDjViewPrefsDialog::setModified()
 {
+  d->ui.applyButton->setEnabled(true);
   setWindowModified(true);
 }
 
@@ -1115,6 +1124,15 @@ QDjViewPrefsDialog::zoomComboEdited()
   else if (okay && zoom >= QDjVuWidget::ZOOM_MIN 
            && zoom <= QDjVuWidget::ZOOM_MAX)
     d->ui.zoomCombo->setEditText(QString("%1%").arg(zoom));
+}
+
+
+
+void 
+QDjViewPrefsDialog::forceResolutionChanged()
+{
+  if (! d->ui.forceResolutionCheckBox->isChecked())
+    d->ui.resolutionSpinBox->setValue(logicalDpiY());
 }
 
 

@@ -1730,6 +1730,8 @@ QDjView::parseArgument(QString key, QString value)
   else if (key == "find") // new for djview4
     {
       pendingFind = value;
+      if (! value.isEmpty())
+        performPendingLater();
     }
   else if (key == "src" && viewerMode != STANDALONE)
     {
@@ -3018,21 +3020,21 @@ QDjView::pointerPosition(const Position &pos, const PageInfo &page)
   // setup page label
   QString p = "";
   QString m = "";
-  if (pos.inPage || !page.selected.isEmpty())
+  if (pos.inPage || !page.segment.isEmpty())
     {
       p = tr(" P%1 %2x%3 %4dpi ")
         .arg(pos.pageNo+1) 
         .arg(page.width).arg(page.height).arg(page.dpi);
-      if (page.selected.isEmpty())
+      if (page.segment.isEmpty())
         m = tr(" x=%1 y=%2 ")
           .arg(pos.posPage.x())
           .arg(pos.posPage.y());
       else
         m = QString(" %3x%4+%1+%2 ")
-          .arg(page.selected.left())
-          .arg(page.selected.top())
-          .arg(page.selected.width())
-          .arg(page.selected.height());
+          .arg(page.segment.left())
+          .arg(page.segment.top())
+          .arg(page.segment.width())
+          .arg(page.segment.height());
     }
   setPageLabelText(p);
   setMouseLabelText(m);

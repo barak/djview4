@@ -136,10 +136,11 @@ public:
   };
 
   struct PageInfo {
+    int   pageno;
+    int   dpi;
     int   width;
     int   height;
-    int   dpi;
-    QRect selected;
+    QRect segment;
   };
 
   ~QDjVuWidget();
@@ -218,6 +219,7 @@ public:
   QString linkComment(void);
   QString getTextForRect(const QRect &rect);
   QImage  getImageForRect(const QRect &rect);
+  QRect   getSegmentForRect(const QRect &rect, int pageNo);
   bool pageSizeKnown(int pageno) const;
   void clearHighlights(int pageno);
   void addHighlight(int pageno, int x, int y, int w, int h, QColor color);

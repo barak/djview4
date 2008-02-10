@@ -1557,12 +1557,11 @@ QDjVuPrivate::updatePosition(const QPoint &point, bool click, bool links)
   // emit pointerposition signal
   PageInfo info;
   Page *p = pageMap[pos.pageNo];
+  info.pageno = pos.pageNo;
   info.width = p->width;
   info.height = p->height;
   info.dpi = p->dpi;
-  QRect r = selectedRect.intersected(p->viewRect);
-  if (! r.isEmpty())
-    info.selected = p->mapper.unMapped(r.translated(visibleRect.topLeft()));
+  info.segment = widget->getSegmentForRect(selectedRect, info.pageno);
   emit widget->pointerPosition(pos, info);
   // check mapareas
   if (links)
@@ -3393,6 +3392,27 @@ QDjVuWidget::getImageForRect(const QRect &rect)
 }
 
 
+/*! Returns a page coordinate rectangle describing
+    the part of page \a pageNo that is covered by 
+    rectangle \a rect. */
+
+QRect   
+QDjVuWidget::getSegmentForRect(const QRect &rect, int pageNo)
+{
+  QRect ans;
+  if (priv->pageMap.contains(pageNo))
+    {
+      Page *p = priv->pageMap[pageNo];
+      const QRect &v = priv->visibleRect;
+      QRect d = rect.translated(v.topLeft()).intersected(p->rect);
+      if (p->dpi && !d.isEmpty())
+        ans = p->mapper.unMapped(d.intersected(p->rect));
+    }
+  return ans;
+}
+
+
+
 /*! Indicate whether the page size if known */
 
 bool
@@ -4832,11 +4852,13 @@ QDjVuWidget::readPrev(void)
 
 
 /*! \class QDjVuWidget::PageInfo
-  \brief Defines the geometry of a DjVu page. 
-
-  Variables \a width and \a height give the image size
-  in pixels. Variable \a dpi gives the image resolution.
-  All these variables are null when the page geometry
+  \brief Additional information for pointerPosition signal.
+  Variable \a pageno is the page number.
+  Variables \a width and \a height give the page size
+  in pixels. Variable \a dpi gives the page resolution.
+  Variable \a segment gives the page coordinates of 
+  the page segment covered by the selected rectangle 
+  All these variables are null when the page geometry 
   is still unknown.
 */
   

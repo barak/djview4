@@ -1,271 +1,251 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QDjViewPrefsDialog</class>
  <widget class="QDialog" name="QDjViewPrefsDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
-    <height>341</height>
+    <width>472</width>
+    <height>368</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Dialog</string>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item>
     <widget class="QTabWidget" name="tabWidget" >
-     <widget class="QWidget" name="gammaTab" >
+     <property name="currentIndex" >
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="screenTab" >
       <attribute name="title" >
-       <string>&amp;Gamma</string>
+       <string>&amp;Screen</string>
       </attribute>
-      <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item row="2" column="1" >
-        <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
+      <layout class="QVBoxLayout" >
+       <item>
+        <widget class="QGroupBox" name="gammaGroupBox" >
+         <property name="title" >
+          <string>Gamma</string>
          </property>
-         <property name="spacing" >
-          <number>6</number>
-         </property>
-         <item>
-          <spacer>
-           <property name="orientation" >
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" >
-            <size>
-             <width>8</width>
-             <height>5</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="printerAutoCheckBox" >
-           <property name="text" >
-            <string>Automatic colors</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer>
-           <property name="orientation" >
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" >
-            <size>
-             <width>2</width>
-             <height>5</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item row="1" column="0" colspan="2" >
-        <widget class="QFrame" name="horizLine" >
-         <property name="frameShape" >
-          <enum>QFrame::HLine</enum>
-         </property>
-         <property name="frameShadow" >
-          <enum>QFrame::Sunken</enum>
-         </property>
+         <layout class="QHBoxLayout" >
+          <item>
+           <layout class="QVBoxLayout" >
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <property name="leftMargin" >
+             <number>0</number>
+            </property>
+            <property name="topMargin" >
+             <number>0</number>
+            </property>
+            <property name="rightMargin" >
+             <number>0</number>
+            </property>
+            <property name="bottomMargin" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label11" >
+              <property name="text" >
+               <string>&lt;html>Screen color correction.&lt;br>Adjust slider until gray shades look similar.&lt;/html></string>
+              </property>
+              <property name="textFormat" >
+               <enum>Qt::RichText</enum>
+              </property>
+              <property name="alignment" >
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="wordWrap" >
+               <bool>true</bool>
+              </property>
+              <property name="buddy" >
+               <cstring>gammaSlider</cstring>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSlider" name="gammaSlider" >
+              <property name="minimum" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <number>50</number>
+              </property>
+              <property name="value" >
+               <number>22</number>
+              </property>
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="tickPosition" >
+               <enum>QSlider::TicksBelow</enum>
+              </property>
+              <property name="tickInterval" >
+               <number>5</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" >
+              <property name="spacing" >
+               <number>6</number>
+              </property>
+              <property name="leftMargin" >
+               <number>0</number>
+              </property>
+              <property name="topMargin" >
+               <number>0</number>
+              </property>
+              <property name="rightMargin" >
+               <number>0</number>
+              </property>
+              <property name="bottomMargin" >
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label14" >
+                <property name="text" >
+                 <string>Darker</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer>
+                <property name="orientation" >
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" >
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLabel" name="label15" >
+                <property name="text" >
+                 <string>Lighter</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <item>
+             <spacer>
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" >
+               <size>
+                <width>5</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QDjViewGammaWidget" name="gammaWidget" >
+              <property name="minimumSize" >
+               <size>
+                <width>119</width>
+                <height>119</height>
+               </size>
+              </property>
+              <property name="maximumSize" >
+               <size>
+                <width>119</width>
+                <height>119</height>
+               </size>
+              </property>
+              <property name="frameShape" >
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow" >
+               <enum>QFrame::Raised</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer>
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" >
+               <size>
+                <width>5</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
         </widget>
        </item>
-       <item row="2" column="0" >
-        <layout class="QVBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
+       <item>
+        <widget class="QGroupBox" name="resolutionGroupBox" >
+         <property name="enabled" >
+          <bool>false</bool>
          </property>
-         <property name="spacing" >
-          <number>6</number>
+         <property name="title" >
+          <string>Resolution</string>
          </property>
-         <item>
-          <widget class="QLabel" name="label12" >
-           <property name="text" >
-            <string>&lt;html>Printer color correction.&lt;/html></string>
-           </property>
-           <property name="textFormat" >
-            <enum>Qt::RichText</enum>
-           </property>
-           <property name="alignment" >
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="wordWrap" >
-            <bool>false</bool>
-           </property>
-           <property name="buddy" >
-            <cstring>printerGammaSlider</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSlider" name="printerGammaSlider" >
-           <property name="minimum" >
-            <number>5</number>
-           </property>
-           <property name="maximum" >
-            <number>50</number>
-           </property>
-           <property name="value" >
-            <number>22</number>
-           </property>
-           <property name="sliderPosition" >
-            <number>22</number>
-           </property>
-           <property name="orientation" >
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="tickPosition" >
-            <enum>QSlider::TicksBelow</enum>
-           </property>
-           <property name="tickInterval" >
-            <number>5</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" >
-           <property name="margin" >
-            <number>0</number>
-           </property>
-           <property name="spacing" >
-            <number>6</number>
-           </property>
-           <item>
-            <widget class="QLabel" name="label13" >
-             <property name="text" >
-              <string>Darker</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer>
-             <property name="orientation" >
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" >
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QLabel" name="label16" >
-             <property name="text" >
-              <string>Lighter</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </item>
-       <item row="0" column="0" >
-        <layout class="QVBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
-         </property>
-         <property name="spacing" >
-          <number>6</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="label11" >
-           <property name="text" >
-            <string>&lt;html>Screen color correction.&lt;br>Adjust slider until gray shades look similar.&lt;/html></string>
-           </property>
-           <property name="textFormat" >
-            <enum>Qt::RichText</enum>
-           </property>
-           <property name="alignment" >
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="wordWrap" >
-            <bool>true</bool>
-           </property>
-           <property name="buddy" >
-            <cstring>gammaSlider</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSlider" name="gammaSlider" >
-           <property name="minimum" >
-            <number>5</number>
-           </property>
-           <property name="maximum" >
-            <number>50</number>
-           </property>
-           <property name="value" >
-            <number>22</number>
-           </property>
-           <property name="orientation" >
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="tickPosition" >
-            <enum>QSlider::TicksBelow</enum>
-           </property>
-           <property name="tickInterval" >
-            <number>5</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" >
-           <property name="margin" >
-            <number>0</number>
-           </property>
-           <property name="spacing" >
-            <number>6</number>
-           </property>
-           <item>
-            <widget class="QLabel" name="label14" >
-             <property name="text" >
-              <string>Darker</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer>
-             <property name="orientation" >
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" >
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QLabel" name="label15" >
-             <property name="text" >
-              <string>Lighter</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
+         <layout class="QHBoxLayout" >
+          <item>
+           <widget class="QCheckBox" name="forceResolutionCheckBox" >
+            <property name="text" >
+             <string>Force screen &amp;resolution</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType" >
+             <enum>QSizePolicy::Maximum</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="resolutionSpinBox" >
+            <property name="alignment" >
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="suffix" >
+             <string> dpi</string>
+            </property>
+            <property name="minimum" >
+             <number>50</number>
+            </property>
+            <property name="maximum" >
+             <number>300</number>
+            </property>
+            <property name="value" >
+             <number>100</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -274,19 +254,37 @@
        <string>&amp;Interface</string>
       </attribute>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
        <property name="spacing" >
         <number>6</number>
        </property>
+       <property name="leftMargin" >
+        <number>9</number>
+       </property>
+       <property name="topMargin" >
+        <number>9</number>
+       </property>
+       <property name="rightMargin" >
+        <number>9</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>9</number>
+       </property>
        <item>
         <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
-         </property>
          <property name="spacing" >
           <number>6</number>
+         </property>
+         <property name="leftMargin" >
+          <number>0</number>
+         </property>
+         <property name="topMargin" >
+          <number>0</number>
+         </property>
+         <property name="rightMargin" >
+          <number>0</number>
+         </property>
+         <property name="bottomMargin" >
+          <number>0</number>
          </property>
          <item>
           <widget class="QLabel" name="label21" >
@@ -346,11 +344,20 @@
        </item>
        <item>
         <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
-         </property>
          <property name="spacing" >
           <number>6</number>
+         </property>
+         <property name="leftMargin" >
+          <number>0</number>
+         </property>
+         <property name="topMargin" >
+          <number>0</number>
+         </property>
+         <property name="rightMargin" >
+          <number>0</number>
+         </property>
+         <property name="bottomMargin" >
+          <number>0</number>
          </property>
          <item>
           <widget class="QGroupBox" name="showGroupBox" >
@@ -358,11 +365,20 @@
             <string>Show</string>
            </property>
            <layout class="QVBoxLayout" >
-            <property name="margin" >
-             <number>9</number>
-            </property>
             <property name="spacing" >
              <number>6</number>
+            </property>
+            <property name="leftMargin" >
+             <number>9</number>
+            </property>
+            <property name="topMargin" >
+             <number>9</number>
+            </property>
+            <property name="rightMargin" >
+             <number>9</number>
+            </property>
+            <property name="bottomMargin" >
+             <number>9</number>
             </property>
             <item>
              <widget class="QCheckBox" name="menuBarCheckBox" >
@@ -408,18 +424,39 @@
             <string>Display</string>
            </property>
            <layout class="QVBoxLayout" >
-            <property name="margin" >
-             <number>9</number>
-            </property>
             <property name="spacing" >
              <number>6</number>
             </property>
+            <property name="leftMargin" >
+             <number>9</number>
+            </property>
+            <property name="topMargin" >
+             <number>9</number>
+            </property>
+            <property name="rightMargin" >
+             <number>9</number>
+            </property>
+            <property name="bottomMargin" >
+             <number>9</number>
+            </property>
             <item>
              <layout class="QGridLayout" >
-              <property name="margin" >
+              <property name="leftMargin" >
                <number>0</number>
               </property>
-              <property name="spacing" >
+              <property name="topMargin" >
+               <number>0</number>
+              </property>
+              <property name="rightMargin" >
+               <number>0</number>
+              </property>
+              <property name="bottomMargin" >
+               <number>0</number>
+              </property>
+              <property name="horizontalSpacing" >
+               <number>6</number>
+              </property>
+              <property name="verticalSpacing" >
                <number>6</number>
               </property>
               <item row="0" column="0" >
@@ -507,11 +544,20 @@
        <string>&amp;Keys</string>
       </attribute>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
        <property name="spacing" >
         <number>6</number>
+       </property>
+       <property name="leftMargin" >
+        <number>9</number>
+       </property>
+       <property name="topMargin" >
+        <number>9</number>
+       </property>
+       <property name="rightMargin" >
+        <number>9</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>9</number>
        </property>
        <item>
         <widget class="QGroupBox" name="keysGroupBox" >
@@ -519,10 +565,22 @@
           <string>Keys</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
+          <property name="leftMargin" >
            <number>9</number>
           </property>
-          <property name="spacing" >
+          <property name="topMargin" >
+           <number>9</number>
+          </property>
+          <property name="rightMargin" >
+           <number>9</number>
+          </property>
+          <property name="bottomMargin" >
+           <number>9</number>
+          </property>
+          <property name="horizontalSpacing" >
+           <number>9</number>
+          </property>
+          <property name="verticalSpacing" >
            <number>9</number>
           </property>
           <item row="2" column="0" >
@@ -599,11 +657,20 @@
        <string>&amp;Lens</string>
       </attribute>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
        <property name="spacing" >
         <number>6</number>
+       </property>
+       <property name="leftMargin" >
+        <number>9</number>
+       </property>
+       <property name="topMargin" >
+        <number>9</number>
+       </property>
+       <property name="rightMargin" >
+        <number>9</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>9</number>
        </property>
        <item>
         <widget class="QCheckBox" name="lensEnableCheckBox" >
@@ -621,10 +688,22 @@
           <string>Lens options</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
+          <property name="leftMargin" >
            <number>9</number>
           </property>
-          <property name="spacing" >
+          <property name="topMargin" >
+           <number>9</number>
+          </property>
+          <property name="rightMargin" >
+           <number>9</number>
+          </property>
+          <property name="bottomMargin" >
+           <number>9</number>
+          </property>
+          <property name="horizontalSpacing" >
+           <number>6</number>
+          </property>
+          <property name="verticalSpacing" >
            <number>6</number>
           </property>
           <item row="1" column="0" >
@@ -652,11 +731,11 @@
             <property name="suffix" >
              <string>x</string>
             </property>
-            <property name="maximum" >
-             <number>10</number>
-            </property>
             <property name="minimum" >
              <number>2</number>
+            </property>
+            <property name="maximum" >
+             <number>10</number>
             </property>
             <property name="value" >
              <number>3</number>
@@ -668,11 +747,11 @@
             <property name="suffix" >
              <string> pixels</string>
             </property>
-            <property name="maximum" >
-             <number>500</number>
-            </property>
             <property name="minimum" >
              <number>50</number>
+            </property>
+            <property name="maximum" >
+             <number>500</number>
             </property>
             <property name="singleStep" >
              <number>50</number>
@@ -700,137 +779,58 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="cacheTab" >
-      <attribute name="title" >
-       <string>&amp;Cache</string>
-      </attribute>
-      <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item>
-        <widget class="QGroupBox" name="cacheGroupBox" >
-         <property name="title" >
-          <string>Cache</string>
-         </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="1" column="2" >
-           <widget class="QPushButton" name="cacheClearButton" >
-            <property name="text" >
-             <string>&amp;Clear</string>
-            </property>
-            <property name="autoDefault" >
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" >
-           <widget class="QSpinBox" name="pageCacheSpinBox" >
-            <property name="suffix" >
-             <string> Mbytes</string>
-            </property>
-            <property name="maximum" >
-             <number>32</number>
-            </property>
-            <property name="value" >
-             <number>10</number>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" >
-           <widget class="QSpinBox" name="pixelCacheSpinBox" >
-            <property name="suffix" >
-             <string> Mbytes</string>
-            </property>
-            <property name="maximum" >
-             <number>6</number>
-            </property>
-            <property name="singleStep" >
-             <number>1</number>
-            </property>
-            <property name="value" >
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="label52" >
-            <property name="text" >
-             <string>&amp;Decoded page cache: </string>
-            </property>
-            <property name="buddy" >
-             <cstring>pageCacheSpinBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="label51" >
-            <property name="text" >
-             <string>&amp;Pixel cache: </string>
-            </property>
-            <property name="buddy" >
-             <cstring>pixelCacheSpinBox</cstring>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>20</width>
-           <height>5</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="networkTab" >
       <attribute name="title" >
        <string>&amp;Network</string>
       </attribute>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
        <property name="spacing" >
         <number>6</number>
+       </property>
+       <property name="leftMargin" >
+        <number>9</number>
+       </property>
+       <property name="topMargin" >
+        <number>9</number>
+       </property>
+       <property name="rightMargin" >
+        <number>9</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>9</number>
        </property>
        <item>
         <widget class="QCheckBox" name="proxyCheckBox" >
          <property name="text" >
           <string>Use pro&amp;xy to access the network</string>
          </property>
-         <property name="checked" >
-          <bool>true</bool>
-         </property>
         </widget>
        </item>
        <item>
         <widget class="QGroupBox" name="proxyGroupBox" >
+         <property name="enabled" >
+          <bool>false</bool>
+         </property>
          <property name="title" >
           <string>Proxy settings</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
+          <property name="leftMargin" >
            <number>9</number>
           </property>
-          <property name="spacing" >
+          <property name="topMargin" >
+           <number>9</number>
+          </property>
+          <property name="rightMargin" >
+           <number>9</number>
+          </property>
+          <property name="bottomMargin" >
+           <number>9</number>
+          </property>
+          <property name="horizontalSpacing" >
+           <number>6</number>
+          </property>
+          <property name="verticalSpacing" >
            <number>6</number>
           </property>
           <item row="3" column="0" >
@@ -914,15 +914,188 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="advancedTab" >
+      <attribute name="title" >
+       <string>&amp;Advanced</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <item>
+        <widget class="QGroupBox" name="cacheGroupBox" >
+         <property name="title" >
+          <string>Cache</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="leftMargin" >
+           <number>9</number>
+          </property>
+          <property name="topMargin" >
+           <number>9</number>
+          </property>
+          <property name="rightMargin" >
+           <number>9</number>
+          </property>
+          <property name="bottomMargin" >
+           <number>9</number>
+          </property>
+          <property name="horizontalSpacing" >
+           <number>6</number>
+          </property>
+          <property name="verticalSpacing" >
+           <number>6</number>
+          </property>
+          <item row="1" column="2" >
+           <widget class="QPushButton" name="cacheClearButton" >
+            <property name="text" >
+             <string>&amp;Clear</string>
+            </property>
+            <property name="autoDefault" >
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" >
+           <widget class="QSpinBox" name="pageCacheSpinBox" >
+            <property name="suffix" >
+             <string> Mbytes</string>
+            </property>
+            <property name="maximum" >
+             <number>32</number>
+            </property>
+            <property name="value" >
+             <number>10</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QSpinBox" name="pixelCacheSpinBox" >
+            <property name="suffix" >
+             <string> Mbytes</string>
+            </property>
+            <property name="maximum" >
+             <number>6</number>
+            </property>
+            <property name="singleStep" >
+             <number>1</number>
+            </property>
+            <property name="value" >
+             <number>1</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="label52" >
+            <property name="text" >
+             <string>&amp;Decoded page cache: </string>
+            </property>
+            <property name="buddy" >
+             <cstring>pageCacheSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="label51" >
+            <property name="text" >
+             <string>&amp;Pixel cache: </string>
+            </property>
+            <property name="buddy" >
+             <cstring>pixelCacheSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="miscGroupBox" >
+         <property name="title" >
+          <string>Miscellaneous</string>
+         </property>
+         <layout class="QVBoxLayout" >
+          <item>
+           <layout class="QHBoxLayout" >
+            <item>
+             <widget class="QCheckBox" name="printerManualCheckBox" >
+              <property name="text" >
+               <string>Manual printer color correction</string>
+              </property>
+              <property name="checked" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="printerGammaSpinBox" >
+              <property name="enabled" >
+               <bool>false</bool>
+              </property>
+              <property name="alignment" >
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="prefix" >
+               <string>gamma=</string>
+              </property>
+              <property name="decimals" >
+               <number>1</number>
+              </property>
+              <property name="minimum" >
+               <double>0.500000000000000</double>
+              </property>
+              <property name="maximum" >
+               <double>5.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+              <property name="value" >
+               <double>2.200000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="advancedCheckBox" >
+            <property name="text" >
+             <string>Enable advanced features in menus</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>5</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
      <property name="spacing" >
       <number>6</number>
+     </property>
+     <property name="leftMargin" >
+      <number>0</number>
+     </property>
+     <property name="topMargin" >
+      <number>0</number>
+     </property>
+     <property name="rightMargin" >
+      <number>0</number>
+     </property>
+     <property name="bottomMargin" >
+      <number>0</number>
      </property>
      <item>
       <widget class="QPushButton" name="resetButton" >
@@ -949,6 +1122,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="applyButton" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
        <property name="text" >
         <string>&amp;Apply</string>
        </property>
@@ -972,25 +1148,29 @@
    </item>
   </layout>
  </widget>
- <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
    <class>QDjViewModifiersComboBox</class>
    <extends>QComboBox</extends>
    <header>qdjviewprefs.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>QDjViewGammaWidget</class>
+   <extends>QFrame</extends>
+   <header>qdjviewprefs.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>gammaSlider</tabstop>
-  <tabstop>printerGammaSlider</tabstop>
-  <tabstop>printerAutoCheckBox</tabstop>
   <tabstop>tabWidget</tabstop>
+  <tabstop>gammaSlider</tabstop>
+  <tabstop>forceResolutionCheckBox</tabstop>
+  <tabstop>resolutionSpinBox</tabstop>
   <tabstop>modeComboBox</tabstop>
   <tabstop>rememberCheckBox</tabstop>
   <tabstop>menuBarCheckBox</tabstop>
   <tabstop>toolBarCheckBox</tabstop>
+  <tabstop>scrollBarsCheckBox</tabstop>
   <tabstop>statusBarCheckBox</tabstop>
   <tabstop>sideBarCheckBox</tabstop>
   <tabstop>zoomCombo</tabstop>
@@ -1000,21 +1180,24 @@
   <tabstop>keysForLensCombo</tabstop>
   <tabstop>keysForSelectCombo</tabstop>
   <tabstop>keysForLinksCombo</tabstop>
-  <tabstop>lensEnableCheckBox</tabstop>
   <tabstop>lensPowerSpinBox</tabstop>
   <tabstop>lensSizeSpinBox</tabstop>
-  <tabstop>pixelCacheSpinBox</tabstop>
-  <tabstop>pageCacheSpinBox</tabstop>
-  <tabstop>cacheClearButton</tabstop>
   <tabstop>proxyCheckBox</tabstop>
   <tabstop>proxyHostLineEdit</tabstop>
   <tabstop>proxyPortSpinBox</tabstop>
   <tabstop>proxyUserLineEdit</tabstop>
   <tabstop>proxyPasswordLineEdit</tabstop>
+  <tabstop>pixelCacheSpinBox</tabstop>
+  <tabstop>pageCacheSpinBox</tabstop>
+  <tabstop>cacheClearButton</tabstop>
+  <tabstop>printerManualCheckBox</tabstop>
+  <tabstop>printerGammaSpinBox</tabstop>
+  <tabstop>advancedCheckBox</tabstop>
   <tabstop>resetButton</tabstop>
   <tabstop>applyButton</tabstop>
   <tabstop>okButton</tabstop>
   <tabstop>cancelButton</tabstop>
+  <tabstop>lensEnableCheckBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -1025,8 +1208,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>356</x>
-     <y>310</y>
+     <x>380</x>
+     <y>356</y>
     </hint>
     <hint type="destinationlabel" >
      <x>96</x>
@@ -1041,8 +1224,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>449</x>
-     <y>310</y>
+     <x>461</x>
+     <y>356</y>
     </hint>
     <hint type="destinationlabel" >
      <x>179</x>
@@ -1061,24 +1244,8 @@
      <y>66</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>110</x>
-     <y>66</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>printerAutoCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>printerGammaSlider</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>348</x>
-     <y>239</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>258</x>
-     <y>239</y>
+     <x>130</x>
+     <y>141</y>
     </hint>
    </hints>
   </connection>
@@ -1093,8 +1260,8 @@
      <y>63</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>92</x>
-     <y>66</y>
+     <x>101</x>
+     <y>104</y>
     </hint>
    </hints>
   </connection>
@@ -1105,12 +1272,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>76</x>
-     <y>87</y>
+     <x>96</x>
+     <y>105</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>96</x>
-     <y>121</y>
+     <x>117</x>
+     <y>169</y>
     </hint>
    </hints>
   </connection>
@@ -1121,12 +1288,44 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>185</x>
-     <y>88</y>
+     <x>119</x>
+     <y>105</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>204</x>
-     <y>120</y>
+     <x>248</x>
+     <y>169</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>printerManualCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>printerGammaSpinBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>190</x>
+     <y>200</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>308</x>
+     <y>202</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>forceResolutionCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>resolutionSpinBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>178</x>
+     <y>264</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>294</x>
+     <y>268</y>
     </hint>
    </hints>
   </connection>

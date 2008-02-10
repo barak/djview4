@@ -221,12 +221,12 @@ protected:
   Tools          tools;
   Tools          toolsCached;
   // dialogs
-  QPointer<QDjViewErrorDialog> errorDialog;
-  QPointer<QDjViewInfoDialog>  infoDialog;
-  QPointer<QDjViewMetaDialog>  metaDialog;
-  QPointer<QDjViewSaveDialog>  saveDialog;
-  QPointer<QDjViewExportDialog>  exportDialog;
-  QPointer<QDjViewPrintDialog> printDialog;
+  QPointer<QDjViewErrorDialog>  errorDialog;
+  QPointer<QDjViewInfoDialog>   infoDialog;
+  QPointer<QDjViewMetaDialog>   metaDialog;
+  QPointer<QDjViewSaveDialog>   saveDialog;
+  QPointer<QDjViewExportDialog> exportDialog;
+  QPointer<QDjViewPrintDialog>  printDialog;
   // widgets
   QLabel             *splash;
   QDjVuWidget        *widget;

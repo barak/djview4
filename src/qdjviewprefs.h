@@ -141,12 +141,14 @@ public:
   // Preferences set via the preference dialog.
   Tools      tools;             //!< Toolbar composition.
   double     gamma;             //!< Gamma value of the target screen.
+  int        resolution;        //!< Forced screen resolution or zero.
   qlonglong  cacheSize;         //!< Size of the decoded page cache.
   int        pixelCacheSize;    //!< Size of the pixel cache.
   int        lensSize;          //!< Size of the magnification lens.
   int        lensPower;         //!< Power of the magnification lens.
   QString    browserProgram;    //!< Preferred web browser.
   QUrl       proxyUrl;          //!< Proxy information.
+  bool       advancedFeatures;  //!< Advanced features
   Qt::KeyboardModifiers modifiersForLens;   //!< Keys for the lens. 
   Qt::KeyboardModifiers modifiersForSelect; //!< Keys for selecting.
   Qt::KeyboardModifiers modifiersForLinks;  //!< Keys for showing the links.
@@ -216,6 +218,7 @@ protected slots:
   void modeComboChanged(int);
   void zoomComboEdited();
   void setModified();
+  void forceResolutionChanged();
 private:
   QDjViewPrefsDialog();
   void connectModified(QWidget *w);
