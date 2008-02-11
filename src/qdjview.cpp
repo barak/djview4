@@ -664,7 +664,7 @@ QDjView::createActions()
     << tr("Save into the clipboard the djvused code for the outline.")
     << Trigger(this, SLOT(performCopyOutline()));
   
-  actionCopyAnnotation = makeAction(tr("Copy &Annotation", "Edit|"))
+  actionCopyAnnotation = makeAction(tr("Copy &Annotations", "Edit|"))
     << tr("Save into the clipboard the djvused code for the page annotations.")
     << Trigger(this, SLOT(performCopyAnnotation()));
 
