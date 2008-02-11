@@ -205,12 +205,12 @@ protected slots:
   void performSelect(bool);
   void performViewFullScreen(bool);
   void performEscape();
-  void performUndo();
-  void performRedo();
   void addRecent(QUrl);
   void fillRecent();
   void openRecent();
   void clearRecent();
+  void performUndo();
+  void performRedo();
   void saveUndoData();
   void performCopyUrl();
   void performCopyOutline();
