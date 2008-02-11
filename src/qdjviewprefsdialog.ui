@@ -16,7 +16,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>0</number>
+      <number>5</number>
      </property>
      <widget class="QWidget" name="screenTab" >
       <attribute name="title" >
@@ -1017,9 +1017,6 @@
              <widget class="QCheckBox" name="printerManualCheckBox" >
               <property name="text" >
                <string>Manual printer color correction</string>
-              </property>
-              <property name="checked" >
-               <bool>true</bool>
               </property>
              </widget>
             </item>
