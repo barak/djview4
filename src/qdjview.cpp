@@ -656,6 +656,18 @@ QDjView::createActions()
     << Trigger(widget, SLOT(setSideBySide(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
 
+  actionCopyUrl = makeAction(tr("Copy &URL", "Edit|"))
+    << tr("Save into the clipboard the URL for the current page.")
+    << Trigger(this, SLOT(performCopyUrl()));
+  
+  actionCopyOutline = makeAction(tr("Copy &Outline", "Edit|"))
+    << tr("Save into the clipboard the djvused code for the outline.")
+    << Trigger(this, SLOT(performCopyOutline()));
+  
+  actionCopyAnnotation = makeAction(tr("Copy &Annotation", "Edit|"))
+    << tr("Save into the clipboard the djvused code for the page annotations.")
+    << Trigger(this, SLOT(performCopyAnnotation()));
+
   actionAbout->setMenuRole(QAction::AboutRole);
   actionQuit->setMenuRole(QAction::QuitRole);
   actionPreferences->setMenuRole(QAction::PreferencesRole);
@@ -696,9 +708,14 @@ QDjView::createMenus()
     }
   QMenu *editMenu = menuBar->addMenu(tr("&Edit", "Edit|"));
   editMenu->addAction(actionSelect);
+  editMenu->addSeparator();
   editMenu->addAction(actionFind);
   editMenu->addAction(actionFindNext);
   editMenu->addAction(actionFindPrev);
+  editMenu->addSeparator();
+  editMenu->addAction(actionCopyUrl);
+  editMenu->addAction(actionCopyOutline);
+  editMenu->addAction(actionCopyAnnotation);
   QMenu *viewMenu = menuBar->addMenu(tr("&View", "View|"));
   QMenu *zoomMenu = viewMenu->addMenu(tr("&Zoom","View|Zoom"));
   zoomMenu->addAction(actionZoomIn);
@@ -903,6 +920,11 @@ QDjView::updateActions()
   undoTimer->start(250);
   actionBack->setEnabled(undoList.size() > 0);
   actionForw->setEnabled(redoList.size() > 0);
+
+  // Advanced
+  actionCopyUrl->setVisible(prefs->advancedFeatures);
+  actionCopyOutline->setVisible(prefs->advancedFeatures);
+  actionCopyAnnotation->setVisible(prefs->advancedFeatures);
   
   // Disable almost everything when document==0
   if (! document)
@@ -2152,7 +2174,7 @@ QDjView::open(QUrl url)
       return false;
     }
   open(doc, url);
-  addRecent(url);
+  addRecent(docurl);
   setWindowTitle(tr("Djview - %1[*]").arg(getShortFileName()));
   return true;
 }
@@ -3696,6 +3718,101 @@ QDjView::performRedo()
       target.apply(this);
       here.clear();
       undoList.prepend(saved);
+    }
+}
+
+
+void 
+QDjView::performCopyUrl()
+{
+  QUrl url = removeDjVuCgiArguments(documentUrl);
+  int pageNo = widget->page();
+  if (url.isValid() && pageNo>=0 && pageNo<pageNum())
+    {
+      QList<QPair<QString,QString> > args = url.queryItems();
+      args += qMakePair<QString,QString>("djvuopts", QString::null);
+      args += qMakePair<QString,QString>("page", pageName(pageNo));
+      url.setQueryItems(args);
+      QApplication::clipboard()->setText(url.toString());
+    }
+}
+
+
+static QString *qstring_puts_str = 0;
+
+static int 
+qstring_puts(const char *s)
+{
+  if (qstring_puts_str)
+    (*qstring_puts_str) += QString::fromUtf8(s);
+  return strlen(s);
+}
+
+static QString
+miniexp_to_string(miniexp_t expr, int width=72)
+{
+  QString answer;
+  qstring_puts_str = &answer;
+  int (*saved_puts)(const char*) = minilisp_puts;
+  minilisp_puts = qstring_puts;
+  miniexp_pprint(expr, width);
+  minilisp_puts = saved_puts;
+  return answer;
+}
+
+
+void 
+QDjView::performCopyOutline()
+{
+  if (document)
+    {
+      QString s;
+      miniexp_t expr = document->getDocumentOutline();
+      if (expr == miniexp_nil || expr == miniexp_dummy)
+        s += QString("# This is an outline template.\n"
+                     "# Edit it and store it with command:\n");
+      else
+        s += QString("# This is the existing outline.\n"
+                     "# Edit it and store it with command:\n");
+      s += QString("#   djvused foo.djvu"
+                   " -e 'set-outline outline.txt' -s\n\n");
+      if (expr != miniexp_nil)      
+        s += miniexp_to_string(expr);
+      else
+        s += QString("(bookmarks\n"
+                     "  (\"section title\" \"#pagename\"\n"
+                     "     (\"subsection title\" \"#pagename\") )\n"
+                     "  (\"section title\" \"#pagename\") )\n");
+      // copy to clipboard
+      QApplication::clipboard()->setText(s);
+    }
+}
+
+
+void 
+QDjView::performCopyAnnotation()
+{
+  int pageNo = widget->page();
+  if (document && pageNo>=0 && pageNo<pageNum())
+    {
+      QString s;
+      miniexp_t expr = document->getPageAnnotations(pageNo);
+      if (expr == miniexp_nil || expr == miniexp_dummy)
+        s += QString("# No anntation for page %1.\n"
+                     "# You can store annotations with command:\n");
+      else
+        s += QString("# This is the annotation for page %1.\n"
+                     "# Edit it and store it with command:\n");
+      s += QString("#   djvused foo.djvu"
+                   " -e 'select %2; set-ant annotations.txt' -s\n\n");
+      s = s.arg(pageNo+1).arg(pageNo+1);
+      while (miniexp_consp(expr))
+        {
+          s += miniexp_to_string(miniexp_car(expr));
+          expr = miniexp_cdr(expr);
+        }
+      // copy to clipboard
+      QApplication::clipboard()->setText(s);
     }
 }
 

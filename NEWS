@@ -31,4 +31,4 @@ NEW SINCE VERSION 4.3
 ---------------------
 - Full session management under X11.
 - Added advanced feature check box.
-- Added copy url and copy maparea feature.
+- Added advanced command to copy urls, outline, etc.

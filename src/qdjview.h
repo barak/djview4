@@ -212,6 +212,11 @@ protected slots:
   void openRecent();
   void clearRecent();
   void saveUndoData();
+
+  void performCopyUrl();
+  void performCopyOutline();
+  void performCopyAnnotation();
+
 protected:
   // mode
   const ViewerMode   viewerMode;
@@ -319,6 +324,9 @@ protected:
   QAction *actionLayoutContinuous;
   QAction *actionLayoutSideBySide;
   QShortcut *shortcutEscape;
+  QAction *actionCopyUrl;
+  QAction *actionCopyOutline;
+  QAction *actionCopyAnnotation;
   // permission
   bool printingAllowed;
   bool savingAllowed;
