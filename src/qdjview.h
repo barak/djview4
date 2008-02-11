@@ -212,7 +212,6 @@ protected slots:
   void openRecent();
   void clearRecent();
   void saveUndoData();
-
   void performCopyUrl();
   void performCopyOutline();
   void performCopyAnnotation();
