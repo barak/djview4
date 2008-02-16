@@ -3738,26 +3738,29 @@ QDjView::performCopyUrl()
 }
 
 
-static QString *qstring_puts_str = 0;
+static QByteArray *qstring_puts_data = 0;
 
 static int 
 qstring_puts(const char *s)
 {
-  if (qstring_puts_str)
-    (*qstring_puts_str) += QString::fromUtf8(s);
+  if (qstring_puts_data)
+    (*qstring_puts_data) += s;
   return strlen(s);
 }
 
 static QString
-miniexp_to_string(miniexp_t expr, int width=72)
+miniexp_to_string(miniexp_t expr, int width=40, bool octal=false)
 {
-  QString answer;
-  qstring_puts_str = &answer;
+  QByteArray buffer;
+  qstring_puts_data = &buffer;
   int (*saved_puts)(const char*) = minilisp_puts;
+  int saved_print_7bits = minilisp_print_7bits;
   minilisp_puts = qstring_puts;
+  minilisp_print_7bits = (octal) ? 1 : 0;
   miniexp_pprint(expr, width);
+  minilisp_print_7bits = saved_print_7bits;
   minilisp_puts = saved_puts;
-  return answer;
+  return QString::fromUtf8(buffer.data());
 }
 
 
