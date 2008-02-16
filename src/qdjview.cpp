@@ -3769,13 +3769,15 @@ QDjView::performCopyOutline()
       QString s;
       miniexp_t expr = document->getDocumentOutline();
       if (expr == miniexp_nil || expr == miniexp_dummy)
-        s += QString("# This is an outline template.\n"
-                     "# Edit it and store it with command:\n");
+        s += QString("# This is an outline template.\n");
       else
-        s += QString("# This is the existing outline.\n"
-                     "# Edit it and store it with command:\n");
-      s += QString("#   djvused foo.djvu"
-                   " -e 'set-outline outline.txt' -s\n\n");
+        s += QString("# This is the existing outline.\n");
+          
+      s += QString("# Edit it and store it with command:\n"
+                   "#   $ djvused foo.djvu -f thisfile -s\n"
+                   "# The following line is the djvused command\n"
+                   "# to set the outline and the rest is the outline\n"
+                   "set-outline\n\n");
       if (expr != miniexp_nil)      
         s += miniexp_to_string(expr);
       else
@@ -3798,13 +3800,15 @@ QDjView::performCopyAnnotation()
       QString s;
       miniexp_t expr = document->getPageAnnotations(pageNo);
       if (expr == miniexp_nil || expr == miniexp_dummy)
-        s += QString("# No anntation for page %1.\n"
-                     "# You can store annotations with command:\n");
+        s += QString("# There were no annotations for page %1.\n");
       else
-        s += QString("# This is the annotation for page %1.\n"
-                     "# Edit it and store it with command:\n");
-      s += QString("#   djvused foo.djvu"
-                   " -e 'select %2; set-ant annotations.txt' -s\n\n");
+        s += QString("# These are the annotation for page %1.\n");
+      s += QString("# Edit this file and store it with command:\n"
+                   "#   $ djvused foo.djvu -f thisfile -s\n"
+                   "# Tip: select an area in djview4 and use 'copy maparea'.\n"
+                   "# The following line is the djvused command to set\n"
+                   "# the annotation and the rest are the annotations\n"
+                   "select %2; set-ant\n\n");
       s = s.arg(pageNo+1).arg(pageNo+1);
       while (miniexp_consp(expr))
         {
