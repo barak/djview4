@@ -1269,79 +1269,79 @@ Soubor „%1“ nemá žádnou příponu.</translation>
         <location filename="qdjview.cpp" line="659"/>
         <source>Copy &amp;URL</source>
         <comment>Edit|</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kopírovat &amp;URL</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="661"/>
         <source>Save into the clipboard the URL for the current page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uloží do schránky URL aktuální stránky.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="663"/>
         <source>Copy &amp;Outline</source>
         <comment>Edit|</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kopírovat &amp;osnovu</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="665"/>
         <source>Save into the clipboard the djvused code for the outline.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uloží do schránky djvused kód s osnovou.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="667"/>
         <source>Copy &amp;Annotations</source>
         <comment>Edit|</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kopírovat po&amp;známky</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="669"/>
         <source>Save into the clipboard the djvused code for the page annotations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uloží do schránky dvjused kód s poznámkami na této stánce.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3209"/>
         <source>Save text into the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uloží text do schránky.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3210"/>
         <source>Save text into a file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uloží text do souboru.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3215"/>
         <source>Save image into the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uloží obrázek do schránky.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3216"/>
         <source>Save image into a file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uloží obrázek do souboru.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3219"/>
         <source>Zoom the selection to fit the window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvětší vybranou oblast tak, aby vyplnila okno.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3225"/>
         <source>Copy URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopírovat URL</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3227"/>
         <source>Save into the clipboard an URL that highlights the selection.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uloží do schránky URL, které se nachází ve výběru.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3228"/>
         <source>Copy Maparea</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopírovat maparea</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3231"/>
         <source>Save into the clipboard a maparea annotation expression for program djvused.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uloží do schránky maparea výraz pro program djvused.</translation>
     </message>
 </context>
 <context>
@@ -2430,15 +2430,21 @@ Chcete jej nahradit?</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="821"/>
-        <source>&lt;b&gt;Caches.&lt;/b&gt;&lt;br&gt;The &lt;i&gt;pixel cache&lt;/i&gt; stores image data located outside the visible area. This cache makes panning smoother. The &lt;i&gt;decoded page cache&lt;/i&gt; contains partially decoded pages. It provides faster response times when navigating a multipage document or when returning to a previously viewed page. Clearing this cache might be useful to reflect a change in the page data without restarting the DjVu viewer.&lt;p&gt;&lt;b&gt;Miscellaneous.&lt;/b&gt;&lt;br&gt;Forcing a manual color correction can be useful when using ancient printers. The advanced features check box enables a small number of additional menu entries useful for authoring DjVu files.&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;b&gt;Keše&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Pixelová
+        <source>&lt;html&gt;&lt;b&gt;Caches.&lt;/b&gt;&lt;br&gt;The &lt;i&gt;pixel cache&lt;/i&gt; stores image data located outside the visible area. This cache makes panning smoother. The &lt;i&gt;decoded page cache&lt;/i&gt; contains partially decoded pages. It provides faster response times when navigating a multipage document or when returning to a previously viewed page. Clearing this cache might be useful to reflect a change in the page data without restarting the DjVu viewer.&lt;p&gt;&lt;b&gt;Miscellaneous.&lt;/b&gt;&lt;br&gt;Forcing a manual color correction can be useful when using ancient printers. The advanced features check box enables a small number of additional menu entries useful for authoring DjVu files.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;html&gt;&lt;b&gt;Vyrovnávací
+            paměti&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Pixelová
             keš&lt;/i&gt; uchovává obrazová data, která se nachází mimo
             viditelnou oblast. Tato keš umožňuje plynulý pohyb po stránce.
             &lt;i&gt;Keš pro dekódované stránky&lt;/i&gt; uchovává částečně
-            dekódované stránky. Umožňuje rychlejší reakční dobu při listování
+            dekódované stránky. Umožňuje kratší reakční dobu při listování
             mezi stránkami nebo při návratu na dříve viděnou stránku.
             Potřebujete-li znovu načíst změněné stránky, můžete místo nového
-            spouštění DjVu prohlížeče vyprázdnit tuto keš.&lt;/html&gt;</translation>
+            spouštění DjVu prohlížeče vyprázdnit tuto
+            keš..&lt;p&gt;&lt;b&gt;Různé&lt;/b&gt;&lt;br&gt;Vynucení ruční
+            opravy barev může být užitečné, používáte-li staré tiskárny.
+            Přepínač pokročilých možností zpřístupňuje malé množství dalších
+            položek v nabídkách, které jsou nápomocné při dotváření souborů
+            DjVu.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="830"/>
@@ -2454,7 +2460,7 @@ Chcete jej nahradit?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="29"/>
         <source>Gamma</source>
-        <translation type="unfinished">&amp;Gama</translation>
+        <translation>Gama</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="62"/>
@@ -2669,7 +2675,7 @@ Chcete jej nahradit?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="972"/>
         <source> Mbytes</source>
-        <translation> megabajtů</translation>
+        <translation type="obsolete"> megabajtů</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="988"/>
@@ -2739,52 +2745,64 @@ Chcete jej nahradit?</translation>
     <message>
         <location filename="qdjviewprefs.cpp" line="777"/>
         <source>&lt;html&gt;&lt;b&gt;Screen gamma correction.&lt;/b&gt;&lt;br&gt;The best color rendition is achieved by adjusting the gamma correction slider and choosing the position that makes the gray square as uniform as possible.&lt;p&gt;&lt;b&gt;Screen resolution.&lt;/b&gt;&lt;br&gt;This option forces a particular resolution instead of using the unreliable resolution advertised by the operating system. Forcing the resolution to 100 dpi matches the behavior of the djvulibre command line tools.&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;b&gt;Gama oprava
+            obrazovky&lt;/b&gt;&lt;br&gt;Nejlepšího podání barev se dosáhne
+            posunutím jezdce opravy gamy do pozice, kdy si jsou šedivé čtverce
+            co nejpodobnější.&lt;p&gt;&lt;b&gt;Rozlišení
+            obrazovky&lt;/b&gt;&lt;br&gt;Tato volba vnutí dané rozlišení místo
+        nespolehlivé hodnoty, kterou hlásí operační systém.
+        Nastavení rozlišení na 100 dpi je shodné s hodnotami, které používají
+        nástroje pro příkazovou řádku z balíku djvulibre.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="23"/>
         <source>&amp;Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Obrazovka</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="199"/>
         <source>Resolution</source>
-        <translation type="unfinished">Rozlišení</translation>
+        <translation>Rozlišení</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="205"/>
         <source>Force screen &amp;resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Vnutit &amp;rozlišení obrazovky</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="234"/>
         <source> dpi</source>
-        <translation type="unfinished"> dpi</translation>
+        <translation> dpi</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="919"/>
         <source>&amp;Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pokročilé</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1011"/>
         <source>Miscellaneous</source>
-        <translation type="unfinished"></translation>
+        <translation>Různé</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1019"/>
         <source>Manual printer color correction</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruční oprava barev tiskárny</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1032"/>
         <source>gamma=</source>
-        <translation type="unfinished"></translation>
+        <translation>gama = </translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1056"/>
         <source>Enable advanced features in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapnout pokročilé možnosti v nabídkách</translation>
+    </message>
+    <message>
+        <location filename="qdjviewprefsdialog.ui" line="972"/>
+        <source> MB</source>
+        <translation type="unfinished"> MB</translation>
     </message>
 </context>
 <context>

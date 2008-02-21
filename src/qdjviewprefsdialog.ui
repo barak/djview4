@@ -16,7 +16,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>0</number>
+      <number>5</number>
      </property>
      <widget class="QWidget" name="screenTab" >
       <attribute name="title" >
@@ -956,7 +956,7 @@
           <item row="1" column="1" >
            <widget class="QSpinBox" name="pageCacheSpinBox" >
             <property name="suffix" >
-             <string> Mbytes</string>
+             <string> MB</string>
             </property>
             <property name="maximum" >
              <number>32</number>
@@ -969,7 +969,7 @@
           <item row="0" column="1" >
            <widget class="QSpinBox" name="pixelCacheSpinBox" >
             <property name="suffix" >
-             <string> Mbytes</string>
+             <string> MB</string>
             </property>
             <property name="maximum" >
              <number>6</number>

@@ -802,7 +802,7 @@ QDjViewPrefsDialog::QDjViewPrefsDialog()
              "</html>") );
   
   setHelp(d->ui.advancedTab,
-          tr("<b>Caches.</b>"
+          tr("<html><b>Caches.</b>"
              "<br>The <i>pixel cache</i> stores image data"
              " located outside the visible area."
              " This cache makes panning smoother."
