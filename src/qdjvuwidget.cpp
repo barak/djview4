@@ -2095,7 +2095,7 @@ QDjVuWidget::zoomFactor(void) const
     return 100;
   Page *p = priv->pageMap[priv->currentPos.pageNo];
   if (p->dpi>0 && p->width>0)
-    return ( p->rect.width() * p->dpi * 100 ) / ( p->width * priv->sdpi ); 
+    return (p->rect.width() * p->dpi * 100) / (p->width * priv->sdpi); 
   return 100;
 }
 
@@ -3076,8 +3076,8 @@ MapArea::paintPermanent(QPaintDevice *w, QRectMapper &m,
           int flags = Qt::AlignCenter|Qt::AlignVCenter|Qt::TextWordWrap;
           QFont font = paint.font();
           // estimate font size
-          int size = (int)(z / 10.0);
-            while (size > 1)
+          int size = (int)(z * 0.12);
+          while (size > 1)
             {
               QRect br;
               font.setPixelSize(size);
@@ -3623,7 +3623,7 @@ QDjVuPrivate::paintMapAreas(QImage &img, Page *p, const QRect &r, bool perm)
         {
           if (perm) 
             {
-              double z = p->rect.width() * p->dpi * sdpi / (p->width * 100);
+              double z = (p->rect.width() * p->dpi * 100.0) / (p->width * sdpi);
               area.paintPermanent(&img, p->mapper, r.topLeft(), z);
               changed = true;
             }
