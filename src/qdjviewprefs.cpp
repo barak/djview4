@@ -770,8 +770,8 @@ QDjViewPrefsDialog::QDjViewPrefsDialog()
              " and choosing the position that makes the"
              " gray square as uniform as possible."
              "<p><b>Screen resolution.</b>"
-             "<br>This option forces a particular resolution instead"
-             " of using the resolution advertised by the systems."
+             "<br>This option forces a particular resolution instead of using"
+             " the unreliable resolution advertised by the operating system."
              " Forcing the resolution to 100 dpi matches the behavior"
              " of the djvulibre command line tools."
              "</html>") );
@@ -1135,7 +1135,7 @@ void
 QDjViewPrefsDialog::forceResolutionChanged()
 {
   if (! d->ui.forceResolutionCheckBox->isChecked())
-    d->ui.resolutionSpinBox->setValue(logicalDpiY());
+    d->ui.resolutionSpinBox->setValue(physicalDpiY());
 }
 
 

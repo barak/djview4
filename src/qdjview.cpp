@@ -1258,6 +1258,7 @@ QDjView::applyPreferences(void)
   widget->setModifiersForSelect(prefs->modifiersForSelect);
   widget->setModifiersForLinks(prefs->modifiersForLinks);
   widget->setGamma(prefs->gamma);
+  widget->setScreenDpi(prefs->resolution ? prefs->resolution : physicalDpiY());
   widget->setLensSize(prefs->lensSize);
   widget->setLensPower(prefs->lensPower);
 

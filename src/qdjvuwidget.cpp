@@ -702,6 +702,7 @@ public:
   int         pixelCacheSize;   // size of pixel cache
   QRect       selectedRect;     // selection rectangle (viewport coord)
   double          gamma;        // display gamma
+  int             sdpi;         // screen dpi
   ddjvu_format_t *renderFormat; // ddjvu format
   QList<Cache>    pixelCache;   // pixel cache
   // gui
@@ -849,6 +850,7 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   pageRequestTimer->setSingleShot(true);
   // render format
   gamma = 2.2;
+  sdpi = 100;
 #if DDJVUAPI_VERSION < 18
   unsigned int masks[3] = { 0xff0000, 0xff00, 0xff };
   renderFormat = ddjvu_format_create(DDJVU_FORMAT_RGBMASK32, 3, masks);
@@ -1008,7 +1010,7 @@ QDjVuPrivate::makeLayout()
               if (p->dpi <= 0)
                 size = unknownSize;   // unknown size
               else if (layoutChange & CHANGE_SCALE_PASS2)
-                size = scale_size(p->width, p->height, 100, p->dpi, r);
+                size = scale_size(p->width, p->height, sdpi, p->dpi, r);
               else if (zoom == ZOOM_ONE2ONE) 
                 size = scale_size(p->width, p->height, p->dpi, p->dpi, r);
               else if (zoom == ZOOM_STRETCH) 
@@ -1016,16 +1018,16 @@ QDjVuPrivate::makeLayout()
               else if (zoom == ZOOM_FITWIDTH) {
                 int pgw = (r&1) ? p->height : p->width;
                 size = scale_size(p->width, p->height, vpw, pgw, r);
-                zoomFactor = vpw * p->dpi / pgw;
+                zoomFactor = (vpw * p->dpi * 100) / (pgw * sdpi);
               } else if (zoom == ZOOM_FITPAGE) {
                 int pgw = (r&1) ? p->height : p->width;
                 int pgh = (r&1) ? p->width : p->height;
                 if (vpw*pgh > vph*pgw) 
                   { vpw = vph; pgw = pgh; }
                 size = scale_size(p->width, p->height, vpw, pgw, r);
-                zoomFactor = vpw * p->dpi / pgw;
+                zoomFactor = (vpw * p->dpi * 100) / (pgw * sdpi);
               } else
-                size = scale_size(p->width, p->height, zoom, p->dpi, r);
+                size = scale_size(p->width, p->height, zoom * sdpi, 100 * p->dpi, r);
               p->rect.setSize(size);
             }
         }
@@ -1158,7 +1160,7 @@ QDjVuPrivate::makeLayout()
             vw = vw - separatorSize;
           vw = qMax(64, vw);
           vh = qMax(64, vh);
-          // compute target size for 100 dpi.
+          // compute target size for zoom 100%
           int dw = deskRect.width() - 2*borderSize;
           int dh = deskRect.height() + 2*borderSize;
           if (sideBySide && pageLayout.size()>1)
@@ -1169,14 +1171,14 @@ QDjVuPrivate::makeLayout()
           if (zoom == ZOOM_FITPAGE && vw*dh > vh*dw) 
             { vw = vh; dw = dh; }
           zoomFactor = vw * 100 / dw;
-           // apply zoom
+          // apply zoom
           int r = rotation;
           foreach(p, pageLayout)
             {
               QSize size = unknownSize;
               int dpi = p->dpi;
               if (p->dpi>0 && p->width>0 && p->height>0)
-                size = scale_size(p->width, p->height, vw*100, dw*dpi, r);
+                size = scale_size(p->width, p->height, vw * sdpi, dw * dpi, r);
               p->rect.setSize(size);
             }
           // prepare further adjustments
@@ -1303,7 +1305,7 @@ QDjVuPrivate::makeLayout()
           widget->viewport()->update();
           checkCurrentMapArea();
           emit widget->layoutChanged();
-      }
+        }
       // otherwise try scrolling
       else if (layoutChange & UPDATE_PAGES)
         {
@@ -1811,8 +1813,8 @@ QDjVuWidget::QDjVuWidget(QDjVuDocument *doc, QWidget *parent)
 
 
 /*! Return one of the last error messages.
-    Argument \a n indicates which message should be returned. 
-    Value 0 corresponds to the most recent message. 
+  Argument \a n indicates which message should be returned. 
+  Value 0 corresponds to the most recent message. 
 */
 
 QString 
@@ -1824,9 +1826,9 @@ QDjVuWidget::pastErrorMessage(int n)
 }
 
 /*! Return one of the last informational messages.
-    Argument \a n indicates which message should be returned. 
-    Value 0 corresponds to the most recent message.
- */
+  Argument \a n indicates which message should be returned. 
+  Value 0 corresponds to the most recent message.
+*/
 
 QString 
 QDjVuWidget::pastInfoMessage(int n)
@@ -1930,7 +1932,7 @@ QDjVuWidget::setDocument(QDjVuDocument *d)
   When setting the property, the desired page number
   goes near the topleft corner of the display area.
   Default: page 0.
- */
+*/
 
 int 
 QDjVuWidget::page(void) const
@@ -2093,7 +2095,7 @@ QDjVuWidget::zoomFactor(void) const
     return 100;
   Page *p = priv->pageMap[priv->currentPos.pageNo];
   if (p->dpi>0 && p->width>0)
-    return p->rect.width() * p->dpi / p->width; 
+    return ( p->rect.width() * p->dpi * 100 ) / ( p->width * priv->sdpi ); 
   return 100;
 }
 
@@ -2114,6 +2116,28 @@ QDjVuWidget::setGamma(double gamma)
   ddjvu_format_set_gamma(priv->renderFormat, gamma);
   priv->pixelCache.clear();
   priv->changeLayout(UPDATE_ALL);
+}
+
+
+/*! \property QDjVuWidget::screenDpi
+  Resolution of the screen.
+  Default is 100dpi. */
+
+int
+QDjVuWidget::screenDpi(void) const
+{
+  return priv->sdpi;
+}
+
+void
+QDjVuWidget::setScreenDpi(int sdpi)
+{
+  sdpi = qBound(25, sdpi, 600);
+  if (priv->sdpi != sdpi)
+    {
+      priv->sdpi = sdpi;
+      priv->changeLayout(CHANGE_SCALE|UPDATE_ALL);
+    }
 }
 
 
@@ -2999,7 +3023,7 @@ MapArea::paintBorder(QPaintDevice *w, QRectMapper &m, QPoint offset)
 
 void 
 MapArea::paintPermanent(QPaintDevice *w, QRectMapper &m, 
-                        QPoint offset, double zoom)
+                        QPoint offset, double z)
 {
   // The mapper <m> maps page coordinates to 
   // widget coordinates translated by <offset>.
@@ -3052,11 +3076,11 @@ MapArea::paintPermanent(QPaintDevice *w, QRectMapper &m,
           int flags = Qt::AlignCenter|Qt::AlignVCenter|Qt::TextWordWrap;
           QFont font = paint.font();
           // estimate font size
-          int size = (int)(zoom / 10.0);
-          while (size > 1)
+          int size = (int)(z / 10.0);
+            while (size > 1)
             {
               QRect br;
-              font.setPointSize(size);
+              font.setPixelSize(size);
               paint.setFont(font);
               paint.drawText(r,flags|Qt::TextDontPrint,s,&br);
               if (r.contains(br))
@@ -3599,7 +3623,7 @@ QDjVuPrivate::paintMapAreas(QImage &img, Page *p, const QRect &r, bool perm)
         {
           if (perm) 
             {
-              double z = p->rect.width() * p->dpi / p->width;
+              double z = p->rect.width() * p->dpi * sdpi / (p->width * 100);
               area.paintPermanent(&img, p->mapper, r.topLeft(), z);
               changed = true;
             }

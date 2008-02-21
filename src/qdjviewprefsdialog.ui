@@ -193,7 +193,7 @@
        <item>
         <widget class="QGroupBox" name="resolutionGroupBox" >
          <property name="enabled" >
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="title" >
           <string>Resolution</string>
@@ -234,10 +234,10 @@
              <string> dpi</string>
             </property>
             <property name="minimum" >
-             <number>50</number>
+             <number>25</number>
             </property>
             <property name="maximum" >
-             <number>300</number>
+             <number>600</number>
             </property>
             <property name="value" >
              <number>100</number>
