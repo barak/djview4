@@ -657,15 +657,16 @@ QDjView::createActions()
     << Trigger(this, SLOT(updateActionsLater()));
 
   actionCopyUrl = makeAction(tr("Copy &URL", "Edit|"))
-    << tr("Save into the clipboard the URL for the current page.")
+    << tr("Save an URL for the current page into the clipboard.")
+    << QKeySequence(tr("Ctrl+C", "Edit|CopyURL"))
     << Trigger(this, SLOT(performCopyUrl()));
   
   actionCopyOutline = makeAction(tr("Copy &Outline", "Edit|"))
-    << tr("Save into the clipboard the djvused code for the outline.")
+    << tr("Save the djvused code for the outline into the clipboard.")
     << Trigger(this, SLOT(performCopyOutline()));
   
   actionCopyAnnotation = makeAction(tr("Copy &Annotations", "Edit|"))
-    << tr("Save into the clipboard the djvused code for the page annotations.")
+    << tr("Save the djvused code for the page annotations into the clipboard.")
     << Trigger(this, SLOT(performCopyAnnotation()));
 
   actionAbout->setMenuRole(QAction::AboutRole);
@@ -708,14 +709,13 @@ QDjView::createMenus()
     }
   QMenu *editMenu = menuBar->addMenu(tr("&Edit", "Edit|"));
   editMenu->addAction(actionSelect);
+  editMenu->addAction(actionCopyUrl);
+  editMenu->addAction(actionCopyOutline);
+  editMenu->addAction(actionCopyAnnotation);
   editMenu->addSeparator();
   editMenu->addAction(actionFind);
   editMenu->addAction(actionFindNext);
   editMenu->addAction(actionFindPrev);
-  editMenu->addSeparator();
-  editMenu->addAction(actionCopyUrl);
-  editMenu->addAction(actionCopyOutline);
-  editMenu->addAction(actionCopyAnnotation);
   QMenu *viewMenu = menuBar->addMenu(tr("&View", "View|"));
   QMenu *zoomMenu = viewMenu->addMenu(tr("&Zoom","View|Zoom"));
   zoomMenu->addAction(actionZoomIn);
@@ -922,7 +922,6 @@ QDjView::updateActions()
   actionForw->setEnabled(redoList.size() > 0);
 
   // Advanced
-  actionCopyUrl->setVisible(prefs->advancedFeatures);
   actionCopyOutline->setVisible(prefs->advancedFeatures);
   actionCopyAnnotation->setVisible(prefs->advancedFeatures);
   
@@ -2552,7 +2551,7 @@ QDjView::pageName(int pageno, bool titleonly)
     return QString();
   // generate a name from the page number
   if (hasNumericalPageTitle)
-    return QString("%1").arg(pageno + 1);
+    return QString("$%1").arg(pageno + 1);
   return QString("%1").arg(pageno + 1);
 }
 
@@ -3269,7 +3268,9 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
         {
           QList<QPair<QString,QString> > args = url.queryItems();
           args += qMakePair<QString,QString>("djvuopts", QString::null);
-          args += qMakePair<QString,QString>("page", pageName(pos.pageNo));
+          QList<ddjvu_fileinfo_t> &dp = documentPages;
+          if (pos.pageNo>=0 && pos.pageNo<documentPages.size())
+            args += qMakePair<QString,QString>("page", dp[pos.pageNo].id);
           if (! rect.isEmpty())
             args += qMakePair(QString("highlight"),
                               QString("%1,%2,%3,%4")
@@ -3732,7 +3733,9 @@ QDjView::performCopyUrl()
     {
       QList<QPair<QString,QString> > args = url.queryItems();
       args += qMakePair<QString,QString>("djvuopts", QString::null);
-      args += qMakePair<QString,QString>("page", pageName(pageNo));
+      QList<ddjvu_fileinfo_t> &dp = documentPages;
+      if (pageNo>=0 && pageNo<documentPages.size())
+        args += qMakePair<QString,QString>("page", dp[pageNo].id);
       url.setQueryItems(args);
       QApplication::clipboard()->setText(url.toString());
     }
