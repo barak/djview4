@@ -123,6 +123,7 @@ public slots:
   void  closeDocument();
   void  goToPage(int pageno);
   void  goToPage(QString name, int from=-1);
+  void  goToLink(QString link, QString target=QString(), int from=-1);
   void  addToErrorDialog(QString message);
   void  raiseErrorDialog(QMessageBox::Icon icon, QString caption=QString());
   int   execErrorDialog (QMessageBox::Icon icon, QString caption=QString());

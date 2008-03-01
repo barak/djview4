@@ -3109,9 +3109,13 @@ QDjView::pointerLeave(const Position&, miniexp_t)
 void 
 QDjView::pointerClick(const Position &pos, miniexp_t)
 {
-  // Obtain link information
-  QString link = widget->linkUrl();
-  QString target = widget->linkTarget();
+  goToLink(widget->linkUrl(), widget->linkTarget(), pos.pageNo);
+}
+
+
+void  
+QDjView::goToLink(QString link, QString target, int fromPage)
+{
   bool inPlace = target.isEmpty() || target=="_self" || target=="_page";
   QUrl url = documentUrl;
   // Internal link
@@ -3120,13 +3124,13 @@ QDjView::pointerClick(const Position &pos, miniexp_t)
       QString name = link.mid(1);
       if (inPlace)
         {
-          goToPage(name, pos.pageNo);
+          goToPage(name, fromPage);
           return;
         }
       if (viewerMode == STANDALONE)
         {
           QDjView *other = copyWindow();
-          other->goToPage(name, pos.pageNo);
+          other->goToPage(name, fromPage);
           other->show();
           return;
         }
@@ -3140,7 +3144,7 @@ QDjView::pointerClick(const Position &pos, miniexp_t)
           break;
       url.setQueryItems(query);
       url.addQueryItem("djvuopts", "");
-      int pageno = pageNumber(name, pos.pageNo);
+      int pageno = pageNumber(name, fromPage);
       if (pageno>=0 && pageno<=documentPages.size())
         url.addQueryItem("page", QString::fromUtf8(documentPages[pageno].id));
     }
