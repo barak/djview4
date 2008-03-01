@@ -2571,8 +2571,6 @@ QDjView::pageNumber(QString name, int from)
   int pagenum = documentPages.size();
   if (pagenum <= 0)
     return -1;
-  if (from < 0)
-    from = widget->page();
   // First search an exact page id match
   QByteArray utf8Name = name.toUtf8();
   for (int i=0; i<pagenum; i++)
@@ -2592,6 +2590,8 @@ QDjView::pageNumber(QString name, int from)
     }
   // Then search a matching page title starting 
   // from the current page and wrapping around
+  if (from < 0)
+    from = widget->page();
   for (int i=from; i<pagenum; i++)
     if (documentPages[i].title && 
         ! strcmp(utf8Name, documentPages[i].title))
