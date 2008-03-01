@@ -196,8 +196,8 @@ QDjViewOutline::fillItems(QTreeWidgetItem *root, miniexp_t expr)
           const char *name = miniexp_to_str(miniexp_car(s));
           const char *page = miniexp_to_str(miniexp_cadr(s));
           int pageno = -1;
-          if (page[0]=='#' && page[1]!='+' && page[1]!='-')
-            pageno = djview->pageNumber(QString::fromUtf8(page));
+          if (page[0]=='#')
+            pageno = djview->pageNumber(QString::fromUtf8(page+1));
           QTreeWidgetItem *item = new QTreeWidgetItem(root);
           if (name && name[0])
             item->setText(0, QString::fromUtf8(name));

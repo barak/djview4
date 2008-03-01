@@ -2573,26 +2573,25 @@ QDjView::pageNumber(QString name, int from)
     return -1;
   if (from < 0)
     from = widget->page();
-  if (name.startsWith("#") && 
-      name.contains(QRegExp("^#[-+$]\\d+$")))
+  // First search an exact page id match
+  QByteArray utf8Name = name.toUtf8();
+  for (int i=0; i<pagenum; i++)
+    if (documentPages[i].id && 
+        !strcmp(utf8Name, documentPages[i].id))
+      return i;
+  // Then interpret the syntaxes +n, -n, $n
+  if (from >= 0 && from < pagenum 
+      && name.contains(QRegExp("^[-+$]\\d+$")) )
     {
-      int num = name.mid(2).toInt();
-      if (name[1]=='+')
+      int num = name.mid(1).toInt();
+      if (name[0]=='+')
         num = from + 1 + num;
-      else if (name[1]=='-')
+      else if (name[0]=='-')
         num = from + 1 - num;
       return qBound(1, num, pagenum) - 1;
     }
-  else if (name.startsWith("$") &&
-           name.contains(QRegExp("^\\$\\d+$")) )
-    {
-      int num = name.mid(1).toInt();
-      return qBound(1, num, pagenum) - 1;
-    }
-  else if (name.startsWith("#"))
-    name = name.mid(1);
-  // Search exact name starting from current page
-  QByteArray utf8Name= name.toUtf8();
+  // Then search a matching page title starting 
+  // from the current page and wrapping around
   for (int i=from; i<pagenum; i++)
     if (documentPages[i].title && 
         ! strcmp(utf8Name, documentPages[i].title))
@@ -2601,21 +2600,16 @@ QDjView::pageNumber(QString name, int from)
     if (documentPages[i].title &&
         ! strcmp(utf8Name, documentPages[i].title))
       return i;
-  // Otherwise try a number in range [1..pagenum]
-  int pageno = name.toInt() - 1;
-  if (pageno >= 0 && pageno < pagenum)
-    return pageno;
-  // Otherwise search page names and ids
+  // Then process a number in range [1..pagenum]
+  if (name.contains(QRegExp("^\\d+$")))
+    return qBound(1, name.toInt(), pagenum) - 1;
+  // Otherwise search page names in the unlikely
+  // case they are different from the page ids
   for (int i=0; i<pagenum; i++)
     if (documentPages[i].name && 
         !strcmp(utf8Name, documentPages[i].name))
       return i;
-  if (pageno < 0 || pageno >= pagenum)
-    for (int i=0; i<pagenum; i++)
-      if (documentPages[i].id && 
-          !strcmp(utf8Name, documentPages[i].id))
-        return i;
-  // Failed
+  // Give up
   return -1;
 }
 
@@ -3014,15 +3008,15 @@ QDjView::performPending()
                   color.setAlpha(96);
                   widget->addHighlight(pageno, x, y, w, h, color);
                 }
-            }
-          pendingHilite.clear();
         }
+          pendingHilite.clear();
+    }
       if (pendingFind.size() > 0)
         {
           find(pendingFind);
           pendingFind.clear();
         }
-    }
+}
   performPendingScheduled = false;
 }
 
@@ -3113,7 +3107,6 @@ void
 QDjView::pointerClick(const Position &pos, miniexp_t)
 {
   // Obtain link information
-  QList<QPair<QString, QString> > query;
   QString link = widget->linkUrl();
   QString target = widget->linkTarget();
   bool inPlace = target.isEmpty() || target=="_self" || target=="_page";
@@ -3121,20 +3114,22 @@ QDjView::pointerClick(const Position &pos, miniexp_t)
   // Internal link
   if (link.startsWith("#"))
     {
+      QString name = link.mid(1);
       if (inPlace)
         {
-          goToPage(link, pos.pageNo);
+          goToPage(name, pos.pageNo);
           return;
         }
       if (viewerMode == STANDALONE)
         {
           QDjView *other = copyWindow();
-          other->goToPage(link, pos.pageNo);
+          other->goToPage(name, pos.pageNo);
           other->show();
           return;
         }
       // Construct url
       QPair<QString,QString> pair;
+      QList<QPair<QString, QString> > query;
       foreach(pair, url.queryItems())
         if (pair.first.toLower() != "djvuopts")
           query << pair;
@@ -3142,13 +3137,16 @@ QDjView::pointerClick(const Position &pos, miniexp_t)
           break;
       url.setQueryItems(query);
       url.addQueryItem("djvuopts", "");
-      url.addQueryItem("page", QString("#$%1").arg(pageNumber(link)+1));
+      int pageno = pageNumber(name, pos.pageNo);
+      if (pageno>=0 && pageno<=documentPages.size())
+        url.addQueryItem("page", QString::fromUtf8(documentPages[pageno].id));
     }
   else
     {
       // Resolve url
       QUrl linkUrl(link);
-      url.setQueryItems(query); // empty!
+      QList<QPair<QString, QString> > empty;
+      url.setQueryItems(empty);
       url = url.resolved(linkUrl);
       url.setQueryItems(linkUrl.queryItems());
     }
@@ -3188,7 +3186,7 @@ QDjView::pointerClick(const Position &pos, miniexp_t)
     }
 }
 
-  
+
 void 
 QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
 {
@@ -3266,17 +3264,14 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
       QRect seg = widget->getSegmentForRect(rect, pos.pageNo);
       if (url.isValid() && pos.pageNo>=0 && pos.pageNo<pageNum())
         {
-          QList<QPair<QString,QString> > args = url.queryItems();
-          args += qMakePair<QString,QString>("djvuopts", QString::null);
+          url.addQueryItem("djvuopts", QString::null);
           QList<ddjvu_fileinfo_t> &dp = documentPages;
           if (pos.pageNo>=0 && pos.pageNo<documentPages.size())
-            args += qMakePair<QString,QString>("page", dp[pos.pageNo].id);
+            url.addQueryItem("page", QString::fromUtf8(dp[pos.pageNo].id));
           if (! rect.isEmpty())
-            args += qMakePair(QString("highlight"),
-                              QString("%1,%2,%3,%4")
-                              .arg(seg.left()).arg(seg.top())
-                              .arg(seg.width()).arg(seg.height()) );
-          url.setQueryItems(args);
+            url.addQueryItem("highlight", QString("%1,%2,%3,%4")
+                             .arg(seg.left()).arg(seg.top())
+                             .arg(seg.width()).arg(seg.height()) );
           QApplication::clipboard()->setText(url.toString());
         }
     }
@@ -3731,12 +3726,10 @@ QDjView::performCopyUrl()
   int pageNo = widget->page();
   if (url.isValid() && pageNo>=0 && pageNo<pageNum())
     {
-      QList<QPair<QString,QString> > args = url.queryItems();
-      args += qMakePair<QString,QString>("djvuopts", QString::null);
+      url.addQueryItem("djvuopts", QString::null);
       QList<ddjvu_fileinfo_t> &dp = documentPages;
       if (pageNo>=0 && pageNo<documentPages.size())
-        args += qMakePair<QString,QString>("page", dp[pageNo].id);
-      url.setQueryItems(args);
+        url.addQueryItem("page", QString::fromUtf8(dp[pageNo].id));
       QApplication::clipboard()->setText(url.toString());
     }
 }
