@@ -924,6 +924,9 @@ QDjView::updateActions()
   // Advanced
   actionCopyOutline->setVisible(prefs->advancedFeatures);
   actionCopyAnnotation->setVisible(prefs->advancedFeatures);
+  actionCopyUrl->setEnabled(pagenum > 0);
+  actionCopyOutline->setEnabled(pagenum > 0);
+  actionCopyAnnotation->setEnabled(pagenum > 0);
   
   // Disable almost everything when document==0
   if (! document)
@@ -2550,8 +2553,8 @@ QDjView::pageName(int pageno, bool titleonly)
   if (titleonly)
     return QString();
   // generate a name from the page number
-  if (hasNumericalPageTitle)
-    return QString("$%1").arg(pageno + 1);
+  //// if (hasNumericalPageTitle)
+  ////  return QString("$%1").arg(pageno + 1);
   return QString("%1").arg(pageno + 1);
 }
 
@@ -3767,24 +3770,29 @@ QDjView::performCopyOutline()
   if (document)
     {
       QString s;
-      miniexp_t expr = document->getDocumentOutline();
-      if (expr == miniexp_nil || expr == miniexp_dummy)
-        s += QString("# This is an outline template.\n");
-      else
+      minivar_t expr = document->getDocumentOutline();
+      if (miniexp_consp(expr))
         s += QString("# This is the existing outline.\n");
-          
+      else {
+        s += QString("# This is an outline template with all pages.\n");
+        expr = miniexp_cons(miniexp_symbol("bookmarks"),miniexp_nil);
+        for (int i=0; i<documentPages.size(); i++)
+          {
+            minivar_t p = miniexp_nil;
+            QByteArray ref = documentPages[i].id;
+            p = miniexp_cons(miniexp_string(ref.prepend("#").constData()),p);
+            QString name = QString("Page %1").arg(pageName(i));
+            p = miniexp_cons(miniexp_string(name.toUtf8().constData()),p);
+            expr = miniexp_cons(p,expr);
+          }
+        expr = miniexp_reverse(expr);
+      }
       s += QString("# Edit it and store it with command:\n"
                    "#   $ djvused foo.djvu -f thisfile -s\n"
                    "# The following line is the djvused command\n"
                    "# to set the outline and the rest is the outline\n"
                    "set-outline\n\n");
-      if (expr != miniexp_nil)      
-        s += miniexp_to_string(expr);
-      else
-        s += QString("(bookmarks\n"
-                     "  (\"section title\" \"#pagename\"\n"
-                     "     (\"subsection title\" \"#pagename\") )\n"
-                     "  (\"section title\" \"#pagename\") )\n");
+      s += miniexp_to_string(expr);
       // copy to clipboard
       QApplication::clipboard()->setText(s);
     }
