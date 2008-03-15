@@ -27,8 +27,9 @@ NEW IN VERSION 4.3
 - Fixed double free bug in plugin mode.
 
 
-NEW SINCE VERSION 4.3
----------------------
+NEW FOR NEXT VERSION 
+--------------------
 - Full session management under X11.
 - Added advanced feature check box.
 - Added advanced command to copy urls, outline, etc.
+- New translation (russian)

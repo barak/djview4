@@ -796,7 +796,7 @@ QDjViewPrefsDialog::QDjViewPrefsDialog()
   setHelp(d->ui.lensTab,
           tr("<html><b>Magnifying lens.</b>"
              "<br>The magnifying lens appears when you depress"
-             " the modifier keys specifier in tab <tt>Keys</tt>."
+             " the modifier keys specified in tab <tt>Keys</tt>."
              " This panel lets you choose the power and the size"
              " of the magnifying lens."
              "</html>") );
