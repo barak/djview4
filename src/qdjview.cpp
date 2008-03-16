@@ -3210,13 +3210,25 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
   QAction *saveText = menu->addAction(tr("Save text as..."));
   copyText->setEnabled(l>0);
   saveText->setEnabled(l>0);
-  copyText->setStatusTip(tr("Save text into the clipboard."));
+  copyText->setStatusTip(tr("Copy text into the clipboard."));
   saveText->setStatusTip(tr("Save text into a file."));
+  if (l > 0)
+    {
+      QString qtext = text.replace(QRegExp("\\s+")," ");
+      QFontMetrics m(QApplication::font());
+      int w = width() - m.width("XXXX") - pageLabel->width() - mouseLabel->width();
+      QString ctext = tr("Copy text: \"%1\".");
+      QString stext = tr("Save text: \"%1\".");
+      ctext = ctext.arg(m.elidedText(qtext, Qt::ElideRight, w-m.width(ctext)));
+      stext = stext.arg(m.elidedText(qtext, Qt::ElideRight, w-m.width(stext)));
+      copyText->setStatusTip(ctext);
+      saveText->setStatusTip(stext);
+    }
   menu->addSeparator();
   QString copyImageString = tr("Copy image (%1x%2 pixels)").arg(w).arg(h);
   QAction *copyImage = menu->addAction(copyImageString);
   QAction *saveImage = menu->addAction(tr("Save image as..."));
-  copyImage->setStatusTip(tr("Save image into the clipboard."));
+  copyImage->setStatusTip(tr("Copy image into the clipboard."));
   saveImage->setStatusTip(tr("Save image into a file."));
   menu->addSeparator();
   QAction *zoom = menu->addAction(tr("Zoom to rectangle"));
