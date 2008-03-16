@@ -29,6 +29,7 @@
 #include <QAction>
 #include <QActionGroup>
 #include <QApplication>
+#include <QComboBox>
 #include <QContextMenuEvent>
 #include <QCheckBox>
 #include <QDebug>
@@ -1054,7 +1055,7 @@ QDjViewFind::Model::documentClosed(QDjVuDocument *doc)
   searchBackwards = false;
   pending = false;
   widget->eraseText();
-  widget->edit->setEnabled(false);
+  widget->combo->setEnabled(false);
   widget->label->setText(QString());
   widget->stack->setCurrentIndex(0);
 }
@@ -1068,7 +1069,7 @@ QDjViewFind::Model::documentReady(QDjVuDocument *doc)
   curHit = -1;
   if (doc)
     {
-      widget->edit->setEnabled(true);
+      widget->combo->setEnabled(true);
       connect(doc, SIGNAL(pageinfo()), this, SLOT(pageinfo()));
       connect(doc, SIGNAL(idle()), this, SLOT(pageinfo()));
       if (! find.isEmpty())
@@ -1343,7 +1344,7 @@ QDjViewFind::Model::workTimeout()
               if (! somePagesWithText)
                 {
                   widget->eraseText();
-                  widget->edit->setEnabled(false);
+                  widget->combo->setEnabled(false);
                   msg = tr("<html>Document is not searchable. "
                            "No page contains information "
                            "about its textual content.</html>");
@@ -1534,8 +1535,12 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   QBoxLayout *vlayout = new QVBoxLayout(this);
   QToolBar *tools = new QToolBar(this);
   tools->addAction(eraseAction);
-  edit = new QLineEdit(tools);
-  tools->addWidget(edit);
+  combo = new QComboBox(tools);
+  combo->setEditable(true);
+  combo->setMaxCount(8);
+  combo->setInsertPolicy(QComboBox::InsertAtTop);
+  combo->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+  tools->addWidget(combo);
   tools->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
   vlayout->addWidget(tools);
   QBoxLayout *hlayout = new QHBoxLayout;
@@ -1576,9 +1581,9 @@ QDjViewFind::QDjViewFind(QDjView *djview)
           model, SLOT(itemActivated(const QModelIndex&)));
   connect(djview->getDjVuWidget(), SIGNAL(pageChanged(int)),
           this, SLOT(pageChanged(int)));
-  connect(edit, SIGNAL(textChanged(QString)),
+  connect(combo->lineEdit(), SIGNAL(textChanged(QString)),
           model, SLOT(textChanged()));
-  connect(edit, SIGNAL(returnPressed()),
+  connect(combo->lineEdit(), SIGNAL(returnPressed()),
           this, SLOT(findAgain()));
   connect(eraseAction, SIGNAL(triggered()), 
           this, SLOT(eraseText()));
@@ -1617,15 +1622,15 @@ QDjViewFind::contextMenuEvent(QContextMenuEvent *event)
 void
 QDjViewFind::takeFocus(Qt::FocusReason reason)
 {
-  if (edit->isVisible())
-    edit->setFocus(reason);
+  if (combo->isVisible())
+    combo->setFocus(reason);
 }
 
 
 QString 
 QDjViewFind::text()
 {
-  return edit->text();
+  return combo->lineEdit()->text();
 }
 
 
@@ -1647,7 +1652,7 @@ void
 QDjViewFind::setText(QString s)
 {
   if (s != text())
-    edit->setText(s);
+    combo->lineEdit()->setText(s);
 }
 
 

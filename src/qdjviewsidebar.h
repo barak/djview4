@@ -39,6 +39,7 @@
 #include "qdjview.h"
 
 class QAction;
+class QComboBox;
 class QContextMenuEvent;
 class QItemSelectionModel;
 class QLabel;
@@ -146,7 +147,7 @@ private:
   Model          *model;
   QListView      *view;
   QMenu          *menu;
-  QLineEdit      *edit;
+  QComboBox      *combo;
   QPushButton    *upButton;
   QPushButton    *downButton;
   QStackedLayout *stack;
