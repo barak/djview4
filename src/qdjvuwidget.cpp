@@ -1564,6 +1564,7 @@ QDjVuPrivate::updatePosition(const QPoint &point, bool click, bool links)
   info.height = p->height;
   info.dpi = p->dpi;
   info.segment = widget->getSegmentForRect(selectedRect, info.pageno);
+  info.point = point;
   emit widget->pointerPosition(pos, info);
   // check mapareas
   if (links)

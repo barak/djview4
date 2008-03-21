@@ -1969,6 +1969,16 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   QFont font = QApplication::font();
   font.setPointSize((font.pointSize() * 3 + 3) / 4);
   QFontMetrics metric(font);
+  textLabelTimer = new QTimer(this);
+  textLabelTimer->setSingleShot(true);
+  connect(textLabelTimer,SIGNAL(timeout()),this,SLOT(updateTextLabel()));
+  textLabel = new QLabel(statusBar);
+  textLabel->setFont(font);
+  textLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+  textLabel->setFrameStyle(QFrame::Panel);
+  textLabel->setFrameShadow(QFrame::Sunken);
+  textLabel->setMinimumWidth(metric.width("M")*32);
+  statusBar->addPermanentWidget(textLabel);
   pageLabel = new QLabel(statusBar);
   pageLabel->setFont(font);
   pageLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
@@ -2865,6 +2875,7 @@ QDjView::eventFilter(QObject *watched, QEvent *event)
         {
           pageLabel->clear();
           mouseLabel->clear();
+          textLabel->clear();
           statusMessage();
           return false;
         }
@@ -3038,29 +3049,45 @@ QDjView::performPendingLater()
 
 
 void 
-QDjView::pointerPosition(const Position &pos, const PageInfo &page)
+QDjView::pointerPosition(const Position &pos, const PageInfo &info)
 {
   // setup page label
   QString p = "";
   QString m = "";
-  if (pos.inPage || !page.segment.isEmpty())
+  if (pos.inPage || !info.segment.isEmpty())
     {
       p = tr(" P%1 %2x%3 %4dpi ")
         .arg(pos.pageNo+1) 
-        .arg(page.width).arg(page.height).arg(page.dpi);
-      if (page.segment.isEmpty())
+        .arg(info.width).arg(info.height).arg(info.dpi);
+      if (info.segment.isEmpty())
         m = tr(" x=%1 y=%2 ")
           .arg(pos.posPage.x())
           .arg(pos.posPage.y());
       else
         m = QString(" %3x%4+%1+%2 ")
-          .arg(page.segment.left())
-          .arg(page.segment.top())
-          .arg(page.segment.width())
-          .arg(page.segment.height());
+          .arg(info.segment.left())
+          .arg(info.segment.top())
+          .arg(info.segment.width())
+          .arg(info.segment.height());
     }
+  textLabelPoint = info.point;
+  if (textLabel->isVisible())
+    textLabelTimer->start(250);
   setPageLabelText(p);
   setMouseLabelText(m);
+}
+
+
+void 
+QDjView::updateTextLabel()
+{
+  if (textLabel->isVisible())
+    {
+      QRect rect(textLabelPoint, QSize(1,1));
+      QString text = widget->getTextForRect(rect.adjusted(-4,-4,4,4));
+      text = text.replace(QRegExp("\\s+")," ");
+      textLabel->setText(text);
+    }
 }
 
 

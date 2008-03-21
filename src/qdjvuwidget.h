@@ -143,6 +143,7 @@ public:
     int   width;
     int   height;
     QRect segment;
+    QPoint point;
   };
 
   ~QDjVuWidget();
