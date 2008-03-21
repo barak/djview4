@@ -3212,18 +3212,6 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
   saveText->setEnabled(l>0);
   copyText->setStatusTip(tr("Copy text into the clipboard."));
   saveText->setStatusTip(tr("Save text into a file."));
-  if (l > 0)
-    {
-      QString qtext = text.replace(QRegExp("\\s+")," ");
-      QFontMetrics m(QApplication::font());
-      int w = width() - m.width("XXXX") - pageLabel->width() - mouseLabel->width();
-      QString ctext = tr("Copy text: \"%1\".");
-      QString stext = tr("Save text: \"%1\".");
-      ctext = ctext.arg(m.elidedText(qtext, Qt::ElideRight, w-m.width(ctext)));
-      stext = stext.arg(m.elidedText(qtext, Qt::ElideRight, w-m.width(stext)));
-      copyText->setStatusTip(ctext);
-      saveText->setStatusTip(stext);
-    }
   menu->addSeparator();
   QString copyImageString = tr("Copy image (%1x%2 pixels)").arg(w).arg(h);
   QAction *copyImage = menu->addAction(copyImageString);

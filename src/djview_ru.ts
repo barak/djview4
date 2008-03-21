@@ -100,7 +100,7 @@
         <translation>&amp;75%</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3399"/>
+        <location filename="qdjview.cpp" line="3387"/>
         <source>About DjView</source>
         <translation>О DjView</translation>
     </message>
@@ -198,7 +198,7 @@ Filename &apos;%1&apos; has no suffix.</source>
 %2.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3598"/>
+        <location filename="qdjview.cpp" line="3586"/>
         <source>&amp;Clear History</source>
         <translation>&amp;Очистить историю</translation>
     </message>
@@ -242,7 +242,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>Control + левая кнопка мыши</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3228"/>
+        <location filename="qdjview.cpp" line="3216"/>
         <source>Copy image (%1x%2 pixels)</source>
         <translation>Скопировать изображение (%1x%2 пикселей)</translation>
     </message>
@@ -395,7 +395,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>Djview - %1[*]</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3419"/>
+        <location filename="qdjview.cpp" line="3407"/>
         <source>DjVu files</source>
         <translation>Файлы DjVu</translation>
     </message>
@@ -406,7 +406,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>&amp;Правка</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3437"/>
+        <location filename="qdjview.cpp" line="3425"/>
         <source>Enter the URL of a DjVu document.</source>
         <translation>Введите URL документа DjVu.</translation>
     </message>
@@ -681,7 +681,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>&lt;html&gt;&lt;b&gt;Изменение масштаба.&lt;/b&gt;&lt;br/&gt; Выберите масштаб для просмотра документа. Масштаб 100% предназначен для просмотра документа на экране 100 dpi (100 точек/дюйм). &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3397"/>
+        <location filename="qdjview.cpp" line="3385"/>
         <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright &#xa9; 2006-- L&#xe9;on Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Программа просмотра документов DjVu&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;Данная программа - свободное программное обеспечение. Вы можете распространять и/или модифицировать ее на условиях Стандартной Общественной Лицензии GNU (GNU General Public License), опубликованной Фондом Свободного ПО (Free Software Foundation). Данная прогдамма распространяется &lt;i&gt;без каких-либо гарантий&lt;/i&gt;. Подробности смотрите в Стандартной Общественной Лицензии GNU (GNU General Public License).&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
@@ -707,7 +707,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>&amp;Информация...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3454"/>
+        <location filename="qdjview.cpp" line="3442"/>
         <source>Information - DjView</source>
         <comment>dialog caption</comment>
         <translation>Информация - DjView</translation>
@@ -785,7 +785,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>&amp;Метаданные...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3469"/>
+        <location filename="qdjview.cpp" line="3457"/>
         <source>Metadata - DjView</source>
         <comment>dialog caption</comment>
         <translation>Метаданные - DjView</translation>
@@ -840,7 +840,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>Открыть удаленный документ DjVu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3418"/>
+        <location filename="qdjview.cpp" line="3406"/>
         <source>Open - DjView</source>
         <comment>dialog caption</comment>
         <translation>Открыть - DjView</translation>
@@ -862,7 +862,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>Открыть &amp;адрес...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3436"/>
+        <location filename="qdjview.cpp" line="3424"/>
         <source>Open Location - DjView</source>
         <comment>dialog caption</comment>
         <translation>Открыть адрес - DjView</translation>
@@ -1007,7 +1007,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>Сохранить - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3230"/>
+        <location filename="qdjview.cpp" line="3218"/>
         <source>Save image as...</source>
         <translation>Сохранить изображение как...</translation>
     </message>
@@ -1239,7 +1239,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>У&amp;меньшить</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3234"/>
+        <location filename="qdjview.cpp" line="3222"/>
         <source>Zoom to rectangle</source>
         <translation>Увеличить по выделению</translation>
     </message>
@@ -1330,43 +1330,38 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3232"/>
+        <location filename="qdjview.cpp" line="3220"/>
         <source>Save image into a file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3235"/>
+        <location filename="qdjview.cpp" line="3223"/>
         <source>Zoom the selection to fit the window.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3241"/>
+        <location filename="qdjview.cpp" line="3229"/>
         <source>Copy URL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3243"/>
+        <location filename="qdjview.cpp" line="3231"/>
         <source>Save into the clipboard an URL that highlights the selection.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3244"/>
+        <location filename="qdjview.cpp" line="3232"/>
         <source>Copy Maparea</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3247"/>
+        <location filename="qdjview.cpp" line="3235"/>
         <source>Save into the clipboard a maparea annotation expression for program djvused.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3220"/>
-        <source>Copy text: &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qdjview.cpp" line="3221"/>
-        <source>Save text: &quot;%1&quot;.</source>
+        <location filename="qdjview.cpp" line="3219"/>
+        <source>Copy image into the clipboard.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

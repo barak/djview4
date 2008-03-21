@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="fr">
-<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -965,32 +964,32 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
         <translation>Enregistrer le texte...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3228"/>
+        <location filename="qdjview.cpp" line="3216"/>
         <source>Copy image (%1x%2 pixels)</source>
         <translation>Copier l&apos;image (%1x%2)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3230"/>
+        <location filename="qdjview.cpp" line="3218"/>
         <source>Save image as...</source>
         <translation>Enregistrer l&apos;image...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3234"/>
+        <location filename="qdjview.cpp" line="3222"/>
         <source>Zoom to rectangle</source>
         <translation>Zoomer sur ce rectangle</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3397"/>
+        <location filename="qdjview.cpp" line="3385"/>
         <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright &#xa9; 2006-- L&#xe9;on Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Afficheur pour documents DjVu&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;Ce programme est un logiciel libre. Vous pouvez le redistribuer ou le modifier au titre des clauses de la «GNU General Public License», telle que publiée par la Free Software Foundation. Ce programme est distribué &lt;i&gt;sans aucune garantie&lt;/i&gt;.  Voir la «GNU General Public License» pour plus de détails.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3399"/>
+        <location filename="qdjview.cpp" line="3387"/>
         <source>About DjView</source>
         <translation>À propos de DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3419"/>
+        <location filename="qdjview.cpp" line="3407"/>
         <source>DjVu files</source>
         <translation>Fichiers DjVu</translation>
     </message>
@@ -1092,13 +1091,13 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
         <translation>Décodage de document DjVu</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3454"/>
+        <location filename="qdjview.cpp" line="3442"/>
         <source>Information - DjView</source>
         <comment>dialog caption</comment>
         <translation>Information - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3469"/>
+        <location filename="qdjview.cpp" line="3457"/>
         <source>Metadata - DjView</source>
         <comment>dialog caption</comment>
         <translation>Meta-information - DjView</translation>
@@ -1138,7 +1137,7 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
         <translation>Ouvrir un Fichier &amp;Récent</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3598"/>
+        <location filename="qdjview.cpp" line="3586"/>
         <source>&amp;Clear History</source>
         <translation>&amp;Effacer l&apos;historique</translation>
     </message>
@@ -1196,18 +1195,18 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
         <translation>Ctrl+F5</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3436"/>
+        <location filename="qdjview.cpp" line="3424"/>
         <source>Open Location - DjView</source>
         <comment>dialog caption</comment>
         <translation>Ouverture d&apos;une URL - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3437"/>
+        <location filename="qdjview.cpp" line="3425"/>
         <source>Enter the URL of a DjVu document.</source>
         <translation>Entrez l&apos;URL d&apos;un document DjVu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3418"/>
+        <location filename="qdjview.cpp" line="3406"/>
         <source>Open - DjView</source>
         <comment>dialog caption</comment>
         <translation>Ouverture - DjView</translation>
@@ -1299,36 +1298,36 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3219"/>
-        <source>Save image into the clipboard.</source>
-        <translation type="obsolete">Copie une image correspondant à la sélection.</translation>
+        <source>Copy image into the clipboard.</source>
+        <translation type="unfinished">Copie une image correspondant à la sélection.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3232"/>
+        <location filename="qdjview.cpp" line="3220"/>
         <source>Save image into a file.</source>
         <translation>Enregistre une image correspondant à la sélection dans un fichier.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3235"/>
+        <location filename="qdjview.cpp" line="3223"/>
         <source>Zoom the selection to fit the window.</source>
         <translation>Change le grossissement de façon à maximiser la sélection dans la fenêtre.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3241"/>
+        <location filename="qdjview.cpp" line="3229"/>
         <source>Copy URL</source>
         <translation>Copie l&apos;URL</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3243"/>
+        <location filename="qdjview.cpp" line="3231"/>
         <source>Save into the clipboard an URL that highlights the selection.</source>
         <translation>Copie une URL qui monte la page courante et met en valeur la sélection.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3244"/>
+        <location filename="qdjview.cpp" line="3232"/>
         <source>Copy Maparea</source>
         <translation>Copie la «Maparea»</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3247"/>
+        <location filename="qdjview.cpp" line="3235"/>
         <source>Save into the clipboard a maparea annotation expression for program djvused.</source>
         <translation>Copie une directive d&apos;annotation «maparea» correspondant à la sélection.</translation>
     </message>
@@ -1351,12 +1350,12 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     <message>
         <location filename="qdjview.cpp" line="3220"/>
         <source>Copy text: &quot;%1&quot;.</source>
-        <translation>Copie le texte: «%1».</translation>
+        <translation type="obsolete">Copie le texte: «%1».</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3221"/>
         <source>Save text: &quot;%1&quot;.</source>
-        <translation>Enregistre le texte: «%1».</translation>
+        <translation type="obsolete">Enregistre le texte: «%1».</translation>
     </message>
 </context>
 <context>

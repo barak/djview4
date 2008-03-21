@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="cs_CZ">
-<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -1102,43 +1101,43 @@ Soubor „%1“ nemá žádnou příponu.</translation>
         <translation>Uložit text jako…</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3228"/>
+        <location filename="qdjview.cpp" line="3216"/>
         <source>Copy image (%1x%2 pixels)</source>
         <translation>Zkopírovat obrázek (%1×%2 pixelů)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3230"/>
+        <location filename="qdjview.cpp" line="3218"/>
         <source>Save image as...</source>
         <translation>Uložit obrázek jako…</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3234"/>
+        <location filename="qdjview.cpp" line="3222"/>
         <source>Zoom to rectangle</source>
         <translation>Zvětšit na obdélník</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3397"/>
+        <location filename="qdjview.cpp" line="3385"/>
         <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright &#xa9; 2006-- L&#xe9;on Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Prohlížeč dokumentů DjVu&lt;br/&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br/&gt;Copyright © 2006 – Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;Tento program je svobodné programové vybavení. Můžete jej šířit nebo upravovat podle pravidel Obecné veřejné licence GNU (GNU GPL) vydané nadací Free Software Foundation. Tento program je šířen &lt;i&gt;bez jakékoliv záruky&lt;/i&gt;. Pro podrobnosti nahlédněte do Obecné veřejné licence GNU (GNU General Public License)&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3399"/>
+        <location filename="qdjview.cpp" line="3387"/>
         <source>About DjView</source>
         <translation>O DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3419"/>
+        <location filename="qdjview.cpp" line="3407"/>
         <source>DjVu files</source>
         <translation>Soubory DjVu</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3454"/>
+        <location filename="qdjview.cpp" line="3442"/>
         <source>Information - DjView</source>
         <comment>dialog caption</comment>
         <translation>Informace – DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3469"/>
+        <location filename="qdjview.cpp" line="3457"/>
         <source>Metadata - DjView</source>
         <comment>dialog caption</comment>
         <translation>Metadata – DjView</translation>
@@ -1226,24 +1225,24 @@ Soubor „%1“ nemá žádnou příponu.</translation>
         <translation>%1 souborů (*.%2);;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3418"/>
+        <location filename="qdjview.cpp" line="3406"/>
         <source>Open - DjView</source>
         <comment>dialog caption</comment>
         <translation>Otevření – DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3436"/>
+        <location filename="qdjview.cpp" line="3424"/>
         <source>Open Location - DjView</source>
         <comment>dialog caption</comment>
         <translation>Otevření z adresy – DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3437"/>
+        <location filename="qdjview.cpp" line="3425"/>
         <source>Enter the URL of a DjVu document.</source>
         <translation>Zadejte URL  dokumentu DjVu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3598"/>
+        <location filename="qdjview.cpp" line="3586"/>
         <source>&amp;Clear History</source>
         <translation>&amp;Smazat historii</translation>
     </message>
@@ -1311,36 +1310,36 @@ Soubor „%1“ nemá žádnou příponu.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3219"/>
-        <source>Save image into the clipboard.</source>
-        <translation type="obsolete">Uloží obrázek do schránky.</translation>
+        <source>Copy image into the clipboard.</source>
+        <translation type="unfinished">Uloží obrázek do schránky.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3232"/>
+        <location filename="qdjview.cpp" line="3220"/>
         <source>Save image into a file.</source>
         <translation>Uloží obrázek do souboru.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3235"/>
+        <location filename="qdjview.cpp" line="3223"/>
         <source>Zoom the selection to fit the window.</source>
         <translation>Zvětší vybranou oblast tak, aby vyplnila okno.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3241"/>
+        <location filename="qdjview.cpp" line="3229"/>
         <source>Copy URL</source>
         <translation>Kopírovat URL</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3243"/>
+        <location filename="qdjview.cpp" line="3231"/>
         <source>Save into the clipboard an URL that highlights the selection.</source>
         <translation>Uloží do schránky URL, které se nachází ve výběru.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3244"/>
+        <location filename="qdjview.cpp" line="3232"/>
         <source>Copy Maparea</source>
         <translation>Kopírovat maparea</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3247"/>
+        <location filename="qdjview.cpp" line="3235"/>
         <source>Save into the clipboard a maparea annotation expression for program djvused.</source>
         <translation>Uloží do schránky maparea výraz pro program djvused.</translation>
     </message>
@@ -1359,16 +1358,6 @@ Soubor „%1“ nemá žádnou příponu.</translation>
         <location filename="qdjview.cpp" line="670"/>
         <source>Save the djvused code for the page annotations into the clipboard.</source>
         <translation>Uloží do schránky dvjused kód s poznámkami na této stánce.</translation>
-    </message>
-    <message>
-        <location filename="qdjview.cpp" line="3220"/>
-        <source>Copy text: &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qdjview.cpp" line="3221"/>
-        <source>Save text: &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
