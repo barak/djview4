@@ -342,7 +342,7 @@ QDjViewPrefs::load()
   if (s.contains("advancedFeatures"))
     advancedFeatures = s.value("advancedFeatures").toBool();
   if (s.contains("showTextLabel"))
-    advancedFeatures = s.value("showTextLabel").toBool();
+    showTextLabel = s.value("showTextLabel").toBool();
   if (s.contains("modifiersForLens"))
     modifiersForLens 
       = stringToModifiers(s.value("modifiersForLens").toString());
