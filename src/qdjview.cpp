@@ -3086,6 +3086,8 @@ void
 QDjView::updateTextLabel()
 {
   textLabel->clear();
+  textLabel->setWordWrap(false);
+  textLabel->setTextFormat(Qt::PlainText);
   if (textLabel->isVisible())
     {
       QString text;
@@ -3113,9 +3115,9 @@ QDjView::updateTextLabel()
               text = m.elidedText(text+results[2], Qt::ElideRight, w);
             }
         }
-      textLabel->setWordWrap(false);
-      textLabel->setTextFormat(Qt::PlainText);
-      textLabel->setText(lb + text + rb);
+      text = text.trimmed();
+      if (text.size())
+        textLabel->setText(lb + text + rb);
     }
 }
 
