@@ -270,8 +270,7 @@ protected:
   bool  updateActionsScheduled;
   bool  performPendingScheduled;
   QTimer *textLabelTimer;
-  QPoint  textLabelPoint;
-  int     textLabelPage;
+  QRect   textLabelRect;
   // action lists
   QList<QAction*> allActions;
   QActionGroup *zoomActionGroup;

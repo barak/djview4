@@ -2093,7 +2093,6 @@ QDjView::closeDocument()
   hasNumericalPageTitle = true;
   documentUrl.clear();
   textLabelTimer->stop();
-  textLabelPage = -1;
   document = 0;
   if (doc)
     {
@@ -3075,11 +3074,10 @@ QDjView::pointerPosition(const Position &pos, const PageInfo &info)
     }
   setPageLabelText(p);
   setMouseLabelText(m);
-  if (textLabel->isVisible() && pos.inPage)
+  if (textLabel->isVisible())
     {
-      textLabelPage = pos.pageNo;
-      textLabelPoint = pos.posPage;
-      textLabelTimer->start(50);
+      textLabelRect = info.selected;
+      textLabelTimer->start(25);
     }
 }
 
@@ -3090,23 +3088,34 @@ QDjView::updateTextLabel()
   textLabel->clear();
   if (textLabel->isVisible())
     {
-      QString results[3];
-      Position pos;
-      pos.inPage = true;
-      pos.pageNo = textLabelPage;
-      pos.posPage = textLabelPoint;
-      if (widget->getTextForPos(pos, results))
+      QString text;
+      QFontMetrics m(textLabel->font());
+      QString lb = QString::fromUtf8(" \302\253 ");
+      QString rb = QString::fromUtf8(" \302\273 ");
+      int w = textLabel->width() - m.width(lb+rb);
+      if (! textLabelRect.isEmpty())
         {
-          QString s;
-          QFontMetrics metrics(textLabel->font());
-          int w = textLabel->width() - metrics.width(results[1]);
-          if (w <= 0)
-            s = metrics.elidedText(results[1], Qt::ElideRight, textLabel->width());
-          else
-            s = metrics.elidedText(results[0], Qt::ElideLeft, w/2) + results[1] 
-              + metrics.elidedText(results[2], Qt::ElideRight, w/2);
-          textLabel->setText(s);
+          text = widget->getTextForRect(textLabelRect);
+          text = text.replace(QRegExp("\\s+"), " ");
+          text = m.elidedText(text, Qt::ElideMiddle, w);
         }
+      else
+        {
+          QString results[3];
+          if (widget->getTextForPointer(results))
+            {
+              if (results[0].size() || results[2].size())
+                results[1] = "[" + results[1] + "]";
+              int r1 = m.width(results[1]);
+              int r2 = m.width(results[2]);
+              int r0 = qMax(0, qMax( (w-r1)/2, (w-r1-r2) ));
+              text = m.elidedText(results[0], Qt::ElideLeft, r0) + results[1];
+              text = m.elidedText(text+results[2], Qt::ElideRight, w);
+            }
+        }
+      textLabel->setWordWrap(false);
+      textLabel->setTextFormat(Qt::PlainText);
+      textLabel->setText(lb + text + rb);
     }
 }
 

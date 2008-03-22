@@ -143,7 +143,7 @@ public:
     int   width;
     int   height;
     QRect segment;
-    QPoint point;
+    QRect selected;
   };
 
   ~QDjVuWidget();
@@ -223,7 +223,7 @@ public:
   QString linkTarget(void);
   QString linkComment(void);
   QString getTextForRect(const QRect &rect);
-  bool    getTextForPos(const Position &pos, QString results[]);
+  bool    getTextForPointer(QString results[]);
   QImage  getImageForRect(const QRect &rect);
   QRect   getSegmentForRect(const QRect &rect, int pageNo);
 

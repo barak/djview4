@@ -1564,7 +1564,7 @@ QDjVuPrivate::updatePosition(const QPoint &point, bool click, bool links)
   info.height = p->height;
   info.dpi = p->dpi;
   info.segment = widget->getSegmentForRect(selectedRect, info.pageno);
-  info.point = point;
+  info.selected = selectedRect;
   emit widget->pointerPosition(pos, info);
   // check mapareas
   if (links)
@@ -3334,74 +3334,72 @@ QDjVuWidget::linkComment(void)
 
 
 /*! Determine the text around a particular point.
-  Returns true on success.
-  Produces an array of three string. The first and the third
-  represent about 80 characters of context. The second is the text
-  below the specified position. */
-
+  Produces an array of three string. The middle string
+  is the selected information. All the strings represent the line. 
+  Returns true on success. */
 bool
-QDjVuWidget::getTextForPos(const Position &pos, QString results[])
+QDjVuWidget::getTextForPointer(QString results[])
 {
+  Position &pos = priv->cursorPos;
   if (!pos.inPage || !priv->pageMap.contains(pos.pageNo))
     return false;
   Keywords &k = *keywords();
   Page *page = priv->pageMap[pos.pageNo];
   miniexp_t q = page->hiddenText;
-  miniexp_t t = page->hiddenText;
-  int n = 0;
+  miniexp_t l = page->hiddenText;
   while(miniexp_consp(q))
     {
       QRect rect;
-      miniexp_t r = miniexp_cdar(q);
-      if (miniexp_consp(r) && miniexp_symbolp(miniexp_caar(q)) && 
-          miniexp_get_rect_from_points(r, rect) )
-        {
-          if (rect.adjusted(-2,-2,2,2).contains(pos.posPage))
-            break;
-          n += strlen(miniexp_to_str(miniexp_car(r)));
-          while (n > 80 && miniexp_consp(t))
-            {
-              miniexp_t s = miniexp_nth(5, miniexp_car(t));
-              t = miniexp_cdr(t);
-              if (miniexp_stringp(s))
-                n -= strlen(miniexp_to_str(s));
-            }
-        }
+      miniexp_t type = miniexp_car(q);
+      miniexp_t r = miniexp_cdr(type);
+      if (miniexp_consp(type))
+        type = miniexp_car(type);
+      if (miniexp_consp(r) && miniexp_get_rect_from_points(r, rect)
+          && rect.adjusted(-2,-2,2,2).contains(pos.posPage) ) 
+        break;
       q = miniexp_cdr(q);
+      int sep = 0;
+      for (sep=0; sep<7; sep++)
+        if (type == k.h[sep])
+          break;
+      if (sep <= 4)
+        l = q;
     }
-  if (! miniexp_consp(q))
-    return false;
-  n = 0;
-  results[0] = results[1] = results[2] = QString();
-  int state = 0;
-  bool separator = false;
-  while (miniexp_consp(t))
+  if (miniexp_consp(q))
     {
-      miniexp_t r = miniexp_car(t);
-      miniexp_t s = miniexp_nth(5, r);
-      if (miniexp_consp(r))
-        r = miniexp_car(r);
-      if (state == 1)
-        state = 2;
-      if (miniexp_stringp(s) && separator)
-        results[state] += " ";
-      if (t == q)
-        state = 1;
-      t = miniexp_cdr(t);
-      if (miniexp_stringp(s))
+      int state = 0;
+      bool separator = false;
+      results[0] = results[1] = results[2] = QString();
+      while (miniexp_consp(l))
         {
-          separator = false;
-          results[state] += miniexp_to_qstring(s);
-          if (state == 2)
-            n += strlen(miniexp_to_str(s));
-          if (n > 80)
+          miniexp_t type = miniexp_car(l);
+          miniexp_t s = miniexp_nth(5, type);
+          bool is = miniexp_stringp(s);
+          if (miniexp_consp(type))
+            type = miniexp_car(type);
+          if (state == 1)
+            state = 2;
+          if (is && separator)
+            results[state] += " ";
+          if (l == q)
+            state = 1;
+          l = miniexp_cdr(l);
+          if (miniexp_stringp(s))
+            results[state] += miniexp_to_qstring(s);
+          int sep = 0;
+          for (sep=0; sep<7; sep++)
+            if (type == k.h[sep])
+              break;
+          if (sep <= 5)
+            separator = true;
+          else if (is)
+            separator = false;
+          if (sep <= 4 && state >= 1)
             break;
         }
-      for (int s=0; s<6; s++)
-        if (r == k.h[s])
-          separator = true;
+      return true;
     }
-  return true;
+  return false;
 }
 
 
