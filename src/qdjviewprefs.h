@@ -148,7 +148,8 @@ public:
   int        lensPower;         //!< Power of the magnification lens.
   QString    browserProgram;    //!< Preferred web browser.
   QUrl       proxyUrl;          //!< Proxy information.
-  bool       advancedFeatures;  //!< Advanced features
+  bool       advancedFeatures;  //!< Advanced features.
+  bool       showTextLabel;     //!< Show text label.
   Qt::KeyboardModifiers modifiersForLens;   //!< Keys for the lens. 
   Qt::KeyboardModifiers modifiersForSelect; //!< Keys for selecting.
   Qt::KeyboardModifiers modifiersForLinks;  //!< Keys for showing the links.

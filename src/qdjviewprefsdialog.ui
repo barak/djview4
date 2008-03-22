@@ -1057,6 +1057,13 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QCheckBox" name="textLabelCheckBox" >
+            <property name="text" >
+             <string>Show hidden text in status bar</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>

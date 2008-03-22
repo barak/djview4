@@ -3332,6 +3332,79 @@ QDjVuWidget::linkComment(void)
   return priv->currentComment;
 }
 
+
+/*! Determine the text around a particular point.
+  Returns true on success.
+  Produces an array of three string. The first and the third
+  represent about 80 characters of context. The second is the text
+  below the specified position. */
+
+bool
+QDjVuWidget::getTextForPos(const Position &pos, QString results[])
+{
+  if (!pos.inPage || !priv->pageMap.contains(pos.pageNo))
+    return false;
+  Keywords &k = *keywords();
+  Page *page = priv->pageMap[pos.pageNo];
+  miniexp_t q = page->hiddenText;
+  miniexp_t t = page->hiddenText;
+  int n = 0;
+  while(miniexp_consp(q))
+    {
+      QRect rect;
+      miniexp_t r = miniexp_cdar(q);
+      if (miniexp_consp(r) && miniexp_symbolp(miniexp_caar(q)) && 
+          miniexp_get_rect_from_points(r, rect) )
+        {
+          if (rect.adjusted(-2,-2,2,2).contains(pos.posPage))
+            break;
+          n += strlen(miniexp_to_str(miniexp_car(r)));
+          while (n > 80 && miniexp_consp(t))
+            {
+              miniexp_t s = miniexp_nth(5, miniexp_car(t));
+              t = miniexp_cdr(t);
+              if (miniexp_stringp(s))
+                n -= strlen(miniexp_to_str(s));
+            }
+        }
+      q = miniexp_cdr(q);
+    }
+  if (! miniexp_consp(q))
+    return false;
+  n = 0;
+  results[0] = results[1] = results[2] = QString();
+  int state = 0;
+  bool separator = false;
+  while (miniexp_consp(t))
+    {
+      miniexp_t r = miniexp_car(t);
+      miniexp_t s = miniexp_nth(5, r);
+      if (miniexp_consp(r))
+        r = miniexp_car(r);
+      if (state == 1)
+        state = 2;
+      if (miniexp_stringp(s) && separator)
+        results[state] += " ";
+      if (t == q)
+        state = 1;
+      t = miniexp_cdr(t);
+      if (miniexp_stringp(s))
+        {
+          separator = false;
+          results[state] += miniexp_to_qstring(s);
+          if (state == 2)
+            n += strlen(miniexp_to_str(s));
+          if (n > 80)
+            break;
+        }
+      for (int s=0; s<6; s++)
+        if (r == k.h[s])
+          separator = true;
+    }
+  return true;
+}
+
+
 /*! Returns the text spanned with a particular 
   rectangle \a target in viewport coordinates.
   Returns the empty string if no text is available. */

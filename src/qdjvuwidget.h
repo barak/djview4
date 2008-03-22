@@ -223,8 +223,10 @@ public:
   QString linkTarget(void);
   QString linkComment(void);
   QString getTextForRect(const QRect &rect);
+  bool    getTextForPos(const Position &pos, QString results[]);
   QImage  getImageForRect(const QRect &rect);
   QRect   getSegmentForRect(const QRect &rect, int pageNo);
+
   bool pageSizeKnown(int pageno) const;
   void clearHighlights(int pageno);
   void addHighlight(int pageno, int x, int y, int w, int h, QColor color);

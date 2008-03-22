@@ -271,6 +271,7 @@ protected:
   bool  performPendingScheduled;
   QTimer *textLabelTimer;
   QPoint  textLabelPoint;
+  int     textLabelPage;
   // action lists
   QList<QAction*> allActions;
   QActionGroup *zoomActionGroup;

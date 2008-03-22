@@ -921,7 +921,8 @@ QDjView::updateActions()
   actionBack->setEnabled(undoList.size() > 0);
   actionForw->setEnabled(redoList.size() > 0);
 
-  // Advanced
+  // Misc
+  textLabel->setVisible(prefs->showTextLabel);
   actionCopyOutline->setVisible(prefs->advancedFeatures);
   actionCopyAnnotation->setVisible(prefs->advancedFeatures);
   actionCopyUrl->setEnabled(pagenum > 0);
@@ -1977,7 +1978,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   textLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
   textLabel->setFrameStyle(QFrame::Panel);
   textLabel->setFrameShadow(QFrame::Sunken);
-  textLabel->setMinimumWidth(metric.width("M")*32);
+  textLabel->setMinimumWidth(metric.width("M")*48);
   statusBar->addPermanentWidget(textLabel);
   pageLabel = new QLabel(statusBar);
   pageLabel->setFont(font);
@@ -2091,6 +2092,8 @@ QDjView::closeDocument()
   documentFileName.clear();
   hasNumericalPageTitle = true;
   documentUrl.clear();
+  textLabelTimer->stop();
+  textLabelPage = -1;
   document = 0;
   if (doc)
     {
@@ -3070,23 +3073,40 @@ QDjView::pointerPosition(const Position &pos, const PageInfo &info)
           .arg(info.segment.width())
           .arg(info.segment.height());
     }
-  textLabelPoint = info.point;
-  if (textLabel->isVisible())
-    textLabelTimer->start(250);
   setPageLabelText(p);
   setMouseLabelText(m);
+  if (textLabel->isVisible() && pos.inPage)
+    {
+      textLabelPage = pos.pageNo;
+      textLabelPoint = pos.posPage;
+      textLabelTimer->start(50);
+    }
 }
 
 
 void 
 QDjView::updateTextLabel()
 {
+  textLabel->clear();
   if (textLabel->isVisible())
     {
-      QRect rect(textLabelPoint, QSize(1,1));
-      QString text = widget->getTextForRect(rect.adjusted(-4,-4,4,4));
-      text = text.replace(QRegExp("\\s+")," ");
-      textLabel->setText(text);
+      QString results[3];
+      Position pos;
+      pos.inPage = true;
+      pos.pageNo = textLabelPage;
+      pos.posPage = textLabelPoint;
+      if (widget->getTextForPos(pos, results))
+        {
+          QString s;
+          QFontMetrics metrics(textLabel->font());
+          int w = textLabel->width() - metrics.width(results[1]);
+          if (w <= 0)
+            s = metrics.elidedText(results[1], Qt::ElideRight, textLabel->width());
+          else
+            s = metrics.elidedText(results[0], Qt::ElideLeft, w/2) + results[1] 
+              + metrics.elidedText(results[2], Qt::ElideRight, w/2);
+          textLabel->setText(s);
+        }
     }
 }
 
