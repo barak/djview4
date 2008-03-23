@@ -18,6 +18,9 @@
      <property name="currentIndex" >
       <number>0</number>
      </property>
+     <property name="elideMode" >
+      <enum>Qt::ElideNone</enum>
+     </property>
      <widget class="QWidget" name="screenTab" >
       <attribute name="title" >
        <string>&amp;Screen</string>
@@ -48,6 +51,12 @@
             </property>
             <item>
              <widget class="QLabel" name="label11" >
+              <property name="sizePolicy" >
+               <sizepolicy vsizetype="Minimum" hsizetype="MinimumExpanding" >
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text" >
                <string>&lt;html>Screen color correction.&lt;br>Adjust slider until gray shades look similar.&lt;/html></string>
               </property>
