@@ -1284,12 +1284,12 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="659"/>
         <source>Copy &amp;URL</source>
         <comment>Edit|</comment>
-        <translation type="unfinished"></translation>
+        <translation>Скопировать &amp;URL</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="661"/>
         <source>Save an URL for the current page into the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить URL текущей страницы в буфер обмена.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="661"/>
@@ -1301,68 +1301,83 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="664"/>
         <source>Copy &amp;Outline</source>
         <comment>Edit|</comment>
-        <translation type="unfinished"></translation>
+        <translation>Скопировать список &amp;глав</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="666"/>
         <source>Save the djvused code for the outline into the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить в буфер обмена список глав, определенный утилитой djvused.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="668"/>
         <source>Copy &amp;Annotations</source>
         <comment>Edit|</comment>
-        <translation type="unfinished"></translation>
+        <translation>Скопировать &amp;примечания</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="670"/>
         <source>Save the djvused code for the page annotations into the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить в буфер обмена примечания, извлеченные из документа утилитой djvused.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3271"/>
         <source>Copy text into the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить текст в буфер обмена.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3272"/>
         <source>Save text into a file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить текст в файл.</translation>
+    </message>
+    <message>
+        <location filename="qdjview.cpp" line="3219"/>
+        <source>Save image into the clipboard.</source>
+        <translation type="obsolete">Сохранить изображение в буфер обмена.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3278"/>
         <source>Save image into a file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить изображение в файл.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3281"/>
         <source>Zoom the selection to fit the window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Увеличить выделенную область до размеров окна.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3287"/>
         <source>Copy URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Скопировать URL</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3289"/>
         <source>Save into the clipboard an URL that highlights the selection.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить в буфер обмена URL с информацией о выделении.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3290"/>
         <source>Copy Maparea</source>
-        <translation type="unfinished"></translation>
+        <translation>Скопировать maparea</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3293"/>
         <source>Save into the clipboard a maparea annotation expression for program djvused.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить в буфер обмена директиву примечаний maparea, соответствующую выделению, полученную c помощью утилиты djvused.</translation>
+    </message>
+    <message>
+        <location filename="qdjview.cpp" line="3220"/>
+        <source>Copy text: &quot;%1&quot;.</source>
+        <translation type="obsolete">Скопировать текст: &quot;%1&quot;.</translation>
+    </message>
+    <message>
+        <location filename="qdjview.cpp" line="3221"/>
+        <source>Save text: &quot;%1&quot;.</source>
+        <translation type="obsolete">Сохранить текст: &quot;%1&quot;.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3277"/>
         <source>Copy image into the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Скопировать изображение в буфер обмена.</translation>
     </message>
 </context>
 <context>
@@ -2523,7 +2538,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="531"/>
         <source>Display &amp;annotations</source>
-        <translation>Показывать &amp;комментарии</translation>
+        <translation>Показывать &amp;примечания</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="524"/>
@@ -2778,17 +2793,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefs.cpp" line="781"/>
         <source>&lt;html&gt;&lt;b&gt;Screen gamma correction.&lt;/b&gt;&lt;br&gt;The best color rendition is achieved by adjusting the gamma correction slider and choosing the position that makes the gray square as uniform as possible.&lt;p&gt;&lt;b&gt;Screen resolution.&lt;/b&gt;&lt;br&gt;This option forces a particular resolution instead of using the unreliable resolution advertised by the operating system. Forcing the resolution to 100 dpi matches the behavior of the djvulibre command line tools.&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;b&gt;Экранная гамма-коррекция.&lt;/b&gt;&lt;br&gt;Лучшая цветопередача достигается регулированием ползунка гамма-коррекции и выбором позиции, при которой серый квадрат кажется максимально однородным.&lt;p&gt;&lt;b&gt;Разрешение экрана.&lt;/b&gt;&lt;br&gt;Эта опция меняет разрешение на выбранное, опция полезна при неверном определении разрешения операционной системой. При выборе разрешения 100 dpi поведение совпадает с поведением утилит командной строки djvulibre.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="806"/>
         <source>&lt;html&gt;&lt;b&gt;Magnifying lens.&lt;/b&gt;&lt;br&gt;The magnifying lens appears when you depress the modifier keys specified in tab &lt;tt&gt;Keys&lt;/tt&gt;. This panel lets you choose the power and the size of the magnifying lens.&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;b&gt;Лупа.&lt;/b&gt;&lt;br&gt;Лупа появляется, когда Вы нажимаете комбинацию клавиш, определенную на вкладке &lt;tt&gt;Комбинации клавиш&lt;/tt&gt;. Эта панель позволяет выбрать размер и увеличение лупы.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="23"/>
         <source>&amp;Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Экран</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="199"/>
@@ -2798,7 +2813,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="205"/>
         <source>Force screen &amp;resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Переопределить &amp;разрешение экрана</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="234"/>
@@ -2808,37 +2823,37 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="919"/>
         <source>&amp;Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Продвинутые</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="972"/>
         <source> MB</source>
-        <translation type="unfinished"> MB</translation>
+        <translation> Мб</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1011"/>
         <source>Miscellaneous</source>
-        <translation type="unfinished"></translation>
+        <translation>Разные</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1019"/>
         <source>Manual printer color correction</source>
-        <translation type="unfinished"></translation>
+        <translation>Настроить цветовую коррекцию принтера вручную</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1032"/>
         <source>gamma=</source>
-        <translation type="unfinished">gamma=</translation>
+        <translation>гамма=</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1056"/>
         <source>Enable advanced features in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить в меню дополнительные возможности</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1063"/>
         <source>Show hidden text in status bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать скрытый текст в строке состояния</translation>
     </message>
 </context>
 <context>
@@ -2847,7 +2862,8 @@ Do you want to replace it?</source>
         <location filename="qdjviewdialogs.cpp" line="1724"/>
         <source>A file with this name already exists.
 Do you want to replace it?</source>
-        <translation>Файл с таким именем уже существует.Заменить его?</translation>
+        <translation>Файл с таким именем уже существует.
+Заменить его?</translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="1640"/>
