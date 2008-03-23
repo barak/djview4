@@ -1299,7 +1299,7 @@ Le nom «%1» n&apos;a pas de suffixe.</translation>
     <message>
         <location filename="qdjview.cpp" line="3277"/>
         <source>Copy image into the clipboard.</source>
-        <translation type="unfinished">Copie une image correspondant à la sélection.</translation>
+        <translation>Copie une image correspondant à la sélection.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3278"/>
@@ -2781,7 +2781,7 @@ Voulez-vous le remplacer?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1063"/>
         <source>Show hidden text in status bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Affiche le texte caché dans la barre d&apos;état</translation>
     </message>
 </context>
 <context>

@@ -2384,7 +2384,7 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="29"/>
         <source>Gamma</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gamma</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="62"/>
@@ -2719,7 +2719,7 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="234"/>
         <source> dpi</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> dpi</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="919"/>
@@ -2739,7 +2739,7 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1032"/>
         <source>gamma=</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">gamma=</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1056"/>

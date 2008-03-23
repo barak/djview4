@@ -1311,7 +1311,7 @@ Soubor „%1“ nemá žádnou příponu.</translation>
     <message>
         <location filename="qdjview.cpp" line="3277"/>
         <source>Copy image into the clipboard.</source>
-        <translation type="unfinished">Uloží obrázek do schránky.</translation>
+        <translation>Uloží obrázek do schránky.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3278"/>

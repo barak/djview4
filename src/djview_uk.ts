@@ -2751,7 +2751,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1032"/>
         <source>gamma=</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">gamma=</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1056"/>
