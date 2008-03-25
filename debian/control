@@ -10,12 +10,9 @@ Standards-Version: 3.7.3
 Package: djview4
 Section: graphics
 Architecture: any
+Provides: djview
 Depends: ${shlibs:Depends}, xdg-utils
 Recommends: djvulibre-plugin
 Suggests: djvulibre-bin
 Description: Viewer for the DjVu image format
  DjVu viewer djview.
- .
- DjVu is a set of compression technologies, a file format, and a
- software platform for the delivery over the Web of digital documents,
- scanned documents, and high resolution images.
