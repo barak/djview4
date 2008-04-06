@@ -3261,7 +3261,7 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
   int w = rect.width();
   int h = rect.height();
   QString s = tr("%n characters", 0, l);
-  
+  QApplication::clipboard()->setText(text, QClipboard::Selection);
   // Prepare menu
   QMenu *menu = new QMenu(this);
   QAction *copyText = menu->addAction(tr("Copy text (%1)").arg(s));
