@@ -11,6 +11,7 @@ Package: djview4
 Section: graphics
 Architecture: any
 Provides: djview
+Conflicts: djview (<= 3.5.20-5)
 Depends: ${shlibs:Depends}, xdg-utils
 Recommends: djvulibre-plugin
 Suggests: djvulibre-bin
