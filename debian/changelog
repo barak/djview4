@@ -1,4 +1,4 @@
-djview4 (4.3-3RC) unstable; urgency=low
+djview4 (4.3-3) unstable; urgency=low
 
   * Conflict with old djview containing /usr/bin/djview (closes: #473341)
   * Raise version number of qt4 needed for build (closes: #475021)
