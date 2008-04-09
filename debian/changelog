@@ -1,7 +1,8 @@
 djview4 (4.3-3RC) unstable; urgency=low
 
   * Conflict with old djview containing /usr/bin/djview (closes: #473341)
-
+  * Raise version number of qt4 needed for build (closes: #475021)
+  
  -- Barak A. Pearlmutter <bap@debian.org>  Mon, 07 Apr 2008 23:53:08 -0700
 
 djview4 (4.3-2) unstable; urgency=low
