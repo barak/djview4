@@ -1,3 +1,9 @@
+djview4 (4.3-4rc) unstable; urgency=low
+
+  * Add build dependency on pkg-config (closes: #477029)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Wed, 23 Apr 2008 07:45:17 +0100
+
 djview4 (4.3-3) unstable; urgency=low
 
   * Conflict with old djview containing /usr/bin/djview (closes: #473341)
