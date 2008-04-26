@@ -1073,7 +1073,8 @@ QDjViewPrefsDialog::modeComboChanged(int n)
       // layout
       int n = d->ui.layoutCombo->currentIndex();
       set_reset(saved.options, QDjViewPrefs::LAYOUT_CONTINUOUS, n&1);
-      set_reset(saved.options, QDjViewPrefs::LAYOUT_SIDEBYSIDE, n&2);
+      set_reset(saved.options, QDjViewPrefs::LAYOUT_SIDEBYSIDE, n>2);
+      set_reset(saved.options, QDjViewPrefs::LAYOUT_FIRSTPAGEALONE, n>4);
       // zoom
       bool okay;
       int zoomIndex = d->ui.zoomCombo->currentIndex();
@@ -1102,10 +1103,10 @@ QDjViewPrefsDialog::modeComboChanged(int n)
       d->ui.mapAreasCheckBox->setChecked(opt & QDjViewPrefs::SHOW_MAPAREAS);
       // layout
       int n = 0;
+      if (opt & QDjViewPrefs::LAYOUT_SIDEBYSIDE)
+        n += (opt & QDjViewPrefs::LAYOUT_FIRSTPAGEALONE) ? 4 : 2;
       if (opt & QDjViewPrefs::LAYOUT_CONTINUOUS)
         n += 1;
-      if (opt & QDjViewPrefs::LAYOUT_SIDEBYSIDE)
-        n += 2;
       d->ui.layoutCombo->setCurrentIndex(n);
       // zoom
       int zoomIndex = d->ui.zoomCombo->findData(QVariant(saved.zoom));

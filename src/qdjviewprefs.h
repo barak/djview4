@@ -67,21 +67,22 @@ class QDjViewPrefs : public QObject
 public:
 
   enum Option {
-    SHOW_MENUBAR        = 0x000001,
-    SHOW_TOOLBAR        = 0x000002,
-    SHOW_SIDEBAR        = 0x000004,
-    SHOW_STATUSBAR      = 0x000010,
-    SHOW_SCROLLBARS     = 0x000020,
-    SHOW_FRAME          = 0x000100,
-    SHOW_MAPAREAS       = 0x000200,
-    SHOW_MASK           = 0x000FFF, 
-    LAYOUT_CONTINUOUS   = 0x001000,
-    LAYOUT_SIDEBYSIDE   = 0x002000,
-    LAYOUT_MASK         = 0x00F000,
-    HANDLE_MOUSE        = 0x100000,
-    HANDLE_KEYBOARD     = 0x200000,
-    HANDLE_LINKS        = 0x400000,
-    HANDLE_CONTEXTMENU  = 0x800000,
+    SHOW_MENUBAR          = 0x000001,
+    SHOW_TOOLBAR          = 0x000002,
+    SHOW_SIDEBAR          = 0x000004,
+    SHOW_STATUSBAR        = 0x000010,
+    SHOW_SCROLLBARS       = 0x000020,
+    SHOW_FRAME            = 0x000100,
+    SHOW_MAPAREAS         = 0x000200,
+    SHOW_MASK             = 0x000FFF, 
+    LAYOUT_CONTINUOUS     = 0x001000,
+    LAYOUT_SIDEBYSIDE     = 0x002000,
+    LAYOUT_FIRSTPAGEALONE = 0x004000,
+    LAYOUT_MASK           = 0x00F000,
+    HANDLE_MOUSE          = 0x100000,
+    HANDLE_KEYBOARD       = 0x200000,
+    HANDLE_LINKS          = 0x400000,
+    HANDLE_CONTEXTMENU    = 0x800000,
   };
 
   enum Tool {

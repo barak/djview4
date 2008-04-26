@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>472</width>
-    <height>368</height>
+    <width>447</width>
+    <height>372</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -521,6 +521,16 @@
                 <item>
                  <property name="text" >
                   <string>Continuous double pages</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text" >
+                  <string>Double pages (first alone)</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text" >
+                  <string>Continuous double pages (first alone)</string>
                  </property>
                 </item>
                </widget>

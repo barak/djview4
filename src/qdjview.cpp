@@ -648,14 +648,22 @@ QDjView::createActions()
     << Trigger(widget, SLOT(setContinuous(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionLayoutSideBySide = makeAction(tr("Side &by side", "Layout|"), false)
+  actionLayoutSideBySide = makeAction(tr("Side &by Side", "Layout|"), false)
     << QIcon(":/images/icon_sidebyside.png")
     << QKeySequence(tr("Ctrl+F5", "Layout|SideBySide"))
     << QKeySequence(tr("F5", "Layout|SideBySide"))
     << tr("Toggle side-by-side layout mode.")
     << Trigger(widget, SLOT(setSideBySide(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
-
+  
+  actionLayoutFirstPageAlone = makeAction(tr("First Page &Alone", "Layout|"), false)
+    << QIcon(":/images/icon_firstpagealone.png")
+    << QKeySequence(tr("Ctrl+F6", "Layout|FirstPageAlone"))
+    << QKeySequence(tr("F6", "Layout|FirstPageAlone"))
+    << tr("Show the first page alone in side-by-side mode.")
+    << Trigger(widget, SLOT(setFirstPageAlone(bool)))
+    << Trigger(this, SLOT(updateActionsLater()));
+  
   actionCopyUrl = makeAction(tr("Copy &URL", "Edit|"))
     << tr("Save an URL for the current page into the clipboard.")
     << QKeySequence(tr("Ctrl+C", "Edit|CopyURL"))
@@ -668,7 +676,7 @@ QDjView::createActions()
   actionCopyAnnotation = makeAction(tr("Copy &Annotations", "Edit|"))
     << tr("Save the djvused code for the page annotations into the clipboard.")
     << Trigger(this, SLOT(performCopyAnnotation()));
-
+  
   actionAbout->setMenuRole(QAction::AboutRole);
   actionQuit->setMenuRole(QAction::QuitRole);
   actionPreferences->setMenuRole(QAction::PreferencesRole);
@@ -747,6 +755,7 @@ QDjView::createMenus()
   viewMenu->addSeparator();
   viewMenu->addAction(actionLayoutContinuous);
   viewMenu->addAction(actionLayoutSideBySide);
+  viewMenu->addAction(actionLayoutFirstPageAlone);
   viewMenu->addSeparator();
   viewMenu->addAction(actionInformation);
   viewMenu->addAction(actionMetadata);
@@ -809,6 +818,7 @@ QDjView::createMenus()
   contextMenu->addSeparator();
   contextMenu->addAction(actionLayoutContinuous);
   contextMenu->addAction(actionLayoutSideBySide);
+  contextMenu->addAction(actionLayoutFirstPageAlone);
   contextMenu->addSeparator();
   contextMenu->addAction(actionFind);
   contextMenu->addAction(actionInformation);
@@ -914,6 +924,8 @@ QDjView::updateActions()
   // Layout actions
   actionLayoutContinuous->setChecked(widget->continuous());  
   actionLayoutSideBySide->setChecked(widget->sideBySide());
+  actionLayoutFirstPageAlone->setEnabled(widget->sideBySide());
+  actionLayoutFirstPageAlone->setChecked(widget->firstPageAlone());  
   
   // UndoRedo
   undoTimer->stop();
@@ -1153,6 +1165,7 @@ QDjView::applyOptions(void)
   widget->setDisplayMapAreas(options & QDjViewPrefs::SHOW_MAPAREAS);
   widget->setContinuous(options & QDjViewPrefs::LAYOUT_CONTINUOUS);
   widget->setSideBySide(options & QDjViewPrefs::LAYOUT_SIDEBYSIDE);
+  widget->setFirstPageAlone(options & QDjViewPrefs::LAYOUT_FIRSTPAGEALONE);
   widget->enableMouse(options & QDjViewPrefs::HANDLE_MOUSE);
   widget->enableKeyboard(options & QDjViewPrefs::HANDLE_KEYBOARD);
   widget->enableHyperlink(options & QDjViewPrefs::HANDLE_LINKS);
@@ -1182,6 +1195,8 @@ QDjView::updateOptions(void)
     options |= QDjViewPrefs::LAYOUT_CONTINUOUS;
   if (widget->sideBySide())
     options |= QDjViewPrefs::LAYOUT_SIDEBYSIDE;
+  if (widget->firstPageAlone())
+    options |= QDjViewPrefs::LAYOUT_FIRSTPAGEALONE;
   if (widget->mouseEnabled())
     options |= QDjViewPrefs::HANDLE_MOUSE;    
   if (widget->keyboardEnabled())
@@ -1616,6 +1631,12 @@ QDjView::parseArgument(QString key, QString value)
     {
       if (parse_boolean(key, value, errors, okay))
         widget->setSideBySide(okay);
+    }
+  else if (key == "first_page_alone" ||
+           key == "firstpagealone") // new for djview4
+    {
+      if (parse_boolean(key, value, errors, okay))
+        widget->setFirstPageAlone(okay);
     }
   else if (key == "frame")
     {
@@ -2654,6 +2675,7 @@ QDjView::copyWindow(bool openDocument)
   otherWidget->setDisplayMode( widget->displayMode() );
   otherWidget->setContinuous( widget->continuous() );
   otherWidget->setSideBySide( widget->sideBySide() );
+  otherWidget->setFirstPageAlone( widget->firstPageAlone() );
   otherWidget->setRotation( widget->rotation() );
   otherWidget->setZoom( widget->zoom() );
   // copy document

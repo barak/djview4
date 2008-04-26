@@ -327,6 +327,7 @@ protected:
   QAction *actionViewFullScreen;
   QAction *actionLayoutContinuous;
   QAction *actionLayoutSideBySide;
+  QAction *actionLayoutFirstPageAlone;
   QShortcut *shortcutEscape;
   QAction *actionCopyUrl;
   QAction *actionCopyOutline;

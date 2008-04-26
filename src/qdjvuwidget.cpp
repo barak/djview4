@@ -677,8 +677,9 @@ public:
   Align       hAlign;
   Align       vAlign;
   bool        frame;
-  bool        sideBySide;
   bool        continuous;
+  bool        sideBySide;
+  bool        firstPageAlone;
   QBrush      borderBrush;
   // layout
   int          layoutChange;    // scheduled changes
@@ -815,6 +816,7 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   vAlign = ALIGN_CENTER;
   sideBySide = false;
   continuous = false;
+  firstPageAlone = false;
   borderBrush = QBrush(Qt::lightGray);
   unknownSize = QSize(128,128);
   borderSize = 8;
@@ -931,16 +933,21 @@ QDjVuPrivate::makeLayout()
               movePos.pageNo = widget->page();
             }
           int loPage = movePos.pageNo;
-          int hiPage = qMin(loPage+1, numPages);
+          int hiPage = qMin(numPages, loPage+1);
           if (continuous)
             {
               loPage = 0;
               hiPage = numPages;
             }
+          else if (sideBySide && firstPageAlone)
+            {
+              loPage = qMax(0, (loPage & 1) ? loPage : loPage-1);
+              hiPage = qMin(numPages, (loPage & 1) ? loPage+2 : loPage+1);
+            }
           else if (sideBySide)
             {
-              loPage = loPage & ~1; // even
-              hiPage = qMin(loPage+2, numPages);
+              loPage = qMax(0, (loPage & 1) ? loPage-1 : loPage);
+              hiPage = qMin(numPages, loPage+2);
             }
           for (int i=loPage; i<hiPage; i++)
             {
@@ -1083,26 +1090,28 @@ QDjVuPrivate::makeLayout()
               // continuous side-by-side pages
               int wLeft = 0;
               int wTotal = 0;
-              QListIterator<Page*> iter(pageLayout);
-              while(iter.hasNext())
+              int k = 0;
+              while(k < pageLayout.size())
                 {
-                  Page *lp = iter.next();
+                  Page *lp = pageLayout[k++];
                   int lw = lp->rect.width();
                   wLeft = qMax(wLeft, lw);
                   wTotal = qMax(wTotal, lw);
-                  if (iter.hasNext())
+                  if (k < pageLayout.size() && (k > 1 || !firstPageAlone))
                     {
-                      Page *rp = iter.next();
+                      Page *rp = pageLayout[k++];
                       int rw = rp->rect.width();
                       wTotal = qMax(wTotal, lw+rw+separatorSize);
                     }
                 }
               int y = borderSize;
-              iter = pageLayout;
-              while(iter.hasNext())
+              k = 0;
+              while(k < pageLayout.size())
                 {
-                  Page *lp = iter.next();
-                  Page *rp = (iter.hasNext()) ? iter.next() : lp;
+                  Page *lp = pageLayout[k++];
+                  Page *rp = lp;
+                  if (k < pageLayout.size() && (k > 1 || !firstPageAlone))
+                    rp = pageLayout[k++];
                   int h = qMax(lp->rect.height(), rp->rect.height());
                   int ly, ry, lx, rx;
                   ly = ry = y;
@@ -1122,6 +1131,9 @@ QDjVuPrivate::makeLayout()
                     else
                       rx = wTotal + borderSize - rp->rect.width();
                     lx = rx - separatorSize - lp->rect.width();
+                  } else if (firstPageAlone && k == 1) {
+                    lx = borderSize + wLeft + (separatorSize - lp->rect.width()) / 2;
+                    rx = lx;
                   } else {
                     lx = borderSize + wLeft - lp->rect.width();
                     rx = borderSize + wLeft + separatorSize;
@@ -2211,6 +2223,28 @@ QDjVuWidget::setSideBySide(bool b)
     {
       priv->sideBySide = b;
       priv->changeLayout(CHANGE_PAGES|UPDATE_ALL);
+    }
+}
+
+/*! \property QDjVuWidget::firstPageAlone
+  Determine whether the first page must be show alone when
+  multipage documents are displayed side-by-side.
+  Default: \a false. */
+
+bool 
+QDjVuWidget::firstPageAlone(void) const
+{
+  return priv->firstPageAlone;
+}
+
+void 
+QDjVuWidget::setFirstPageAlone(bool b)
+{
+  if (b != priv->firstPageAlone)
+    {
+      priv->firstPageAlone = b;
+      if (priv->sideBySide)
+        priv->changeLayout(CHANGE_PAGES|UPDATE_ALL);
     }
 }
 

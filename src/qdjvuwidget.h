@@ -57,10 +57,10 @@ class QDjVuWidget : public QAbstractScrollArea
              READ horizAlign WRITE setHorizAlign)
   Q_PROPERTY(Align vertAlign 
              READ vertAlign WRITE setVertAlign)
-  Q_PROPERTY(bool sideBySide 
-             READ sideBySide WRITE setSideBySide)
   Q_PROPERTY(bool continuous 
              READ continuous WRITE setContinuous)
+  Q_PROPERTY(bool firstPageAlone 
+             READ firstPageAlone WRITE setFirstPageAlone)
   Q_PROPERTY(QBrush borderBrush 
              READ borderBrush WRITE setBorderBrush)
   Q_PROPERTY(int borderSize 
@@ -165,8 +165,9 @@ public:
   bool displayFrame(void) const;
   Align horizAlign(void) const;
   Align vertAlign(void) const;
-  bool sideBySide(void) const;
   bool continuous(void) const;
+  bool sideBySide(void) const;
+  bool firstPageAlone(void) const;
   QBrush borderBrush(void) const;
   int borderSize(void) const;
   QMenu* contextMenu(void) const;
@@ -194,8 +195,9 @@ public slots:
   void setDisplayFrame(bool);
   void setHorizAlign(Align);
   void setVertAlign(Align);
-  void setSideBySide(bool);
   void setContinuous(bool);
+  void setSideBySide(bool);
+  void setFirstPageAlone(bool);
   void setBorderBrush(QBrush);
   void setBorderSize(int);
   void setContextMenu(QMenu*);
