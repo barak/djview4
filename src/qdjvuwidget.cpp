@@ -3299,6 +3299,7 @@ QDjVuPrivate::showTransientMapAreas(bool b)
         for (int i=0; i<p->mapAreas.size(); i++)
           {
             MapArea &area = p->mapAreas[i];
+            area.maybeRotate(p);
             if (area.hasTransient())
               area.update(widget->viewport(), p->mapper, 
                           visibleRect.topLeft() );
