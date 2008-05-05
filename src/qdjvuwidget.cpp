@@ -3377,8 +3377,17 @@ QDjVuWidget::getTextForPointer(QString results[])
   Position &pos = priv->cursorPos;
   if (!pos.inPage || !priv->pageMap.contains(pos.pageNo))
     return false;
-  Keywords &k = *keywords();
   Page *page = priv->pageMap[pos.pageNo];
+  // map point
+  int rot = page->initialRot;
+  int w = (rot&1) ? page->height : page->width;
+  int h = (rot&1) ? page->width : page->height;
+  QRectMapper mapper;
+  mapper.setMap(QRect(0,0,w,h), page->rect);
+  mapper.setTransform(rot + priv->rotation, false, true);
+  QPoint posRot = mapper.unMapped(pos.posView + page->rect.topLeft());
+  // search zones
+  Keywords &k = *keywords();
   miniexp_t q = page->hiddenText;
   miniexp_t l = page->hiddenText;
   while(miniexp_consp(q))
@@ -3389,7 +3398,7 @@ QDjVuWidget::getTextForPointer(QString results[])
       if (miniexp_consp(type))
         type = miniexp_car(type);
       if (miniexp_consp(r) && miniexp_get_rect_from_points(r, rect)
-          && rect.adjusted(-2,-2,2,2).contains(pos.posPage) ) 
+          && rect.adjusted(-2,-2,2,2).contains(posRot) ) 
         break;
       q = miniexp_cdr(q);
       int sep = 0;
