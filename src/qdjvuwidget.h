@@ -231,7 +231,8 @@ public:
 
   bool pageSizeKnown(int pageno) const;
   void clearHighlights(int pageno);
-  void addHighlight(int pageno, int x, int y, int w, int h, QColor color);
+  void addHighlight(int pageno, int x, int y, int w, int h, 
+                    QColor color, bool rc=false);
   
 protected:
   virtual bool viewportEvent (QEvent *event);

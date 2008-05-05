@@ -1205,7 +1205,7 @@ QDjViewFind::Model::doHighlights(int pageno)
               if (miniexp_get_rect(exp, rect))
                 djvu->addHighlight(pageno, rect.x(), rect.y(),
                                    rect.width(), rect.height(),
-                                   color );
+                                   color, true );
             }
         }
     }

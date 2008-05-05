@@ -572,6 +572,7 @@ struct MapArea
   bool          pushpin;
   bool          lineArrow;
   unsigned char lineWidth;
+  bool          rectNeedsRotation;
 
   MapArea();
   bool error(const char *err, int pageno, miniexp_t info);
@@ -581,6 +582,7 @@ struct MapArea
   bool hasTransient();
   bool hasPermanent();
   bool contains(const QPoint &p);
+  void maybeRotate(struct Page *p);
   QPainterPath contour(QRectMapper &m, QPoint &offset);
   void update(QWidget *w, QRectMapper &m, QPoint offset);
   void paintBorder(QPaintDevice *w, QRectMapper &m, QPoint offset);
@@ -2664,6 +2666,7 @@ MapArea::MapArea()
   lineWidth = 1;
   foregroundColor = Qt::black;
   pushpin = false;
+  rectNeedsRotation = false;
 }
 
 bool
@@ -2903,6 +2906,25 @@ MapArea::hasPermanent()
       || areaType == k.pushpin )
     return true;
   return false;
+}
+
+void 
+MapArea::maybeRotate(struct Page *p)
+{
+  if (rectNeedsRotation && p->dpi >= 0)
+    {
+      int rot = p->initialRot;
+      if (rot > 0)
+        {
+          int rw = (rot&1) ? p->height : p->width;
+          int rh = (rot&1) ? p->width : p->height;
+          QRectMapper mapper;
+          mapper.setMap(QRect(0,0,rw,rh), QRect(0,0,p->width,p->height));
+          mapper.setTransform(rot, false, false);
+          areaRect = mapper.mapped(areaRect);
+        }
+      rectNeedsRotation = false;
+    }
 }
 
 QPainterPath 
@@ -3218,6 +3240,7 @@ QDjVuPrivate::checkCurrentMapArea(bool forceno)
         for (int i=0; i<p->mapAreas.size(); i++)
           {
             MapArea &area = p->mapAreas[i];
+            area.maybeRotate(p);
             if (area.expr && 
                 area.areaRect.contains(pos.posPage) &&
                 area.contains(pos.posPage) )
@@ -3308,10 +3331,13 @@ QDjVuWidget::clearHighlights(int pageno)
 }
 
 /*! Add a new highlight rectangle with color \a color,
-  at position \a x, \a y, \a w, \a h on page \a pageno. */
+  at position \a x, \a y, \a w, \a h on page \a pageno. 
+  Argument \a rc indicates whether coordinates are
+  rotated (like annotations) or unrotated (like text). */
 
 void 
-QDjVuWidget::addHighlight(int pageno, int x, int y, int w, int h, QColor color)
+QDjVuWidget::addHighlight(int pageno, int x, int y, int w, int h, 
+                          QColor color, bool rc)
 {
   if (pageno>=0 && pageno<priv->pageData.size() && w>0 && h>0)
     {
@@ -3324,6 +3350,8 @@ QDjVuWidget::addHighlight(int pageno, int x, int y, int w, int h, QColor color)
       area.hiliteColor.setAlpha(255);
       area.hiliteOpacity = color.alpha() * 200 / 255;
       area.borderType = miniexp_nil;
+      area.rectNeedsRotation = rc;
+      area.maybeRotate(p);
       p->mapAreas << area;
       priv->pixelCache.clear();
       if (priv->pageMap.contains(pageno) && p->dpi>0)
