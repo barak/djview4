@@ -585,8 +585,13 @@ QDjViewThumbnails::Model::makeIcon(int pageno) const
       int w = size;
       int h = size;
       QImage img(size, size, QImage::Format_RGB32);
-      if (ddjvu_thumbnail_render(*doc, pageno, &w, &h, format, 
-                                 img.bytesPerLine(), (char*)img.bits() ) )
+      int status = ddjvu_thumbnail_status(*doc, pageno, 0);
+      if (status == DDJVU_JOB_NOTSTARTED)
+        {
+          const_cast<Model*>(this)->scheduleRefresh();
+        }
+      else if (ddjvu_thumbnail_render(*doc, pageno, &w, &h, format, 
+                                      img.bytesPerLine(), (char*)img.bits() ))
         {
           QPixmap pixmap(size,size);
           pixmap.fill();
