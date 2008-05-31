@@ -496,7 +496,7 @@ QDjViewThumbnails::Model::scheduleRefresh()
 }
 
 
-void
+void 
 QDjViewThumbnails::Model::refresh()
 {
   QDjVuDocument *doc = djview->getDocument();
