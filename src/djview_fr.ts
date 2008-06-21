@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="fr">
-<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -1922,37 +1921,37 @@ Voulez-vous le remplacer?</translation>
 <context>
     <name>QDjViewFind</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1524"/>
+        <location filename="qdjviewsidebar.cpp" line="1529"/>
         <source>Erase text</source>
         <translation>Efface le texte</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1526"/>
+        <location filename="qdjviewsidebar.cpp" line="1531"/>
         <source>Case sensitive</source>
         <translation>Même casse</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1529"/>
+        <location filename="qdjviewsidebar.cpp" line="1534"/>
         <source>Words only</source>
         <translation>Mots entiers seulement</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1550"/>
+        <location filename="qdjviewsidebar.cpp" line="1555"/>
         <source>Find Previous (Shift+F3) </source>
         <translation> Précédent (Maj+F3)</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1554"/>
+        <location filename="qdjviewsidebar.cpp" line="1559"/>
         <source>Find Next (F3) </source>
         <translation> Suivant (F3)</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1557"/>
+        <location filename="qdjviewsidebar.cpp" line="1562"/>
         <source>Options</source>
         <translation>Options</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1607"/>
+        <location filename="qdjviewsidebar.cpp" line="1612"/>
         <source>&lt;html&gt;&lt;b&gt;Finding text.&lt;/b&gt;&lt;br/&gt; Search hits appear progressively as soon as you type a search string. Typing enter jumps to the next hit. To move to the previous or next hit, you can also use the arrow buttons or the shortcuts &lt;tt&gt;F3&lt;/tt&gt; or &lt;tt&gt;Shift-F3&lt;/tt&gt;. You can also double click a page name. Use the &lt;tt&gt;Options&lt;/tt&gt; menu to search words only or to specify the case sensitivity.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Recherche de texte.&lt;/b&gt;&lt;br/&gt; Les occurrences du texte à rechercher apparaissent progressivement pendant sa saisie. La touche «Entrée» montre la prochaine occurrence. Pour aller à l&apos;occurrence précédente ou suivante, utilisez les boutons fléchés ou les touches &lt;tt&gt;F3&lt;/tt&gt; et &lt;tt&gt;Maj+F3&lt;/tt&gt;. Vous pouvez aussi double cliquer un nom de page. Le menu &lt;tt&gt;Options&lt;/tt&gt; permet de chercher des mots entiers ou de spécifier la casse.&lt;/html&gt;</translation>
     </message>
@@ -1960,37 +1959,37 @@ Voulez-vous le remplacer?</translation>
 <context>
     <name>QDjViewFind::Model</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="938"/>
+        <location filename="qdjviewsidebar.cpp" line="943"/>
         <source>1 hit</source>
         <translation>1 occurrence</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1007"/>
+        <location filename="qdjviewsidebar.cpp" line="1012"/>
         <source>Page %1 (1 hit)</source>
         <translation>Page %1 (1 occurrence)</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1296"/>
+        <location filename="qdjviewsidebar.cpp" line="1301"/>
         <source>Searching page %1 (waiting for data.)</source>
         <translation>Page %1 (attente des données.)</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1308"/>
+        <location filename="qdjviewsidebar.cpp" line="1313"/>
         <source>Searching page %1.</source>
         <translation>Page %1.</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1343"/>
+        <location filename="qdjviewsidebar.cpp" line="1348"/>
         <source>No hits!</source>
         <translation>Rien!</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1350"/>
+        <location filename="qdjviewsidebar.cpp" line="1355"/>
         <source>&lt;html&gt;Document is not searchable. No page contains information about its textual content.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Recherche de texte impossible. Ce document ne contient pas d&apos;information sur le texte.&lt;/html&gt;</translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjviewsidebar.cpp" line="939"/>
+        <location filename="qdjviewsidebar.cpp" line="944"/>
         <source>%n hits</source>
         <translation>
             <numerusform>%n occurrence</numerusform>
@@ -1998,7 +1997,7 @@ Voulez-vous le remplacer?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjviewsidebar.cpp" line="1009"/>
+        <location filename="qdjviewsidebar.cpp" line="1014"/>
         <source>Page %1 (%n hits)</source>
         <translation>
             <numerusform>Page %1 (%n occurence)</numerusform>
@@ -3087,47 +3086,47 @@ Voulez-vous le remplacer?</translation>
 <context>
     <name>QDjViewThumbnails</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="685"/>
+        <location filename="qdjviewsidebar.cpp" line="690"/>
         <source>Tiny</source>
         <comment>thumbnail menu</comment>
         <translation>Minuscules</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="690"/>
+        <location filename="qdjviewsidebar.cpp" line="695"/>
         <source>Small</source>
         <comment>thumbnail menu</comment>
         <translation>Petites</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="695"/>
+        <location filename="qdjviewsidebar.cpp" line="700"/>
         <source>Medium</source>
         <comment>thumbnail menu</comment>
         <translation>Moyennes</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="700"/>
+        <location filename="qdjviewsidebar.cpp" line="705"/>
         <source>Large</source>
         <comment>thumbnail menu</comment>
         <translation>Grandes</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="706"/>
+        <location filename="qdjviewsidebar.cpp" line="711"/>
         <source>Smart</source>
         <comment>thumbnail menu</comment>
         <translation>Calcul Intelligent</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="713"/>
+        <location filename="qdjviewsidebar.cpp" line="718"/>
         <source>Control Left Mouse Button</source>
         <translation>Control et bouton gauche de la souris</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="715"/>
+        <location filename="qdjviewsidebar.cpp" line="720"/>
         <source>Right Mouse Button</source>
         <translation>Bouton droit de la souris</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="723"/>
+        <location filename="qdjviewsidebar.cpp" line="728"/>
         <source>&lt;html&gt;&lt;b&gt;Document thumbnails.&lt;/b&gt;&lt;br/&gt; This panel display thumbnails for the document pages. Double click a thumbnail to jump to the selected page. %1 to change the thumbnail size or the refresh mode. The smart refresh mode only computes thumbnails when the page data is present (displayed or cached.)&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Vignettes.&lt;/b&gt;&lt;br/&gt; Ce panneau montre des vignettes représentant les pages du document. Double cliquer une vignette pour voir une page. %1 pour afficher un menu permettant de changer la taille des vignettes et leur mode de calcul. Le mode de calcul intelligent ne calcule que les vignettes pour lesquelles les données sont disponibles en mémoire.&lt;/html&gt;</translation>
     </message>

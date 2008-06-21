@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ru">
-<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -1948,37 +1947,37 @@ Do you want to replace it?</source>
 <context>
     <name>QDjViewFind</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1526"/>
+        <location filename="qdjviewsidebar.cpp" line="1531"/>
         <source>Case sensitive</source>
         <translation>С учетом регистра</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1524"/>
+        <location filename="qdjviewsidebar.cpp" line="1529"/>
         <source>Erase text</source>
         <translation>Очистить текст</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1554"/>
+        <location filename="qdjviewsidebar.cpp" line="1559"/>
         <source>Find Next (F3) </source>
         <translation>Найти далее (F3) </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1550"/>
+        <location filename="qdjviewsidebar.cpp" line="1555"/>
         <source>Find Previous (Shift+F3) </source>
         <translation>Найти ранее (Shift+F3) </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1607"/>
+        <location filename="qdjviewsidebar.cpp" line="1612"/>
         <source>&lt;html&gt;&lt;b&gt;Finding text.&lt;/b&gt;&lt;br/&gt; Search hits appear progressively as soon as you type a search string. Typing enter jumps to the next hit. To move to the previous or next hit, you can also use the arrow buttons or the shortcuts &lt;tt&gt;F3&lt;/tt&gt; or &lt;tt&gt;Shift-F3&lt;/tt&gt;. You can also double click a page name. Use the &lt;tt&gt;Options&lt;/tt&gt; menu to search words only or to specify the case sensitivity.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Поиск текста.&lt;/b&gt;&lt;br/&gt; Результаты поиска появляются постепенно по мере набора. Нажмите Enter для перехода к следующему результату. Используйте кнопки со стрелками или &lt;tt&gt;F3&lt;/tt&gt; и &lt;tt&gt;Shift-F3&lt;/tt&gt; для перехода к следующему/предыдущему результату. Вы также можете использовать двойной щелчок на названии страницы. В меню &lt;tt&gt;Настройки&lt;/tt&gt; можно настроить поиск только слов и чувствительность к регистру.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1557"/>
+        <location filename="qdjviewsidebar.cpp" line="1562"/>
         <source>Options</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1529"/>
+        <location filename="qdjviewsidebar.cpp" line="1534"/>
         <source>Words only</source>
         <translation>Только слова</translation>
     </message>
@@ -1986,7 +1985,7 @@ Do you want to replace it?</source>
 <context>
     <name>QDjViewFind::Model</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="938"/>
+        <location filename="qdjviewsidebar.cpp" line="943"/>
         <source>1 hit</source>
         <translation>1 результат</translation>
     </message>
@@ -1997,7 +1996,7 @@ Do you want to replace it?</source>
         <translation type="obsolete">%1 совпадений</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1350"/>
+        <location filename="qdjviewsidebar.cpp" line="1355"/>
         <source>&lt;html&gt;Document is not searchable. No page contains information about its textual content.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Поиск в документе невозможен. Ни одна из страниц не сожержит текстовой информации.&lt;/html&gt;</translation>
     </message>
@@ -2012,12 +2011,12 @@ Do you want to replace it?</source>
         </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1343"/>
+        <location filename="qdjviewsidebar.cpp" line="1348"/>
         <source>No hits!</source>
         <translation>Нет совпадений!</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1007"/>
+        <location filename="qdjviewsidebar.cpp" line="1012"/>
         <source>Page %1 (1 hit)</source>
         <translation>Page %1 (1 результат)</translation>
     </message>
@@ -2038,17 +2037,17 @@ Do you want to replace it?</source>
         </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1308"/>
+        <location filename="qdjviewsidebar.cpp" line="1313"/>
         <source>Searching page %1.</source>
         <translation>Поиск на странице %1.</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1296"/>
+        <location filename="qdjviewsidebar.cpp" line="1301"/>
         <source>Searching page %1 (waiting for data.)</source>
         <translation>Поиск на странице %1 (ожидание данных)</translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjviewsidebar.cpp" line="939"/>
+        <location filename="qdjviewsidebar.cpp" line="944"/>
         <source>%n hits</source>
         <translation>
             <numerusform>%n совпадение</numerusform>
@@ -2057,7 +2056,7 @@ Do you want to replace it?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjviewsidebar.cpp" line="1009"/>
+        <location filename="qdjviewsidebar.cpp" line="1014"/>
         <source>Page %1 (%n hits)</source>
         <translation>
             <numerusform>Страница %1 (%n результат)</numerusform>
@@ -3163,46 +3162,46 @@ Do you want to replace it?</source>
 <context>
     <name>QDjViewThumbnails</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="713"/>
+        <location filename="qdjviewsidebar.cpp" line="718"/>
         <source>Control Left Mouse Button</source>
         <translation>Control + левую кнопку мыши</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="723"/>
+        <location filename="qdjviewsidebar.cpp" line="728"/>
         <source>&lt;html&gt;&lt;b&gt;Document thumbnails.&lt;/b&gt;&lt;br/&gt; This panel display thumbnails for the document pages. Double click a thumbnail to jump to the selected page. %1 to change the thumbnail size or the refresh mode. The smart refresh mode only computes thumbnails when the page data is present (displayed or cached.)&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Макеты страниц документа.&lt;/b&gt;&lt;br/&gt; Эта панель отображает макеты страниц документа. Двойной щелчок перемещает к выбранной странице. Используйте %1, чтобы изменить размер макетов или режим обновления. В умном режиме обновления макеты показываются только для тех страниц, которые либо отображаются, либо кэшированы.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="700"/>
+        <location filename="qdjviewsidebar.cpp" line="705"/>
         <source>Large</source>
         <comment>thumbnail menu</comment>
         <translation>Большие</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="695"/>
+        <location filename="qdjviewsidebar.cpp" line="700"/>
         <source>Medium</source>
         <comment>thumbnail menu</comment>
         <translation>Средние</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="715"/>
+        <location filename="qdjviewsidebar.cpp" line="720"/>
         <source>Right Mouse Button</source>
         <translation>правую кнопку мыши</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="690"/>
+        <location filename="qdjviewsidebar.cpp" line="695"/>
         <source>Small</source>
         <comment>thumbnail menu</comment>
         <translation>Маленькие</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="706"/>
+        <location filename="qdjviewsidebar.cpp" line="711"/>
         <source>Smart</source>
         <comment>thumbnail menu</comment>
         <translation>Умные</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="685"/>
+        <location filename="qdjviewsidebar.cpp" line="690"/>
         <source>Tiny</source>
         <comment>thumbnail menu</comment>
         <translation>Крошечные</translation>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="de">
-<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -1905,37 +1904,37 @@ Soll die Datei überschrieben werden?</translation>
 <context>
     <name>QDjViewFind</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1524"/>
+        <location filename="qdjviewsidebar.cpp" line="1529"/>
         <source>Erase text</source>
         <translation>Lösche Text</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1526"/>
+        <location filename="qdjviewsidebar.cpp" line="1531"/>
         <source>Case sensitive</source>
         <translation>Groß- und Kleinschreibung beachten</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1529"/>
+        <location filename="qdjviewsidebar.cpp" line="1534"/>
         <source>Words only</source>
         <translation>&amp;Nur ganze Wörter</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1550"/>
+        <location filename="qdjviewsidebar.cpp" line="1555"/>
         <source>Find Previous (Shift+F3) </source>
         <translation>Rück&amp;wärts suchen (Shift+F3) </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1554"/>
+        <location filename="qdjviewsidebar.cpp" line="1559"/>
         <source>Find Next (F3) </source>
         <translation>Weitersuchen (F3) </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1557"/>
+        <location filename="qdjviewsidebar.cpp" line="1562"/>
         <source>Options</source>
         <translation>Optionen</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1607"/>
+        <location filename="qdjviewsidebar.cpp" line="1612"/>
         <source>&lt;html&gt;&lt;b&gt;Finding text.&lt;/b&gt;&lt;br/&gt; Search hits appear progressively as soon as you type a search string. Typing enter jumps to the next hit. To move to the previous or next hit, you can also use the arrow buttons or the shortcuts &lt;tt&gt;F3&lt;/tt&gt; or &lt;tt&gt;Shift-F3&lt;/tt&gt;. You can also double click a page name. Use the &lt;tt&gt;Options&lt;/tt&gt; menu to search words only or to specify the case sensitivity.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Text Suchen.&lt;/b&gt;&lt;br/&gt; Die Treffer der Suche werden sofort angezeigt. Durch drücken der Retruntaste gelangt man zum nächsten Treffer. Zum Navigieren können ebenfalls die Pfeiltasten, bzw &lt;tt&gt;F3&lt;/tt&gt; und &lt;tt&gt;Shift-F3&lt;/tt&gt; genutzt werden. Ein Doppelklick auf dem Seitennamen würde auch funktionieren. Mit Hilfe der Optionen können die Suchparameter angepasst werden.&lt;/html&gt;</translation>
     </message>
@@ -1943,37 +1942,37 @@ Soll die Datei überschrieben werden?</translation>
 <context>
     <name>QDjViewFind::Model</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="938"/>
+        <location filename="qdjviewsidebar.cpp" line="943"/>
         <source>1 hit</source>
         <translation>1 Treffer</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1007"/>
+        <location filename="qdjviewsidebar.cpp" line="1012"/>
         <source>Page %1 (1 hit)</source>
         <translation>Seite %1 (1 Treffer)</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1296"/>
+        <location filename="qdjviewsidebar.cpp" line="1301"/>
         <source>Searching page %1 (waiting for data.)</source>
         <translation>Durchsuche Seite %1 (warte auf Daten.)</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1308"/>
+        <location filename="qdjviewsidebar.cpp" line="1313"/>
         <source>Searching page %1.</source>
         <translation>Durchsuche Seite %1.</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1343"/>
+        <location filename="qdjviewsidebar.cpp" line="1348"/>
         <source>No hits!</source>
         <translation>Keine Treffer!</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1350"/>
+        <location filename="qdjviewsidebar.cpp" line="1355"/>
         <source>&lt;html&gt;Document is not searchable. No page contains information about its textual content.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Dokument ist nicht durchsuchbar. Keine Seite enthält Informationen über seinen textlichen Inhalt.&lt;/html&gt;</translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjviewsidebar.cpp" line="939"/>
+        <location filename="qdjviewsidebar.cpp" line="944"/>
         <source>%n hits</source>
         <translation>
             <numerusform>%n Treffer</numerusform>
@@ -1981,7 +1980,7 @@ Soll die Datei überschrieben werden?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjviewsidebar.cpp" line="1009"/>
+        <location filename="qdjviewsidebar.cpp" line="1014"/>
         <source>Page %1 (%n hits)</source>
         <translation>
             <numerusform>Seite %1 (%n Treffer)</numerusform>
@@ -3065,47 +3064,47 @@ Soll die Datei überschrieben werden?</translation>
 <context>
     <name>QDjViewThumbnails</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="685"/>
+        <location filename="qdjviewsidebar.cpp" line="690"/>
         <source>Tiny</source>
         <comment>thumbnail menu</comment>
         <translation>Mini</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="690"/>
+        <location filename="qdjviewsidebar.cpp" line="695"/>
         <source>Small</source>
         <comment>thumbnail menu</comment>
         <translation>Klein</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="695"/>
+        <location filename="qdjviewsidebar.cpp" line="700"/>
         <source>Medium</source>
         <comment>thumbnail menu</comment>
         <translation>Mittel</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="700"/>
+        <location filename="qdjviewsidebar.cpp" line="705"/>
         <source>Large</source>
         <comment>thumbnail menu</comment>
         <translation>Groß</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="706"/>
+        <location filename="qdjviewsidebar.cpp" line="711"/>
         <source>Smart</source>
         <comment>thumbnail menu</comment>
         <translation>Elegant</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="713"/>
+        <location filename="qdjviewsidebar.cpp" line="718"/>
         <source>Control Left Mouse Button</source>
         <translation>Steuerung linke Maustaste</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="715"/>
+        <location filename="qdjviewsidebar.cpp" line="720"/>
         <source>Right Mouse Button</source>
         <translation>Rechte Maustaste</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="723"/>
+        <location filename="qdjviewsidebar.cpp" line="728"/>
         <source>&lt;html&gt;&lt;b&gt;Document thumbnails.&lt;/b&gt;&lt;br/&gt; This panel display thumbnails for the document pages. Double click a thumbnail to jump to the selected page. %1 to change the thumbnail size or the refresh mode. The smart refresh mode only computes thumbnails when the page data is present (displayed or cached.)&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Vorschaubilder.&lt;/b&gt;&lt;br/&gt; Hier werden die Vorschaubilder der Seiten des Dokumentes gezeigt. Ein Doppelklick springt zu der jeweiligen Seite. %1 ermöglicht die Einstellung der Größe, bzw. des Aktualisierungsmodus. Der &apos;Elegant&apos; Modus erzeugt die Vorschaubilder nur, wenn die Daten der Seite vorhanden sind (angezeigt oder im Zwischenspeicher.)&lt;/html&gt;</translation>
     </message>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="cs_CZ">
-<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -1924,37 +1923,37 @@ Chcete jej nahradit?</translation>
 <context>
     <name>QDjViewFind</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1524"/>
+        <location filename="qdjviewsidebar.cpp" line="1529"/>
         <source>Erase text</source>
         <translation>Smazat text</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1526"/>
+        <location filename="qdjviewsidebar.cpp" line="1531"/>
         <source>Case sensitive</source>
         <translation>Rozlišovat velikost písmen</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1529"/>
+        <location filename="qdjviewsidebar.cpp" line="1534"/>
         <source>Words only</source>
         <translation>Jen celé slova</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1550"/>
+        <location filename="qdjviewsidebar.cpp" line="1555"/>
         <source>Find Previous (Shift+F3) </source>
         <translation>Najít předchozí (Shift+F3) </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1554"/>
+        <location filename="qdjviewsidebar.cpp" line="1559"/>
         <source>Find Next (F3) </source>
         <translation>Najít další (F3) </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1557"/>
+        <location filename="qdjviewsidebar.cpp" line="1562"/>
         <source>Options</source>
         <translation>Možnosti</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1607"/>
+        <location filename="qdjviewsidebar.cpp" line="1612"/>
         <source>&lt;html&gt;&lt;b&gt;Finding text.&lt;/b&gt;&lt;br/&gt; Search hits appear progressively as soon as you type a search string. Typing enter jumps to the next hit. To move to the previous or next hit, you can also use the arrow buttons or the shortcuts &lt;tt&gt;F3&lt;/tt&gt; or &lt;tt&gt;Shift-F3&lt;/tt&gt;. You can also double click a page name. Use the &lt;tt&gt;Options&lt;/tt&gt; menu to search words only or to specify the case sensitivity.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Najít
             text.&lt;/b&gt;&lt;br/&gt;Nalezené řetězce se objevují již
@@ -1967,37 +1966,37 @@ Chcete jej nahradit?</translation>
 <context>
     <name>QDjViewFind::Model</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="938"/>
+        <location filename="qdjviewsidebar.cpp" line="943"/>
         <source>1 hit</source>
         <translation>1 shoda</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1296"/>
+        <location filename="qdjviewsidebar.cpp" line="1301"/>
         <source>Searching page %1 (waiting for data.)</source>
         <translation>Prohledávám stránku %1 (čekám na data)</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1308"/>
+        <location filename="qdjviewsidebar.cpp" line="1313"/>
         <source>Searching page %1.</source>
         <translation>Prohledávám stránku %1.</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1343"/>
+        <location filename="qdjviewsidebar.cpp" line="1348"/>
         <source>No hits!</source>
         <translation>Nic nenalezeno!</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1350"/>
+        <location filename="qdjviewsidebar.cpp" line="1355"/>
         <source>&lt;html&gt;Document is not searchable. No page contains information about its textual content.&lt;/html&gt;</source>
         <translation>&lt;html&gt;V dokument nelze hledat. Žádná stránka neobsahuje informace o svém textovém obsahu.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1007"/>
+        <location filename="qdjviewsidebar.cpp" line="1012"/>
         <source>Page %1 (1 hit)</source>
         <translation>Strana %1 (1 shoda)</translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjviewsidebar.cpp" line="939"/>
+        <location filename="qdjviewsidebar.cpp" line="944"/>
         <source>%n hits</source>
         <translation>
             <numerusform>%n shoda</numerusform>
@@ -2006,7 +2005,7 @@ Chcete jej nahradit?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjviewsidebar.cpp" line="1009"/>
+        <location filename="qdjviewsidebar.cpp" line="1014"/>
         <source>Page %1 (%n hits)</source>
         <translation>
             <numerusform>Strana %1 (%n shoda)</numerusform>
@@ -3128,47 +3127,47 @@ Do you want to replace it?</source>
 <context>
     <name>QDjViewThumbnails</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="685"/>
+        <location filename="qdjviewsidebar.cpp" line="690"/>
         <source>Tiny</source>
         <comment>thumbnail menu</comment>
         <translation>Drobné</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="690"/>
+        <location filename="qdjviewsidebar.cpp" line="695"/>
         <source>Small</source>
         <comment>thumbnail menu</comment>
         <translation>Malé</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="695"/>
+        <location filename="qdjviewsidebar.cpp" line="700"/>
         <source>Medium</source>
         <comment>thumbnail menu</comment>
         <translation>Střední</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="700"/>
+        <location filename="qdjviewsidebar.cpp" line="705"/>
         <source>Large</source>
         <comment>thumbnail menu</comment>
         <translation>Velké</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="706"/>
+        <location filename="qdjviewsidebar.cpp" line="711"/>
         <source>Smart</source>
         <comment>thumbnail menu</comment>
         <translation>Chytré</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="713"/>
+        <location filename="qdjviewsidebar.cpp" line="718"/>
         <source>Control Left Mouse Button</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="715"/>
+        <location filename="qdjviewsidebar.cpp" line="720"/>
         <source>Right Mouse Button</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="723"/>
+        <location filename="qdjviewsidebar.cpp" line="728"/>
         <source>&lt;html&gt;&lt;b&gt;Document thumbnails.&lt;/b&gt;&lt;br/&gt; This panel display thumbnails for the document pages. Double click a thumbnail to jump to the selected page. %1 to change the thumbnail size or the refresh mode. The smart refresh mode only computes thumbnails when the page data is present (displayed or cached.)&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Náhledy dokumentu.&lt;/b&gt;&lt;br/&gt; Tento panel zobrazuje náhledy na stránky dokumentu. Dvojklikem na náhled přejdete na vybranou stránku. %1 použijte pro změnu velikosti nebo způsobu obnovování. Chytrý režim obnovy vypočítává náhledy jen těch stran, jejichž data jsou známa (zobrazena nebo nakešována).&lt;/html&gt;</translation>
     </message>
