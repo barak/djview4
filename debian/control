@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 5), autotools-dev, pkg-config, libdjvulibre-dev (>=
 Vcs-Cvs: :ext:@djvu.cvs.sourceforge.net:/cvsroot/djvu
 VCS-Browser: http://djvu.cvs.sourceforge.net/djvu/djview/
 Homepage: http://djvu.sourceforge.net/
-Standards-Version: 3.7.3
+Standards-Version: 3.8.0
 
 Package: djview4
 Section: graphics
