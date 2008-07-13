@@ -981,9 +981,15 @@ QDjViewPSExporter::printSetup(QPrintDialog *dialog, bool dir)
       copies = 1;
       collate = true;
       lastfirst = false;
+#if QT_VERSION >= 0x40400
+      QSpinBox* lcop = qFindChild<QSpinBox*>(dialog, "copies");
+      QCheckBox* lcol = qFindChild<QCheckBox*>(dialog, "collate");
+      QCheckBox* lplf = qFindChild<QCheckBox*>(dialog, "reverse");
+#else
       QSpinBox* lcop = qFindChild<QSpinBox*>(dialog, "sbNumCopies");
       QCheckBox* lcol = qFindChild<QCheckBox*>(dialog, "chbCollate");
       QCheckBox* lplf = qFindChild<QCheckBox*>(dialog, "chbPrintLastFirst");
+#endif
       if (lcop)
         copies = qMax(1, lcop->value());
       if (lcol)

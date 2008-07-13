@@ -1474,6 +1474,7 @@ struct QDjViewPrintDialog::Private
   QDjViewExporter *exporter;
   QString groupname;
   QPrinter *printer;
+  QPrintDialog *dialog;
   bool stopping;
 };
 
@@ -1497,7 +1498,7 @@ QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
   d->stopping = false;
   d->exporter = 0;
   d->printer = new QPrinter(QPrinter::HighResolution);
-
+  d->dialog = new QPrintDialog(d->printer, this);
   d->ui.setupUi(this);
   setAttribute(Qt::WA_GroupLeader, true);
   connect(d->ui.okButton, SIGNAL(clicked()), 
@@ -1603,10 +1604,18 @@ QDjViewPrintDialog::refresh()
   bool noexp = !d->exporter;
   bool nojob = true;
   bool notxt = true;
-  if (tofile)
-    notxt = d->ui.fileNameEdit->text().isEmpty();
-  else
-    notxt = d->ui.printerLabel->text().isEmpty();
+  if (tofile) 
+    {
+      notxt = d->ui.fileNameEdit->text().isEmpty();
+    } 
+  else if (d->printer)
+    {
+      QString pName = d->printer->printerName();
+      notxt = pName.isEmpty();
+      d->ui.printerLabel->setText(pName);
+      if (notxt)
+        d->ui.printerLabel->setText(tr("(invalid printer)"));            
+    }
   if (d->exporter)
     {
       noexp = false;
@@ -1644,7 +1653,8 @@ QDjViewPrintDialog::browse()
   if (info.size() > 1)
     suffix = info[1];
   fname = QFileDialog::getSaveFileName(this, 
-                                       tr("Print To File - DjView", "dialog caption"),
+                                       tr("Print To File - DjView", 
+                                          "dialog caption"),
                                        fname, filters, 0, 0);
   if (! fname.isEmpty())
     {
@@ -1660,19 +1670,21 @@ QDjViewPrintDialog::browse()
 void 
 QDjViewPrintDialog::choose()
 {
-  QPrinter *printer = d->printer;
-  QPrintDialog *dialog = new QPrintDialog(printer, this);
-  dialog->setEnabledOptions(QPrintDialog::PrintCollateCopies);
   if (d->exporter)
     {
-      d->exporter->printSetup(dialog, false);
-      if (dialog->exec() == QDialog::Accepted)
-        {
-          d->ui.printerLabel->setText(printer->printerName());
-          d->exporter->printSetup(dialog, true);
-        }
+      d->exporter->printSetup(d->dialog, false);
+#if QT_VERSION >= 0x40400
+      delete d->dialog;
+      d->dialog = new QPrintDialog(d->printer, this);
+#endif
+      QPrintDialog::PrintDialogOptions options = d->dialog->enabledOptions();
+      options |= QPrintDialog::PrintCollateCopies;
+      options &= ~QPrintDialog::PrintToFile;
+      options &= ~QPrintDialog::PrintSelection;
+      d->dialog->setEnabledOptions(options);
+      if (d->dialog->exec() == QDialog::Accepted)
+        d->exporter->printSetup(d->dialog, true);      
     }
-  delete dialog;
   refresh();
 }
 
