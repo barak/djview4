@@ -1,7 +1,7 @@
 djview4 (4.3-4rc) unstable; urgency=low
 
   * Add build dependency on pkg-config (closes: #477029)
-  * Fix update-alternatives in installation scripts
+  * Fix update-alternatives in installation scripts (closes: #476434)
 
  -- Barak A. Pearlmutter <bap@debian.org>  Wed, 23 Apr 2008 07:45:17 +0100
 
