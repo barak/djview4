@@ -52,6 +52,9 @@ class QDockWidget;
 class QDjViewOutline;
 class QDjViewThumbnails;
 class QDjViewFind;
+class QDragEnterEvent;
+class QDragMoveEvent;
+class QDropEvent;
 class QFileDialog;
 class QLabel;
 class QMenu;
@@ -172,6 +175,9 @@ protected:
 
   virtual bool eventFilter(QObject *watched, QEvent *event);
   virtual void closeEvent(QCloseEvent *event);
+  virtual void dragEnterEvent(QDragEnterEvent *event);
+  virtual void dragMoveEvent(QDragMoveEvent *event);
+  virtual void dropEvent(QDropEvent *event);
 
 protected slots:
   void info(QString);

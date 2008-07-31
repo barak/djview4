@@ -50,6 +50,9 @@
 #include <QDialog>
 #include <QDir>
 #include <QDockWidget>
+#include <QDragEnterEvent>
+#include <QDragMoveEvent>
+#include <QDropEvent>
 #include <QEvent>
 #include <QFile>
 #include <QFileDialog>
@@ -68,6 +71,7 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QMimeData>
 #include <QObject>
 #include <QPair>
 #include <QPalette>
@@ -867,6 +871,7 @@ QDjView::updateActions()
   actionClose->setVisible(viewerMode == STANDALONE);
   actionQuit->setVisible(viewerMode == STANDALONE);
   actionViewFullScreen->setVisible(viewerMode == STANDALONE);  
+  setAcceptDrops(viewerMode == STANDALONE);
 
   // Zoom combo and actions
   int zoom = widget->zoom();
@@ -2886,6 +2891,53 @@ QDjView::closeEvent(QCloseEvent *event)
   prefs->save();
   // continue closing the window
   event->accept();
+}
+
+
+void 
+QDjView::dragEnterEvent(QDragEnterEvent *event)
+{
+  if (viewerMode == STANDALONE)
+    {
+      const QMimeData *data = event->mimeData();
+      if ((data->hasUrls() && data->urls().size() == 1) ||
+          (data->hasText() && QFileInfo(data->text()).exists()) )
+        event->accept();
+    }
+}
+
+
+void 
+QDjView::dragMoveEvent(QDragMoveEvent *event)
+{
+  QRect rect = centralWidget()->geometry();
+  if (event->answerRect().intersects(rect))
+    event->accept(rect);
+  else
+    event->ignore();
+}
+
+
+void 
+QDjView::dropEvent(QDropEvent *event)
+{
+  if (viewerMode == STANDALONE)
+    {
+      bool accept = false;
+      const QMimeData *data = event->mimeData();
+      if (data->hasUrls() && data->urls().size()==1)
+        accept = open(data->urls()[0]);
+      else if (data->hasText())
+        accept = open(data->text());
+      if (accept)
+        {
+          if (event->possibleActions() & Qt::CopyAction)
+            event->setDropAction(Qt::CopyAction);
+          else
+            event->setDropAction(event->proposedAction());
+          event->accept();
+        }
+    }
 }
 
 
