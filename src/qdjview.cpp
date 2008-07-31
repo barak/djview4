@@ -410,7 +410,7 @@ QDjView::createActions()
     << QKeySequence(tr("Ctrl+F", "Edit|Find"))
     << QIcon(":/images/icon_find.png")
     << tr("Find text in the document.")
-    << Trigger(this, SLOT(find()));
+    << Trigger(this, SLOT(performFind()));
 
   actionFindNext = makeAction(tr("Find &Next", "Edit|"))
     << QKeySequence(tr("Ctrl+F3", "Edit|Find Next"))
@@ -3791,6 +3791,15 @@ QDjView::performViewFullScreen(bool checked)
       if (actions().contains(actionViewFullScreen))
         removeAction(actionViewFullScreen);
     }
+}
+
+
+void 
+QDjView::performFind()
+{
+  showSideBar("find");
+  findWidget->findNext();
+  findWidget->selectAll();
 }
 
 

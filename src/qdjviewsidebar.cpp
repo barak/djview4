@@ -1662,6 +1662,14 @@ QDjViewFind::setText(QString s)
 
 
 void 
+QDjViewFind::selectAll()
+{
+  combo->lineEdit()->selectAll();
+  combo->lineEdit()->setFocus();
+}
+
+
+void 
 QDjViewFind::eraseText()
 {
   setText(QString());

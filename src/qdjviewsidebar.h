@@ -130,6 +130,7 @@ public:
   bool caseSensitive();
   bool wordOnly();
 public slots:
+  void selectAll();
   void eraseText();
   void setText(QString s);
   void setCaseSensitive(bool);

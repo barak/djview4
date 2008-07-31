@@ -214,6 +214,7 @@ protected slots:
   void performSelect(bool);
   void performViewFullScreen(bool);
   void performEscape();
+  void performFind();
   void addRecent(QUrl);
   void fillRecent();
   void openRecent();
