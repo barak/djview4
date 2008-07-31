@@ -161,12 +161,12 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
 #ifdef LC_MESSAGES
   QString varLcMessages = ::setlocale(LC_MESSAGES, 0);
   if (varLcMessages.size())
-    langs += varLcMessages;
+    langs += varLcMessages.toLower();
 #else
 # ifdef LC_ALL
   QString varLcMessages = ::setlocale(LC_ALL, 0);
   if (varLcMessages.size())
-    langs += varLcMessages;
+    langs += varLcMessages.toLower();
 # endif
 #endif
 #ifdef Q_WS_MAC
@@ -215,7 +215,7 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
           if (! djviewTransValid && qdir.exists())
             djviewTransValid= djviewTrans->load("djview_" + lang, dir, "_.-");
         }
-      if (lang == "en") 
+      if (lang == "en" || lang.startsWith("en_")) 
         break;
     }
   // - install tranlators
