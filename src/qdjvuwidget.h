@@ -69,6 +69,8 @@ class QDjVuWidget : public QAbstractScrollArea
              READ borderBrush WRITE setBorderBrush)
   Q_PROPERTY(int borderSize 
              READ borderSize WRITE setBorderSize)
+  Q_PROPERTY(int separatorSize 
+             READ separatorSize WRITE setSeparatorSize)
   Q_PROPERTY(int pixelCacheSize 
              READ pixelCacheSize WRITE setPixelCacheSize)
   Q_PROPERTY(bool displayMapAreas 
@@ -175,6 +177,7 @@ public:
   bool rightToLeft(void) const;
   QBrush borderBrush(void) const;
   int borderSize(void) const;
+  int separatorSize(void) const;
   QMenu* contextMenu(void) const;
   int  pixelCacheSize(void) const;
   bool displayMapAreas(void) const;
@@ -206,6 +209,7 @@ public slots:
   void setRightToLeft(bool);
   void setBorderBrush(QBrush);
   void setBorderSize(int);
+  void setSeparatorSize(int);
   void setContextMenu(QMenu*);
   void setDisplayMapAreas(bool);
   void setPixelCacheSize(int);

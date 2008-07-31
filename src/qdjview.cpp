@@ -1654,27 +1654,58 @@ QDjView::parseArgument(QString key, QString value)
     {
       showSideBar(value, errors);
     }
-  else if (key == "statusbar")  // new for djview4
+  else if (key == "statusbar")   // new for djview4
     {
       if (parse_boolean(key, value, errors, okay))
         statusBar->setVisible(okay);
     }
-  else if (key == "continuous") // new for djview4
+  else if (key == "continuous")  // new for djview4
     {
       if (parse_boolean(key, value, errors, okay))
         widget->setContinuous(okay);
     }
   else if (key == "side_by_side" ||
-           key == "sidebyside") // new for djview4
+           key == "sidebyside")  // new for djview4
     {
       if (parse_boolean(key, value, errors, okay))
         widget->setSideBySide(okay);
     }
-  else if (key == "first_page_alone" ||
-           key == "firstpagealone") // new for djview4
+  else if (key == "firstpagealone" ||
+           key == "first_page_alone" ||
+           key == "cover_page" ||
+           key == "coverpage")   // new for djview4
     {
       if (parse_boolean(key, value, errors, okay))
         widget->setCoverPage(okay);
+    }
+  else if (key == "right_to_left" ||
+           key == "righttoleft") // new for djview4
+    {
+      if (parse_boolean(key, value, errors, okay))
+        widget->setRightToLeft(okay);
+    }
+  else if (key == "layout")      // lizards
+    {
+      foreach (QString s, value.split(","))
+        if (s == "single") {
+          widget->setContinuous(false);
+          widget->setSideBySide(false);
+        } else if (s == "double")
+          widget->setSideBySide(true);
+        else if (s == "continuous")
+          widget->setContinuous(true);
+        else if (s == "ltor")
+          widget->setRightToLeft(false);
+        else if (s == "rtol")
+          widget->setRightToLeft(true);
+        else if (s == "cover")
+          widget->setCoverPage(true);
+        else if (s == "nocover")
+          widget->setCoverPage(false);
+        else if (s == "gap")
+          widget->setSeparatorSize(12);
+        else if (s == "nogap")
+          widget->setSeparatorSize(0);
     }
   else if (key == "frame")
     {

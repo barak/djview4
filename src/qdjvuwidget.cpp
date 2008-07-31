@@ -2425,6 +2425,31 @@ QDjVuPrivate::changeBorderSize(void)
 }
 
 
+/*! \property QDjVuWidget::separatorSize
+  The size of the gap between pages in side-by-side mode.
+  Default: 12 pixels. */
+
+
+int 
+QDjVuWidget::separatorSize(void) const
+{
+  return priv->separatorSize;
+}
+
+void 
+QDjVuWidget::setSeparatorSize(int b)
+{
+  b = qMax(0, b);
+  if (b != priv->separatorSize)
+    {
+      priv->separatorSize = b;
+      if (priv->sideBySide)
+        priv->changeLayout(CHANGE_PAGES|UPDATE_ALL);
+    }
+}
+
+
+
 /*! \property QDjVuWidget::contextMenu
   Menu displayed when the user invokes a context menu for this widget. 
   Default: no context menu. */

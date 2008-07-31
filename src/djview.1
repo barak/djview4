@@ -345,9 +345,37 @@ Enable or disable the side-by-side layout of
 multipage documents.
 
 .TP
-.BI "-firstpagealone=(yes|no), -first_page_alone=(yes|no)"
-Specify whether the first page must be displayed alone
+.BI "-coverpage=(yes|no)"
+Specify whether the cover page must be displayed alone
 when multipage documents are shown in side-by-side layout.
+
+.TP
+.BI "-righttoleft=(yes|no)"
+Specify whether pages should be arranged right-to-left
+when multipage documents are shown in side-by-side layout.
+
+.TP
+.BI "-layout=" keyword "{," keyword "}"
+Specify the layout settings using a single list
+of comma-separated keywords.
+The following keywords are recognized:
+.br
+.TS
+center,box;
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+.
+single	Disable both the side-by-side and continuous modes
+double	Enable the side-by-side mode.
+continuous	Enable the continuous mode.
+cover, nocover	Specify whether the cover page should be left alone.
+ltor, rtol	Specify the left-to-right or right-to-left layout.
+gap, nogap	Specify whether there is a gap between pages.
+.TE
 
 .TP
 .BI "-scrollbars=(yes|no)"
