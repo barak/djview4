@@ -1070,11 +1070,14 @@ QDjViewPrefsDialog::modeComboChanged(int n)
                 d->ui.frameCheckBox->isChecked() );
       set_reset(saved.options, QDjViewPrefs::SHOW_MAPAREAS,
                 d->ui.mapAreasCheckBox->isChecked() );
-      // layout
-      int n = d->ui.layoutCombo->currentIndex();
-      set_reset(saved.options, QDjViewPrefs::LAYOUT_CONTINUOUS, n&1);
-      set_reset(saved.options, QDjViewPrefs::LAYOUT_SIDEBYSIDE, n>2);
-      set_reset(saved.options, QDjViewPrefs::LAYOUT_COVERPAGE, n>4);
+      set_reset(saved.options, QDjViewPrefs::LAYOUT_CONTINUOUS,
+                d->ui.continuousCheckBox->isChecked() );
+      set_reset(saved.options, QDjViewPrefs::LAYOUT_SIDEBYSIDE,
+                d->ui.sideBySideCheckBox->isChecked() );
+      set_reset(saved.options, QDjViewPrefs::LAYOUT_COVERPAGE,
+                d->ui.coverPageCheckBox->isChecked() );
+      set_reset(saved.options, QDjViewPrefs::LAYOUT_RIGHTTOLEFT,
+                d->ui.rtolCheckBox->isChecked() );
       // zoom
       bool okay;
       int zoomIndex = d->ui.zoomCombo->currentIndex();
@@ -1101,13 +1104,10 @@ QDjViewPrefsDialog::modeComboChanged(int n)
       d->ui.sideBarCheckBox->setChecked(opt & QDjViewPrefs::SHOW_SIDEBAR);
       d->ui.frameCheckBox->setChecked(opt & QDjViewPrefs::SHOW_FRAME);
       d->ui.mapAreasCheckBox->setChecked(opt & QDjViewPrefs::SHOW_MAPAREAS);
-      // layout
-      int n = 0;
-      if (opt & QDjViewPrefs::LAYOUT_SIDEBYSIDE)
-        n += (opt & QDjViewPrefs::LAYOUT_COVERPAGE) ? 4 : 2;
-      if (opt & QDjViewPrefs::LAYOUT_CONTINUOUS)
-        n += 1;
-      d->ui.layoutCombo->setCurrentIndex(n);
+      d->ui.continuousCheckBox->setChecked(opt & QDjViewPrefs::LAYOUT_CONTINUOUS);
+      d->ui.sideBySideCheckBox->setChecked(opt & QDjViewPrefs::LAYOUT_SIDEBYSIDE);
+      d->ui.coverPageCheckBox->setChecked(opt & QDjViewPrefs::LAYOUT_COVERPAGE);
+      d->ui.rtolCheckBox->setChecked(opt & QDjViewPrefs::LAYOUT_RIGHTTOLEFT);
       // zoom
       int zoomIndex = d->ui.zoomCombo->findData(QVariant(saved.zoom));
       d->ui.zoomCombo->clearEditText();

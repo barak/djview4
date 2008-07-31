@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>447</width>
-    <height>372</height>
+    <width>505</width>
+    <height>357</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -22,6 +22,14 @@
       <enum>Qt::ElideNone</enum>
      </property>
      <widget class="QWidget" name="screenTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>483</width>
+        <height>265</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>&amp;Screen</string>
       </attribute>
@@ -37,16 +45,7 @@
             <property name="spacing" >
              <number>6</number>
             </property>
-            <property name="leftMargin" >
-             <number>0</number>
-            </property>
-            <property name="topMargin" >
-             <number>0</number>
-            </property>
-            <property name="rightMargin" >
-             <number>0</number>
-            </property>
-            <property name="bottomMargin" >
+            <property name="margin" >
              <number>0</number>
             </property>
             <item>
@@ -101,16 +100,7 @@
               <property name="spacing" >
                <number>6</number>
               </property>
-              <property name="leftMargin" >
-               <number>0</number>
-              </property>
-              <property name="topMargin" >
-               <number>0</number>
-              </property>
-              <property name="rightMargin" >
-               <number>0</number>
-              </property>
-              <property name="bottomMargin" >
+              <property name="margin" >
                <number>0</number>
               </property>
               <item>
@@ -125,7 +115,7 @@
                 <property name="orientation" >
                  <enum>Qt::Horizontal</enum>
                 </property>
-                <property name="sizeHint" >
+                <property name="sizeHint" stdset="0" >
                  <size>
                   <width>40</width>
                   <height>20</height>
@@ -151,7 +141,7 @@
               <property name="orientation" >
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeHint" >
+              <property name="sizeHint" stdset="0" >
                <size>
                 <width>5</width>
                 <height>20</height>
@@ -186,7 +176,7 @@
               <property name="orientation" >
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeHint" >
+              <property name="sizeHint" stdset="0" >
                <size>
                 <width>5</width>
                 <height>20</height>
@@ -226,7 +216,7 @@
             <property name="sizeType" >
              <enum>QSizePolicy::Maximum</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>40</width>
               <height>20</height>
@@ -259,40 +249,24 @@
       </layout>
      </widget>
      <widget class="QWidget" name="interfaceTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>483</width>
+        <height>265</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>&amp;Interface</string>
       </attribute>
-      <layout class="QVBoxLayout" >
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <property name="leftMargin" >
-        <number>9</number>
-       </property>
-       <property name="topMargin" >
-        <number>9</number>
-       </property>
-       <property name="rightMargin" >
-        <number>9</number>
-       </property>
-       <property name="bottomMargin" >
-        <number>9</number>
-       </property>
+      <layout class="QVBoxLayout" name="verticalLayout_5" >
        <item>
         <layout class="QHBoxLayout" >
          <property name="spacing" >
           <number>6</number>
          </property>
-         <property name="leftMargin" >
-          <number>0</number>
-         </property>
-         <property name="topMargin" >
-          <number>0</number>
-         </property>
-         <property name="rightMargin" >
-          <number>0</number>
-         </property>
-         <property name="bottomMargin" >
+         <property name="margin" >
           <number>0</number>
          </property>
          <item>
@@ -334,7 +308,7 @@
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0" >
             <size>
              <width>40</width>
              <height>20</height>
@@ -352,43 +326,13 @@
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" >
-         <property name="spacing" >
-          <number>6</number>
-         </property>
-         <property name="leftMargin" >
-          <number>0</number>
-         </property>
-         <property name="topMargin" >
-          <number>0</number>
-         </property>
-         <property name="rightMargin" >
-          <number>0</number>
-         </property>
-         <property name="bottomMargin" >
-          <number>0</number>
-         </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_3" >
          <item>
           <widget class="QGroupBox" name="showGroupBox" >
            <property name="title" >
             <string>Show</string>
            </property>
-           <layout class="QVBoxLayout" >
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <property name="leftMargin" >
-             <number>9</number>
-            </property>
-            <property name="topMargin" >
-             <number>9</number>
-            </property>
-            <property name="rightMargin" >
-             <number>9</number>
-            </property>
-            <property name="bottomMargin" >
-             <number>9</number>
-            </property>
+           <layout class="QVBoxLayout" name="verticalLayout" >
             <item>
              <widget class="QCheckBox" name="menuBarCheckBox" >
               <property name="text" >
@@ -432,110 +376,75 @@
            <property name="title" >
             <string>Display</string>
            </property>
-           <layout class="QVBoxLayout" >
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <property name="leftMargin" >
-             <number>9</number>
-            </property>
-            <property name="topMargin" >
-             <number>9</number>
-            </property>
-            <property name="rightMargin" >
-             <number>9</number>
-            </property>
-            <property name="bottomMargin" >
-             <number>9</number>
-            </property>
+           <layout class="QVBoxLayout" name="verticalLayout_2" >
             <item>
-             <layout class="QGridLayout" >
-              <property name="leftMargin" >
-               <number>0</number>
-              </property>
-              <property name="topMargin" >
-               <number>0</number>
-              </property>
-              <property name="rightMargin" >
-               <number>0</number>
-              </property>
-              <property name="bottomMargin" >
-               <number>0</number>
-              </property>
-              <property name="horizontalSpacing" >
-               <number>6</number>
-              </property>
-              <property name="verticalSpacing" >
-               <number>6</number>
-              </property>
-              <item row="0" column="0" >
+             <layout class="QHBoxLayout" name="horizontalLayout" >
+              <item>
                <widget class="QLabel" name="label22" >
                 <property name="text" >
                  <string>&amp;Zoom: </string>
                 </property>
                 <property name="alignment" >
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
                 <property name="buddy" >
                  <cstring>zoomCombo</cstring>
                 </property>
                </widget>
               </item>
-              <item row="0" column="1" >
+              <item>
                <widget class="QComboBox" name="zoomCombo" >
                 <property name="editable" >
                  <bool>true</bool>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0" >
-               <widget class="QLabel" name="label23" >
-                <property name="text" >
-                 <string>&amp;Layout: </string>
-                </property>
-                <property name="alignment" >
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-                <property name="buddy" >
-                 <cstring>layoutCombo</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1" >
-               <widget class="QComboBox" name="layoutCombo" >
-                <item>
-                 <property name="text" >
-                  <string>Single page</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text" >
-                  <string>Continuous pages</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text" >
-                  <string>Double pages</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text" >
-                  <string>Continuous double pages</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text" >
-                  <string>Double pages (first alone)</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text" >
-                  <string>Continuous double pages (first alone)</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
              </layout>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_5" >
+              <property name="orientation" >
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0" >
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QFrame" name="frame" >
+              <property name="sizePolicy" >
+               <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="frameShape" >
+               <enum>QFrame::HLine</enum>
+              </property>
+              <property name="frameShadow" >
+               <enum>QFrame::Raised</enum>
+              </property>
+              <property name="lineWidth" >
+               <number>3</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_2" >
+              <property name="orientation" >
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0" >
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
             </item>
             <item>
              <widget class="QCheckBox" name="frameCheckBox" >
@@ -551,6 +460,154 @@
               </property>
              </widget>
             </item>
+            <item>
+             <spacer name="verticalSpacer_6" >
+              <property name="orientation" >
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0" >
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <spacer name="verticalSpacer" >
+              <property name="orientation" >
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0" >
+               <size>
+                <width>20</width>
+                <height>5</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="layoutGroupBox" >
+           <property name="title" >
+            <string>Layout</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_4" >
+            <item>
+             <widget class="QCheckBox" name="continuousCheckBox" >
+              <property name="text" >
+               <string>Continuous</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_7" >
+              <property name="orientation" >
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0" >
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QFrame" name="frame_2" >
+              <property name="sizePolicy" >
+               <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="frameShape" >
+               <enum>QFrame::HLine</enum>
+              </property>
+              <property name="frameShadow" >
+               <enum>QFrame::Raised</enum>
+              </property>
+              <property name="lineWidth" >
+               <number>3</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_4" >
+              <property name="orientation" >
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0" >
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="sideBySideCheckBox" >
+              <property name="text" >
+               <string>Side-by-side</string>
+              </property>
+              <property name="checked" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_2" >
+              <item>
+               <spacer name="horizontalSpacer" >
+                <property name="orientation" >
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType" >
+                 <enum>QSizePolicy::MinimumExpanding</enum>
+                </property>
+                <property name="sizeHint" stdset="0" >
+                 <size>
+                  <width>16</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_3" >
+                <item>
+                 <widget class="QCheckBox" name="coverPageCheckBox" >
+                  <property name="text" >
+                   <string>Cover Page</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="rtolCheckBox" >
+                  <property name="text" >
+                   <string>Right-to-Left</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_3" >
+              <property name="orientation" >
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0" >
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
            </layout>
           </widget>
          </item>
@@ -559,6 +616,14 @@
       </layout>
      </widget>
      <widget class="QWidget" name="keysTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>483</width>
+        <height>265</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>&amp;Keys</string>
       </attribute>
@@ -566,16 +631,7 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <property name="leftMargin" >
-        <number>9</number>
-       </property>
-       <property name="topMargin" >
-        <number>9</number>
-       </property>
-       <property name="rightMargin" >
-        <number>9</number>
-       </property>
-       <property name="bottomMargin" >
+       <property name="margin" >
         <number>9</number>
        </property>
        <item>
@@ -584,22 +640,10 @@
           <string>Keys</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="leftMargin" >
+          <property name="margin" >
            <number>9</number>
           </property>
-          <property name="topMargin" >
-           <number>9</number>
-          </property>
-          <property name="rightMargin" >
-           <number>9</number>
-          </property>
-          <property name="bottomMargin" >
-           <number>9</number>
-          </property>
-          <property name="horizontalSpacing" >
-           <number>9</number>
-          </property>
-          <property name="verticalSpacing" >
+          <property name="spacing" >
            <number>9</number>
           </property>
           <item row="2" column="0" >
@@ -661,7 +705,7 @@
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>20</width>
            <height>5</height>
@@ -672,6 +716,14 @@
       </layout>
      </widget>
      <widget class="QWidget" name="lensTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>483</width>
+        <height>265</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>&amp;Lens</string>
       </attribute>
@@ -679,16 +731,7 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <property name="leftMargin" >
-        <number>9</number>
-       </property>
-       <property name="topMargin" >
-        <number>9</number>
-       </property>
-       <property name="rightMargin" >
-        <number>9</number>
-       </property>
-       <property name="bottomMargin" >
+       <property name="margin" >
         <number>9</number>
        </property>
        <item>
@@ -707,22 +750,10 @@
           <string>Lens options</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="leftMargin" >
+          <property name="margin" >
            <number>9</number>
           </property>
-          <property name="topMargin" >
-           <number>9</number>
-          </property>
-          <property name="rightMargin" >
-           <number>9</number>
-          </property>
-          <property name="bottomMargin" >
-           <number>9</number>
-          </property>
-          <property name="horizontalSpacing" >
-           <number>6</number>
-          </property>
-          <property name="verticalSpacing" >
+          <property name="spacing" >
            <number>6</number>
           </property>
           <item row="1" column="0" >
@@ -788,7 +819,7 @@
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>20</width>
            <height>5</height>
@@ -799,6 +830,14 @@
       </layout>
      </widget>
      <widget class="QWidget" name="networkTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>483</width>
+        <height>265</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>&amp;Network</string>
       </attribute>
@@ -806,16 +845,7 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <property name="leftMargin" >
-        <number>9</number>
-       </property>
-       <property name="topMargin" >
-        <number>9</number>
-       </property>
-       <property name="rightMargin" >
-        <number>9</number>
-       </property>
-       <property name="bottomMargin" >
+       <property name="margin" >
         <number>9</number>
        </property>
        <item>
@@ -834,22 +864,10 @@
           <string>Proxy settings</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="leftMargin" >
+          <property name="margin" >
            <number>9</number>
           </property>
-          <property name="topMargin" >
-           <number>9</number>
-          </property>
-          <property name="rightMargin" >
-           <number>9</number>
-          </property>
-          <property name="bottomMargin" >
-           <number>9</number>
-          </property>
-          <property name="horizontalSpacing" >
-           <number>6</number>
-          </property>
-          <property name="verticalSpacing" >
+          <property name="spacing" >
            <number>6</number>
           </property>
           <item row="3" column="0" >
@@ -923,7 +941,7 @@
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>20</width>
            <height>5</height>
@@ -934,6 +952,14 @@
       </layout>
      </widget>
      <widget class="QWidget" name="advancedTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>483</width>
+        <height>265</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>&amp;Advanced</string>
       </attribute>
@@ -944,22 +970,10 @@
           <string>Cache</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="leftMargin" >
+          <property name="margin" >
            <number>9</number>
           </property>
-          <property name="topMargin" >
-           <number>9</number>
-          </property>
-          <property name="rightMargin" >
-           <number>9</number>
-          </property>
-          <property name="bottomMargin" >
-           <number>9</number>
-          </property>
-          <property name="horizontalSpacing" >
-           <number>6</number>
-          </property>
-          <property name="verticalSpacing" >
+          <property name="spacing" >
            <number>6</number>
           </property>
           <item row="1" column="2" >
@@ -1067,6 +1081,19 @@
               </property>
              </widget>
             </item>
+            <item>
+             <spacer name="horizontalSpacer_2" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0" >
+               <size>
+                <width>5</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
            </layout>
           </item>
           <item>
@@ -1091,7 +1118,7 @@
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>20</width>
            <height>5</height>
@@ -1108,16 +1135,7 @@
      <property name="spacing" >
       <number>6</number>
      </property>
-     <property name="leftMargin" >
-      <number>0</number>
-     </property>
-     <property name="topMargin" >
-      <number>0</number>
-     </property>
-     <property name="rightMargin" >
-      <number>0</number>
-     </property>
-     <property name="bottomMargin" >
+     <property name="margin" >
       <number>0</number>
      </property>
      <item>
@@ -1135,7 +1153,7 @@
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0" >
         <size>
          <width>32</width>
          <height>32</height>
@@ -1197,12 +1215,16 @@
   <tabstop>statusBarCheckBox</tabstop>
   <tabstop>sideBarCheckBox</tabstop>
   <tabstop>zoomCombo</tabstop>
-  <tabstop>layoutCombo</tabstop>
   <tabstop>frameCheckBox</tabstop>
   <tabstop>mapAreasCheckBox</tabstop>
+  <tabstop>continuousCheckBox</tabstop>
+  <tabstop>sideBySideCheckBox</tabstop>
+  <tabstop>coverPageCheckBox</tabstop>
+  <tabstop>rtolCheckBox</tabstop>
   <tabstop>keysForLensCombo</tabstop>
   <tabstop>keysForSelectCombo</tabstop>
   <tabstop>keysForLinksCombo</tabstop>
+  <tabstop>lensEnableCheckBox</tabstop>
   <tabstop>lensPowerSpinBox</tabstop>
   <tabstop>lensSizeSpinBox</tabstop>
   <tabstop>proxyCheckBox</tabstop>
@@ -1214,13 +1236,13 @@
   <tabstop>pageCacheSpinBox</tabstop>
   <tabstop>cacheClearButton</tabstop>
   <tabstop>printerManualCheckBox</tabstop>
-  <tabstop>printerGammaSpinBox</tabstop>
   <tabstop>advancedCheckBox</tabstop>
+  <tabstop>textLabelCheckBox</tabstop>
+  <tabstop>printerGammaSpinBox</tabstop>
   <tabstop>resetButton</tabstop>
   <tabstop>applyButton</tabstop>
   <tabstop>okButton</tabstop>
   <tabstop>cancelButton</tabstop>
-  <tabstop>lensEnableCheckBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -1231,8 +1253,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>380</x>
-     <y>356</y>
+     <x>397</x>
+     <y>342</y>
     </hint>
     <hint type="destinationlabel" >
      <x>96</x>
@@ -1247,8 +1269,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>461</x>
-     <y>356</y>
+     <x>478</x>
+     <y>342</y>
     </hint>
     <hint type="destinationlabel" >
      <x>179</x>
@@ -1289,38 +1311,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>rememberCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>showGroupBox</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>96</x>
-     <y>105</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>117</x>
-     <y>169</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rememberCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>modeGroupBox</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>119</x>
-     <y>105</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>248</x>
-     <y>169</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>printerManualCheckBox</sender>
    <signal>toggled(bool)</signal>
    <receiver>printerGammaSpinBox</receiver>
@@ -1343,12 +1333,92 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>178</x>
-     <y>264</y>
+     <x>200</x>
+     <y>272</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>294</x>
-     <y>268</y>
+     <x>457</x>
+     <y>273</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rememberCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>showGroupBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>107</x>
+     <y>98</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>117</x>
+     <y>169</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sideBySideCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>coverPageCheckBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>386</x>
+     <y>196</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>409</x>
+     <y>218</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sideBySideCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>rtolCheckBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>366</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>383</x>
+     <y>248</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rememberCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>modeGroupBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>162</x>
+     <y>85</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>180</x>
+     <y>123</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rememberCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>layoutGroupBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>249</x>
+     <y>86</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>351</x>
+     <y>118</y>
     </hint>
    </hints>
   </connection>
