@@ -59,8 +59,12 @@ class QDjVuWidget : public QAbstractScrollArea
              READ vertAlign WRITE setVertAlign)
   Q_PROPERTY(bool continuous 
              READ continuous WRITE setContinuous)
-  Q_PROPERTY(bool firstPageAlone 
-             READ firstPageAlone WRITE setFirstPageAlone)
+  Q_PROPERTY(bool sideBySide 
+             READ sideBySide WRITE setSideBySide)
+  Q_PROPERTY(bool coverPage 
+             READ coverPage WRITE setCoverPage)
+  Q_PROPERTY(bool rightToLeft 
+             READ rightToLeft WRITE setRightToLeft)
   Q_PROPERTY(QBrush borderBrush 
              READ borderBrush WRITE setBorderBrush)
   Q_PROPERTY(int borderSize 
@@ -114,7 +118,7 @@ public:
   enum Align {
     ALIGN_TOP,                  //!< Align page top sides.
     ALIGN_LEFT = ALIGN_TOP,     //!< Align page left sides.
-    ALIGN_CENTER,               //!< Center pages
+    ALIGN_CENTER,               //!< Center pages.
     ALIGN_BOTTOM,               //!< Align page bottom sides.
     ALIGN_RIGHT = ALIGN_BOTTOM, //!< Align page right sides.
   };
@@ -131,9 +135,9 @@ public:
     QPoint posPage;
     QPoint posView;
     bool   inPage;
-    bool   anchorRight;
-    bool   anchorBottom;
     bool   valid;
+    char   hAnchor;
+    char   vAnchor;
     Position();
   };
 
@@ -167,7 +171,8 @@ public:
   Align vertAlign(void) const;
   bool continuous(void) const;
   bool sideBySide(void) const;
-  bool firstPageAlone(void) const;
+  bool coverPage(void) const;
+  bool rightToLeft(void) const;
   QBrush borderBrush(void) const;
   int borderSize(void) const;
   QMenu* contextMenu(void) const;
@@ -197,7 +202,8 @@ public slots:
   void setVertAlign(Align);
   void setContinuous(bool);
   void setSideBySide(bool);
-  void setFirstPageAlone(bool);
+  void setCoverPage(bool);
+  void setRightToLeft(bool);
   void setBorderBrush(QBrush);
   void setBorderSize(int);
   void setContextMenu(QMenu*);

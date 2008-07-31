@@ -660,12 +660,24 @@ QDjView::createActions()
     << Trigger(widget, SLOT(setSideBySide(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
   
-  actionLayoutFirstPageAlone = makeAction(tr("First Page &Alone", "Layout|"), false)
-    << QIcon(":/images/icon_firstpagealone.png")
-    << QKeySequence(tr("Ctrl+F6", "Layout|FirstPageAlone"))
-    << QKeySequence(tr("F6", "Layout|FirstPageAlone"))
-    << tr("Show the first page alone in side-by-side mode.")
-    << Trigger(widget, SLOT(setFirstPageAlone(bool)))
+  actionLayoutCoverPage = makeAction(tr("Co&ver Page", "Layout|"), false)
+#ifdef Q_WS_MAC
+    << QIcon(":/images/icon_coverpage.png")
+#endif
+    << QKeySequence(tr("Ctrl+F6", "Layout|CoverPage"))
+    << QKeySequence(tr("F6", "Layout|CoverPage"))
+    << tr("Show the cover page alone in side-by-side mode.")
+    << Trigger(widget, SLOT(setCoverPage(bool)))
+    << Trigger(this, SLOT(updateActionsLater()));
+  
+  actionLayoutRightToLeft = makeAction(tr("&Right to Left", "Layout|"), false)
+#ifdef Q_WS_MAC
+    << QIcon(":/images/icon_righttoleft.png")
+#endif
+    << QKeySequence(tr("Ctrl+Shift+F6", "Layout|RightToLeft"))
+    << QKeySequence(tr("Shift+F6", "Layout|RightToLeft"))
+    << tr("Show pages right-to-left in side-by-side mode.")
+    << Trigger(widget, SLOT(setRightToLeft(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
   
   actionCopyUrl = makeAction(tr("Copy &URL", "Edit|"))
@@ -759,7 +771,8 @@ QDjView::createMenus()
   viewMenu->addSeparator();
   viewMenu->addAction(actionLayoutContinuous);
   viewMenu->addAction(actionLayoutSideBySide);
-  viewMenu->addAction(actionLayoutFirstPageAlone);
+  viewMenu->addAction(actionLayoutCoverPage);
+  viewMenu->addAction(actionLayoutRightToLeft);
   viewMenu->addSeparator();
   viewMenu->addAction(actionInformation);
   viewMenu->addAction(actionMetadata);
@@ -822,7 +835,7 @@ QDjView::createMenus()
   contextMenu->addSeparator();
   contextMenu->addAction(actionLayoutContinuous);
   contextMenu->addAction(actionLayoutSideBySide);
-  contextMenu->addAction(actionLayoutFirstPageAlone);
+  contextMenu->addAction(actionLayoutCoverPage);
   contextMenu->addSeparator();
   contextMenu->addAction(actionFind);
   contextMenu->addAction(actionInformation);
@@ -929,8 +942,10 @@ QDjView::updateActions()
   // Layout actions
   actionLayoutContinuous->setChecked(widget->continuous());  
   actionLayoutSideBySide->setChecked(widget->sideBySide());
-  actionLayoutFirstPageAlone->setEnabled(widget->sideBySide());
-  actionLayoutFirstPageAlone->setChecked(widget->firstPageAlone());  
+  actionLayoutCoverPage->setEnabled(widget->sideBySide());
+  actionLayoutCoverPage->setChecked(widget->coverPage());  
+  actionLayoutRightToLeft->setEnabled(widget->sideBySide());
+  actionLayoutRightToLeft->setChecked(widget->rightToLeft());  
   
   // UndoRedo
   undoTimer->stop();
@@ -1170,7 +1185,8 @@ QDjView::applyOptions(void)
   widget->setDisplayMapAreas(options & QDjViewPrefs::SHOW_MAPAREAS);
   widget->setContinuous(options & QDjViewPrefs::LAYOUT_CONTINUOUS);
   widget->setSideBySide(options & QDjViewPrefs::LAYOUT_SIDEBYSIDE);
-  widget->setFirstPageAlone(options & QDjViewPrefs::LAYOUT_FIRSTPAGEALONE);
+  widget->setCoverPage(options & QDjViewPrefs::LAYOUT_COVERPAGE);
+  widget->setRightToLeft(options & QDjViewPrefs::LAYOUT_RIGHTTOLEFT);
   widget->enableMouse(options & QDjViewPrefs::HANDLE_MOUSE);
   widget->enableKeyboard(options & QDjViewPrefs::HANDLE_KEYBOARD);
   widget->enableHyperlink(options & QDjViewPrefs::HANDLE_LINKS);
@@ -1200,8 +1216,10 @@ QDjView::updateOptions(void)
     options |= QDjViewPrefs::LAYOUT_CONTINUOUS;
   if (widget->sideBySide())
     options |= QDjViewPrefs::LAYOUT_SIDEBYSIDE;
-  if (widget->firstPageAlone())
-    options |= QDjViewPrefs::LAYOUT_FIRSTPAGEALONE;
+  if (widget->coverPage())
+    options |= QDjViewPrefs::LAYOUT_COVERPAGE;
+  if (widget->rightToLeft())
+    options |= QDjViewPrefs::LAYOUT_RIGHTTOLEFT;
   if (widget->mouseEnabled())
     options |= QDjViewPrefs::HANDLE_MOUSE;    
   if (widget->keyboardEnabled())
@@ -1409,6 +1427,21 @@ illegal_value(QString key, QString value, QList<QString> &errors)
   errors << QDjView::tr("Illegal value '%2' for option '%1'.")
     .arg(key).arg(value);
 }
+
+static bool
+parse_position(QString value, double &x, double &y)
+{
+  bool okay0, okay1;
+  QStringList val = value.split(",");
+  if (val.size() == 2)
+    {
+      x = val[0].toDouble(&okay0);
+      y = val[1].toDouble(&okay1);
+      return okay0 && okay1;
+    }
+  return false;
+}
+
 
 static bool 
 parse_highlight(QString value, 
@@ -1641,7 +1674,7 @@ QDjView::parseArgument(QString key, QString value)
            key == "firstpagealone") // new for djview4
     {
       if (parse_boolean(key, value, errors, okay))
-        widget->setFirstPageAlone(okay);
+        widget->setCoverPage(okay);
     }
   else if (key == "frame")
     {
@@ -1784,6 +1817,14 @@ QDjView::parseArgument(QString key, QString value)
       pendingFind = value;
       if (! value.isEmpty())
         performPendingLater();
+    }
+  else if (key == "showposition")
+    {
+      double x,y;
+      if (! parse_position(value, x, y))
+        illegal_value(key, value, errors);
+      else
+        goToPosition(QString::null, x, y);
     }
   else if (key == "src" && viewerMode != STANDALONE)
     {
@@ -2279,6 +2320,48 @@ QDjView::goToPage(QString name, int from)
 }
 
 
+/* Jump to the page named \a pagename
+   and tries to position the specified point in
+   the center of the window. Arguments \a px and \a py
+   must be in range 0 to 1 indicating a fraction
+   of the page width or height. */
+
+void  
+QDjView::goToPosition(QString name, double px, double py)
+{
+  int pagenum = documentPages.size();
+  if (!pagenum || !document)
+    {
+      pendingPosition.clear();
+      pendingPosition << px << py;
+      if (! name.isEmpty())
+        pendingPage = name;
+    }
+  else
+    {
+      int pageno = (name.isEmpty()) ? widget->page() : pageNumber(name);
+      if (pageno < 0 || pageno >= pagenum)
+        {
+          QString msg = tr("Cannot find page named: %1").arg(name);
+          qWarning((const char*)msg.toLocal8Bit());
+        }
+      else 
+        {
+          QDjVuWidget::Position pos;
+          pos.pageNo = pageno;
+          pos.inPage = false;
+          pos.posView = QPoint(0,0);
+          pos.posPage = QPoint(0,0);
+          pos.hAnchor = qBound(0, (int)(px*100), 100);
+          pos.vAnchor = qBound(0, (int)(py*100), 100);
+          widget->setPosition(pos, widget->rect().center());
+        }
+      updateActionsLater();
+    }
+}
+
+
+
 /*! Add a message to the error dialog. */
 
 void
@@ -2680,7 +2763,7 @@ QDjView::copyWindow(bool openDocument)
   otherWidget->setDisplayMode( widget->displayMode() );
   otherWidget->setContinuous( widget->continuous() );
   otherWidget->setSideBySide( widget->sideBySide() );
-  otherWidget->setFirstPageAlone( widget->firstPageAlone() );
+  otherWidget->setCoverPage( widget->coverPage() );
   otherWidget->setRotation( widget->rotation() );
   otherWidget->setZoom( widget->zoom() );
   // copy document
@@ -3076,6 +3159,13 @@ QDjView::performPending()
     }
   else if (! documentPages.isEmpty())
     {
+      if (! pendingPosition.isEmpty())
+        {
+          if (pendingPosition.size() == 2)
+            goToPosition(pendingPage, pendingPosition[0], pendingPosition[1]);
+          pendingPosition.clear();
+          pendingPage.clear();
+        }
       if (! pendingPage.isNull())
         {
           goToPage(pendingPage);
@@ -3100,13 +3190,13 @@ QDjView::performPending()
                 }
         }
           pendingHilite.clear();
-    }
+        }
       if (pendingFind.size() > 0)
         {
           find(pendingFind);
           pendingFind.clear();
         }
-}
+    }
   performPendingScheduled = false;
 }
 

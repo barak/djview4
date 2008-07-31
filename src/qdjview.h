@@ -126,6 +126,7 @@ public slots:
   void  closeDocument();
   void  goToPage(int pageno);
   void  goToPage(QString name, int from=-1);
+  void  goToPosition(QString pagename, double px, double py);
   void  goToLink(QString link, QString target=QString(), int from=-1);
   void  addToErrorDialog(QString message);
   void  raiseErrorDialog(QMessageBox::Icon icon, QString caption=QString());
@@ -270,6 +271,7 @@ protected:
   typedef QPair<QString,QString> StringPair;
   QString           pendingUrl;
   QString           pendingPage;
+  QList<double>     pendingPosition;
   QList<StringPair> pendingHilite;
   QString           pendingFind;
   // delayed updates
@@ -333,7 +335,8 @@ protected:
   QAction *actionViewFullScreen;
   QAction *actionLayoutContinuous;
   QAction *actionLayoutSideBySide;
-  QAction *actionLayoutFirstPageAlone;
+  QAction *actionLayoutCoverPage;
+  QAction *actionLayoutRightToLeft;
   QShortcut *shortcutEscape;
   QAction *actionCopyUrl;
   QAction *actionCopyOutline;

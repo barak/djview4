@@ -334,10 +334,12 @@ flatten_hiddentext(miniexp_t p)
   for the DjVu page annotations). 
 
   Variable \a posView usually indicates the position 
-  relative to the top-left corner of the page rectangle
-  when both flags \a anchorRight and \a anchorBottom
-  are \a false, as is usually the case.  These flags are only used
-  to change the reference corner when using \a QDjVuWidget::setPosition.
+  relative to the top-left corner of the page rectangle.
+  In fact variables \a hAnchor and \a vAnchor indicate
+  the coordinates of the reference point as a percentages
+  of the width and height relative to the top left corner.
+  These are always zero when the position is returned
+  with QDjVuWidget::position.
 
   Finally flag \a valid indicates whether both \a posPage and
   \a posView have consistent values. */
@@ -347,9 +349,9 @@ Position::Position()
     posPage(0,0), 
     posView(0,0),
     inPage(false), 
-    anchorRight(false), 
-    anchorBottom(false),
-    valid(false)
+    valid(false),
+    hAnchor(0),
+    vAnchor(0)
 {
 }
 
@@ -681,7 +683,8 @@ public:
   bool        frame;
   bool        continuous;
   bool        sideBySide;
-  bool        firstPageAlone;
+  bool        coverPage;
+  bool        rightToLeft;
   QBrush      borderBrush;
   // layout
   int          layoutChange;    // scheduled changes
@@ -818,7 +821,8 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   vAlign = ALIGN_CENTER;
   sideBySide = false;
   continuous = false;
-  firstPageAlone = false;
+  coverPage = false;
+  rightToLeft = false;
   borderBrush = QBrush(Qt::lightGray);
   unknownSize = QSize(128,128);
   borderSize = 8;
@@ -941,7 +945,7 @@ QDjVuPrivate::makeLayout()
               loPage = 0;
               hiPage = numPages;
             }
-          else if (sideBySide && firstPageAlone)
+          else if (sideBySide && coverPage)
             {
               loPage = qMax(0, (loPage & 1) ? loPage : loPage-1);
               hiPage = qMin(numPages, (loPage & 1) ? loPage+2 : loPage+1);
@@ -1036,7 +1040,7 @@ QDjVuPrivate::makeLayout()
                 size = scale_size(p->width, p->height, vpw, pgw, r);
                 zoomFactor = (vpw * p->dpi * 100) / (pgw * sdpi);
               } else
-                size = scale_size(p->width, p->height, zoom * sdpi, 100 * p->dpi, r);
+                size = scale_size(p->width, p->height, zoom*sdpi,100*p->dpi,r);
               p->rect.setSize(size);
             }
         }
@@ -1053,8 +1057,13 @@ QDjVuPrivate::makeLayout()
             {
               // single page or side by side pages
               int x = borderSize;
-              foreach(p, pageLayout)
+              int s = pageLayout.size();
+              for (int i=0; i<s; i++)
                 {
+                  if (rightToLeft)
+                    p = pageLayout[s-i-1];
+                  else
+                    p = pageLayout[i];
                   p->rect.moveTo(x,borderSize);
                   fullRect |= p->rect;
                   x = x + p->rect.width() + separatorSize;
@@ -1096,15 +1105,16 @@ QDjVuPrivate::makeLayout()
               while(k < pageLayout.size())
                 {
                   Page *lp = pageLayout[k++];
+                  Page *rp = lp;
+                  if (k < pageLayout.size() && (k>1 || !coverPage))
+                    rp = pageLayout[k++];
+                  if (rightToLeft)
+                    { Page *tmp=lp; lp=rp; rp=tmp; }
                   int lw = lp->rect.width();
                   wLeft = qMax(wLeft, lw);
                   wTotal = qMax(wTotal, lw);
-                  if (k < pageLayout.size() && (k > 1 || !firstPageAlone))
-                    {
-                      Page *rp = pageLayout[k++];
-                      int rw = rp->rect.width();
-                      wTotal = qMax(wTotal, lw+rw+separatorSize);
-                    }
+                  if (rp)
+                    wTotal = qMax(wTotal, lw+rp->rect.width()+separatorSize);
                 }
               int y = borderSize;
               k = 0;
@@ -1112,8 +1122,10 @@ QDjVuPrivate::makeLayout()
                 {
                   Page *lp = pageLayout[k++];
                   Page *rp = lp;
-                  if (k < pageLayout.size() && (k > 1 || !firstPageAlone))
+                  if (k < pageLayout.size() && (k > 1 || !coverPage))
                     rp = pageLayout[k++];
+                  if (rightToLeft)
+                    { Page *tmp=lp; lp=rp; rp=tmp; }
                   int h = qMax(lp->rect.height(), rp->rect.height());
                   int ly, ry, lx, rx;
                   ly = ry = y;
@@ -1133,8 +1145,8 @@ QDjVuPrivate::makeLayout()
                     else
                       rx = wTotal + borderSize - rp->rect.width();
                     lx = rx - separatorSize - lp->rect.width();
-                  } else if (firstPageAlone && k == 1) {
-                    lx = borderSize + wLeft + (separatorSize - lp->rect.width()) / 2;
+                  } else if (lp == rp) {
+                    lx = borderSize+wLeft+(separatorSize-lp->rect.width())/2;
                     rx = lx;
                   } else {
                     lx = borderSize + wLeft - lp->rect.width();
@@ -1205,20 +1217,20 @@ QDjVuPrivate::makeLayout()
           if (pageMap.contains(movePos.pageNo))
             {
               Page *p = pageMap[movePos.pageNo];
-              QPoint dp = p->rect.topLeft() + movePos.posView;
-              if (movePos.anchorRight)
-                dp.rx() += p->rect.width() - 1;
-              if (movePos.anchorBottom)
-                dp.ry() += p->rect.height() - 1;
+              QPoint dp = p->rect.topLeft();
+              if (movePos.hAnchor > 0 && movePos.hAnchor <= 100)
+                dp.rx() += p->rect.width() * movePos.hAnchor / 100 - 1;
+              if (movePos.vAnchor > 0 && movePos.vAnchor <= 100)
+                dp.ry() += p->rect.height() * movePos.vAnchor / 100 - 1;
               if (movePos.inPage && p->dpi)
                 dp =  p->mapper.mapped(movePos.posPage);
-              else if (movePos.inPage)
-                {
+              else if (!movePos.inPage)
+                dp += movePos.posView;
+              if (! p->dpi)
+                if (movePos.inPage || movePos.vAnchor || movePos.hAnchor)
                   // page geometry is still unknown.
                   // we have to come back later.
                   futureLayoutChange = CHANGE_VIEW;
-                  dp = p->rect.topLeft();
-                }
               visibleRect.moveTo(dp - movePoint);
             }
           layoutChange |= CHANGE_VISIBLE;
@@ -1600,10 +1612,10 @@ QDjVuPrivate::updateCurrentPoint(const Position &pos)
       else
         {
           point = p->rect.topLeft() + pos.posView;
-          if (pos.anchorRight)
-            point.rx() += p->rect.width() - 1;
-          if (pos.anchorBottom)
-            point.ry() += p->rect.height() - 1;
+          if (pos.hAnchor > 0 && pos.hAnchor <= 100)
+            point.rx() += p->rect.width() * pos.hAnchor / 100 - 1;
+          if (pos.vAnchor > 0 && pos.vAnchor <= 100)
+            point.ry() += p->rect.height() * pos.vAnchor / 100 - 1;
         }
     }
   else 
@@ -1629,7 +1641,7 @@ QDjVuPrivate::updateCurrentPoint(const Position &pos)
   currentPoint = point - visibleRect.topLeft();
   // update currentPos
   int oldPage = currentPos.pageNo;
-  if (changePos || pos.anchorRight || pos.anchorBottom)
+  if (changePos || pos.hAnchor || pos.vAnchor)
     currentPos = findPosition(currentPoint);
   else
     currentPos = pos;
@@ -2228,27 +2240,52 @@ QDjVuWidget::setSideBySide(bool b)
     }
 }
 
-/*! \property QDjVuWidget::firstPageAlone
+/*! \property QDjVuWidget::coverPage
   Determine whether the first page must be show alone when
   multipage documents are displayed side-by-side.
   Default: \a false. */
 
 bool 
-QDjVuWidget::firstPageAlone(void) const
+QDjVuWidget::coverPage(void) const
 {
-  return priv->firstPageAlone;
+  return priv->coverPage;
 }
 
 void 
-QDjVuWidget::setFirstPageAlone(bool b)
+QDjVuWidget::setCoverPage(bool b)
 {
-  if (b != priv->firstPageAlone)
+  if (b != priv->coverPage)
     {
-      priv->firstPageAlone = b;
+      priv->coverPage = b;
       if (priv->sideBySide)
         priv->changeLayout(CHANGE_PAGES|UPDATE_ALL);
     }
 }
+
+
+/*! \property QDjVuWidget::rightToLeft
+  Determine whether the side-by-side pages should be displayed
+  right-to-left instead of left-to-right.
+  Default: \a false. */
+
+bool 
+QDjVuWidget::rightToLeft(void) const
+{
+  return priv->rightToLeft;
+}
+
+void 
+QDjVuWidget::setRightToLeft(bool b)
+{
+  if (b != priv->rightToLeft)
+    {
+      priv->rightToLeft = b;
+      if (priv->sideBySide)
+        priv->changeLayout(CHANGE_PAGES|UPDATE_ALL);
+    }
+}
+
+
 
 /*! \property QDjVuWidget::continuous
   Determine the layout of the pages shown in the displayed area.
@@ -4890,8 +4927,8 @@ QDjVuWidget::lastPage(void)
   pos.inPage = false;
   pos.posPage = QPoint(0,0);
   pos.posView = QPoint(0,0);
-  pos.anchorRight = true;
-  pos.anchorBottom = true;
+  pos.hAnchor = 100;
+  pos.vAnchor = 100;
   p.rx() = priv->visibleRect.width() - priv->borderSize;
   p.ry() = priv->visibleRect.height() - priv->borderSize;
   setPosition(pos, p);
@@ -5001,7 +5038,7 @@ QDjVuWidget::readPrev(void)
   point.ry() = priv->visibleRect.height() - bs;
   pos.inPage = false;
   pos.posView = QPoint(0,0);
-  pos.anchorBottom = true;
+  pos.vAnchor = 100;
   setPosition(pos, point);
 }
 

@@ -1074,7 +1074,7 @@ QDjViewPrefsDialog::modeComboChanged(int n)
       int n = d->ui.layoutCombo->currentIndex();
       set_reset(saved.options, QDjViewPrefs::LAYOUT_CONTINUOUS, n&1);
       set_reset(saved.options, QDjViewPrefs::LAYOUT_SIDEBYSIDE, n>2);
-      set_reset(saved.options, QDjViewPrefs::LAYOUT_FIRSTPAGEALONE, n>4);
+      set_reset(saved.options, QDjViewPrefs::LAYOUT_COVERPAGE, n>4);
       // zoom
       bool okay;
       int zoomIndex = d->ui.zoomCombo->currentIndex();
@@ -1104,7 +1104,7 @@ QDjViewPrefsDialog::modeComboChanged(int n)
       // layout
       int n = 0;
       if (opt & QDjViewPrefs::LAYOUT_SIDEBYSIDE)
-        n += (opt & QDjViewPrefs::LAYOUT_FIRSTPAGEALONE) ? 4 : 2;
+        n += (opt & QDjViewPrefs::LAYOUT_COVERPAGE) ? 4 : 2;
       if (opt & QDjViewPrefs::LAYOUT_CONTINUOUS)
         n += 1;
       d->ui.layoutCombo->setCurrentIndex(n);

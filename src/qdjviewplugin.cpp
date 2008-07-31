@@ -532,8 +532,6 @@ QDjViewPlugin::Instance::restore(QDjVuWidget *widget)
       QDjVuWidget::DisplayMode mode 
         = (QDjVuWidget::DisplayMode)((q[0] & 0xf0000) >> 16);
       QDjVuWidget::Position pos;
-      pos.anchorRight = false;
-      pos.anchorBottom = false;
       pos.inPage = false;
       pos.pageNo = (q[1] & 0xfffffff);
       pos.posView.rx() = q[2];
