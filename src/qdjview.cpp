@@ -3014,8 +3014,7 @@ QDjView::dragEnterEvent(QDragEnterEvent *event)
   if (viewerMode == STANDALONE)
     {
       const QMimeData *data = event->mimeData();
-      if ((data->hasUrls() && data->urls().size() == 1) ||
-          (data->hasText() && QFileInfo(data->text()).exists()) )
+      if (data->hasUrls() && data->urls().size()==1)
         event->accept();
     }
 }
@@ -3037,20 +3036,13 @@ QDjView::dropEvent(QDropEvent *event)
 {
   if (viewerMode == STANDALONE)
     {
-      bool accept = false;
       const QMimeData *data = event->mimeData();
       if (data->hasUrls() && data->urls().size()==1)
-        accept = open(data->urls()[0]);
-      else if (data->hasText())
-        accept = open(data->text());
-      if (accept)
-        {
-          if (event->possibleActions() & Qt::CopyAction)
+        if (open(data->urls()[0]))
+          {
             event->setDropAction(Qt::CopyAction);
-          else
-            event->setDropAction(event->proposedAction());
-          event->accept();
-        }
+            event->accept();
+          }
     }
 }
 
