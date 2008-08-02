@@ -1,3 +1,10 @@
+djview4 (4.3-5rc) unstable; urgency=low
+
+  * Upstream fix for disappearing search box (closes: #484522)
+  * Unable to manifrest save-as giving zero-length file (closes: #468389)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Sat, 02 Aug 2008 12:06:22 +0100
+
 djview4 (4.3-4) unstable; urgency=low
 
   * Add build dependency on pkg-config (closes: #477029)
