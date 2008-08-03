@@ -1851,7 +1851,7 @@ QDjView::parseArgument(QString key, QString value)
     }
   else if (key == "showposition")
     {
-      double x,y;
+      double x=0, y=0;
       if (! parse_position(value, x, y))
         illegal_value(key, value, errors);
       else
