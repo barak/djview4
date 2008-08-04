@@ -215,7 +215,7 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
           if (! djviewTransValid && qdir.exists())
             djviewTransValid= djviewTrans->load("djview_" + lang, dir, "_.-");
         }
-      if (lang == "en" || lang.startsWith("en_")) 
+      if (lang == "en" || lang.startsWith("en_") || lang == "c")
         break;
     }
   // - install tranlators

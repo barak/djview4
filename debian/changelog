@@ -1,3 +1,9 @@
+djview4 (4.3-6) unstable; urgency=low
+
+  * Fix user interaction language selection issue harder (closes: #460714)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Mon, 04 Aug 2008 18:05:54 +0100
+
 djview4 (4.3-5) unstable; urgency=low
 
   * Upstream fix for disappearing search box (closes: #484522)
