@@ -69,6 +69,7 @@ binary-arch: build install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs 
+	-dh_icons
 	dh_installdocs --noscripts
 	dh_installexamples
 	dh_movefiles
@@ -79,6 +80,7 @@ binary-arch: build install
 #	dh_installemacsen
 #	dh_installpam
 	dh_installmime
+	dh_desktop
 #	dh_installinit
 #	dh_installcron
 #	dh_installinfo

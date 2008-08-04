@@ -7,10 +7,7 @@ case "$1" in
 	    /usr/sbin/update-alternatives --quiet \
 		--remove djview /usr/bin/djview4
 	fi
-
-	# Register menu entries (non debian menus)
-	if [ -x /usr/bin/update-desktop-database ] ; then
-	    /usr/bin/update-desktop-database
-	fi
 	;;
 esac
+
+#DEBHELPER#
