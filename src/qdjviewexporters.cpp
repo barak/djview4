@@ -49,7 +49,9 @@
 # include <unistd.h>
 #endif
 #if HAVE_TIFF
+# include <tiff.h>
 # include <tiffio.h>
+# include <tiffconf.h>
 # include "tiff2pdf.h"
 #endif
 #ifdef WIN32
