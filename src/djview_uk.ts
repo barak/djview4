@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="uk">
-<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -575,19 +574,19 @@ Filename &apos;%1&apos; has no suffix.</source>
     <message numerus="yes">
         <location filename="qdjview.cpp" line="3329"/>
         <source>Go: %n pages forward.</source>
-        <translation type="unfinished">
-            <numerusform>Перехід: %n сторінок вперед.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Перехід на %n сторінку вперед.</numerusform>
+            <numerusform>Перехід на %n сторінки вперед.</numerusform>
+            <numerusform>Перехід на %n сторінок вперед.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="qdjview.cpp" line="3332"/>
         <source>Go: %n pages backward.</source>
-        <translation type="unfinished">
-            <numerusform>Перехід: %n сторінок назад.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Перехід на %n сторінку назад.</numerusform>
+            <numerusform>Перехід на %n сторінки назад.</numerusform>
+            <numerusform>Перехід на %n сторінок назад.</numerusform>
         </translation>
     </message>
     <message>
@@ -1240,10 +1239,10 @@ Filename &apos;%1&apos; has no suffix.</source>
     <message numerus="yes">
         <location filename="qdjview.cpp" line="3450"/>
         <source>%n characters</source>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>%n символ</numerusform>
+            <numerusform>%n символи</numerusform>
             <numerusform>%n символів</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -1341,21 +1340,25 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>Копіювати зображення до буфера.</translation>
     </message>
     <message>
+        <location filename="" line="135055280"/>
         <source>First Page &amp;Alone</source>
         <comment>Layout|</comment>
         <translation type="obsolete">Перша сторінка &amp;окремо</translation>
     </message>
     <message>
+        <location filename="" line="135055280"/>
         <source>Ctrl+F6</source>
         <comment>Layout|FirstPageAlone</comment>
         <translation type="obsolete">Ctrl+F6</translation>
     </message>
     <message>
+        <location filename="" line="135055280"/>
         <source>F6</source>
         <comment>Layout|FirstPageAlone</comment>
         <translation type="obsolete">F6</translation>
     </message>
     <message>
+        <location filename="" line="135055280"/>
         <source>Show the first page alone in side-by-side mode.</source>
         <translation type="obsolete">У режимі зі сторінками, розташованими поруч, показувати першу сторінку окремо.</translation>
     </message>
@@ -2020,19 +2023,19 @@ Do you want to replace it?</source>
     <message numerus="yes">
         <location filename="qdjviewsidebar.cpp" line="944"/>
         <source>%n hits</source>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>%n збіг</numerusform>
+            <numerusform>%n збіги</numerusform>
             <numerusform>%n збігів</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="qdjviewsidebar.cpp" line="1014"/>
         <source>Page %1 (%n hits)</source>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>Сторінка %1 (%n збіг)</numerusform>
+            <numerusform>Сторінка %1 (%n збіги)</numerusform>
             <numerusform>Сторінка %1 (%n збігів)</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -2221,10 +2224,10 @@ Do you want to replace it?</source>
     <message numerus="yes">
         <location filename="qdjviewdialogs.cpp" line="475"/>
         <source>%n files</source>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>%n файл</numerusform>
+            <numerusform>%n файли</numerusform>
             <numerusform>%n файлів</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -2235,10 +2238,10 @@ Do you want to replace it?</source>
     <message numerus="yes">
         <location filename="qdjviewdialogs.cpp" line="476"/>
         <source>%n pages</source>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>%n сторінка</numerusform>
+            <numerusform>%n сторінки</numerusform>
             <numerusform>%n сторінок</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -2460,10 +2463,12 @@ Do you want to replace it?</source>
         <translation>Гама</translation>
     </message>
     <message>
+        <location filename="" line="135055280"/>
         <source>Automatic colors</source>
         <translation type="obsolete">Автоматичні кольори</translation>
     </message>
     <message>
+        <location filename="" line="135055280"/>
         <source>&lt;html&gt;Printer color correction.&lt;/html&gt;</source>
         <translation type="obsolete">&lt;html&gt;Корекція кольорів друкарки.&lt;/html&gt;</translation>
     </message>
@@ -2558,22 +2563,27 @@ Do you want to replace it?</source>
         <translation>&amp;Масштаб: </translation>
     </message>
     <message>
+        <location filename="" line="135055280"/>
         <source>&amp;Layout: </source>
         <translation type="obsolete">&amp;Формат: </translation>
     </message>
     <message>
+        <location filename="" line="135055280"/>
         <source>Single page</source>
         <translation type="obsolete">Одна сторінка</translation>
     </message>
     <message>
+        <location filename="" line="135055280"/>
         <source>Continuous pages</source>
         <translation type="obsolete">Сторінки послідовно</translation>
     </message>
     <message>
+        <location filename="" line="135055280"/>
         <source>Double pages</source>
         <translation type="obsolete">Подвійні сторінки</translation>
     </message>
     <message>
+        <location filename="" line="135055280"/>
         <source>Continuous double pages</source>
         <translation type="obsolete">Послідовні подвійні сторінки</translation>
     </message>
@@ -2648,6 +2658,7 @@ Do you want to replace it?</source>
         <translation> точок</translation>
     </message>
     <message>
+        <location filename="" line="135055280"/>
         <source>&amp;Cache</source>
         <translation type="obsolete">&amp;Кеш</translation>
     </message>
@@ -2662,6 +2673,7 @@ Do you want to replace it?</source>
         <translation>&amp;Очистити</translation>
     </message>
     <message>
+        <location filename="" line="135055280"/>
         <source> Mbytes</source>
         <translation type="obsolete"> Mбайтів</translation>
     </message>
@@ -2736,6 +2748,7 @@ Do you want to replace it?</source>
         <translation>Налаштування[*] - DjView</translation>
     </message>
     <message>
+        <location filename="" line="135055280"/>
         <source>&lt;html&gt;&lt;b&gt;Screen gamma correction.&lt;/b&gt;&lt;br&gt;The best color rendition is achieved by adjusting the gamma correction slider and choosing the position that makes the gray square as uniform as possible.&lt;p&gt;&lt;b&gt;Printer color correction.&lt;/b&gt;&lt;br&gt;The &lt;tt&gt;Automatic color&lt;/tt&gt; option works best with PostScript printers and ICC profiled printers. The slider might be useful in other cases.&lt;/html&gt;</source>
         <translation type="obsolete">&lt;html&gt;&lt;b&gt;Коригування екранної гами.&lt;/b&gt;&lt;br&gt;Найкраще відображення кольорів досягається пересуванням повзунка корекції гами та вибором позиції, яка робить сірий квадрат якомога одноріднішим.&lt;p&gt;&lt;b&gt;Коригування кольорів друкарки.&lt;/b&gt;&lt;br&gt;Параметр &lt;tt&gt;Автоматичний колір&lt;/tt&gt; найкраще працює для друкарок PostScript та друкарок з профілем ICC. У всіх інших випадках може бути корисним повзунок.&lt;/html&gt;</translation>
     </message>
@@ -2825,10 +2838,12 @@ Do you want to replace it?</source>
         <translation>Показувати прихований текст у рядку стану</translation>
     </message>
     <message>
+        <location filename="" line="135055280"/>
         <source>Double pages (first alone)</source>
         <translation type="obsolete">Розгортка сторінок (перша окремо)</translation>
     </message>
     <message>
+        <location filename="" line="135055280"/>
         <source>Continuous double pages (first alone)</source>
         <translation type="obsolete">Послідовні розгортки сторінок (перша окремо)</translation>
     </message>
