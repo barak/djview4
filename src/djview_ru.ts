@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ru">
+<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -1401,13 +1402,13 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="667"/>
         <source>Ctrl+F6</source>
         <comment>Layout|CoverPage</comment>
-        <translation type="unfinished">Ctrl+F6</translation>
+        <translation>Ctrl+F6</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="668"/>
         <source>F6</source>
         <comment>Layout|CoverPage</comment>
-        <translation type="unfinished">F6</translation>
+        <translation>F6</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="670"/>
@@ -1424,13 +1425,13 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="677"/>
         <source>Ctrl+Shift+F6</source>
         <comment>Layout|RightToLeft</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+F6</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="678"/>
         <source>Shift+F6</source>
         <comment>Layout|RightToLeft</comment>
-        <translation type="unfinished">Shift+F6</translation>
+        <translation>Shift+F6</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="680"/>
@@ -2916,17 +2917,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="495"/>
         <source>Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Вид </translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="501"/>
         <source>Continuous</source>
-        <translation type="unfinished"></translation>
+        <translation>Непрерывный</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="553"/>
         <source>Side-by-side</source>
-        <translation type="unfinished"></translation>
+        <translation>Пары страниц</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="583"/>
