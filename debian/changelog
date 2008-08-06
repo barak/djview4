@@ -1,3 +1,10 @@
+djview4 (4.3-8rc) unstable; urgency=low
+
+  * gentler dependencies
+  * Upstream mods for man and GCC 4.x warnings
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Wed, 06 Aug 2008 15:15:13 +0100
+
 djview4 (4.3-7) unstable; urgency=low
 
   * Include more upstream translated text
