@@ -352,7 +352,7 @@
         <location filename="qdjview.cpp" line="455"/>
         <source>One &amp;to one</source>
         <comment>Zoom|</comment>
-        <translation>Eins zu &amp;eins</translation>
+        <translation>Eins zu ei&amp;ns</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="457"/>
@@ -815,7 +815,7 @@
         <location filename="qdjview.cpp" line="822"/>
         <source>&amp;Rotate</source>
         <comment>View|Rotate</comment>
-        <translation>&amp;Drehen</translation>
+        <translation>D&amp;rehen</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="830"/>
@@ -1256,64 +1256,64 @@ Dateiname &apos;%1&apos; hat keine Endung.</translation>
         <location filename="qdjview.cpp" line="683"/>
         <source>Copy &amp;URL</source>
         <comment>Edit|</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kopiere A&amp;dresse</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="685"/>
         <source>Save an URL for the current page into the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lege eine Adresse der aktuellen Seite in die Zwischenablage.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="688"/>
         <source>Copy &amp;Outline</source>
         <comment>Edit|</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kopiere &amp;Inhalt</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="692"/>
         <source>Copy &amp;Annotations</source>
         <comment>Edit|</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kopiere An&amp;merkungen</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3460"/>
         <source>Copy text into the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiere Text in die Zwischenablage.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3461"/>
         <source>Save text into a file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichere Text in eine Datei.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3467"/>
         <source>Save image into a file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichere Bild in eine Datei.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3470"/>
         <source>Zoom the selection to fit the window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Passt die Größe des Fensters an.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3476"/>
         <source>Copy URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiere Adresse</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3478"/>
         <source>Save into the clipboard an URL that highlights the selection.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lege eine Adresse der aktuellen Selektion in die Zwischenablage.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3479"/>
         <source>Copy Maparea</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiere Maparea</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3482"/>
         <source>Save into the clipboard a maparea annotation expression for program djvused.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lege eine &apos;maparea&apos; Anmerkung für djvused in die Zwischenablage.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="685"/>
@@ -1324,63 +1324,63 @@ Dateiname &apos;%1&apos; hat keine Endung.</translation>
     <message>
         <location filename="qdjview.cpp" line="690"/>
         <source>Save the djvused code for the outline into the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lege die Outline als Skript für djvused in der Zwischenablage.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="694"/>
         <source>Save the djvused code for the page annotations into the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lege die Anmerkungen einer Seite als Skript für djvused in der Zwischenablage.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3466"/>
         <source>Copy image into the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiere Bild in die Zwischenablage.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="663"/>
         <source>Co&amp;ver Page</source>
         <comment>Layout|</comment>
-        <translation type="unfinished"></translation>
+        <translation>Erste S&amp;eite einzeln</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="667"/>
         <source>Ctrl+F6</source>
         <comment>Layout|CoverPage</comment>
-        <translation type="unfinished"></translation>
+        <translation>Strg+F6</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="668"/>
         <source>F6</source>
         <comment>Layout|CoverPage</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="670"/>
         <source>Show the cover page alone in side-by-side mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeigt die erste Seite einzeln wenn &apos;zwei Seiten nebeneinander&apos; ausgewählt ist.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="673"/>
         <source>&amp;Right to Left</source>
         <comment>Layout|</comment>
-        <translation type="unfinished"></translation>
+        <translation>Rechts nach &amp;Links</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="677"/>
         <source>Ctrl+Shift+F6</source>
         <comment>Layout|RightToLeft</comment>
-        <translation type="unfinished"></translation>
+        <translation>Strg+Shift+F6</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="678"/>
         <source>Shift+F6</source>
         <comment>Layout|RightToLeft</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="680"/>
         <source>Show pages right-to-left in side-by-side mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeigt die Seiten von links nach rechts in zweiseitiger Darstellung.</translation>
     </message>
 </context>
 <context>
@@ -2430,7 +2430,7 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="40"/>
         <source>Gamma</source>
-        <translation type="unfinished">Gamma</translation>
+        <translation>Gamma</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="62"/>
@@ -2735,7 +2735,7 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewprefs.cpp" line="825"/>
         <source>&lt;html&gt;&lt;b&gt;Caches.&lt;/b&gt;&lt;br&gt;The &lt;i&gt;pixel cache&lt;/i&gt; stores image data located outside the visible area. This cache makes panning smoother. The &lt;i&gt;decoded page cache&lt;/i&gt; contains partially decoded pages. It provides faster response times when navigating a multipage document or when returning to a previously viewed page. Clearing this cache might be useful to reflect a change in the page data without restarting the DjVu viewer.&lt;p&gt;&lt;b&gt;Miscellaneous.&lt;/b&gt;&lt;br&gt;Forcing a manual color correction can be useful when using ancient printers. The advanced features check box enables a small number of additional menu entries useful for authoring DjVu files.&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;b&gt;Zwischenspeicher.&lt;/b&gt;&lt;br&gt;Der &lt;i&gt;Speicher der Bildpunkte&lt;/i&gt; hält die Daten des Bildes ausserhalb des sichtbaren Bereiches. Durch diesen Speicher wird das Verschieben des Bildes flüssiger. Der &lt;i&gt;Speicher zum Dekodieren&lt;/i&gt; enthält partiell dekodierte Seiten. Dadurch werden kürzere Antwortzeiten bei der Navigation durch das Dokument erreicht. Das Leeren dieses Speichers ist sinnvoll, um die Daten der Seite neu zu laden, ohne das Programm neu zu starten.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Zwischenspeicher.&lt;/b&gt;&lt;br&gt;Der &lt;i&gt;Cache der Bildpunkte&lt;/i&gt; hält die Daten des Bildes ausserhalb des sichtbaren Bereiches. Durch diesen Speicher wird das Verschieben des Bildes flüssiger. Der &lt;i&gt;Speicher zum Dekodieren&lt;/i&gt; enthält partiell dekodierte Seiten. Dadurch werden kürzere Antwortzeiten bei der Navigation durch das Dokument erreicht. Das Leeren dieses Speichers ist sinnvoll, um die Daten der Seite neu zu laden, ohne das Programm neu zu starten.&lt;/html&gt;&lt;b&gt;Verschiedenes.&lt;/b&gt;&lt;br&gt;Bei alten Druckern kann eine manuelle Korrektur sinnvoll sein. Die erweiterten Funktionen in den Menüs helfen beim Entwicklen von DjVu files.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="834"/>
@@ -2745,12 +2745,12 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewprefs.cpp" line="781"/>
         <source>&lt;html&gt;&lt;b&gt;Screen gamma correction.&lt;/b&gt;&lt;br&gt;The best color rendition is achieved by adjusting the gamma correction slider and choosing the position that makes the gray square as uniform as possible.&lt;p&gt;&lt;b&gt;Screen resolution.&lt;/b&gt;&lt;br&gt;This option forces a particular resolution instead of using the unreliable resolution advertised by the operating system. Forcing the resolution to 100 dpi matches the behavior of the djvulibre command line tools.&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;b&gt;Gammakorrektur des Bildschirms.&lt;/b&gt;&lt;br&gt;Die beste Farbwiedergabe wird durch Anpassen des Gammaschiebers erreicht. Das graue Rechteck sollte dabei möglichst einheitlich erscheinen.&lt;p&gt;&lt;b&gt;Bildschirmauflösung.&lt;/b&gt;&lt;br&gt;Diese Option erzwingt die eingestelle Auflösung, anstelle der unzuverlässigen, die das Betriebssystem unter Umständen mitteilt. 100 dpi ist die Auflösung die die djvulibre-Kommandozeilen-Programme verwenden.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="34"/>
         <source>&amp;Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild&amp;schirm</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="198"/>
@@ -2760,37 +2760,37 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="204"/>
         <source>Force screen &amp;resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;rzwinge Bildschirmauflösung</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="233"/>
         <source> dpi</source>
-        <translation type="unfinished"> dpi</translation>
+        <translation> dpi</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="964"/>
         <source>&amp;Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Erweitert</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1044"/>
         <source>Miscellaneous</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschiedenes</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1052"/>
         <source>Manual printer color correction</source>
-        <translation type="unfinished"></translation>
+        <translation>Manuelle Farbkorrektur des Druckers</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1065"/>
         <source>gamma=</source>
-        <translation type="unfinished">gamma=</translation>
+        <translation>gamma=</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1102"/>
         <source>Enable advanced features in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Erweiterte Funktionen in Menüs freischalten</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1005"/>
@@ -2800,32 +2800,32 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1109"/>
         <source>Show hidden text in status bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeige versteckten Text in der Statusleiste</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="495"/>
         <source>Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Anordnung</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="501"/>
         <source>Continuous</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontinuierlich</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="553"/>
         <source>Side-by-side</source>
-        <translation type="unfinished"></translation>
+        <translation>Zwei Seiten nebeneinander</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="583"/>
         <source>Cover Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Erste Seite einzeln</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="590"/>
         <source>Right-to-Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechts nach Links</translation>
     </message>
 </context>
 <context>
@@ -2948,7 +2948,7 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewdialogs.cpp" line="1617"/>
         <source>(invalid printer)</source>
-        <translation type="unfinished"></translation>
+        <translation>(ungültiger Drucker)</translation>
     </message>
 </context>
 <context>

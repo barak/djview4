@@ -1274,7 +1274,7 @@ Soubor „%1“ nemá žádnou příponu.</translation>
     <message>
         <location filename="qdjview.cpp" line="685"/>
         <source>Save an URL for the current page into the clipboard.</source>
-        <translation type="unfinished">Uloží do schránky dvjused kód s poznámkami na této stánce.</translation>
+        <translation>Uloží do schránky URL současné stránky.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="688"/>
@@ -1370,47 +1370,47 @@ Soubor „%1“ nemá žádnou příponu.</translation>
         <location filename="qdjview.cpp" line="663"/>
         <source>Co&amp;ver Page</source>
         <comment>Layout|</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pře&amp;bal</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="667"/>
         <source>Ctrl+F6</source>
         <comment>Layout|CoverPage</comment>
-        <translation type="unfinished">Ctrl+F6</translation>
+        <translation>Ctrl+F6</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="668"/>
         <source>F6</source>
         <comment>Layout|CoverPage</comment>
-        <translation type="unfinished">F6</translation>
+        <translation>F6</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="670"/>
         <source>Show the cover page alone in side-by-side mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Při zobrazení pod dvou stránkách zobrazí přebal samostatně. </translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="673"/>
         <source>&amp;Right to Left</source>
         <comment>Layout|</comment>
-        <translation type="unfinished"></translation>
+        <translation>Zp&amp;rava doleva</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="677"/>
         <source>Ctrl+Shift+F6</source>
         <comment>Layout|RightToLeft</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+F6</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="678"/>
         <source>Shift+F6</source>
         <comment>Layout|RightToLeft</comment>
-        <translation type="unfinished">Shift+F6</translation>
+        <translation>Shift+F6</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="680"/>
         <source>Show pages right-to-left in side-by-side mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Při zobrazení po dvou stránkách zobrazuje zprava doleva.</translation>
     </message>
 </context>
 <context>
@@ -2876,32 +2876,32 @@ Chcete jej nahradit?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1109"/>
         <source>Show hidden text in status bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit skrytý text ve stavovém řádku</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="495"/>
         <source>Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozvržení</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="501"/>
         <source>Continuous</source>
-        <translation type="unfinished"></translation>
+        <translation>Navazující stránky</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="553"/>
         <source>Side-by-side</source>
-        <translation type="unfinished"></translation>
+        <translation>Po dvou stránkách</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="583"/>
         <source>Cover Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Přebal</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="590"/>
         <source>Right-to-Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Zprava doleva</translation>
     </message>
 </context>
 <context>
@@ -3024,7 +3024,7 @@ Chcete jej nahradit?</translation>
     <message>
         <location filename="qdjviewdialogs.cpp" line="1617"/>
         <source>(invalid printer)</source>
-        <translation type="unfinished"></translation>
+        <translation>(neplatná tiskárna)</translation>
     </message>
 </context>
 <context>
