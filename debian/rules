@@ -35,7 +35,7 @@ build-stamp:  config.status
 clean:
 	dh_testdir
 	rm -f build-stamp 
-	-$(MAKE) distclean
+	[ ! -f Makefile ] || $(MAKE) distclean
 	dh_clean 
 
 plugsubdir=netscape/plugins-libc6
