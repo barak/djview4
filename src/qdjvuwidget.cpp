@@ -36,12 +36,14 @@
 #include <QCursor>
 #include <QDebug>
 #include <QImage>
+#include <QKeyEvent>
 #include <QList>
 #include <QMap>
 #include <QMenu>
-#include <QPaintEvent>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
+#include <QPaintEvent>
 #include <QPixmap>
 #include <QPolygon>
 #include <QRect>
@@ -50,7 +52,9 @@
 #include <QTimer>
 #include <QToolTip>
 #include <QVector>
+#include <QWheelEvent>
 #include <QWidget>
+
 
 #if DDJVUAPI_VERSION < 17
 # error "DDJVUAPI_VERSION>=17 is required !"
@@ -4325,24 +4329,29 @@ QDjVuWidget::modifierEvent(Qt::KeyboardModifiers modifiers,
         {
           return; // Wait for the contextMenuEvent
         }
+      else if (modifiers == Qt::NoModifier &&
+               buttons == Qt::MidButton )
+        {
+          viewport()->setCursor(Qt::CrossCursor);
+          startSelecting(point);
+        }
+      else if (modifiers == Qt::ControlModifier &&
+               buttons == Qt::MidButton )
+        {
+          viewport()->setCursor(priv->cursHandClosed);
+          startPanning(point);
+        }
       else if (modifiers == priv->modifiersForLens &&
                modifiers != Qt::NoModifier )
         {
           viewport()->setCursor(Qt::CrossCursor);
           startLensing(point);
         }
-      else if (modifiers == priv->modifiersForSelect &&
-               buttons != Qt::MidButton )
+      else if (modifiers == priv->modifiersForSelect)
         {
           viewport()->setCursor(Qt::CrossCursor);
           if (buttons != Qt::NoButton)
             startSelecting(point);
-        }
-      else if (modifiers == Qt::NoModifier &&
-               buttons == Qt::MidButton )
-        {
-          viewport()->setCursor(Qt::CrossCursor);
-          startSelecting(point);
         }
       else if (priv->currentMapArea && 
                priv->currentMapArea->isClickable(priv->hyperlinkEnabled 
@@ -4364,21 +4373,21 @@ QDjVuWidget::modifierEvent(Qt::KeyboardModifiers modifiers,
     }
 }
 
-/*! Overridden \a QAbstractScrollArea virtual function. */
+/*! Override \a QAbstractScrollArea virtual function. */
 void 
 QDjVuWidget::mousePressEvent(QMouseEvent *event)
 {
   mouseMoveEvent(event);
 }
 
-/*! Overridden \a QAbstractScrollArea virtual function. */
+/*! Override \a QAbstractScrollArea virtual function. */
 void 
 QDjVuWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
   mouseMoveEvent(event);
 }
 
-/*! Overridden \a QAbstractScrollArea virtual function. */
+/*! Override \a QAbstractScrollArea virtual function. */
 void 
 QDjVuWidget::mouseReleaseEvent(QMouseEvent *event)
 {
@@ -4409,7 +4418,7 @@ QDjVuPrivate::pointerScroll(const QPoint &p)
 }
 
 
-/*! Overridden \a QAbstractScrollArea virtual function. */
+/*! Override \a QAbstractScrollArea virtual function. */
 void 
 QDjVuWidget::mouseMoveEvent(QMouseEvent *event)
 {
@@ -4448,7 +4457,7 @@ QDjVuWidget::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-/*! Overridden \a QAbstractScrollArea virtual function. */
+/*! Override \a QAbstractScrollArea virtual function. */
 void 
 QDjVuWidget::keyPressEvent(QKeyEvent *event)
 {
@@ -4532,7 +4541,7 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
     }
 }
 
-/*! Overridden \a QAbstractScrollArea virtual function. */
+/*! Override \a QAbstractScrollArea virtual function. */
 void 
 QDjVuWidget::contextMenuEvent (QContextMenuEvent *event)
 {
@@ -4541,6 +4550,23 @@ QDjVuWidget::contextMenuEvent (QContextMenuEvent *event)
       priv->contextMenu->exec(event->globalPos());
       event->accept();
     }
+}
+
+
+/*! Override \a QAbstractScrollArea virtual function. */
+void 
+QDjVuWidget::wheelEvent (QWheelEvent *event)
+{
+  if (event->modifiers() == Qt::ControlModifier)
+    {
+      priv->updateCurrentPoint(priv->cursorPos);
+      if (event->delta() > 0)
+        zoomIn();
+      else
+        zoomOut();
+    }
+  else
+    QAbstractScrollArea::wheelEvent(event);
 }
 
 

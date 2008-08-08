@@ -255,6 +255,7 @@ protected:
   virtual void mouseReleaseEvent(QMouseEvent *event);
   virtual void mouseMoveEvent(QMouseEvent *event);
   virtual void contextMenuEvent (QContextMenuEvent *event);
+  virtual void wheelEvent(QWheelEvent *e);
   virtual void paintEvent(QPaintEvent *event);
   virtual void chooseTooltip(void);
   virtual void paintDesk(QPainter &p, const QRegion &region);
