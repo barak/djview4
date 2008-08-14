@@ -276,6 +276,21 @@ stretch	Stretch the image to the plugin window size.
 .PP
 
 .TP
+.BI "-showposition=" px "," py
+Specify a point in the current page that should be
+as close as possible to the center of the window.
+The horizontal and vertical positions 
+.IB  px "," py 
+in the current page are given as fractions in range 0 to 1. 
+For instance,
+.B 0,0
+designates the upper left corner of the page,
+.B 0.5,0.5
+is the center, and 
+.B 1,1 
+is the lower right corner.
+
+.TP
 .BI "-mode=" modespec
 Specify the initial display mode.
 Unless the toolbar and pop-up menu are disabled,
