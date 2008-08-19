@@ -1,9 +1,9 @@
 djview4 (4.3-6) unstable; urgency=low
 
-  * Gentler dependencies
+  * Gentler dependencies, update x-dev dependency
   * Upstream mods for man and GCC 4.x warnings
   * Include more upstream translated text
-  * Minor lintian issues (x-dev; debian/rules clean; deb scripts w/ command path)
+  * Minor lintian issues (debian/rules clean; deb scripts w/ command path)
   * Fix user interaction language selection issue harder (closes: #460714)
 
  -- Barak A. Pearlmutter <bap@debian.org>  Tue, 19 Aug 2008 13:10:25 +0100
