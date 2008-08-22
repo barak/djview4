@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ru">
-<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -378,7 +377,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="830"/>
         <source>&amp;Display</source>
         <comment>View|Display</comment>
-        <translation>&amp;Показывать</translation>
+        <translation>По&amp;казывать</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="590"/>
@@ -947,7 +946,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="822"/>
         <source>&amp;Rotate</source>
         <comment>View|Rotate</comment>
-        <translation>&amp;Поворот</translation>
+        <translation>По&amp;ворот</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="545"/>
@@ -1396,7 +1395,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="663"/>
         <source>Co&amp;ver Page</source>
         <comment>Layout|</comment>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Обложка</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="667"/>
@@ -1413,13 +1412,13 @@ Filename &apos;%1&apos; has no suffix.</source>
     <message>
         <location filename="qdjview.cpp" line="670"/>
         <source>Show the cover page alone in side-by-side mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать первую страницу отдельно в режиме пар страниц.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="673"/>
         <source>&amp;Right to Left</source>
         <comment>Layout|</comment>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Справа налево</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="677"/>
@@ -1436,7 +1435,7 @@ Filename &apos;%1&apos; has no suffix.</source>
     <message>
         <location filename="qdjview.cpp" line="680"/>
         <source>Show pages right-to-left in side-by-side mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать страницы справа налево в режиме пар страниц.</translation>
     </message>
 </context>
 <context>
@@ -2932,12 +2931,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="583"/>
         <source>Cover Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Обложка</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="590"/>
         <source>Right-to-Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Справа налево</translation>
     </message>
 </context>
 <context>
@@ -3060,7 +3059,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewdialogs.cpp" line="1617"/>
         <source>(invalid printer)</source>
-        <translation type="unfinished"></translation>
+        <translation>(неверный принтер)</translation>
     </message>
 </context>
 <context>
