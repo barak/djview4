@@ -1395,7 +1395,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="663"/>
         <source>Co&amp;ver Page</source>
         <comment>Layout|</comment>
-        <translation>&amp;Обложка</translation>
+        <translation>&amp;Титульный лист</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="667"/>
@@ -2931,7 +2931,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="583"/>
         <source>Cover Page</source>
-        <translation>Обложка</translation>
+        <translation>Титульный лист</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="590"/>
