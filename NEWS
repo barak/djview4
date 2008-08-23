@@ -27,7 +27,7 @@ NEW IN VERSION 4.3
 - Fixed double free bug in plugin mode.
 
 
-NEW FOR NEXT VERSION 
+NEW IN VERSION 4.4
 --------------------
 - Full session management under X11.
 - Added advanced feature check box.
@@ -39,3 +39,7 @@ NEW FOR NEXT VERSION
 - Option to display side-by-side in right-to-left mode.
 - Drag'n drop files into the viewer.
 - Support for Lizardtech's plugin option -showposition.
+
+
+NEW FOR NEXT VERSION
+--------------------
