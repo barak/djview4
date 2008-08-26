@@ -47,7 +47,7 @@ class QDjVuWidget : public QAbstractScrollArea
              READ zoom WRITE setZoom)
   Q_PROPERTY(double gamma 
              READ gamma WRITE setGamma)
-  Q_PROPERTY(double screenDpi 
+  Q_PROPERTY(int screenDpi 
              READ screenDpi WRITE setScreenDpi)
   Q_PROPERTY(DisplayMode displayMode 
              READ displayMode WRITE setDisplayMode)
