@@ -3023,11 +3023,15 @@ QDjView::dragEnterEvent(QDragEnterEvent *event)
 void 
 QDjView::dragMoveEvent(QDragMoveEvent *event)
 {
+#ifdef Q_OS_WIN
+  QMainWindow::dragMoveEvent(event);
+#else
   QRect rect = centralWidget()->geometry();
   if (event->answerRect().intersects(rect))
     event->accept(rect);
   else
     event->ignore();
+#endif
 }
 
 
