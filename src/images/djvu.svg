@@ -46,7 +46,7 @@
      showgrid="false"
      inkscape:zoom="8.139738"
      inkscape:cx="44.842719"
-     inkscape:cy="23.608891"
+     inkscape:cy="28.093441"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:current-layer="svg2"
@@ -55,14 +55,28 @@
   <defs
      id="defs4">
     <linearGradient
-       inkscape:collect="always"
+       id="linearGradient2545">
+      <stop
+         id="stop2547"
+         offset="0"
+         style="stop-color:#342679;stop-opacity:1;" />
+      <stop
+         style="stop-color:#7b51ae;stop-opacity:0.96862745;"
+         offset="0.72235626"
+         id="stop2553" />
+      <stop
+         id="stop2549"
+         offset="1"
+         style="stop-color:#d9cce8;stop-opacity:0.96862745;" />
+    </linearGradient>
+    <linearGradient
        id="linearGradient11663">
       <stop
-         style="stop-color:#3a2b87;stop-opacity:1;"
+         style="stop-color:#342679;stop-opacity:1;"
          offset="0"
          id="stop11665" />
       <stop
-         style="stop-color:#cdbfdb;stop-opacity:1"
+         style="stop-color:#dacfe4;stop-opacity:1;"
          offset="1"
          id="stop11667" />
     </linearGradient>
@@ -78,14 +92,13 @@
          id="stop11637" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient11623">
       <stop
-         style="stop-color:#3a2b87;stop-opacity:1;"
+         style="stop-color:#aca1e2;stop-opacity:1;"
          offset="0"
          id="stop11625" />
       <stop
-         style="stop-color:#7d50af;stop-opacity:0.96862745"
+         style="stop-color:#a383c7;stop-opacity:0.96862745;"
          offset="1"
          id="stop11627" />
     </linearGradient>
@@ -455,16 +468,41 @@
        x2="33.136433"
        y2="33.568569"
        gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient11663"
+       id="linearGradient2518"
+       gradientUnits="userSpaceOnUse"
+       x1="40.864098"
+       y1="40.518246"
+       x2="33.136433"
+       y2="32.651588" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient11545"
+       id="linearGradient2525"
+       gradientUnits="userSpaceOnUse"
+       x1="25.553648"
+       y1="34.006008"
+       x2="0"
+       y2="34.153435" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2545"
+       id="linearGradient2543"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.9880039,0,0,0.9757112,0.5252674,7.9045507e-2)"
+       x1="45.033901"
+       y1="44.966038"
+       x2="11.675456"
+       y2="1.4610662" />
   </defs>
   <g
-     id="g11727"
-     inkscape:export-filename="/home/leonb/djvulibre-djview/src/images/djvu48.png"
-     inkscape:export-xdpi="73.720139"
-     inkscape:export-ydpi="73.720139">
+     id="g2555">
     <path
        id="path11621"
        d="M 11.370919,0.69091867 L 11.370919,45.309081 L 33.755077,45.309081 L 46.389081,32.832268 L 46.389081,0.69091867 L 11.370919,0.69091867 z"
-       style="fill:url(#linearGradient11629);fill-opacity:1;fill-rule:evenodd;stroke:#3a2b87;stroke-width:0.98183799px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+       style="fill:url(#linearGradient2543);fill-opacity:1;fill-rule:evenodd;stroke:#3a2b87;stroke-width:0.98183799000000005px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     <g
        transform="translate(4.5867863,-35.165361)"
        id="g11649">
@@ -554,7 +592,7 @@
        height="11.892275"
        width="25.848497"
        id="rect11543"
-       style="fill:url(#linearGradient11551);fill-opacity:1" />
+       style="fill:url(#linearGradient2525);fill-opacity:1" />
     <text
        id="text11553"
        y="30.467812"
@@ -562,7 +600,9 @@
        style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
        xml:space="preserve"><tspan
          id="tspan11555"
-         sodipodi:role="line"></tspan></text>
+         sodipodi:role="line"
+         x="1.7690988"
+         y="30.467812" /></text>
     <text
        sodipodi:linespacing="100%"
        id="text11559"
@@ -577,6 +617,6 @@
     <path
        id="path11661"
        d="M 33.636433,45.8 L 33.636433,33.15159 L 46.284843,33.15159"
-       style="fill:url(#linearGradient11669);fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1" />
+       style="fill:url(#linearGradient2518);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
   </g>
 </svg>
