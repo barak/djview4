@@ -61,6 +61,7 @@ macx {
   QMAKE_INFO_PLIST = djview.plist
   contains(DEFINES,__USE_WS_X11__): CONFIG += x11
 } else:win32 {
+  RC_FILE = djview.rc
   contains(DEFINES,_WIN32_X11_): CONFIG += x11
 } else:unix {
   CONFIG += x11
