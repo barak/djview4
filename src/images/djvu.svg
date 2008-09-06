@@ -9,8 +9,9 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="48"
-   height="48"
+   width="128"
+   height="128"
+   viewBox="0 0 48 48"
    id="svg2524"
    sodipodi:version="0.32"
    inkscape:version="0.46"
@@ -194,9 +195,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="8"
+     inkscape:zoom="2.8284271"
      inkscape:cx="26.06094"
-     inkscape:cy="23.63511"
+     inkscape:cy="64.449612"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -224,7 +225,8 @@
      id="layer1"
      transform="translate(-4.9857129,-9.2639696)">
     <g
-       id="g2454">
+       id="g2454"
+       transform="matrix(1.000026,0,0,0.9968473,-1.2968723e-4,0.405534)">
       <path
          id="path11621"
          d="M 16.627139,9.7708624 L 16.627139,56.236444 L 39.543803,56.236444 L 52.478362,43.243028 L 52.478362,9.7708624 L 16.627139,9.7708624 z"
