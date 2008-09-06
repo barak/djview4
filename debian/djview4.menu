@@ -1,4 +1,4 @@
 ?package(djview4):needs="X11" \
     section="Applications/Viewers" \
     title="DjView4" command="/usr/bin/djview4" \
-    icon="/usr/share/icons/hicolor/32x32/apps/djvulibre-djview4.xpm"
+    icon="/usr/share/icons/hicolor/64x64/apps/djvulibre-djview4.xpm"
