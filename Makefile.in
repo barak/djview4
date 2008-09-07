@@ -47,7 +47,7 @@ all: all-djview
 
 @NSDEJAVU_YES@all: all-nsdejavu
 
-@DESKTOP_YES@all: all-desktopfiles
+all: all-desktopfiles
 
 all: all-djview-qm
 

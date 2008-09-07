@@ -89,6 +89,7 @@ AC_PROG_LN_S
 AC_PATH_PROG(RM, rm)
 AC_PATH_PROG(TOUCH, touch)
 AC_PATH_PROG(MKDIR, mkdir)
+AC_PATH_PROG(CONVERT, convert, false)
 AC_PROG_INSTALL
 
 # Libtool & Compilers

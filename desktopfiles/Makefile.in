@@ -31,6 +31,7 @@ mandir = @mandir@
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
+CONVERT = @CONVERT@
 XDG_MIME = @XDG_MIME@
 XDG_ICON_RESOURCE = @XDG_ICON_RESOURCE@
 XDG_DESKTOP_MENU = @XDG_DESKTOP_MENU@
@@ -41,7 +42,17 @@ datadir_djview = ${datadir}/djvu/djview4/desktop
 
 # -------- all
 
-all: register-djview-menu
+all: icons register-djview-menu
+
+icons: hi-djview4.svgz hi32-djview4.png hi64-djview4.png
+
+hi32-djview4.png hi64-djview4.png: djview.svg
+	s=`echo $@ | sed -e 's/[a-z]*\([0-9]*\).*/\1/'`; \
+	${CONVERT} -geometry $${s}x$${s} -depth 8 -background none $< $@ \
+	  || cp ${srcdir}/prebuilt-$@ $@
+
+hi-djview4.svgz: djview.svg
+	cat $< | gzip >$@
 
 register-djview-menu: register-djview-menu.in
 	sed < ${srcdir}/register-djview-menu.in > register-djview-menu \
@@ -59,8 +70,8 @@ install: install-djview-files
 install-djview-files: FORCE
 	${INSTALL} -d ${DESTDIR}${datadir_djview}
 	${INSTALL_PROGRAM} register-djview-menu ${DESTDIR}${datadir_djview}
-	${INSTALL_DATA} ${srcdir}/*djview4.png ${DESTDIR}${datadir_djview}
-	${INSTALL_DATA} ${srcdir}/*djview4.svgz ${DESTDIR}${datadir_djview}
+	${INSTALL_DATA} *djview4.png ${DESTDIR}${datadir_djview}
+	${INSTALL_DATA} *djview4.svgz ${DESTDIR}${datadir_djview}
 	${INSTALL_DATA} ${srcdir}/*djview4.desktop ${DESTDIR}${datadir_djview}
 	-@echo "Run ${datadir_djview}/register-djview-menu install"
 	-@echo " to register the djview3 menu entries."
