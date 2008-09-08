@@ -52,7 +52,7 @@ hi32-djview4.png hi64-djview4.png: djview.svg
 	  || cp ${srcdir}/prebuilt-$@ $@
 
 hi-djview4.svgz: djview.svg
-	cat $< | gzip >$@
+	gzip <$< >$@
 
 register-djview-menu: register-djview-menu.in
 	sed < ${srcdir}/register-djview-menu.in > register-djview-menu \
