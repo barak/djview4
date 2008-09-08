@@ -1,8 +1,12 @@
-djview4 (4.4) unstable; urgency=low
+djview4 (4.4-1) unstable; urgency=low
 
-  * Upstream release 4.4 (not a real debian release)
+  * Upstream release 4.4
+  * Fully dh7-ianize
+  * Upstream builds PNG from SVG using /usr/bin/convert, requiring build
+    dependency upon imagemagick
+  * Integrate new upstream icons
 
- -- Leon Bottou <leonb@users.sourceforge.net>  Sat, 23 Aug 2008 08:26:00 +0500
+ -- Barak A. Pearlmutter <bap@debian.org>  Mon, 08 Sep 2008 08:37:16 +0100
 
 djview4 (4.3-6) unstable; urgency=low
 
