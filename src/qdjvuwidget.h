@@ -162,6 +162,7 @@ public:
   QPoint hotSpot(void) const;
   Position position(void) const;
   Position position(const QPoint &point) const;
+  Position positionWithClosestAnchor(const QPoint &point) const;
   int rotation(void) const;
   int zoom(void) const;
   int zoomFactor(void) const;

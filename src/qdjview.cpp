@@ -1852,10 +1852,14 @@ QDjView::parseArgument(QString key, QString value)
   else if (key == "showposition")
     {
       double x=0, y=0;
-      if (! parse_position(value, x, y))
+      pendingPosition.clear();
+      if (! parse_position(value, x, y)) 
         illegal_value(key, value, errors);
       else
-        goToPosition(QString::null, x, y);
+        {
+          pendingPosition << x << y;
+          performPendingLater();
+        } 
     }
   else if (key == "src" && viewerMode != STANDALONE)
     {
@@ -3990,13 +3994,23 @@ void
 QDjView::performCopyUrl()
 {
   QUrl url = removeDjVuCgiArguments(documentUrl);
-  int pageNo = widget->page();
+  QPoint center = widget->rect().center();
+  QDjVuWidget::Position pos = widget->positionWithClosestAnchor(center);
+  int pageNo = pos.pageNo;
   if (url.isValid() && pageNo>=0 && pageNo<pageNum())
     {
       url.addQueryItem("djvuopts", QString::null);
       QList<ddjvu_fileinfo_t> &dp = documentPages;
       if (pageNo>=0 && pageNo<documentPages.size())
         url.addQueryItem("page", QString::fromUtf8(dp[pageNo].id));
+      int rotation = widget->rotation();
+      if (rotation)
+        url.addQueryItem("rotate", QString::number(90 * rotation));
+      int zoom = widget->zoomFactor();
+      url.addQueryItem("zoom", QString::number(zoom));
+      double ha = pos.hAnchor / 100.0;
+      double va = pos.vAnchor / 100.0;
+      url.addQueryItem("showposition", QString("%1,%2").arg(ha).arg(va));
       QApplication::clipboard()->setText(url.toString());
     }
 }

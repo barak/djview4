@@ -760,7 +760,7 @@ public:
   void changeLayout(int change, int delay=0);
   void getAnnotationsAndText(Page *p);
   bool requestPage(Page *p);
-  Position findPosition(const QPoint &point);
+  Position findPosition(const QPoint &point, bool closestAnchor=false);
   void updateModifiers(Qt::KeyboardModifiers, Qt::MouseButtons);
   void updatePosition(const QPoint &point, bool click=false, bool links=true);
   void updateCurrentPoint(const Position &pos);
@@ -1526,7 +1526,7 @@ QDjVuPrivate::requestPage(Page *p)
 
 // compute Position for a given viewport point.
 Position
-QDjVuPrivate::findPosition(const QPoint &point)
+QDjVuPrivate::findPosition(const QPoint &point, bool closestAnchor)
 {
   Position pos; 
   QPoint deskPoint = visibleRect.topLeft() + point;
@@ -1557,7 +1557,17 @@ QDjVuPrivate::findPosition(const QPoint &point)
       pos.pageNo = bestPage->pageno;
       pos.posView = deskPoint - bestPage->rect.topLeft(); 
       pos.posPage = bestPage->mapper.unMapped(deskPoint);
-      pos.inPage = (bestDistance==0 && bestPage->dpi>0);
+      pos.inPage = (bestDistance == 0 && bestPage->dpi > 0);
+      if (closestAnchor)
+        {
+          int w = bestPage->rect.width();
+          int h = bestPage->rect.height();
+          int x = qBound(0, pos.posView.x(), w);
+          int y = qBound(0, pos.posView.y(), h);
+          pos.posView = pos.posView - QPoint(x,y);
+          pos.hAnchor = (100 * x) / w;
+          pos.vAnchor = (100 * y) / h;
+        }
       pos.valid = true;
     }
   return pos;
@@ -1991,9 +2001,12 @@ QDjVuWidget::setPage(int n)
   When setting the position, flag \a Position::inPage
   is used to determine if the document position is expressed
   in full resolution page coordinates (\a Position::posPage) or
-  in pixels relative to the topleft page corner (\a Position::posView).
-  In the former case, variable \a Position::posPage must
-  be contained inside the full resolution page rectangle.
+  in pixels relative to the top left page corner (\a Position::posView)
+  or the point specified by the \a Position::hAnchor 
+  and \a Position::vAnchor.
+  When \a Position::inPage is \a true, 
+  variable \a Position::posPage must be contained inside 
+  the full resolution page rectangle.
 */
 
 Position 
@@ -2036,6 +2049,18 @@ QDjVuWidget::setPosition(const Position &pos, const QPoint &point)
     priv->changeLayout(CHANGE_PAGES|CHANGE_VIEW|CHANGE_SCROLLBARS);
   if (oldPage != priv->currentPos.pageNo)
     emit pageChanged(priv->currentPos.pageNo);
+}
+
+
+/*! Unlike \a position() which sets the anchor fields
+    \a pos.hAnchor and \a pos.vAnchor to zero, 
+    this version determines where to place the anchor
+    to minimize the length of vector \a pos.posView. */
+
+Position 
+QDjVuWidget::positionWithClosestAnchor(const QPoint &point) const
+{
+  return priv->findPosition(point, true);
 }
 
 
