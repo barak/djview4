@@ -148,16 +148,20 @@ The following command line options are recognized by the
 version of the 
 .B djview4
 program.
-
+Unlike most 
+.B djview4 options, 
+X11 options that demand an argument
+do not use the equal character 
+to introduce their argument.
 .TP
-.BI "-display=" "displayname"
+.BI "-display " "displayname"
 Specify that the 
 .B djview4
 windows should appear on the X11 display 
 .IR displayname .
 
 .TP
-.BI "-geometry=" W x H + X + Y
+.BI "-geometry " W x H + X + Y
 Specify the initial size and position of the first window
 using the traditional X11 geometry specification syntax.
 The numerical arguments 
