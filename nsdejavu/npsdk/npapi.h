@@ -36,8 +36,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 
-/*
- *  npapi.h $Revision$
+/*  npapi.h Revision 3.45 (cvs $Revision$)
  *  Netscape client plug-in API spec
  */
 
