@@ -1040,7 +1040,8 @@ QDjViewPlugin::cmdNewStream()
         {
           instance->url = url;
           url = QDjView::removeDjVuCgiArguments(url);
-          new QDjViewPlugin::Stream(0, url, instance);
+          Stream *s = new QDjViewPlugin::Stream(0, url, instance);
+          s->checked = true;
           instance->open();
         }
       // search stream
