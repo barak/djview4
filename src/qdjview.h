@@ -99,6 +99,7 @@ class QDjView : public QMainWindow
   QDjVuDocument      *getDocument()         { return document; } 
   QString             getDocumentFileName() { return documentFileName; }
   QUrl                getDocumentUrl()      { return documentUrl; }
+  QUrl                getDecoratedUrl();
   ViewerMode          getViewerMode()       { return viewerMode; }
   QString             getShortFileName();
   bool                getFullScreen();

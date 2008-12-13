@@ -2663,6 +2663,35 @@ QDjView::find(QString find)
   Return the current viewer mode. */
 
 
+
+/*! Return an url that encodes the current view and page. */
+
+QUrl
+QDjView::getDecoratedUrl()
+{
+  QUrl url = removeDjVuCgiArguments(documentUrl);
+  QPoint center = widget->rect().center();
+  QDjVuWidget::Position pos = widget->positionWithClosestAnchor(center);
+  int pageNo = pos.pageNo;
+  if (url.isValid() && pageNo>=0 && pageNo<pageNum())
+    {
+      url.addQueryItem("djvuopts", QString::null);
+      QList<ddjvu_fileinfo_t> &dp = documentPages;
+      if (pageNo>=0 && pageNo<documentPages.size())
+        url.addQueryItem("page", QString::fromUtf8(dp[pageNo].id));
+      int rotation = widget->rotation();
+      if (rotation)
+        url.addQueryItem("rotate", QString::number(90 * rotation));
+      int zoom = widget->zoomFactor();
+      url.addQueryItem("zoom", QString::number(zoom));
+      double ha = pos.hAnchor / 100.0;
+      double va = pos.vAnchor / 100.0;
+      url.addQueryItem("showposition", QString("%1,%2").arg(ha).arg(va));
+    }
+  return url;
+}
+
+
 /*! Return the base name of the current file. */
 
 QString
@@ -3521,15 +3550,17 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
     }
   else if (action && action == copyUrl)
     {
-      QUrl url = removeDjVuCgiArguments(documentUrl);
+      QUrl url = getDecoratedUrl();
       Position pos = widget->position(pointerPos);
       QRect seg = widget->getSegmentForRect(rect, pos.pageNo);
       if (url.isValid() && pos.pageNo>=0 && pos.pageNo<pageNum())
         {
-          url.addQueryItem("djvuopts", QString::null);
+          if (! url.hasQueryItem("djvuopts"))
+            url.addQueryItem("djvuopts", QString::null);
           QList<ddjvu_fileinfo_t> &dp = documentPages;
-          if (pos.pageNo>=0 && pos.pageNo<documentPages.size())
-            url.addQueryItem("page", QString::fromUtf8(dp[pos.pageNo].id));
+          if (! url.hasQueryItem("page"))
+            if (pos.pageNo>=0 && pos.pageNo<documentPages.size())
+              url.addQueryItem("page", QString::fromUtf8(dp[pos.pageNo].id));
           if (! rect.isEmpty())
             url.addQueryItem("highlight", QString("%1,%2,%3,%4")
                              .arg(seg.left()).arg(seg.top())
@@ -3995,26 +4026,9 @@ QDjView::performRedo()
 void 
 QDjView::performCopyUrl()
 {
-  QUrl url = removeDjVuCgiArguments(documentUrl);
-  QPoint center = widget->rect().center();
-  QDjVuWidget::Position pos = widget->positionWithClosestAnchor(center);
-  int pageNo = pos.pageNo;
-  if (url.isValid() && pageNo>=0 && pageNo<pageNum())
-    {
-      url.addQueryItem("djvuopts", QString::null);
-      QList<ddjvu_fileinfo_t> &dp = documentPages;
-      if (pageNo>=0 && pageNo<documentPages.size())
-        url.addQueryItem("page", QString::fromUtf8(dp[pageNo].id));
-      int rotation = widget->rotation();
-      if (rotation)
-        url.addQueryItem("rotate", QString::number(90 * rotation));
-      int zoom = widget->zoomFactor();
-      url.addQueryItem("zoom", QString::number(zoom));
-      double ha = pos.hAnchor / 100.0;
-      double va = pos.vAnchor / 100.0;
-      url.addQueryItem("showposition", QString("%1,%2").arg(ha).arg(va));
-      QApplication::clipboard()->setText(url.toString());
-    }
+  QUrl url = getDecoratedUrl();
+  if (url.isValid())
+    QApplication::clipboard()->setText(url.toString());
 }
 
 
