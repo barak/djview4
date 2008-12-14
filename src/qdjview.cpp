@@ -1346,19 +1346,15 @@ QDjView::saveSession(QSettings *s)
   updateSaved(&saved);
   s->setValue("name", objectName());
   s->setValue("options", prefs->optionsToString(saved.options));
-  s->setValue("zoom", saved.zoom);
   s->setValue("state", saved.state);
   s->setValue("sidebarTab", saved.sidebarTab);
   s->setValue("tools", prefs->toolsToString(tools));
-  s->setValue("documentFileName", documentFileName);
-  s->setValue("documentUrl", documentUrl.toString());
-  s->setValue("pageNo", widget->page());
+  s->setValue("documentUrl", getDecoratedUrl().toString());
 }
 
 void  
 QDjView::restoreSession(QSettings *s)
 {
-  QString df = s->value("documentFileName").toString();
   QUrl du = QUrl(s->value("documentUrl").toString());
   Tools tools = this->tools;
   Saved saved;
@@ -1367,7 +1363,7 @@ QDjView::restoreSession(QSettings *s)
     saved.sidebarTab = s->value("sidebarTab").toInt();
   if (s->contains("options"))
     saved.options = prefs->stringToOptions(s->value("options").toString());
-  if (s->contains("zoom"))
+  if (s->contains("zoom")) // compat
     saved.zoom = s->value("zoom").toInt();
   if (s->contains("state"))
     saved.state = s->value("state").toByteArray();
@@ -1377,12 +1373,9 @@ QDjView::restoreSession(QSettings *s)
     setObjectName(s->value("name").toString());
   applySaved(&saved);
   updateActionsLater();
-  // open document 
-  if (! df.isEmpty())
-    open(df);
-  else if (du.isValid())
+  if (du.isValid())
     open(du);
-  if (document)
+  if (document && s->contains("pageNo")) // compat
     goToPage(s->value("pageNo", 0).toInt());
 }
 
