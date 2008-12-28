@@ -103,12 +103,13 @@ class QDjView : public QMainWindow
   ViewerMode          getViewerMode()       { return viewerMode; }
   QString             getShortFileName();
   bool                getFullScreen();
-  
+
+  QString      getArgument(QString key);
   QStringList  parseArgument(QString key, QString val);
   QStringList  parseArgument(QString keyEqualVal);
   void         parseDjVuCgiArguments(QUrl url);
   static QUrl  removeDjVuCgiArguments(QUrl url);
-  
+
   int         pageNum(void);
   QString     pageName(int pageno, bool titleonly=false);
   int         pageNumber(QString name, int from = -1);

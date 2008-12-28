@@ -1400,6 +1400,12 @@ string_is_off(QString val)
   return v == "no" || v == "off" || v == "false" || v == "0";
 }
 
+static QString
+get_boolean(bool b)
+{
+  return QString(b ? "yes" : "no");
+}
+
 static bool
 parse_boolean(QString key, QString val, 
               QList<QString> &errors, bool &answer)
@@ -1435,7 +1441,6 @@ parse_position(QString value, double &x, double &y)
   return false;
 }
 
-
 static bool 
 parse_highlight(QString value, 
                 int &x, int &y, int &w, int &h, 
@@ -1463,7 +1468,6 @@ parse_highlight(QString value,
     return true;
   return false;
 }
-
 
 template<class T> static inline void
 set_reset(QFlags<T> &x, bool plus, bool minus, T y)
@@ -1576,6 +1580,7 @@ QDjView::parseToolBarOption(QString option, QStringList &errors)
   if (wantselect)
     tools |= QDjViewPrefs::TOOL_SELECT;
 }
+
 
 
 /*! Parse a qdjview option described by a pair \a key, \a value.
@@ -1705,11 +1710,6 @@ QDjView::parseArgument(QString key, QString value)
       if (parse_boolean(key, value, errors, okay))
         widget->setDisplayFrame(okay);
     }
-  else if (key == "scrollbars")
-    {
-      if (parse_boolean(key, value, errors, okay))
-        enableScrollBars(okay);
-    }
   else if (key == "menu")
     {
       if (parse_boolean(key, value, errors, okay))
@@ -1785,9 +1785,12 @@ QDjView::parseArgument(QString key, QString value)
     {                           
       int x,y,w,h;
       QColor color;
-      if (! parse_highlight(value, x, y, w, h, color))
+      if (value.isEmpty())
+        widget->clearHighlights(widget->page());
+      else if (parse_highlight(value, x, y, w, h, color))
+        pendingHilite << StringPair(pendingPage, value);
+      else
         illegal_value(key, value, errors);
-      pendingHilite << StringPair(pendingPage, value);
       performPendingLater();
     }
   else if (key == "rotate")
@@ -1936,6 +1939,163 @@ QDjView::removeDjVuCgiArguments(QUrl url)
   newurl.setQueryItems(args);
   return newurl;
 }
+
+
+/*! Returns the most adequate value
+  that could be passed to \a parseArgument
+  for the specified \a key. */
+
+QString      
+QDjView::getArgument(QString key)
+{
+  key = key.toLower();
+  if ((key == "fullscreen" || key == "fs") && (viewerMode == STANDALONE))
+    return get_boolean(actionViewFullScreen->isChecked());
+  else if (key == "page")
+    return QString::number(widget->page());
+  else if (key == "scrollbars")
+    return get_boolean(widget->horizontalScrollBarPolicy() != 
+                       Qt::ScrollBarAlwaysOff );
+  else if (key == "menubar")
+    return get_boolean(menuBar->isVisible());
+  else if (key == "statusbar")
+    return get_boolean(statusBar->isVisible());
+  else if (key == "continuous")
+    return get_boolean(widget->continuous());
+  else if (key == "side_by_side" || key == "sidebyside")
+    return get_boolean(widget->sideBySide());
+  else if (key == "coverpage" || key == "firstpagealone" || 
+           key == "first_page_alone" )
+    return get_boolean(widget->coverPage());
+  else if (key == "righttoleft" || key == "right_to_left")
+    return get_boolean(widget->rightToLeft());
+  else if (key == "frame")
+    return get_boolean(widget->displayFrame());
+  else if (key == "keyboard")
+    return get_boolean(widget->keyboardEnabled());
+  else if (key == "links")
+    return get_boolean(widget->hyperlinkEnabled());
+  else if (key == "menu")
+    return get_boolean(widget->contextMenu() != 0);
+  else if (key == "rotate")
+    return QString::number(widget->rotation() * 90);
+  else if (key == "print")
+    return get_boolean(printingAllowed);
+  else if (key == "save")
+    return get_boolean(savingAllowed);
+  else if (key == "src")
+    return removeDjVuCgiArguments(documentUrl).toString();
+  else if (key == "layout")
+    {
+      QStringList l;
+      if (widget->continuous())
+        l << QString("continuous");
+      if (widget->sideBySide())
+        l << QString("double");
+      if (l.isEmpty())
+        l << QString("single");                
+      l << QString(widget->rightToLeft() ? "rtol" : "ltor");
+      l << QString(widget->coverPage() ? "cover" : "nocover");
+      l << QString(widget->separatorSize() ? "gap" : "nogap");
+      return l.join(",");
+    }
+  else if (key == "zoom")
+    {
+      int z = widget->zoom();
+      if (z == QDjVuWidget::ZOOM_ONE2ONE)
+        return QString("one2one");
+      else if (z == QDjVuWidget::ZOOM_FITWIDTH)
+        return QString("width");
+      else if (z == QDjVuWidget::ZOOM_FITPAGE)
+        return QString("page");
+      else if (z == QDjVuWidget::ZOOM_STRETCH)
+        return QString("stretch");
+      else if (z >= QDjVuWidget::ZOOM_MIN && z <= QDjVuWidget::ZOOM_MAX)
+        return QString::number(z);
+    }
+  else if (key == "mode")
+    {
+      QDjVuWidget::DisplayMode m = widget->displayMode();
+      if (m == QDjVuWidget::DISPLAY_COLOR)
+        return QString("color");
+      else if (m == QDjVuWidget::DISPLAY_STENCIL)
+        return QString("bw");
+      else if (m == QDjVuWidget::DISPLAY_FG)
+        return QString("fore");
+      else if (m == QDjVuWidget::DISPLAY_BG)
+        return QString("back");
+    }
+  else if (key == "hor_align" || key == "halign")
+    {
+      QDjVuWidget::Align a = widget->horizAlign();
+      if (a == QDjVuWidget::ALIGN_LEFT)
+        return QString("left");
+      else if (a == QDjVuWidget::ALIGN_CENTER)
+        return QString("center");
+      else if (a == QDjVuWidget::ALIGN_RIGHT)
+        return QString("right");
+    }
+  else if (key == "ver_align" || key == "valign")
+    {
+      QDjVuWidget::Align a = widget->vertAlign();
+      if (a == QDjVuWidget::ALIGN_TOP)
+        return QString("top");
+      else if (a == QDjVuWidget::ALIGN_CENTER)
+        return QString("center");
+      else if (a == QDjVuWidget::ALIGN_BOTTOM)
+        return QString("bottom");
+    }
+  else if (key == "showposition")
+    {
+      QPoint center = widget->rect().center();
+      QDjVuWidget::Position pos = widget->positionWithClosestAnchor(center);
+      double ha = pos.hAnchor / 100.0;
+      double va = pos.vAnchor / 100.0;
+      return QString("%1,%2").arg(ha).arg(va);
+    }
+  else if (key == "passive" || key == "passivestretch")
+    {
+      if (widget->horizontalScrollBarPolicy() == Qt::ScrollBarAlwaysOff 
+          && !menuBar->isVisible() && !statusBar->isVisible()
+          && !sideBar->isVisible() && !toolBar->isVisible()
+          && !widget->continuous() && !widget->sideBySide()
+          && !widget->keyboardEnabled() && !widget->mouseEnabled() 
+          && widget->contextMenu() == 0 )
+        {
+          int z = widget->zoom();
+          if (key == "passive" && z == QDjVuWidget::ZOOM_FITPAGE)
+            return QString("yes");
+          if (key == "passivestretch" && z == QDjVuWidget::ZOOM_STRETCH)
+            return QString("yes");
+        }
+      return QString("no");
+    }
+  else if (key == "sidebar")
+    { // without position 
+      int s = sideToolBox->currentIndex();
+      if (! sideBar->isVisible())
+        return QString("no");
+      else if (s == 0)
+        return QString("yes,thumbnails");
+      else if (s == 1)
+        return QString("yes,outline");
+      else if (s == 2)
+        return QString("yes,search");
+    }
+  else if (key == "toolbar")
+    { // without toolbar content
+      return get_boolean(toolBar->isVisible());
+    }
+  else if (key == "highlight")
+    { // not implemented
+      return QString("unknown");
+    }
+  return QString();
+}
+
+
+
+
 
 
 

@@ -579,7 +579,8 @@ enum {
   CMD_GET_URL_NOTIFY = 12,
   CMD_URL_NOTIFY = 13,
   CMD_HANDSHAKE = 14,
-  CMD_SET_OPTION = 15,
+  CMD_SET_PROPERTY = 15,
+  CMD_GET_PROPERTY = 16,
 };
 
 #define OK_STRING   "OK"
@@ -1152,7 +1153,7 @@ QDjViewPlugin::cmdHandshake()
 
 
 void
-QDjViewPlugin::cmdSetOption()
+QDjViewPlugin::cmdSetProperty()
 {
   // protocol extension for plugin scripting
   Instance *instance = (Instance*) readPointer(pipeRead);
@@ -1169,6 +1170,26 @@ QDjViewPlugin::cmdSetOption()
   if (instance->djview)
     instance->djview->parseArgument(key, value);
   writeString(pipeWrite, QByteArray(OK_STRING));
+}
+
+
+void
+QDjViewPlugin::cmdGetProperty()
+{
+  // protocol extension for plugin scripting.
+  Instance *instance = (Instance*) readPointer(pipeRead);
+  QString key = readString(pipeRead);
+  // check instance.
+  if (!instances.contains(instance) || !instance->djview)
+    {
+      fprintf(stderr, "djview dispatcher: bad instance\n");
+      writeString(pipeWrite, QByteArray(ERR_STRING));
+      return;
+    }
+  // get argument.
+  QString value = instance->djview->getArgument(key);
+  writeString(pipeWrite, QByteArray(OK_STRING));
+  writeString(pipeWrite, value);
 }
 
 
@@ -1458,7 +1479,8 @@ QDjViewPlugin::dispatch()
         case CMD_DESTROY_STREAM: cmdDestroyStream(); break;
         case CMD_URL_NOTIFY:     cmdUrlNotify(); break;
         case CMD_HANDSHAKE:      cmdHandshake(); break;
-        case CMD_SET_OPTION:     cmdSetOption(); break;
+        case CMD_SET_PROPERTY:   cmdSetProperty(); break;
+        case CMD_GET_PROPERTY:   cmdGetProperty(); break;
         default:                 throw 3;
         }
     }
