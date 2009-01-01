@@ -1603,21 +1603,23 @@ QDjViewTiffExporter::doPage()
         }
       }
       // render and save
+      char white = 0xff;
       int rowsize = rect.w * 3;
-      if (style == DDJVU_FORMAT_MSBTOLSB)
+      if (style == DDJVU_FORMAT_MSBTOLSB) {
+        white = 0x00;
         rowsize = (rect.w + 7) / 8;
-      else if (style == DDJVU_FORMAT_GREY8)
+      } else if (style == DDJVU_FORMAT_GREY8)
         rowsize = rect.w;
       if (! (image = (char*)malloc(rowsize * rect.h)))
         message = tr("Out of memory.");
-      else if (! ddjvu_page_render(*page, mode, &rect, &rect, 
-                                   fmt, rowsize, image))
-        message = tr("Cannot render image");
       else if (rowsize != TIFFScanlineSize(tiff))
         message = tr("Internal error.");
-      else
+      else 
         {
           char *s = image;
+          ddjvu_rect_t *r = &rect;
+          if (! ddjvu_page_render(*page, mode, r, r, fmt, rowsize, image))
+            memset(image, white, rowsize * rect.h);
           for (int i=0; i<(int)rect.h; i++, s+=rowsize)
             TIFFWriteScanline(tiff, s, i, 0);
         }
