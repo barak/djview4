@@ -1585,8 +1585,10 @@ QDjViewTiffExporter::doPage()
       } else {
         TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, (uint16)8);
         TIFFSetField(tiff, TIFFTAG_COMPRESSION, compression);
+#ifdef JPEG_SUPPORT
         if (compression == COMPRESSION_JPEG)
           TIFFSetField(tiff, TIFFTAG_JPEGQUALITY, quality);
+#endif
         if (style == DDJVU_FORMAT_GREY8) {
           TIFFSetField(tiff, TIFFTAG_SAMPLESPERPIXEL, (uint16)1);
           TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
