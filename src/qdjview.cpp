@@ -1949,10 +1949,15 @@ QString
 QDjView::getArgument(QString key)
 {
   key = key.toLower();
-  if ((key == "fullscreen" || key == "fs") && (viewerMode == STANDALONE))
-    return get_boolean(actionViewFullScreen->isChecked());
+  if (key == "pages") // readonly
+    return QString::number(pageNum());
+  else if (key == "pagetitle")  // readonly
+    return pageName(widget->page());
   else if (key == "page")
     return QString::number(widget->page());
+  else if (key == "fullscreen" || key == "fs") 
+    return get_boolean((viewerMode == STANDALONE) && 
+                       actionViewFullScreen->isChecked());    
   else if (key == "scrollbars")
     return get_boolean(widget->horizontalScrollBarPolicy() != 
                        Qt::ScrollBarAlwaysOff );
@@ -2083,11 +2088,11 @@ QDjView::getArgument(QString key)
         return QString("yes,search");
     }
   else if (key == "toolbar")
-    { // without toolbar content
+    { // Currently without toolbar content
       return get_boolean(toolBar->isVisible());
     }
   else if (key == "highlight")
-    { // not implemented
+    { // Currently not working
       return QString("unknown");
     }
   return QString();
