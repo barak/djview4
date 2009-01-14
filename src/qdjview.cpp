@@ -1594,7 +1594,7 @@ QDjView::parseArgument(QString key, QString value)
   bool okay;
   QStringList errors;
   key = key.toLower();
-
+  
   if (key == "fullscreen" || key == "fs")
     {
       if (viewerMode != STANDALONE)
@@ -2328,6 +2328,9 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   connect(prefs, SIGNAL(updated()), this, SLOT(preferencesChanged()));
   applyPreferences();
   updateActions();
+
+  // Options set so far have default priority
+  widget->reduceOptionsToPriority(QDjVuWidget::PRIORITY_DEFAULT);
 }
 
 
@@ -2380,13 +2383,11 @@ QDjView::open(QDjVuDocument *doc, QUrl url)
   docinfo();
   if (doc)
     emit documentOpened(doc);
-  // options set so far get default priority
-  widget->reduceOptionsToPriority(QDjVuWidget::PRIORITY_DEFAULT);
   // process url options
   if (url.isValid())
     parseDjVuCgiArguments(url);
-  // newly set options get cgi priority
   widget->reduceOptionsToPriority(QDjVuWidget::PRIORITY_CGI);
+  // set focus
   widget->setFocus();
 }
 
