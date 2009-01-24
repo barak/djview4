@@ -43,3 +43,9 @@ NEW IN VERSION 4.4
 
 NEW FOR NEXT VERSION
 --------------------
+- Fixed priority of annotation options.
+- Fixed plugin for recent versions of gcc.
+- Added showposition in advanced option copyUrl.
+- New advanced mode to display hidden text.
+- Lens display annotations and hidden text.
+- Prepared scriptable plugin.

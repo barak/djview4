@@ -5035,7 +5035,7 @@ QDjVuWidget::displayModeStencil(void)
 void 
 QDjVuWidget::displayModeBackground(void)
 {
-  setDisplayMode(DISPLAY_TEXT);
+  setDisplayMode(DISPLAY_BG);
 }
 
 /*! Set the display mode to \a DISPLAY_FG. */
@@ -5043,6 +5043,13 @@ void
 QDjVuWidget::displayModeForeground(void)
 {
   setDisplayMode(DISPLAY_FG);
+}
+
+/*! Set the display mode to \a DISPLAY_TEXT. */
+void 
+QDjVuWidget::displayModeText(void)
+{
+  setDisplayMode(DISPLAY_TEXT);
 }
 
 /*! Move to the next page. */

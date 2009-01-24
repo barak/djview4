@@ -280,6 +280,7 @@ public slots:
   void displayModeStencil(void);
   void displayModeBackground(void);
   void displayModeForeground(void);
+  void displayModeText(void);
   void rotateRight(void);
   void rotateLeft(void);
 

@@ -611,6 +611,13 @@ QDjView::createActions()
     << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
   
+  actionDisplayHiddenText
+    = makeAction(tr("&Hidden Text", "Display|"), false)
+    << tr("Overlay a representation of the hidden text layer.")
+    << Trigger(widget, SLOT(displayModeText()))
+    << Trigger(this, SLOT(updateActionsLater()))
+    << *modeActionGroup;
+  
   actionPreferences = makeAction(tr("Prefere&nces...", "Settings|")) 
     << QIcon(":/images/icon_prefs.png")
     << tr("Show the preferences dialog.")
@@ -768,6 +775,7 @@ QDjView::createMenus()
   modeMenu->addAction(actionDisplayBW);
   modeMenu->addAction(actionDisplayForeground);
   modeMenu->addAction(actionDisplayBackground);
+  modeMenu->addAction(actionDisplayHiddenText);
   viewMenu->addSeparator();
   viewMenu->addAction(actionLayoutContinuous);
   viewMenu->addAction(actionLayoutSideBySide);
@@ -916,6 +924,7 @@ QDjView::updateActions()
   actionDisplayBW->setChecked(mode == QDjVuWidget::DISPLAY_STENCIL);
   actionDisplayBackground->setChecked(mode == QDjVuWidget::DISPLAY_BG);
   actionDisplayForeground->setChecked(mode == QDjVuWidget::DISPLAY_FG);
+  actionDisplayHiddenText->setChecked(mode == QDjVuWidget::DISPLAY_TEXT);
   modeCombo->setCurrentIndex(modeCombo->findData(QVariant(mode)));
   modeCombo->setEnabled(!!document);
 
@@ -957,6 +966,7 @@ QDjView::updateActions()
   textLabel->setVisible(prefs->showTextLabel);
   actionCopyOutline->setVisible(prefs->advancedFeatures);
   actionCopyAnnotation->setVisible(prefs->advancedFeatures);
+  actionDisplayHiddenText->setVisible(prefs->advancedFeatures);
   actionCopyUrl->setEnabled(pagenum > 0);
   actionCopyOutline->setEnabled(pagenum > 0);
   actionCopyAnnotation->setEnabled(pagenum > 0);
@@ -1754,6 +1764,8 @@ QDjView::parseArgument(QString key, QString value)
         widget->setDisplayMode(QDjVuWidget::DISPLAY_FG);
       else if (val == "back" || val == "background" || val == "bg")
         widget->setDisplayMode(QDjVuWidget::DISPLAY_BG);
+      else if (val == "text" || val == "hiddentext")
+        widget->setDisplayMode(QDjVuWidget::DISPLAY_TEXT);
       else
         illegal_value(key, value, errors);
     }
@@ -2029,6 +2041,8 @@ QDjView::getArgument(QString key)
         return QString("fore");
       else if (m == QDjVuWidget::DISPLAY_BG)
         return QString("back");
+      else if (m == QDjVuWidget::DISPLAY_TEXT)
+        return QString("text");
     }
   else if (key == "hor_align" || key == "halign")
     {
