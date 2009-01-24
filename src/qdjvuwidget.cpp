@@ -3911,9 +3911,9 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
 #endif
               int w = rect.width();
               int h = rect.height();
-              if ((vertical && 2*h*brect.width() < w*brect.height()) ||
-                  (!vertical && h*brect.width() > 2*w*brect.height()) )
-                vertical = !vertical;
+              if (brect.width() > 2 * brect.height())
+                if ((vertical && w > 2*h) || (!vertical && h > 2*w))
+                  vertical = !vertical;
               if (vertical)
                 {
                   double xf = (double)h / (double)brect.width();
