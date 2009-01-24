@@ -3861,18 +3861,18 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
   int rot = p->initialRot;
   int w = (rot&1) ? p->height : p->width;
   int h = (rot&1) ? p->width : p->height;
-  double z = (prect->width() * p->dpi * 100.0) / (p->width * sdpi);
   QRectMapper mapper;
   mapper.setMap(QRect(0,0,w,h), *prect);
   mapper.setTransform(rot + rotation, false, true);
   QRect srect = mapper.unMapped(drect);
   // setup painter
   QPainter paint(&img);
-  paint.setRenderHint(QPainter::Antialiasing);
   paint.setRenderHint(QPainter::TextAntialiasing);
+  QColor qblue = Qt::blue;
   QColor qwhite = Qt::white;
-  qwhite.setAlpha(160);
+  qwhite.setAlpha(192);
   // loop over text
+  bool vertical = false;
   while (miniexp_consp(q))
     {
       miniexp_t r = miniexp_car(q);
@@ -3888,32 +3888,47 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
             {
               okay = true;
               rect = mapper.mapped(rect).translated(-drect.topLeft());
-              paint.setPen(Qt::blue);
+              paint.setPen(QPen(qblue, 1));
               paint.setBrush(qwhite);
-              paint.drawRect(rect);
+              paint.drawRect(rect.adjusted(0,0,-1,-1));
               paint.save();
               paint.setClipRect(rect);
-              // text
-              QFont font = paint.font();
-              int flags = Qt::AlignCenter|Qt::AlignVCenter;
-              flags |= Qt::TextWrapAnywhere;
-              QString text = miniexp_to_qstring(s).trimmed();
+              rect = rect.adjusted(2,2,-2,-2);
+              paint.translate(rect.topLeft());
               paint.setPen(Qt::black);
-              int size = (int)(z * 0.12);
-              while (size > 1)
+              paint.setBrush(Qt::NoBrush);
+              // text
+              QString text = miniexp_to_qstring(s).trimmed();
+              QFont font = paint.font();
+              font.setPixelSize(100);
+              QFontMetrics metrics(font);
+#if QT_VERSION >= 0x40300 && ! defined(Q_WS_WIN)
+              QRect brect = metrics.tightBoundingRect(text);
+#else
+              QRect brect = metrics.boundingRect(text);
+#endif
+              int w = rect.width();
+              int h = rect.height();
+              if ((vertical && 2*h*brect.width() < w*brect.height()) ||
+                  (!vertical && h*brect.width() > 2*w*brect.height()) )
+                vertical = !vertical;
+              if (vertical)
                 {
-                  QRect br;
-                  font.setPixelSize(size);
-                  paint.setFont(font);
-                  paint.drawText(rect,flags|Qt::TextDontPrint,text,&br);
-                  if (rect.contains(br))
-                    {
-                      paint.drawText(rect,flags,text,0);
-                      break;
-                    }
-                  size -= 1;
+                  paint.translate(w, 0);
+                  paint.rotate(90);
+                  double xf = (double)h / (double)brect.width();
+                  double yf = (double)w / (double)brect.height();
+                  paint.scale(xf, yf);
                 }
-              // border
+              else
+                {
+                  double xf = (double)w / (double)brect.width();
+                  double yf = (double)h / (double)brect.height();
+                  paint.scale(xf, yf);
+                }
+              paint.setFont(font);
+              paint.drawText(-brect.topLeft(), text);
+              // restore
               paint.restore();
             }
         }
