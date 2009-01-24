@@ -3895,7 +3895,8 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
               paint.setClipRect(rect);
               // text
               QFont font = paint.font();
-              int flags = Qt::AlignCenter|Qt::AlignVCenter|Qt::TextSingleLine;
+              int flags = Qt::AlignCenter|Qt::AlignVCenter;
+              flags |= Qt::TextWrapAnywhere;
               QString text = miniexp_to_qstring(s).trimmed();
               paint.setPen(Qt::black);
               int size = (int)(z * 0.12);
