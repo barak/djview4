@@ -773,8 +773,8 @@ public:
   void updateTransientMapArea(Page*, MapArea*);
   void trimPixelCache();
   void addToPixelCache(const QRect &rect, QImage image);
-  bool paintHiddenText(QImage&, Page*, const QRect&);
-  bool paintMapAreas(QImage&, Page*, const QRect&, bool);
+  bool paintHiddenText(QImage&, Page*, const QRect&, const QRect *pr=0);
+  bool paintMapAreas(QImage&, Page*, const QRect&, bool, const QRect *pr=0);
   bool paintPage(QPainter&, Page*, const QRegion&);
   void paintAll(QPainter&, const QRegion&);
   bool pointerScroll(const QPoint &p);
@@ -3845,7 +3845,8 @@ QDjVuPrivate::addToPixelCache(const QRect &rect, QImage image)
 }
 
 bool
-QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect)
+QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect, 
+                              const QRect *prect)
 {
   // do not paint anything unless display is display text
   bool okay = false;
@@ -3854,13 +3855,15 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect)
   miniexp_t q = p->hiddenText;
   if (p->initialRot < 0 || q == miniexp_nil || q == miniexp_dummy)
     return okay;
+  if (! prect)
+    prect = &p->rect;
   // setup mapper
   int rot = p->initialRot;
   int w = (rot&1) ? p->height : p->width;
   int h = (rot&1) ? p->width : p->height;
-  double z = (p->rect.width() * p->dpi * 100.0) / (p->width * sdpi);
+  double z = (prect->width() * p->dpi * 100.0) / (p->width * sdpi);
   QRectMapper mapper;
-  mapper.setMap(QRect(0,0,w,h), p->rect);
+  mapper.setMap(QRect(0,0,w,h), *prect);
   mapper.setTransform(rot + rotation, false, true);
   QRect srect = mapper.unMapped(drect);
   // setup painter
@@ -3896,7 +3899,7 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect)
               QString text = miniexp_to_qstring(s).trimmed();
               paint.setPen(Qt::black);
               int size = (int)(z * 0.12);
-              while (arect.isValid() && size > 1)
+              while (size > 1)
                 {
                   QRect br;
                   font.setPixelSize(size);
@@ -3918,29 +3921,40 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect)
 }
 
 bool
-QDjVuPrivate::paintMapAreas(QImage &img, Page *p, const QRect &r, bool perm)
+QDjVuPrivate::paintMapAreas(QImage &img, Page *p, const QRect &r, 
+                            bool perm, const QRect *prect)
 {
   // do not paint anything when disabled
   if (! displayMapAreas)
     return false;
+  // setup mapper
+  QRectMapper mapper;
+  QRectMapper *pmapper = &p->mapper;
+  if (! prect)
+    prect = &p->rect;
+  else {
+    mapper.setMap(QRect(0,0,p->width,p->height), *prect);
+    mapper.setTransform(rotation, false, true);
+    pmapper = &mapper;
+  }
   // warning: rect in desk coordinates.
   bool changed = false;
   for (int i=0; i<p->mapAreas.size(); i++)
     {
       MapArea &area = p->mapAreas[i];
-      QRect arect = p->mapper.mapped(area.areaRect);
+      QRect arect = pmapper->mapped(area.areaRect);
       if (r.intersects(arect.adjusted(-16,-16,16,16)))
         {
           if (perm) 
             {
-              double z = (p->rect.width() * p->dpi * 100.0) / (p->width * sdpi);
-              area.paintPermanent(&img, p->mapper, r.topLeft(), z);
+              double z = (prect->width() * p->dpi * 100.0) / (p->width * sdpi);
+              area.paintPermanent(&img, *pmapper, r.topLeft(), z);
               changed = true;
             }
           else if (mustDisplayMapArea(&area) && area.hasTransient()) 
             {
               img.detach();
-              area.paintTransient(&img, p->mapper, r.topLeft());
+              area.paintTransient(&img, *pmapper, r.topLeft());
               changed = true;
             }
         }
@@ -4918,8 +4932,12 @@ QDjVuLens::paintEvent(QPaintEvent *event)
               ddjvu_page_set_rotation(*dp,(ddjvu_page_rotation_t)(rot & 0x3));
               if (ddjvu_page_render(*dp, mode, &pr, &rr, priv->renderFormat,
                                     img.bytesPerLine(), (char*)img.bits() ))
-                paint.drawImage(r.topLeft(), img, img.rect(),
-                                Qt::ThresholdDither);
+                {
+                  priv->paintHiddenText(img, p, r, &prect);
+                  priv->paintMapAreas(img, p, r, true, &prect);
+                  paint.drawImage(r.topLeft(), img, img.rect(),
+                                  Qt::ThresholdDither);
+                }
             }
         }
       deskRegion -= prect;
@@ -5017,7 +5035,7 @@ QDjVuWidget::displayModeStencil(void)
 void 
 QDjVuWidget::displayModeBackground(void)
 {
-  setDisplayMode(DISPLAY_BG);
+  setDisplayMode(DISPLAY_TEXT);
 }
 
 /*! Set the display mode to \a DISPLAY_FG. */
