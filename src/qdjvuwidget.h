@@ -113,8 +113,9 @@ public:
   enum DisplayMode {
     DISPLAY_COLOR,              //!< Default dislplay mode
     DISPLAY_STENCIL,            //!< Only display the b&w mask layer
-    DISPLAY_BG,                 //!< Onlu display the background layer
-    DISPLAY_FG,                 //!< Onlu display the foregroud layer
+    DISPLAY_BG,                 //!< Only display the background layer
+    DISPLAY_FG,                 //!< Only display the foregroud layer
+    DISPLAY_TEXT,               //!< Overprint the text layer
   };
 
   enum Align {

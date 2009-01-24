@@ -98,6 +98,7 @@ typedef QDjVuWidget::Priority Priority;
 #define DISPLAY_STENCIL   QDjVuWidget::DISPLAY_STENCIL
 #define DISPLAY_BG        QDjVuWidget::DISPLAY_BG
 #define DISPLAY_FG        QDjVuWidget::DISPLAY_FG
+#define DISPLAY_TEXT      QDjVuWidget::DISPLAY_TEXT
 
 #define ALIGN_TOP         QDjVuWidget::ALIGN_TOP
 #define ALIGN_LEFT        QDjVuWidget::ALIGN_LEFT
@@ -772,6 +773,7 @@ public:
   void updateTransientMapArea(Page*, MapArea*);
   void trimPixelCache();
   void addToPixelCache(const QRect &rect, QImage image);
+  bool paintHiddenText(QImage&, Page*, const QRect&);
   bool paintMapAreas(QImage&, Page*, const QRect&, bool);
   bool paintPage(QPainter&, Page*, const QRegion&);
   void paintAll(QPainter&, const QRegion&);
@@ -3843,6 +3845,79 @@ QDjVuPrivate::addToPixelCache(const QRect &rect, QImage image)
 }
 
 bool
+QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect)
+{
+  // do not paint anything unless display is display text
+  bool okay = false;
+  if (display != DISPLAY_TEXT)
+    return okay;
+  miniexp_t q = p->hiddenText;
+  if (p->initialRot < 0 || q == miniexp_nil || q == miniexp_dummy)
+    return okay;
+  // setup mapper
+  int rot = p->initialRot;
+  int w = (rot&1) ? p->height : p->width;
+  int h = (rot&1) ? p->width : p->height;
+  double z = (p->rect.width() * p->dpi * 100.0) / (p->width * sdpi);
+  QRectMapper mapper;
+  mapper.setMap(QRect(0,0,w,h), p->rect);
+  mapper.setTransform(rot + rotation, false, true);
+  QRect srect = mapper.unMapped(drect);
+  // setup painter
+  QPainter paint(&img);
+  paint.setRenderHint(QPainter::Antialiasing);
+  paint.setRenderHint(QPainter::TextAntialiasing);
+  QColor qwhite = Qt::white;
+  qwhite.setAlpha(160);
+  // loop over text
+  while (miniexp_consp(q))
+    {
+      miniexp_t r = miniexp_car(q);
+      q = miniexp_cdr(q);
+      if (miniexp_consp(r))
+        {
+          QRect rect;
+          miniexp_t s = miniexp_nth(5, r);
+          miniexp_t g = miniexp_cdr(r);
+          if (miniexp_symbolp(miniexp_car(r)) && miniexp_stringp(s) &&
+              miniexp_get_rect_from_points(g, rect) &&
+              srect.intersects(rect) )
+            {
+              okay = true;
+              rect = mapper.mapped(rect).translated(-drect.topLeft());
+              paint.setPen(Qt::blue);
+              paint.setBrush(qwhite);
+              paint.drawRect(rect);
+              paint.save();
+              paint.setClipRect(rect);
+              // text
+              QFont font = paint.font();
+              int flags = Qt::AlignCenter|Qt::AlignVCenter|Qt::TextSingleLine;
+              QString text = miniexp_to_qstring(s).trimmed();
+              paint.setPen(Qt::black);
+              int size = (int)(z * 0.12);
+              while (arect.isValid() && size > 1)
+                {
+                  QRect br;
+                  font.setPixelSize(size);
+                  paint.setFont(font);
+                  paint.drawText(rect,flags|Qt::TextDontPrint,text,&br);
+                  if (rect.contains(br))
+                    {
+                      paint.drawText(rect,flags,text,0);
+                      break;
+                    }
+                  size -= 1;
+                }
+              // border
+              paint.restore();
+            }
+        }
+    }
+  return okay;
+}
+
+bool
 QDjVuPrivate::paintMapAreas(QImage &img, Page *p, const QRect &r, bool perm)
 {
   // do not paint anything when disabled
@@ -3960,6 +4035,7 @@ QDjVuPrivate::paintPage(QPainter &paint, Page *p, const QRegion &region)
       if (! ddjvu_page_render(*dp, mode, &pr, &rr, renderFormat,
                               img.bytesPerLine(), (char*)img.bits() ))
         return false;
+      paintHiddenText(img, p, r);
       paintMapAreas(img, p, r, true);
       addToPixelCache(r, img);
       paintMapAreas(img, p, r, false);

@@ -153,7 +153,7 @@ QDjView::fillModeCombo(QComboBox *modeCombo)
   modeCombo->addItem(tr("Color","modeCombo"), QDjVuWidget::DISPLAY_COLOR);
   modeCombo->addItem(tr("Stencil","modeCombo"), QDjVuWidget::DISPLAY_STENCIL);
   modeCombo->addItem(tr("Foreground","modeCombo"), QDjVuWidget::DISPLAY_FG);
-  modeCombo->addItem(tr("Background","modeCombo"), QDjVuWidget::DISPLAY_BG );
+  modeCombo->addItem(tr("Background","modeCombo"), QDjVuWidget::DISPLAY_BG);
 }  
 
 
