@@ -840,6 +840,7 @@ QDjView::createMenus()
   modeMenu->addAction(actionDisplayBW);
   modeMenu->addAction(actionDisplayForeground);
   modeMenu->addAction(actionDisplayBackground);
+  modeMenu->addAction(actionDisplayHiddenText);
   contextMenu->addSeparator();
   contextMenu->addAction(actionLayoutContinuous);
   contextMenu->addAction(actionLayoutSideBySide);
