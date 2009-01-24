@@ -3891,6 +3891,8 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
               paint.setPen(QPen(qblue, 1));
               paint.setBrush(qwhite);
               paint.drawRect(rect.adjusted(0,0,-1,-1));
+              if (rect.width() < 6 || rect.height() < 6)
+                continue;
               paint.save();
               paint.setClipRect(rect);
               rect = rect.adjusted(2,2,-2,-2);
@@ -3900,7 +3902,7 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
               // text
               QString text = miniexp_to_qstring(s).trimmed();
               QFont font = paint.font();
-              font.setPixelSize(100);
+              font.setPixelSize(128);
               QFontMetrics metrics(font);
 #if QT_VERSION >= 0x40300 && ! defined(Q_WS_WIN)
               QRect brect = metrics.tightBoundingRect(text);
@@ -3912,12 +3914,12 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
               if ((vertical && 2*h*brect.width() < w*brect.height()) ||
                   (!vertical && h*brect.width() > 2*w*brect.height()) )
                 vertical = !vertical;
-              if (vertical)
+              if (0 &&vertical)
                 {
-                  paint.translate(w, 0);
-                  paint.rotate(90);
                   double xf = (double)h / (double)brect.width();
                   double yf = (double)w / (double)brect.height();
+                  paint.translate(w, 0);
+                  paint.rotate(90);
                   paint.scale(xf, yf);
                 }
               else
