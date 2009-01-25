@@ -3864,7 +3864,6 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
   QRectMapper mapper;
   mapper.setMap(QRect(0,0,w,h), *prect);
   mapper.setTransform(rot + rotation, false, true);
-  QRect srect = mapper.unMapped(drect);
   // setup painter
   QPainter paint(&img);
   paint.setRenderHint(QPainter::TextAntialiasing);
@@ -3883,11 +3882,17 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
           miniexp_t s = miniexp_nth(5, r);
           miniexp_t g = miniexp_cdr(r);
           if (miniexp_symbolp(miniexp_car(r)) && miniexp_stringp(s) &&
-              miniexp_get_rect_from_points(g, rect) &&
-              srect.intersects(rect) )
+              miniexp_get_rect_from_points(g, rect) )
             {
+              rect = mapper.mapped(rect);
+              int w = rect.width();
+              int h = rect.height();
+              if ((vertical && w > 2*h) || (!vertical && h > 2*w))
+                vertical = !vertical;
+              if (! drect.intersects(rect))
+                continue;
+              rect.translate(-drect.topLeft());
               okay = true;
-              rect = mapper.mapped(rect).translated(-drect.topLeft());
               paint.setPen(QPen(qblue, 1));
               paint.setBrush(qwhite);
               paint.drawRect(rect.adjusted(0,0,-1,-1));
@@ -3909,8 +3914,8 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
 #else
               QRect brect = metrics.boundingRect(text);
 #endif
-              int w = rect.width();
-              int h = rect.height();
+              w = rect.width();
+              h = rect.height();
               if (brect.width() > 2 * brect.height())
                 if ((vertical && w > 2*h) || (!vertical && h > 2*w))
                   vertical = !vertical;
