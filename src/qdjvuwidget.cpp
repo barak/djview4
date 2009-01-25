@@ -3871,7 +3871,7 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
   QColor qwhite = Qt::white;
   qwhite.setAlpha(192);
   // loop over text
-  bool vertical = false;
+  int orientation = (4 - rot - rotation) & 3;
   while (miniexp_consp(q))
     {
       miniexp_t r = miniexp_car(q);
@@ -3881,30 +3881,34 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
           QRect rect;
           miniexp_t s = miniexp_nth(5, r);
           miniexp_t g = miniexp_cdr(r);
-          if (miniexp_symbolp(miniexp_car(r)) && miniexp_stringp(s) &&
+          if (miniexp_symbolp(miniexp_car(r)) && 
+              miniexp_stringp(s) &&
               miniexp_get_rect_from_points(g, rect) )
             {
               rect = mapper.mapped(rect);
+              // heuristically choose orientation
               int w = rect.width();
               int h = rect.height();
-              if ((vertical && w > 2*h) || (!vertical && h > 2*w))
-                vertical = !vertical;
-              if (! drect.intersects(rect))
+              if (((orientation & 1) && (w > 2*h)) ||
+                  (!(orientation & 1) && (h > 2*w)) )
+                orientation ^= 1;
+              if (!drect.intersects(rect))
                 continue;
-              rect.translate(-drect.topLeft());
+              // paint frame
               okay = true;
+              rect.translate(-drect.topLeft());
               paint.setPen(QPen(qblue, 1));
               paint.setBrush(qwhite);
               paint.drawRect(rect.adjusted(0,0,-1,-1));
-              if (rect.width() < 6 || rect.height() < 6)
+              if (w < 6 || h < 6)
                 continue;
+              // paint text
               paint.save();
               paint.setClipRect(rect);
               rect = rect.adjusted(2,2,-2,-2);
               paint.translate(rect.topLeft());
               paint.setPen(Qt::black);
               paint.setBrush(Qt::NoBrush);
-              // text
               QString text = miniexp_to_qstring(s).trimmed();
               QFont font = paint.font();
               font.setPixelSize(128);
@@ -3914,28 +3918,29 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
 #else
               QRect brect = metrics.boundingRect(text);
 #endif
-              w = rect.width();
-              h = rect.height();
-              if (brect.width() > 2 * brect.height())
-                if ((vertical && w > 2*h) || (!vertical && h > 2*w))
-                  vertical = !vertical;
-              if (vertical)
+              double dw = rect.width();
+              double dh = rect.height();
+              double bw = brect.width();
+              double bh = brect.height();
+              switch(orientation)
                 {
-                  double xf = (double)h / (double)brect.width();
-                  double yf = (double)w / (double)brect.height();
-                  paint.translate(w, 0);
+                case 2:
+                  paint.translate(dw, dh);
+                  paint.rotate(180);
+                default:
+                  paint.scale(dw/bw, dh/bh);
+                  break;
+                case 3:
+                  paint.translate(dw, dh);
+                  paint.rotate(180);
+                case 1:
+                  paint.translate(dw, 0);
                   paint.rotate(90);
-                  paint.scale(xf, yf);
-                }
-              else
-                {
-                  double xf = (double)w / (double)brect.width();
-                  double yf = (double)h / (double)brect.height();
-                  paint.scale(xf, yf);
+                  paint.scale(dh/bw, dw/bh);
+                  break;
                 }
               paint.setFont(font);
               paint.drawText(-brect.topLeft(), text);
-              // restore
               paint.restore();
             }
         }
