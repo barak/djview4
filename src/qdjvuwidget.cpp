@@ -3922,25 +3922,28 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
               double dh = rect.height();
               double bw = brect.width();
               double bh = brect.height();
-              switch(orientation)
+              if (dw > 1 && dh > 1 && bw > 1 && bh > 1)
                 {
-                case 2:
-                  paint.translate(dw, dh);
-                  paint.rotate(180);
-                default:
-                  paint.scale(dw/bw, dh/bh);
-                  break;
-                case 3:
-                  paint.translate(dw, dh);
-                  paint.rotate(180);
-                case 1:
-                  paint.translate(dw, 0);
-                  paint.rotate(90);
-                  paint.scale(dh/bw, dw/bh);
-                  break;
+                  switch(orientation)
+                    {
+                    case 2:
+                      paint.translate(dw, dh);
+                      paint.rotate(180);
+                    default:
+                      paint.scale(dw/bw, dh/bh);
+                      break;
+                    case 3:
+                      paint.translate(dw, dh);
+                      paint.rotate(180);
+                    case 1:
+                      paint.translate(dw, 0);
+                      paint.rotate(90);
+                      paint.scale(dh/bw, dw/bh);
+                      break;
+                    }
+                  paint.setFont(font);
+                  paint.drawText(-brect.topLeft(), text);
                 }
-              paint.setFont(font);
-              paint.drawText(-brect.topLeft(), text);
               paint.restore();
             }
         }
