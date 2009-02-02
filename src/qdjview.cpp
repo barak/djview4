@@ -1285,6 +1285,7 @@ QDjView::updateSaved(Saved *saved)
           !(saved->options & QDjViewPrefs::SHOW_MENUBAR) )
         saved->options |= (QDjViewPrefs::SHOW_MENUBAR |
                            QDjViewPrefs::SHOW_SCROLLBARS |
+                           QDjViewPrefs::SHOW_STATUSBAR |
                            QDjViewPrefs::SHOW_FRAME |
                            QDjViewPrefs::HANDLE_CONTEXTMENU );
       // main window size in standalone mode
