@@ -581,8 +581,8 @@ Hyper-links are enabled by default.
 
 .TP
 .BI "-highlight=" x "," y "," w "," h "[," color "]"
-Display a highlighted rectangle at the specified coordinates 
-and with the specified color.  Coordinates
+Display a highlighted rectangle at the specified coordinates in
+the current page and with the specified color.  Coordinates
 .IR x ", " y ", " w ", and " h
 are measured in document image coordinates (not screen coordinates).
 The origin is set at the bottom left corner of the image.  The color
@@ -590,8 +590,10 @@ The origin is set at the bottom left corner of the image.  The color
 must be given in hexadecimal
 .SM RRGGBB
 format.
-Multiple highlighted zone can be specified.
-
+Multiple highlighted zone can be specified 
+and can be interspersed with multiple
+.BI "-page=" "pagename"
+options. 
 .TP
 .BI "-find=" text
 Hightlights the occurences of string 
