@@ -1306,7 +1306,12 @@ QDjViewPlugin::exec()
   try 
     {
       // startup message
-      writeString(pipeWrite, QByteArray("DJVIEW/4"));
+#if HAVE_QX11EMBED
+      const char *djviewName = "DJVIEW/4 XEMBED";
+#else
+      const char *djviewName = "DJVIEW/4";
+#endif
+      writeString(pipeWrite, QByteArray(djviewName));
       // dispatch until we get display
       while (!application && !quitFlag)
         dispatch();
