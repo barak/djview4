@@ -579,8 +579,8 @@ enum {
   CMD_GET_URL_NOTIFY = 12,
   CMD_URL_NOTIFY = 13,
   CMD_HANDSHAKE = 14,
-  CMD_SET_PROPERTY = 15,
-  CMD_GET_PROPERTY = 16,
+  CMD_SET_DJVUOPT = 15,
+  CMD_GET_DJVUOPT = 16,
 };
 
 #define OK_STRING   "OK"
@@ -780,13 +780,16 @@ QDjViewPlugin::cmdNew()
   readString(pipeRead);  // djvuDir (unused)
   int argc = readInteger(pipeRead);
   QStringList args;
-  // skip plugin related keywords
+  // skip attribute of embed and object tags
   QSet<QString> pluginWords;
   pluginWords << "src" << "type" << "pluginspage"
               << "pluginurl" << "align" << "border"
               << "frameborder" << "height" << "width"
               << "units" << "hidden" << "hspace" 
-              << "vspace" << "name" << "palette";
+              << "vspace" << "name" << "palette"
+              << "data" << "class" << "id" << "style"
+              << "archive" << "codebase" << "codetype"
+              << "classid" << "standby" << "declare";
   // collect
   for (int i=0; i<argc; i++)
     {
@@ -934,8 +937,9 @@ QDjViewPlugin::cmdAttachWindow()
       instance->container = window;
       // apply arguments
       QStringList errors;
-      foreach (QString s, instance->args)
-        errors << djview->parseArgument(s);
+      while (instance->args.size() > 0)
+        errors << djview->parseArgument(instance->args.takeFirst());
+      instance->args.clear();
       if (errors.size() > 0)
         foreach(QString error, errors)
           qWarning((const char*)error.toLocal8Bit());
@@ -1153,7 +1157,7 @@ QDjViewPlugin::cmdHandshake()
 
 
 void
-QDjViewPlugin::cmdSetProperty()
+QDjViewPlugin::cmdSetDjVuOpt()
 {
   // protocol extension for plugin scripting
   Instance *instance = (Instance*) readPointer(pipeRead);
@@ -1169,25 +1173,29 @@ QDjViewPlugin::cmdSetProperty()
   // apply options
   if (instance->djview)
     instance->djview->parseArgument(key, value);
+  else
+    instance->args += key + QString("=") + value;
   writeString(pipeWrite, QByteArray(OK_STRING));
 }
 
 
 void
-QDjViewPlugin::cmdGetProperty()
+QDjViewPlugin::cmdGetDjVuOpt()
 {
   // protocol extension for plugin scripting.
   Instance *instance = (Instance*) readPointer(pipeRead);
   QString key = readString(pipeRead);
   // check instance.
-  if (!instances.contains(instance) || !instance->djview)
+  if (!instances.contains(instance))
     {
       fprintf(stderr, "djview dispatcher: bad instance\n");
       writeString(pipeWrite, QByteArray(ERR_STRING));
       return;
     }
   // get argument.
-  QString value = instance->djview->getArgument(key);
+  QString value;
+  if (instance->djview)
+    value = instance->djview->getArgument(key);
   writeString(pipeWrite, QByteArray(OK_STRING));
   writeString(pipeWrite, value);
 }
@@ -1305,11 +1313,11 @@ QDjViewPlugin::exec()
   qWarning("QDjViewPlugin::exec() begin");
   try 
     {
-      // startup message
+      // startup message announcing capabilities
 #if HAVE_QX11EMBED
-      const char *djviewName = "DJVIEW/4 XEMBED";
+      const char *djviewName = "DJVIEW/4 SCRIPT XEMBED";
 #else
-      const char *djviewName = "DJVIEW/4";
+      const char *djviewName = "DJVIEW/4 SCRIPT";
 #endif
       writeString(pipeWrite, QByteArray(djviewName));
       // dispatch until we get display
@@ -1484,8 +1492,8 @@ QDjViewPlugin::dispatch()
         case CMD_DESTROY_STREAM: cmdDestroyStream(); break;
         case CMD_URL_NOTIFY:     cmdUrlNotify(); break;
         case CMD_HANDSHAKE:      cmdHandshake(); break;
-        case CMD_SET_PROPERTY:   cmdSetProperty(); break;
-        case CMD_GET_PROPERTY:   cmdGetProperty(); break;
+        case CMD_SET_DJVUOPT:    cmdSetDjVuOpt(); break;
+        case CMD_GET_DJVUOPT:    cmdGetDjVuOpt(); break;
         default:                 throw 3;
         }
     }

@@ -1624,6 +1624,10 @@ QDjView::parseArgument(QString key, QString value)
     {
       goToPage(value);
     }
+  else if (key == "pageno")
+    {
+      goToPage(value.toInt()-1);
+    }
   else if (key == "cache")
     {
       // see QDjVuDocument::setUrl(...)
@@ -1965,10 +1969,10 @@ QDjView::getArgument(QString key)
   key = key.toLower();
   if (key == "pages") // readonly
     return QString::number(pageNum());
-  else if (key == "pagetitle")  // readonly
-    return pageName(widget->page());
   else if (key == "page")
-    return QString::number(widget->page());
+    return pageName(widget->page());
+  else if (key == "pageno")
+    return QString::number(widget->page()+1);
   else if (key == "fullscreen" || key == "fs") 
     return get_boolean((viewerMode == STANDALONE) && 
                        actionViewFullScreen->isChecked());    
@@ -2940,9 +2944,12 @@ QDjView::pageNumber(QString name, int from)
     if (documentPages[i].id && 
         !strcmp(utf8Name, documentPages[i].id))
       return i;
-  // Then interpret the syntaxes +n, -n, $n
-  if (from >= 0 && from < pagenum 
-      && name.contains(QRegExp("^[-+$]\\d+$")) )
+  // Then interpret the syntaxes +n, -n.
+  // Also recognizes $n as an ordinal page number (obsolete)
+  if (from < 0)
+    from = widget->page();
+  if (from < pagenum && 
+      name.contains(QRegExp("^[-+$]\\d+$")) )
     {
       int num = name.mid(1).toInt();
       if (name[0]=='+')
@@ -2953,8 +2960,6 @@ QDjView::pageNumber(QString name, int from)
     }
   // Then search a matching page title starting 
   // from the current page and wrapping around
-  if (from < 0)
-    from = widget->page();
   for (int i=from; i<pagenum; i++)
     if (documentPages[i].title && 
         ! strcmp(utf8Name, documentPages[i].title))

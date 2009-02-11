@@ -238,22 +238,43 @@ by removing the initial dashes.
 .BI "-page=" "pagename"
 Display a specific document page.
 The viewer first searches a page 
+whose identifier matches the argument
+.IR pagename .
+Otherwise, if 
+.I pagename
+if a number preceded by character 
+.BR "+" " or " "-" ","
+the viewer performs a displacement relative to the current page.
+Otherwise, starting from the current page
+and wrapping around, it searches for a page
 whose title matches the argument
 .IR pagename .
-Otherwise, it tries first to interpret the
-argument as a number indicating the 
-position of the page, and then as a string 
-matching the internal page identifiers.
-
-This convention might cause ambiguities when
-page titles can be interpreted as numbers.
-To reduce these problems, 
-a number preceded by a dollar sign
-.BR "" "(" "$" ")"
-is always interpreted as the position of the
-desired page regardless of the existing 
-page names.
-
+Otherwise, if 
+.I pagename
+is numerical, it is interpreted as 
+an ordinal page number.
+Otherwise, and finally, the viewer searches a page
+whose name matches
+.IR pagename .
+.TP
+.BI "-pageno=" "pagenumber"
+The page searching algorithm for option
+.B "page"
+can cause ambiguities when page titles can
+be interpreted as numbers.
+The argument of option
+.B "pageno"
+is always interpreted as an ordinal page number.
+This option is less portable than
+.B "page"
+because it is not recognized by earlier 
+versions of the djvu plugin. 
+When using this option is necessary,
+it is advisable to use both the
+.B "page" 
+and 
+.B "pageno"
+options.
 .TP
 .BI "-zoom=" zoomfactor
 Specify the initial zoom factor.

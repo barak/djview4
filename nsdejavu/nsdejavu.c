@@ -173,6 +173,8 @@ typedef struct
 #define CMD_GET_URL_NOTIFY	12
 #define CMD_URL_NOTIFY		13
 #define CMD_HANDSHAKE		14
+#define CMD_SET_DJVUOPT         15
+#define CMD_GET_DJVUOPT         16
 
 #define TYPE_INTEGER	1
 #define TYPE_DOUBLE	2
@@ -275,17 +277,24 @@ Write(int fd, const void * buffer, int length)
 }
 
 static int
-WriteString(int fd, const char *str)
+WriteStringLen(int fd, const char *str, int length)
 {
-  int type, length;
-  if (! str) str = "";
-  length = strlen(str);
-  type = TYPE_STRING;
+  int type = TYPE_STRING;
   if ( (Write(fd, &type, sizeof(type)) < 0) ||
        (Write(fd, &length, sizeof(length)) < 0) ||
        (Write(fd, str, length+1) < 0) )
     return -1;
   return 1;
+}
+
+static int
+WriteString(int fd, const char *str)
+{
+  int length;
+  if (! str) 
+    str = "";
+  length = strlen(str);
+  return WriteStringLen(fd, str, length);
 }
 
 static int
@@ -886,6 +895,7 @@ typedef struct {
   Window        client;
   NPP		np_instance;
   int		full_mode;
+  NPObject     *npobject;
 } Instance;
 
 
@@ -1045,6 +1055,9 @@ static int			delay_pipe[2];
 static XtInputId		input_id, delay_id;
 static Map                      instance, strinstance;
 static DelayedRequestList	delayed_requests;
+static NPIdentifier             npid_getdjvuopt;
+static NPIdentifier             npid_setdjvuopt;
+
 
 /* ********************** Group 3 ************************
  * ************ Things, created only once ****************
@@ -1053,6 +1066,8 @@ static DelayedRequestList	delayed_requests;
 static int		pipe_read = -1;
 static int              pipe_write = -1;
 static int              rev_pipe = -1;
+static int              scriptable = 0;
+static int              xembedable = 0;
 static unsigned long	white, black;
 static Colormap         colormap;
 static GC		text_gc;
@@ -1061,6 +1076,7 @@ static XFontStruct	*font10, *font12, *font14, *font18, *fixed_font;
 typedef struct
 {
   int pipe_read, pipe_write, rev_pipe;
+  int scriptable, xembedable;
   unsigned long white, black;
   Colormap colormap;
   GC text_gc;
@@ -1093,6 +1109,8 @@ SaveStatic(void)
       storage->pipe_read = pipe_read;
       storage->pipe_write = pipe_write;
       storage->rev_pipe = rev_pipe;
+      storage->scriptable = scriptable;
+      storage->xembedable = xembedable;
       storage->white = white;
       storage->black = black;
       storage->colormap = colormap;
@@ -1120,6 +1138,8 @@ LoadStatic(void)
       pipe_read = storage->pipe_read;
       pipe_write = storage->pipe_write;
       rev_pipe = storage->rev_pipe;
+      scriptable = storage->scriptable;
+      xembedable = storage->xembedable;
       white = storage->white;
       black = storage->black;
       colormap = storage->colormap;
@@ -1792,7 +1812,7 @@ StartProgram(void)
   int _rev_pipe;
   void *sigsave;
   pid_t pid;
-  char *ptr;
+  char *ptr, *p, *q;
   struct stat st;
   int s;
   
@@ -1880,9 +1900,207 @@ StartProgram(void)
       CloseConnection();
       return -1;
     }
+  scriptable = 0;
+  xembedable = 0;
+  for (p=ptr; *p; p++)
+    {
+      if (isspace(*p))
+        continue;
+      for (q=p; *q; q++)
+        if (isspace(*q))
+          break;
+      s = *q;
+      *q = 0;
+      if (!strcmp(p, "XEMBED"))
+        xembedable = 1;
+      if (!strcmp(p, "SCRIPT"))
+        scriptable = 1;
+      *q = s;
+      p = q;
+    }
   free(ptr);
   return 1;
 }
+
+/*******************************************************************************
+***************************** NPRuntime interface ******************************
+*******************************************************************************/
+
+typedef struct FatNPObject {
+  NPObject obj;
+  NPP npp;
+} FatNPObject;
+
+static NPObject *
+np_allocate(NPP npp, NPClass *npclass)
+{
+  FatNPObject *npobj = malloc(sizeof(FatNPObject));
+  if (npobj)
+    {
+      memset(npobj, 0, sizeof(FatNPObject));
+      npobj->obj._class = npclass;
+      npobj->obj.referenceCount = 1;
+      npobj->npp = npp;
+    }
+  return (NPObject*)npobj;
+}
+
+static void
+np_deallocate(NPObject *npobj)
+{
+  free(npobj);
+}
+
+static void
+np_invalidate(NPObject *npobj)
+{
+}
+
+static bool 
+np_hasmethod(NPObject *npobj, NPIdentifier name)
+{
+  if (name == npid_getdjvuopt ||
+      name == npid_setdjvuopt )
+    return 1;
+  return 0;
+}
+
+static bool
+np_invoke(NPObject *npobj, NPIdentifier name,
+          const NPVariant *args, uint32_t argCount,
+          NPVariant *result)
+{
+  void *id = 0;
+  Instance *inst = 0;
+  if (npobj->_class && npobj->_class->allocate == np_allocate)
+    if ((id = ((FatNPObject*)npobj)->npp->pdata))
+      inst = map_lookup(&instance, id);
+  if (inst && name == npid_getdjvuopt)
+    {
+      // GetDjVuOpt ------------
+      if (argCount != 1)
+        NPN_SetException(npobj, "Exactly one argument is expected");
+      else if (args[0].type != NPVariantType_String)
+        NPN_SetException(npobj, "First argument should be a string");
+      else
+        {
+          char *res = 0;
+          char *tmp = 0;
+          const char *kname = NPVARIANT_TO_STRING(args[0]).utf8characters;
+          int klen = NPVARIANT_TO_STRING(args[0]).utf8length;
+          if ( (WriteInteger(pipe_write, CMD_GET_DJVUOPT) <= 0) ||
+               (WritePointer(pipe_write, id) <= 0) ||
+               (WriteStringLen(pipe_write, kname, klen) <= 0) ||
+               (ReadResult(pipe_read, rev_pipe, Refresh_cb) <= 0) ||
+               (ReadString(pipe_read, &res, 0, 0) <= 0) )
+            {
+              NPN_SetException(npobj, "Djview program died");
+              ProgramDied();
+              return 0;
+            }
+          if (! (tmp = NPN_MemAlloc(strlen(res) + 1)))
+            {
+              NPN_SetException(npobj, "Out of memory");
+              return 0;
+            }
+          strcpy(tmp, res);
+          STRINGZ_TO_NPVARIANT(tmp, *result);
+          free(res);
+          return 1;
+        }
+      return 0;
+    }
+  else if (inst && name == npid_setdjvuopt)
+    {
+      // SetDjVuOpt ------------
+      if (argCount != 2)
+        NPN_SetException(npobj, "Exactly two arguments were expected");
+      else if (args[0].type != NPVariantType_String)
+        NPN_SetException(npobj, "First argument should be a string");
+      else
+        {
+          const char *kname = NPVARIANT_TO_STRING(args[0]).utf8characters;
+          int klen = NPVARIANT_TO_STRING(args[0]).utf8length;
+          char buffer[32];
+          const char *arg = buffer;
+          int len = -1;
+          if (NPVARIANT_IS_INT32(args[1]))
+            sprintf(buffer,"%d", NPVARIANT_TO_INT32(args[1]));
+          else if (NPVARIANT_IS_DOUBLE(args[1]))
+            sprintf(buffer,"%e", NPVARIANT_TO_DOUBLE(args[1]));
+          else if (NPVARIANT_IS_STRING(args[1]))
+            {
+              arg = NPVARIANT_TO_STRING(args[1]).utf8characters;
+              len = NPVARIANT_TO_STRING(args[1]).utf8length;
+            }
+          else
+            {
+              NPN_SetException(npobj, "Arg 2 should be a string or a number");
+              return 0;
+            }
+          if (len < 0)
+            len = strlen(arg);
+          if ( (WriteInteger(pipe_write, CMD_SET_DJVUOPT) <= 0) ||
+               (WritePointer(pipe_write, id) <= 0) ||
+               (WriteStringLen(pipe_write, kname, klen) <= 0) ||
+               (WriteStringLen(pipe_write, arg, len) <= 0) ||
+               (ReadResult(pipe_read, rev_pipe, Refresh_cb) <= 0) )
+            {
+              NPN_SetException(npobj, "Djview program died");
+              ProgramDied();
+              return 0;
+            }
+          return 1;
+        }
+      return 0;
+    }
+  NPN_SetException(npobj, "Unrecognized method");
+  return 0;
+}
+
+static bool 
+np_invokedefault(NPObject *npobj, const NPVariant *args, 
+                 uint32 argCount, NPVariant *result)
+{
+  return false;
+}
+
+static bool 
+np_hasproperty(NPObject *npobj, NPIdentifier name)
+{
+  return false;
+}
+
+static bool 
+np_getproperty(NPObject *npobj, NPIdentifier name, NPVariant *result)
+{
+  return false;
+}
+
+static bool 
+np_setproperty(NPObject *npobj, NPIdentifier name, const NPVariant *value)
+{
+  return false;
+}
+
+static bool
+np_removeproperty(NPObject *npobj, NPIdentifier name)
+{
+  return false;
+}
+
+
+static NPClass npclass = {
+  1, //NP_CLASS_STRUCT_VERSION,
+  np_allocate, np_deallocate, np_invalidate,
+  np_hasmethod, np_invoke, np_invokedefault,
+  np_hasproperty, 
+  np_getproperty, 
+  np_setproperty,
+  np_removeproperty
+};
+
+
 
 /*******************************************************************************
 ***************************** Netscape plugin interface ************************
@@ -1898,6 +2116,11 @@ NPP_Initialize(void)
       CloseConnection();
       if (StartProgram() < 0)
         return NPERR_GENERIC_ERROR;
+    }
+  if (scriptable)
+    {
+      npid_getdjvuopt = NPN_GetStringIdentifier("getDjVuOpt");
+      npid_setdjvuopt = NPN_GetStringIdentifier("setDjVuOpt");
     }
   return NPERR_NO_ERROR;
 }
@@ -1978,6 +2201,8 @@ NPP_New(NPMIMEType mime, NPP np_inst, uint16 np_mode, int16 argc,
     goto problem;
   if (map_insert(&instance, id, inst) < 0)
     goto problem;
+  if (scriptable)
+    inst->npobject = NPN_CreateObject(np_inst, &npclass);
   return NPERR_NO_ERROR;
 }
 
@@ -1987,11 +2212,12 @@ NPP_Destroy(NPP np_inst, NPSavedData ** save)
   Instance *inst = 0;
   void * id = np_inst->pdata;
   SavedData saved_data;
-  
   if (! (inst = map_lookup(&instance, id)))
     return NPERR_INVALID_INSTANCE_ERROR;
-  /* Detach the main window, if not already detached */
-  NPP_SetWindow(np_inst, 0);
+  if (inst->npobject)
+    NPN_ReleaseObject(inst->npobject);
+  inst->npobject = 0;
+  NPP_SetWindow(np_inst, 0); 
   map_remove(&instance, id);
   np_inst->pdata=0;
   
@@ -2237,7 +2463,7 @@ NPP_GetJavaClass(void)
 
 
 NPError
-NPP_GetValue(NPP instance, NPPVariable variable, void *value)
+NPP_GetValue(NPP np_inst, NPPVariable variable, void *value)
 {
    NPError err = NPERR_NO_ERROR;
    switch (variable)
@@ -2260,6 +2486,19 @@ NPP_GetValue(NPP instance, NPPVariable variable, void *value)
 #endif
        "See <a href=\"http://djvu.sourceforge.net\">DjVuLibre</a>.";
      break;
+     case NPPVpluginScriptableNPObject:
+       if (scriptable)
+         {
+           void * id = np_inst->pdata;
+           Instance *inst = map_lookup(&instance, id);
+           if (inst && inst->npobject)
+             {
+               *((NPObject**)value) = inst->npobject;
+               NPN_RetainObject(inst->npobject);
+               break;
+             }
+         }
+       /* pass thru */
      default:
        err = NPERR_GENERIC_ERROR;
      }
@@ -2507,6 +2746,14 @@ NPN_ReleaseObject(NPObject *npobj)
 {
   if (mozilla_funcs.releaseobject && mozilla_has_npruntime)
     return CallNPN_ReleaseObjectProc(mozilla_funcs.releaseobject, npobj);
+}
+
+void 
+NPN_ReleaseVariantValue(NPVariant *npvariant)
+{
+  if (mozilla_funcs.releasevariantvalue && mozilla_has_npruntime)
+    return CallNPN_ReleaseVariantValueProc(mozilla_funcs.releasevariantvalue, 
+                                           npvariant);
 }
 
 void 

@@ -84,8 +84,8 @@ private:
   void cmdPrint();
   void cmdHandshake();
   void cmdShutdown();
-  void cmdSetProperty();
-  void cmdGetProperty();
+  void cmdSetDjVuOpt();
+  void cmdGetDjVuOpt();
   
   class  Document;
   class  Forwarder;
