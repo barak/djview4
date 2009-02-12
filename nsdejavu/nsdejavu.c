@@ -175,6 +175,7 @@ typedef struct
 #define CMD_HANDSHAKE		14
 #define CMD_SET_DJVUOPT         15
 #define CMD_GET_DJVUOPT         16
+#define CMD_ON_CHANGE           17
 
 #define TYPE_INTEGER	1
 #define TYPE_DOUBLE	2
@@ -896,11 +897,12 @@ typedef struct {
   NPP		np_instance;
   int		full_mode;
   NPObject     *npobject;
+  NPVariant     onchange;
 } Instance;
 
 
 static Instance *
-instance_new(NPP np_instance, int full_mode) 
+instance_new(NPP np_instance, int full_mode)  
 {
   Instance *this = malloc(sizeof(Instance));
   if (this) 
@@ -908,6 +910,8 @@ instance_new(NPP np_instance, int full_mode)
       memset(this, 0, sizeof(Instance));
       this->np_instance = np_instance;
       this->full_mode = full_mode;
+      this->npobject = 0;
+      VOID_TO_NPVARIANT(this->onchange);
     }
   return this;
 }
@@ -917,6 +921,7 @@ instance_free(Instance *this)
 {
   if (this)
     {
+      NPN_ReleaseVariantValue(&this->onchange);
       memset(this, 0, sizeof(Instance));
       free(this);
     }
@@ -1057,6 +1062,8 @@ static Map                      instance, strinstance;
 static DelayedRequestList	delayed_requests;
 static NPIdentifier             npid_getdjvuopt;
 static NPIdentifier             npid_setdjvuopt;
+static NPIdentifier             npid_onchange;
+static NPIdentifier             npid_eval;
 
 
 /* ********************** Group 3 ************************
@@ -1205,8 +1212,26 @@ Delay_cb(XtPointer ptr, int * fd, XtInputId *xid)
               const char *target = (reqp->target && reqp->target[0]) 
                 ? reqp->target : 0;
               if (NPN_GetURLNotify(inst->np_instance, reqp->url, target, 0)
-                  != NPERR_NO_ERROR)
+                  != NPERR_NO_ERROR )
                 NPN_GetURL(inst->np_instance, reqp->url, target);
+            }
+          break;
+        case CMD_ON_CHANGE:
+          if ((inst = map_lookup(&instance, reqp->id)) 
+              && NPVARIANT_IS_STRING(inst->onchange) )
+            {
+              NPObject *wobj = 0;
+              NPP npp = inst->np_instance;
+              if (NPN_GetValue(npp, NPNVWindowNPObject, (void*)&wobj)
+                  != NPERR_NO_ERROR && wobj != 0)
+                {
+                  /*DBG*/fprintf(stderr,"onchange %p\n", wobj);
+                  NPVariant res;
+                  VOID_TO_NPVARIANT(res);
+                  NPN_Invoke(npp, wobj, npid_eval, &inst->onchange, 1, &res);
+                  NPN_ReleaseVariantValue(&res);
+                  NPN_ReleaseObject(wobj);
+                }
             }
           break;
         default:
@@ -1272,6 +1297,13 @@ Input_cb(XtPointer ptr, int * fd, XtInputId *xid)
             write(delay_pipe[1], "1", 1);
           }
           break;
+        case CMD_ON_CHANGE:
+          {
+            DelayedRequest *reqp = delayedrequest_append(&delayed_requests);
+            if (!reqp) return;
+            reqp->req_num = req_num;
+            write(delay_pipe[1], "1", 1);
+          }
         default:
           break;
         }
@@ -1926,6 +1958,32 @@ StartProgram(void)
 ***************************** NPRuntime interface ******************************
 *******************************************************************************/
 
+static void
+npvariantcpy(NPVariant *to, const NPVariant *from)
+{
+  if (NPVARIANT_IS_OBJECT(*from))
+    {
+      NPObject *object = NPVARIANT_TO_OBJECT(*from);
+      NPN_RetainObject(object);
+      OBJECT_TO_NPVARIANT(object, *to);
+      return;
+    }
+  if (NPVARIANT_IS_STRING(*from))
+    {
+      const NPString *s = &NPVARIANT_TO_STRING(*from);
+      char *nstr = NPN_MemAlloc(s->utf8length+1);
+      VOID_TO_NPVARIANT(*to);
+      if (nstr)
+        {
+          memcpy(nstr, s->utf8characters, s->utf8length);
+          nstr[s->utf8length] = 0;
+          STRINGZ_TO_NPVARIANT(nstr, *to);
+        }
+      return;
+    }
+  *to = *from;
+}
+
 typedef struct FatNPObject {
   NPObject obj;
   NPP npp;
@@ -2062,36 +2120,79 @@ static bool
 np_invokedefault(NPObject *npobj, const NPVariant *args, 
                  uint32 argCount, NPVariant *result)
 {
-  return false;
+  return 0;
 }
 
 static bool 
 np_hasproperty(NPObject *npobj, NPIdentifier name)
 {
-  return false;
+  if (name == npid_onchange)
+    return 1;
+  return 0;
 }
 
 static bool 
 np_getproperty(NPObject *npobj, NPIdentifier name, NPVariant *result)
 {
-  return false;
+  void *id = 0;
+  Instance *inst = 0;
+  if (npobj->_class && npobj->_class->allocate == np_allocate)
+    if ((id = ((FatNPObject*)npobj)->npp->pdata))
+      inst = map_lookup(&instance, id);
+  if (inst && name == npid_onchange)
+    {
+      npvariantcpy(result, &inst->onchange);
+      return 1;
+    }
+  return 0;
 }
 
-static bool 
+static bool
 np_setproperty(NPObject *npobj, NPIdentifier name, const NPVariant *value)
 {
-  return false;
+  void *id = 0;
+  Instance *inst = 0;
+  if (npobj->_class && npobj->_class->allocate == np_allocate)
+    if ((id = ((FatNPObject*)npobj)->npp->pdata))
+      inst = map_lookup(&instance, id);
+  if (inst && name == npid_onchange)
+    {
+      int onchange_flag = 0;
+      NPN_ReleaseVariantValue(&inst->onchange);
+      npvariantcpy(&inst->onchange, value);
+      if (NPVARIANT_IS_STRING(*value))
+        onchange_flag = 1;
+      else if (! NPVARIANT_IS_NULL(*value) && 
+               ! NPVARIANT_IS_VOID(*value) )
+        {
+          NPN_SetException(npobj, "String or null expected");
+          return 0;
+        }
+      if ( (WriteInteger(pipe_write, CMD_ON_CHANGE) <= 0) ||
+           (WritePointer(pipe_write, id) <= 0) ||
+           (WriteInteger(pipe_write, onchange_flag) <= 0) ||
+           (ReadResult(pipe_read, rev_pipe, Refresh_cb) <= 0) )
+        {
+          NPN_SetException(npobj, "Djview program died");
+          ProgramDied();
+          return 0;
+        }
+      return 1;
+    }
+  return 0;
 }
 
 static bool
 np_removeproperty(NPObject *npobj, NPIdentifier name)
 {
-  return false;
+  NPVariant v;
+  VOID_TO_NPVARIANT(v);
+  return np_setproperty(npobj, name, &v);
 }
 
 
 static NPClass npclass = {
-  1, //NP_CLASS_STRUCT_VERSION,
+  NP_CLASS_STRUCT_VERSION,
   np_allocate, np_deallocate, np_invalidate,
   np_hasmethod, np_invoke, np_invokedefault,
   np_hasproperty, 
@@ -2121,6 +2222,8 @@ NPP_Initialize(void)
     {
       npid_getdjvuopt = NPN_GetStringIdentifier("getdjvuopt");
       npid_setdjvuopt = NPN_GetStringIdentifier("setdjvuopt");
+      npid_onchange = NPN_GetStringIdentifier("onchange");
+      npid_eval = NPN_GetStringIdentifier("eval");
     }
   return NPERR_NO_ERROR;
 }

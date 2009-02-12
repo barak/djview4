@@ -86,6 +86,7 @@ private:
   void cmdShutdown();
   void cmdSetDjVuOpt();
   void cmdGetDjVuOpt();
+  void cmdOnChange();
   
   class  Document;
   class  Forwarder;

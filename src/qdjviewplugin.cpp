@@ -146,6 +146,7 @@ struct QDjViewPlugin::Instance
   QStringList                    args;
   QByteArray                     saved;
   int                            savedformat;
+  int                            onchange;
   QDjView::ViewerMode            viewerMode;
   ~Instance();
   Instance(QDjViewPlugin *dispatcher);
@@ -437,7 +438,8 @@ QDjViewPlugin::Instance::~Instance()
 
 QDjViewPlugin::Instance::Instance(QDjViewPlugin *parent)
   : url(), dispatcher(parent), 
-    document(0), shell(0), djview(0), container(0)
+    document(0), shell(0), djview(0), container(0),
+    onchange(0)
 {
 }
 
@@ -581,6 +583,7 @@ enum {
   CMD_HANDSHAKE = 14,
   CMD_SET_DJVUOPT = 15,
   CMD_GET_DJVUOPT = 16,
+  CMD_ON_CHANGE = 17,
 };
 
 #define OK_STRING   "OK"
@@ -1202,6 +1205,15 @@ QDjViewPlugin::cmdGetDjVuOpt()
 
 
 void
+QDjViewPlugin::cmdOnChange()
+{
+  Instance *instance = (Instance*) readPointer(pipeRead);
+  instance->onchange = readInteger(pipeRead);
+  writeString(pipeWrite, QByteArray(OK_STRING));
+}
+
+
+void
 QDjViewPlugin::cmdShutdown()
 {
   QList<Stream*> streamList = streams.toList();
@@ -1494,6 +1506,7 @@ QDjViewPlugin::dispatch()
         case CMD_HANDSHAKE:      cmdHandshake(); break;
         case CMD_SET_DJVUOPT:    cmdSetDjVuOpt(); break;
         case CMD_GET_DJVUOPT:    cmdGetDjVuOpt(); break;
+        case CMD_ON_CHANGE:      cmdOnChange(); break;
         default:                 throw 3;
         }
     }
