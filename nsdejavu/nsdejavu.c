@@ -2119,8 +2119,8 @@ NPP_Initialize(void)
     }
   if (scriptable)
     {
-      npid_getdjvuopt = NPN_GetStringIdentifier("getDjVuOpt");
-      npid_setdjvuopt = NPN_GetStringIdentifier("setDjVuOpt");
+      npid_getdjvuopt = NPN_GetStringIdentifier("getdjvuopt");
+      npid_setdjvuopt = NPN_GetStringIdentifier("setdjvuopt");
     }
   return NPERR_NO_ERROR;
 }
