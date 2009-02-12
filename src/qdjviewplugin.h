@@ -99,6 +99,7 @@ private:
   Instance *findInstance(QWidget *widget);
   void getUrl(Instance *instance, QUrl url, QString target);
   void showStatus(Instance *instance, QString message);
+  void onChange(Instance *instance);
   void continueExec();
   void dispatch();
   void lastViewerClosed();

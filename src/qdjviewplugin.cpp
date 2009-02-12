@@ -108,11 +108,11 @@ public slots:
   void containerClosed();
   void showStatus(QString message);
   void getUrl(QUrl url, QString target);
+  void onChange();
   void quit();
   void dispatch();
   void lastViewerClosed();
   void continueExec();
-  
 };
 
 
@@ -353,6 +353,16 @@ QDjViewPlugin::Forwarder::getUrl(QUrl url, QString target)
     target = "_self";
   if (instance)
     dispatcher->getUrl(instance, url, target);
+}
+
+
+void 
+QDjViewPlugin::Forwarder::onChange()
+{
+  QDjView *viewer = qobject_cast<QDjView*>(sender());
+  Instance *instance = dispatcher->findInstance(viewer);
+  if (instance)
+    dispatcher->onChange(instance);
 }
 
 
@@ -935,6 +945,8 @@ QDjViewPlugin::cmdAttachWindow()
                        forwarder, SLOT(showStatus(QString)) );
       QObject::connect(djview, SIGNAL(pluginGetUrl(QUrl,QString)),
                        forwarder, SLOT(getUrl(QUrl,QString)) );
+      QObject::connect(djview, SIGNAL(pluginOnChange()),
+                       forwarder, SLOT(onChange()) );
       instance->shell = shell;
       instance->djview = djview;
       instance->container = window;
@@ -1457,6 +1469,24 @@ QDjViewPlugin::getUrl(Instance *instance, QUrl url, QString target)
       writePointer(pipeRequest, (void*) instance);
       writeString(pipeRequest, url.toEncoded());
       writeString(pipeRequest, target);
+    }
+  catch(int err)
+    {
+      reportError(err);
+      exit(10);
+    }
+}
+
+
+void
+QDjViewPlugin::onChange(Instance *instance)
+{
+  try
+    {
+      if (!instance->onchange)
+        return;
+      writeInteger(pipeRequest, CMD_ON_CHANGE);
+      writePointer(pipeRequest, (void*) instance);
     }
   catch(int err)
     {

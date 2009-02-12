@@ -152,6 +152,7 @@ signals:
   void  documentReady(QDjVuDocument *doc);
   void  pluginStatusMessage(QString message = QString());
   void  pluginGetUrl(QUrl url, QString target);
+  void  pluginOnChange();
 
 protected:
   typedef QDjVuWidget::Position Position;

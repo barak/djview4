@@ -993,6 +993,10 @@ QDjView::updateActions()
   
   // Finished
   updateActionsScheduled = false;
+
+  // Notify plugin
+  if (viewerMode != STANDALONE)  
+    emit pluginOnChange();
 }
 
 

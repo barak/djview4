@@ -1063,7 +1063,6 @@ static DelayedRequestList	delayed_requests;
 static NPIdentifier             npid_getdjvuopt;
 static NPIdentifier             npid_setdjvuopt;
 static NPIdentifier             npid_onchange;
-static NPIdentifier             npid_eval;
 
 
 /* ********************** Group 3 ************************
@@ -1220,15 +1219,15 @@ Delay_cb(XtPointer ptr, int * fd, XtInputId *xid)
           if ((inst = map_lookup(&instance, reqp->id)) 
               && NPVARIANT_IS_STRING(inst->onchange) )
             {
-              NPObject *wobj = 0;
+              NPString *code = &NPVARIANT_TO_STRING(inst->onchange);
               NPP npp = inst->np_instance;
-              if (NPN_GetValue(npp, NPNVWindowNPObject, (void*)&wobj)
-                  != NPERR_NO_ERROR && wobj != 0)
+              NPObject *wobj = 0;
+              if (NPN_GetValue(npp, NPNVWindowNPObject, 
+                               (void*)&wobj) == NPERR_NO_ERROR && wobj)
                 {
-                  /*DBG*/fprintf(stderr,"onchange %p\n", wobj);
                   NPVariant res;
                   VOID_TO_NPVARIANT(res);
-                  NPN_Invoke(npp, wobj, npid_eval, &inst->onchange, 1, &res);
+                  NPN_Evaluate(npp, wobj, code, &res);
                   NPN_ReleaseVariantValue(&res);
                   NPN_ReleaseObject(wobj);
                 }
@@ -1302,6 +1301,8 @@ Input_cb(XtPointer ptr, int * fd, XtInputId *xid)
             DelayedRequest *reqp = delayedrequest_append(&delayed_requests);
             if (!reqp) return;
             reqp->req_num = req_num;
+            if ( (ReadPointer(rev_pipe,&reqp->id,0,0) <= 0) )
+              goto problem;
             write(delay_pipe[1], "1", 1);
           }
         default:
@@ -2223,7 +2224,6 @@ NPP_Initialize(void)
       npid_getdjvuopt = NPN_GetStringIdentifier("getdjvuopt");
       npid_setdjvuopt = NPN_GetStringIdentifier("setdjvuopt");
       npid_onchange = NPN_GetStringIdentifier("onchange");
-      npid_eval = NPN_GetStringIdentifier("eval");
     }
   return NPERR_NO_ERROR;
 }
@@ -2768,14 +2768,16 @@ void
 NPN_InvalidateRect(NPP instance, NPRect *invalid)
 {
   if (mozilla_funcs.invalidaterect != NULL)
-    CallNPN_InvalidateRectProc(mozilla_funcs.invalidaterect, instance, invalid);
+    CallNPN_InvalidateRectProc(mozilla_funcs.invalidaterect, 
+                               instance, invalid);
 }
 
 void
 NPN_InvalidateRegion(NPP instance, NPRegion invalid)
 {
   if (mozilla_funcs.invalidateregion != NULL)
-    CallNPN_InvalidateRegionProc(mozilla_funcs.invalidateregion, instance, invalid);
+    CallNPN_InvalidateRegionProc(mozilla_funcs.invalidateregion, 
+                                 instance, invalid);
 }
 
 void
@@ -2848,15 +2850,24 @@ void
 NPN_ReleaseObject(NPObject *npobj)
 {
   if (mozilla_funcs.releaseobject && mozilla_has_npruntime)
-    return CallNPN_ReleaseObjectProc(mozilla_funcs.releaseobject, npobj);
+    CallNPN_ReleaseObjectProc(mozilla_funcs.releaseobject, npobj);
 }
 
 void 
 NPN_ReleaseVariantValue(NPVariant *npvariant)
 {
   if (mozilla_funcs.releasevariantvalue && mozilla_has_npruntime)
-    return CallNPN_ReleaseVariantValueProc(mozilla_funcs.releasevariantvalue, 
-                                           npvariant);
+    CallNPN_ReleaseVariantValueProc(mozilla_funcs.releasevariantvalue, 
+                                    npvariant);
+}
+
+bool 
+NPN_Evaluate(NPP npp, NPObject* obj, NPString *script, NPVariant *result)
+{
+  if (!mozilla_funcs.createobject || !mozilla_has_npruntime)
+    return 0;
+  return CallNPN_EvaluateProc(mozilla_funcs.evaluate, 
+                              npp, obj, script, result);
 }
 
 void 
