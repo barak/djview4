@@ -246,7 +246,7 @@ this function recognizes the additional key
 and returns the total number of pages in the DjVu document.
 .TP
 .IB "pluginobject" ".setdjvuopt(""" key """," value ")"
-Set the value of the djvu opton
+Set the value of the djvu option
 .I key
 to the string
 .IR value .
