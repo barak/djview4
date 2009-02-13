@@ -1879,14 +1879,6 @@ QDjView::parseArgument(QString key, QString value)
           performPendingLater();
         } 
     }
-  else if (key == "src" && viewerMode != STANDALONE)
-    {
-      // parseArgument("src", someurl) redirects the viewer.
-      // This could be used to set javascript properties.
-      pendingUrl = value;        
-      if (! pendingUrl.isEmpty())
-        performPendingLater();
-    }
   else if (key == "logo" || key == "textsel" || key == "search")
     {
       QString msg = tr("Option '%1' is not implemented.").arg(key);
@@ -2010,8 +2002,6 @@ QDjView::getArgument(QString key)
     return get_boolean(printingAllowed);
   else if (key == "save")
     return get_boolean(savingAllowed);
-  else if (key == "src")
-    return removeDjVuCgiArguments(documentUrl).toString();
   else if (key == "layout")
     {
       QStringList l;
@@ -3393,15 +3383,7 @@ QDjView::docinfoExtra()
 void
 QDjView::performPending()
 {
-  if (! pendingUrl.isEmpty())
-    {
-      QUrl url = pendingUrl;
-      pendingUrl.clear();
-      pendingPage.clear();
-      pendingHilite.clear();
-      open(url);
-    }
-  else if (! documentPages.isEmpty())
+  if (! documentPages.isEmpty())
     {
       if (! pendingPosition.isEmpty())
         {

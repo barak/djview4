@@ -793,17 +793,6 @@ QDjViewPlugin::cmdNew()
   readString(pipeRead);  // djvuDir (unused)
   int argc = readInteger(pipeRead);
   QStringList args;
-  // skip attribute of embed and object tags
-  QSet<QString> pluginWords;
-  pluginWords << "src" << "type" << "pluginspage"
-              << "pluginurl" << "align" << "border"
-              << "frameborder" << "height" << "width"
-              << "units" << "hidden" << "hspace" 
-              << "vspace" << "name" << "palette"
-              << "data" << "class" << "id" << "style"
-              << "archive" << "codebase" << "codetype"
-              << "classid" << "standby" << "declare";
-  // collect
   for (int i=0; i<argc; i++)
     {
       QString key = readString(pipeRead);
@@ -811,7 +800,7 @@ QDjViewPlugin::cmdNew()
       QString k = key.toLower();
       if (k == "flags")
         args += val.split(QRegExp("\\s+"), QString::SkipEmptyParts);
-      else if (! pluginWords.contains(k))
+      else
         args += key + QString("=") + val;
     }
   
@@ -951,13 +940,9 @@ QDjViewPlugin::cmdAttachWindow()
       instance->djview = djview;
       instance->container = window;
       // apply arguments
-      QStringList errors;
       while (instance->args.size() > 0)
-        errors << djview->parseArgument(instance->args.takeFirst());
+        djview->parseArgument(instance->args.takeFirst());
       instance->args.clear();
-      if (errors.size() > 0)
-        foreach(QString error, errors)
-          qWarning((const char*)error.toLocal8Bit());
     }
   // map and reparent djview object
   instance->open();

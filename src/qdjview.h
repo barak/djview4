@@ -273,7 +273,6 @@ protected:
   bool                    hasNumericalPageTitle;
   // delayed settings
   typedef QPair<QString,QString> StringPair;
-  QString           pendingUrl;
   QString           pendingPage;
   QList<double>     pendingPosition;
   QList<StringPair> pendingHilite;
