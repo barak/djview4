@@ -1221,16 +1221,10 @@ Delay_cb(XtPointer ptr, int * fd, XtInputId *xid)
             {
               NPString *code = &NPVARIANT_TO_STRING(inst->onchange);
               NPP npp = inst->np_instance;
-              NPObject *pobj = 0;
-              if (NPN_GetValue(npp, NPNVPluginElementNPObject,
-                               (void*)&pobj) == NPERR_NO_ERROR && pobj)
-                {
-                  NPVariant res;
-                  VOID_TO_NPVARIANT(res);
-                  NPN_Evaluate(npp, pobj, code, &res);
-                  NPN_ReleaseVariantValue(&res);
-                  NPN_ReleaseObject(pobj);
-                }
+              NPVariant res;
+              VOID_TO_NPVARIANT(res);
+              NPN_Evaluate(npp, inst->npobject, code, &res);
+              NPN_ReleaseVariantValue(&res);
             }
           break;
         default:
