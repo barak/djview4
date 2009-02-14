@@ -48,4 +48,4 @@ NEW FOR NEXT VERSION
 - Added showposition in advanced option copyUrl.
 - New advanced mode to display hidden text.
 - Lens display annotations and hidden text.
-- Prepared scriptable plugin.
+- Plugin is scriptable from JavaScript.
