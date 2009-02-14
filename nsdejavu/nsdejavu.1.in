@@ -234,27 +234,46 @@ It also can evaluate a specified JavaScript
 expression whenever something changes
 in the status of the djview interface.
 .TP
+.IB "pluginobject" ".setdjvuopt(""" key """," value ")"
+Set the value of the djvu option
+.I key
+to the character string
+.IR value .
+This achieves the same effect as specifying option
+.IR key = value
+among the CGI-style flags.  
+For instance, values of the key
+.B page
+can be page IDs, page titles, page numbers, or page names.
+Numbers preceded by character
+.B +
+or 
+.B -
+are interpreted as displacements relative to the current page.
+To specify an ordinal page number without risking 
+ambiguities with page titles, you can use instead the key
+.BR pageno .
+.TP
 .IB "pluginobject" ".getdjvuopt(""" key """)"
 Return the value of the djvu option
-.IR key.
-This function always return its result as a string,
+.I key
+as a string.
+The returned value is always a character string, 
 even when the return is logically a number.
-It returns an empty string when the key is not recognized.
+Boolean values are returned as strings
+.B yes
+or 
+.BR no. 
 Besides the usual CGI-style flags,
 this function recognizes the additional key 
 .B pages
 and returns the total number of pages in the DjVu document.
-.TP
-.IB "pluginobject" ".setdjvuopt(""" key """," value ")"
-Set the value of the djvu option
-.I key
-to the string
-.IR value .
+An empty string is returned when the key is not recognized.
 .TP
 .IB "pluginobject" ".onchange=""" code """;"
 Ensure that string
 .I code
-is evaluated in the context of the window object
+is evaluated in the context of the plugin object
 whenever something changes in the djview graphical 
 user interface.  For instance, this evaluation happens
 when progressive refinements are painted, and
