@@ -2474,7 +2474,7 @@ QDjVuWidget::setSeparatorSize(int b)
   if (b != priv->separatorSize)
     {
       priv->separatorSize = b;
-      if (priv->sideBySide)
+      if (priv->sideBySide || priv->continuous)
         priv->changeLayout(CHANGE_PAGES|UPDATE_ALL);
     }
 }

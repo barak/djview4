@@ -1704,26 +1704,35 @@ QDjView::parseArgument(QString key, QString value)
     }
   else if (key == "layout")      // lizards
     {
+      bool layout = false;
+      bool continuous = false;
+      bool sidebyside = false;
       foreach (QString s, value.split(","))
-        if (s == "single") {
-          widget->setContinuous(false);
-          widget->setSideBySide(false);
-        } else if (s == "double")
-          widget->setSideBySide(true);
-        else if (s == "continuous")
-          widget->setContinuous(true);
-        else if (s == "ltor")
-          widget->setRightToLeft(false);
-        else if (s == "rtol")
-          widget->setRightToLeft(true);
-        else if (s == "cover")
-          widget->setCoverPage(true);
-        else if (s == "nocover")
-          widget->setCoverPage(false);
-        else if (s == "gap")
-          widget->setSeparatorSize(12);
-        else if (s == "nogap")
-          widget->setSeparatorSize(0);
+        {
+          if (s == "single")
+            layout = true, continuous = sidebyside = false;
+          else if (s == "double") 
+            layout = sidebyside = true;
+          else if (s == "continuous")
+            layout = continuous = true;
+          else if (s == "ltor")
+            widget->setRightToLeft(false);
+          else if (s == "rtol")
+            widget->setRightToLeft(true);
+          else if (s == "cover")
+            widget->setCoverPage(true);
+          else if (s == "nocover")
+            widget->setCoverPage(false);
+          else if (s == "gap")
+            widget->setSeparatorSize(12);
+          else if (s == "nogap")
+            widget->setSeparatorSize(0);
+        }
+      if (layout)
+        {
+          widget->setContinuous(continuous);
+          widget->setSideBySide(sidebyside);
+        }
     }
   else if (key == "frame")
     {
@@ -2005,12 +2014,12 @@ QDjView::getArgument(QString key)
   else if (key == "layout")
     {
       QStringList l;
-      if (widget->continuous())
-        l << QString("continuous");
       if (widget->sideBySide())
         l << QString("double");
+      if (widget->continuous())
+        l << QString("continuous");
       if (l.isEmpty())
-        l << QString("single");                
+        l << QString("single");
       l << QString(widget->rightToLeft() ? "rtol" : "ltor");
       l << QString(widget->coverPage() ? "cover" : "nocover");
       l << QString(widget->separatorSize() ? "gap" : "nogap");
@@ -2314,6 +2323,8 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   sideToolBox = new QToolBox(sideBar);
   sideToolBox->setBackgroundRole(QPalette::Background);
   sideBar->setWidget(sideToolBox);
+  connect(sideToolBox, SIGNAL(currentChanged(int)),
+          this, SLOT(updateActionsLater()) );
 
   // Create escape shortcut for sidebar
   shortcutEscape = new QShortcut(QKeySequence("Esc"), this);

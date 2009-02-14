@@ -1063,6 +1063,7 @@ static DelayedRequestList	delayed_requests;
 static NPIdentifier             npid_getdjvuopt;
 static NPIdentifier             npid_setdjvuopt;
 static NPIdentifier             npid_onchange;
+static NPIdentifier             npid_version;
 
 
 /* ********************** Group 3 ************************
@@ -2121,7 +2122,8 @@ np_invokedefault(NPObject *npobj, const NPVariant *args,
 static bool 
 np_hasproperty(NPObject *npobj, NPIdentifier name)
 {
-  if (name == npid_onchange)
+  if (name == npid_onchange || 
+      name == npid_version)
     return 1;
   return 0;
 }
@@ -2137,6 +2139,13 @@ np_getproperty(NPObject *npobj, NPIdentifier name, NPVariant *result)
   if (inst && name == npid_onchange)
     {
       npvariantcpy(result, &inst->onchange);
+      return 1;
+    }
+  else if (inst && name == npid_version)
+    {
+      NPVariant res;
+      STRINGZ_TO_NPVARIANT("nsdejavu+djview4 (x11)", res);
+      npvariantcpy(result, &res);
       return 1;
     }
   return 0;
@@ -2218,6 +2227,7 @@ NPP_Initialize(void)
       npid_getdjvuopt = NPN_GetStringIdentifier("getdjvuopt");
       npid_setdjvuopt = NPN_GetStringIdentifier("setdjvuopt");
       npid_onchange = NPN_GetStringIdentifier("onchange");
+      npid_version = NPN_GetStringIdentifier("version");
     }
   return NPERR_NO_ERROR;
 }

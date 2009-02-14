@@ -278,14 +278,19 @@ whenever something changes in the djview graphical
 user interface.  For instance, this evaluation happens
 when progressive refinements are painted, and
 when the user manipulates the image interactively.
+.TP
+.IB "pluginobject" ".version"
+Return a string describing the plugin version.
+This property can be used to test whether the
+djview plugin is scriptable in this browser.
 .PP
-The methods and properties defined by the plugin object
-are not accessible until the djview plugin is fully loaded.
-Therefore it is advisable to exploit the JavaScript
+Note that the scriptability feature may not 
+be accessible until the djview plugin is fully loaded.
+Therefore it is advisable to check
+.IB "pluginobject" ".version"
+from the JavaScript
 .B onload
-event to avoid manipulating the plugin object
-before its full initialization.
-
+before calling any other method.
 
 .SH CREDITS
 This program was written by Andrei Erofeev <andrew_erofeev@yahoo.com>
