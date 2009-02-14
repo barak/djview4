@@ -1,0 +1,71 @@
+<html>
+<title>Test of nsdejavu scriptability features</title>
+<body onload="onLoad()">
+
+
+<!-- The plugin window -->
+<p><hr><p>
+  <style type="text/css"> 
+    #myplugin {  width:  470px; height: 231px;  } 
+  </style>
+  <object id="myplugin" data="test.djvu" type="image/vnd.djvu">
+    No plugin
+  </object> 
+
+<!-- Information section -->
+<p><hr><p>
+  <div id="info">
+    No information
+  </div>
+
+<!-- Javascript code -->
+  <script>
+    var info = document.getElementById("info"); 
+    var myplugin = document.getElementById("myplugin"); 
+    function getOption() {
+      var ekey = document.getElementById('key'); 
+      var eval = document.getElementById('val');
+      eval.value = myplugin.getdjvuopt(ekey.value);
+    }
+    function setOption() {
+      var ekey = document.getElementById('key');
+      var eval = document.getElementById('val');
+      myplugin.setdjvuopt(ekey.value,eval.value);
+      getOption();
+    }
+    function showInfo() {
+      getOption();
+      info.innerHTML = 
+        "page=" + myplugin.getdjvuopt('page') +
+        " (" + myplugin.getdjvuopt('pageno') + "/" + 
+               myplugin.getdjvuopt('pages') + "), " +
+        "zoom=" + myplugin.getdjvuopt('zoom') + ", " +
+        "rotate=" + myplugin.getdjvuopt('rotate') + ", " +
+        "showPosition=" + myplugin.getdjvuopt('showposition') + ".";
+    }
+    function onLoad() {
+      myplugin.onchange = "showInfo()"; 
+    }
+  </script>
+
+<!-- Form -->
+<p><hr><p>
+  <button onclick="myplugin.setdjvuopt('pageno','1')">FirstPage</button>&nbsp;
+  <button onclick="myplugin.setdjvuopt('page','-1')">PrevPage</button>&nbsp;
+  <button onclick="myplugin.setdjvuopt('page','+1')">NextPage</button>&nbsp;
+  <button onclick="myplugin.setdjvuopt('pageno',myplugin.getdjvuopt('pages'))">
+    LastPage</button>&nbsp;
+
+<!-- Get/Set option -->
+<p><hr><p>
+  <table border=0 cellspacing=8>
+    <tr><td>Key:&nbsp;</td>
+      <td><input type="text" name="key" id="key" value="page"></td></tr>
+    <tr><td>Value:&nbsp;</td>
+      <td><input type="text" name="value" id="val"></td></tr>
+  </table>
+  <button onclick="getOption()">Get</button>&nbsp;
+  <button onclick="setOption()">Set</button>
+<p><hr><p>
+</body>
+</html>
