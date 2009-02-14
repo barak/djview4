@@ -1749,6 +1749,11 @@ QDjView::parseArgument(QString key, QString value)
       if (parse_boolean(key, value, errors, okay))
         widget->enableKeyboard(okay);
     }
+  else if (key == "mouse")
+    {
+      if (parse_boolean(key, value, errors, okay))
+        widget->enableMouse(okay);
+    }
   else if (key == "links")
     {
       if (parse_boolean(key, value, errors, okay))
@@ -2001,6 +2006,8 @@ QDjView::getArgument(QString key)
     return get_boolean(widget->displayFrame());
   else if (key == "keyboard")
     return get_boolean(widget->keyboardEnabled());
+  else if (key == "mouse")
+    return get_boolean(widget->mouseEnabled());
   else if (key == "links")
     return get_boolean(widget->hyperlinkEnabled());
   else if (key == "menu")
@@ -3427,7 +3434,7 @@ QDjView::performPending()
                 }
         }
           pendingHilite.clear();
-        }
+    }
       if (pendingFind.size() > 0)
         {
           find(pendingFind);
