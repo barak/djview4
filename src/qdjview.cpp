@@ -2123,7 +2123,7 @@ QDjView::getArgument(QString key)
     }
   else if (key == "highlight")
     { // Currently not working
-      return QString("unknown");
+      return QString();
     }
   return QString();
 }

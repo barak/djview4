@@ -1170,12 +1170,18 @@ QDjViewPlugin::cmdSetDjVuOpt()
       writeString(pipeWrite, QByteArray(ERR_STRING));
       return;
     }
+  // return code
+  writeString(pipeWrite, QByteArray(OK_STRING));
   // apply options
+  QStringList errors;
   if (instance->djview)
-    instance->djview->parseArgument(key, value);
+    errors = instance->djview->parseArgument(key, value);
   else
     instance->args += key + QString("=") + value;
-  writeString(pipeWrite, QByteArray(OK_STRING));
+  // print error messages
+  if (errors.size() > 0)
+    foreach(QString error, errors)
+      qWarning((const char*)error.toLocal8Bit());
 }
 
 
