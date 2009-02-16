@@ -150,10 +150,24 @@
 # include <X11/IntrinsicP.h>
 # include <X11/StringDefs.h>
 # include <X11/Shell.h>
+# pragma weak XtAddCallback
+# pragma weak XtAddEventHandler
+# pragma weak XtAppAddInput
+# pragma weak XtRemoveCallback
+# pragma weak XtRemoveEventHandler
+# pragma weak XtRemoveInput
+# pragma weak XtStrings
+# pragma weak XtVaGetValues
+# pragma weak XtWidgetToApplicationContext
+# pragma weak XtWindowToWidget
 #endif
 
 #if USE_GLIB
 # include <glib.h>
+# pragma weak g_io_channel_unix_new
+# pragma weak g_io_channel_unref
+# pragma weak g_io_add_watch
+# pragma weak g_source_remove
 #endif
 
 
@@ -2343,19 +2357,26 @@ NPP_New(NPMIMEType mime, NPP np_inst, uint16 np_mode, int16 argc,
     goto problem;
   if (scriptable)
     inst->npobject = NPN_CreateObject(np_inst, &npclass);
+#if USE_GLIB
   if (xembedable)
     NPN_GetValue(np_inst, NPNVSupportsXEmbedBool, &inst->xembed_mode);
-  if (inst->xembed_mode)
-#if USE_XT
-    if (NPN_GetValue(np_inst, NPNVToolkit, &toolkit) != NPERR_NO_ERROR ||
-        toolkit != NPNVGtk2 )
-      inst->xembed_mode = 0;
-  return NPERR_NO_ERROR;
-#else
-  if (inst->xembed_mode)
-    return NPERR_NO_ERROR;
-  return NPERR_INCOMPATIBLE_VERSION_ERROR;
 #endif
+#if USE_XT
+  if (inst->xembed_mode && XtWindowToWidget)
+    if (NPN_GetValue(np_inst, NPNVToolkit, &toolkit) 
+        != NPERR_NO_ERROR || toolkit != NPNVGtk2 )
+      inst->xembed_mode = 0;
+#endif
+  /* fprintf(stderr,"%p xembed=%d\n", inst, inst->xembed_mode); */
+#if USE_GLIB
+  if (inst->xembed_mode && g_io_add_watch)
+    return NPERR_NO_ERROR;
+#endif
+#if USE_XT
+  if (!inst->xembed_mode && XtWindowToWidget)
+    return NPERR_NO_ERROR;
+#endif
+  return NPERR_INCOMPATIBLE_VERSION_ERROR;
 }
 
 
