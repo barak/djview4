@@ -3788,8 +3788,10 @@ void
 QDjView::zoomComboActivated(int index)
 {
   int zoom = zoomCombo->itemData(index).toInt();
+  int oldzoom = widget->zoom();
   widget->setZoom(zoom);
-  widget->setFocus();
+  if (zoom != oldzoom)
+    widget->setFocus();
 }
 
 
@@ -3799,28 +3801,34 @@ QDjView::zoomComboEdited(void)
   bool okay;
   QString text = zoomCombo->lineEdit()->text();
   int zoom = text.replace(QRegExp("\\s*%?$"),"").trimmed().toInt(&okay);
+  int oldzoom = widget->zoom();
   if (okay && zoom>0)
     widget->setZoom(zoom);
   updateActionsLater();
-  widget->setFocus();
+  if (zoom != oldzoom)
+    widget->setFocus();
 }
 
 
 void 
 QDjView::pageComboActivated(int index)
 {
+  int oldpage = widget->page();
   goToPage(pageCombo->itemData(index).toInt());
   updateActionsLater();
-  widget->setFocus();
+  if (oldpage != widget->page())
+    widget->setFocus();
 }
 
 
 void 
 QDjView::pageComboEdited(void)
 {
+  int oldpage = widget->page();
   goToPage(pageCombo->lineEdit()->text().trimmed());
   updateActionsLater();
-  widget->setFocus();
+  if (oldpage != widget->page())
+    widget->setFocus();
 }
 
 

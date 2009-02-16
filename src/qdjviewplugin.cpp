@@ -392,6 +392,26 @@ QDjViewPlugin::Forwarder::continueExec()
   dispatcher->continueExec();
 }
 
+
+#if HAVE_X11
+static bool x11EventFilter(void *message, long *)
+{
+  // We define a low level handler because we need to make
+  // the window active before calling the QX11EmbedWidget event filter.
+  XEvent *event = reinterpret_cast<XEvent*>(message);
+  if (event->type == ButtonPress)
+    {
+      QWidget *w = QWidget::find(event->xbutton.window);
+      if (w && w->window()->objectName() == "djvu_shell")
+        {
+          QApplication *app = (QApplication*)QCoreApplication::instance();
+          app->setActiveWindow(w->window());
+        }
+    }
+  return false;
+}
+#endif
+
 bool 
 QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
 {
@@ -400,18 +420,9 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
       QWidget *w = static_cast<QWidget*>(o);
       switch( e->type() )
         {
-          // Send keyboard events to last clicked window.
-        case QEvent::MouseButtonPress:
-          if (!dispatcher->xembedFlag)
-            {
-              QWidget *window = w->window();
-              if (window->objectName() == "djvu_shell")
-                dispatcher->application->setActiveWindow(window);
-            }
-          break;
+#ifdef Q_WS_X11
           // Try to fix transient windows properties.
           // - this does not work too well...
-#ifdef Q_WS_X11
         case QEvent::Show:
           if (w->windowFlags() & Qt::Window)
             QApplication::postEvent(w, new QEvent(QEvent::User));
@@ -871,10 +882,11 @@ QDjViewPlugin::cmdAttachWindow()
 #endif
       application = new QDjViewApplication(argc, const_cast<char**>(argv));
       application->setQuitOnLastWindowClosed(false);
-      argc = 1;
 #if HAVE_X11
+      application->setEventFilter(x11EventFilter);
       XCloseDisplay(dpy);
 #endif
+      argc = 1;
       context = application->djvuContext();
       forwarder = new Forwarder(this);
       application->installEventFilter(forwarder);
@@ -906,7 +918,7 @@ QDjViewPlugin::cmdAttachWindow()
           shell = embed;
           QObject::connect(shell, SIGNAL(containerClosed()),
                            forwarder, SLOT(containerClosed()) );
-          shell->setObjectName("djvu_xembed");
+          shell->setObjectName("djvu_shell");
           shell->setGeometry(0, 0, width, height);
           embed->embedInto(window);
         }
