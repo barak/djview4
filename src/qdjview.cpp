@@ -1574,17 +1574,19 @@ QDjView::parseToolBarOption(QString option, QStringList &errors)
       // handle + or -
       if (npos < len)
         {
+          Tools base = QDjViewPrefs::TOOLBAR_AUTOHIDE |
+            QDjViewPrefs::TOOLBAR_TOP | QDjViewPrefs::TOOLBAR_BOTTOM;
           if (str[npos] == '-')
             {
+              if (!minus && !plus)
+                tools |= (prefs->tools & ~base);
               plus = false;
               minus = true;
             }
           else if (str[npos] == '+')
             {
               if (!minus && !plus)
-                tools &= (QDjViewPrefs::TOOLBAR_TOP |
-                          QDjViewPrefs::TOOLBAR_BOTTOM |
-                          QDjViewPrefs::TOOLBAR_AUTOHIDE );
+                tools &= base;
               minus = false;
               plus = true;
             }
@@ -1738,6 +1740,15 @@ QDjView::parseArgument(QString key, QString value)
     {
       if (parse_boolean(key, value, errors, okay))
         widget->setDisplayFrame(okay);
+    }
+  else if (key == "background")
+    {
+      QColor color;
+      color.setNamedColor((value[0] == '#') ? value : "#" + value);
+      if (color.isValid())
+        widget->setBorderBrush(color);
+      else
+        illegal_value(key, value, errors);
     }
   else if (key == "menu")
     {
@@ -2018,6 +2029,12 @@ QDjView::getArgument(QString key)
     return get_boolean(printingAllowed);
   else if (key == "save")
     return get_boolean(savingAllowed);
+  else if (key == "background")
+    {
+      QBrush brush = widget->borderBrush();
+      if (brush.style() == Qt::SolidPattern)
+        return brush.color().name();
+    }
   else if (key == "layout")
     {
       QStringList l;

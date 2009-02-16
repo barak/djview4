@@ -430,6 +430,17 @@ and shadow around the DjVu images.
 Frames are enabled by default.
 
 .TP
+.BI "-background=" color
+Specify the color of the background border
+displayed around the document. The color
+.I color
+must be given in hexadecimal
+.SM RRGGBB
+or
+.SM #RRGGBB
+format.
+
+.TP
 .BI "-toolbar=" keyword "{(,|+|-)" keyword "}"
 Controls the appearance and the contents of the toolbar.
 The argument of option
@@ -615,6 +626,8 @@ The origin is set at the bottom left corner of the image.  The color
 .I color
 must be given in hexadecimal
 .SM RRGGBB
+or
+.SM #RRGGBB
 format.
 Multiple highlighted zone can be specified 
 and can be interspersed with multiple
