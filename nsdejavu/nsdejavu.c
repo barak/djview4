@@ -2123,6 +2123,7 @@ np_invoke(NPObject *npobj, NPIdentifier name,
               ProgramDied();
               return 0;
             }
+          VOID_TO_NPVARIANT(*result);
           return 1;
         }
       return 0;
