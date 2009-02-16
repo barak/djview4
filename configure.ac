@@ -139,8 +139,6 @@ AC_PATH_TIFF([],[
   AC_MSG_WARN([Cannot find libtiff (required for tiff export).])
 ])
 
-
-
 # ----------------------------------------
 # nsdejavu
 # ----------------------------------------
@@ -158,16 +156,25 @@ if test "$ac_nsdejavu" != no ; then
         ac_nsdejavu = no
         AC_MSG_WARN([Disabling plugin compilation (missing X11 include files).])
     fi
-fi
-
-if test "$ac_nsdejavu" != no ; then
+    
+    ac_xt=yes
+    ac_glib=yes
+    AC_PATH_GLIB([],[ac_glib=no])
     savedCFLAGS="$CFLAGS"
     CFLAGS="$CFLAGS ${X_CFLAGS}"
-    AC_CHECK_HEADER(X11/Shell.h, [], [ac_nsdejavu=no])
-    AC_CHECK_HEADER(X11/IntrinsicP.h, [], [ac_nsdejavu=no])
+    AC_CHECK_HEADER(X11/Shell.h, [], [ac_xt=no])
+    AC_CHECK_HEADER(X11/IntrinsicP.h, [], [ac_xt=no])
     CFLAGS="$savedCFLAGS"
-    if test "$ac_nsdejavu" = no ; then
-        AC_MSG_WARN([Disabling plugin compilation (missing Xt include files).])
+    if test "$ac_xt" != no ; then
+        AC_DEFINE(HAVE_XT,1,[Define if you have xt include files.])
+        if test "$ac_glib" = no ; then
+            AC_MSG_WARN([GLib not found. Compiling plugin without XEmbed.])
+        fi
+    else
+        AC_MSG_WARN([Xt not found. Compiling plugin with XEmbed only.])
+        if test "$ac_glib" = no ; then
+            AC_MSG_WARN([Disabling plugin compilation (need Xt and/or Glib2.)])
+        fi
     fi
 fi
 

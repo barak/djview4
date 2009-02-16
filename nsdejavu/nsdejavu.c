@@ -139,8 +139,16 @@
 #endif
 
 #ifndef USE_XT
-# ifndef USE_GLIB
+# if HAVE_XT
 #  define USE_XT 1
+# else
+#  define USE_XT 0
+# endif
+#endif
+#ifndef USE_GLIB
+# if HAVE_GLIB
+#  define USE_GLIB 1
+# else
 #  define USE_GLIB 0
 # endif
 #endif
@@ -2302,7 +2310,6 @@ NPP_New(NPMIMEType mime, NPP np_inst, uint16 np_mode, int16 argc,
 	char* argn[], char* argv[], NPSavedData * saved)
 {
   const char *path;
-  NPNToolkitType toolkit = 0;
   Instance *inst = 0;
   void *id = 0;
   int i;
@@ -2363,9 +2370,12 @@ NPP_New(NPMIMEType mime, NPP np_inst, uint16 np_mode, int16 argc,
 #endif
 #if USE_XT
   if (inst->xembed_mode && XtWindowToWidget)
-    if (NPN_GetValue(np_inst, NPNVToolkit, &toolkit) 
-        != NPERR_NO_ERROR || toolkit != NPNVGtk2 )
-      inst->xembed_mode = 0;
+    {
+        NPNToolkitType toolkit = 0;
+        if (NPN_GetValue(np_inst, NPNVToolkit, &toolkit) 
+            != NPERR_NO_ERROR || toolkit != NPNVGtk2 )
+          inst->xembed_mode = 0;
+    }
 #endif
   /* fprintf(stderr,"%p xembed=%d\n", inst, inst->xembed_mode); */
 #if USE_GLIB
