@@ -1046,35 +1046,13 @@ delayedrequest_purge(DelayedRequestList *dlist)
 
 #define ENV_DJVU_STORAGE_PTR	"_DJVU_STORAGE_PTR"
 
-/*
- * The plugin can be freely loaded/unloaded by Netscape, so any static
- * variable is at risk of being destroyed at any time (after NPP_Shutdown()
- * is called)
- * We divide all static variables into three cathegory:
- *    1. Variables, which are just shortcuts to some global structures.
- *    2. Variables, which correspond to resources, which were *created* by
- *       this particular load of the nsdejavu.so, and which need to be
- *	 destroyed when the nsdejavu.so is being unloaded.
- *    3. Variables corresponding to resources, which need to be allocated
- *       only once in the Netscape lifetime. These things should not be
- *       changed between the plugin's loading/unloading. We store pointers
- *       to them in the Netscape's environment.
+/* The plugin can be freely loaded/unloaded by Netscape, 
+ * so any static variable is at risk of being destroyed at any time
+ * after NPP_Shutdown() is called. */
+
+/* -- These variables need to be destroyed and reinitialized
+ *    when the plugin is reloaded. 
  */
-
-/* ********************** Group 1 ************************
- * *********** Shortcuts to global structures ************
- */
-
-static char * reload_msg = 
-( "An internal error occurred in the DjVu plugin.\n"
-  "Some of the embeded DjVu images may not be visible.\n"
-  "Please reload the page.\n\n" );
-
-
-/* ********************** Group 2 ************************
- * ********* Things, that need to be destroyed ***********
- */
-
 static int			delay_pipe[2];
 static Map                      instance, strinstance;
 static DelayedRequestList	delayed_requests;
@@ -1082,7 +1060,6 @@ static NPIdentifier             npid_getdjvuopt;
 static NPIdentifier             npid_setdjvuopt;
 static NPIdentifier             npid_onchange;
 static NPIdentifier             npid_version;
-
 #if USE_XT
 static XtInputId		input_id, delay_id;
 #endif
@@ -1090,11 +1067,9 @@ static XtInputId		input_id, delay_id;
 static gint                     input_gid, delay_gid;
 #endif
 
-
-/* ********************** Group 3 ************************
- * ************ Things, created only once ****************
+/* -- These variables need to be saved and restored
+ *    when the plugin is reloaded. 
  */
-
 static int		pipe_read = -1;
 static int              pipe_write = -1;
 static int              rev_pipe = -1;
@@ -1954,7 +1929,7 @@ StartProgram(void)
           chmod(path, mode);
         }
       execl(path, path, "-netscape", NULL);
-      fprintf(stderr,"Failed to execute %s\n", path);
+      fprintf(stderr,"nsdejavu: failed to execute %s\n", path);
       fflush(stderr);
       _exit(1);
     }
@@ -2315,7 +2290,7 @@ NPP_New(NPMIMEType mime, NPP np_inst, uint16 np_mode, int16 argc,
   int i;
   if (!IsConnectionOK(TRUE))
     {
-      fprintf(stderr, "%s", reload_msg);
+      fprintf(stderr, "nsdejavu: restarting djview (reload the page.)\n");
       CloseConnection();
       StartProgram();
     }
@@ -2377,7 +2352,8 @@ NPP_New(NPMIMEType mime, NPP np_inst, uint16 np_mode, int16 argc,
           inst->xembed_mode = 0;
     }
 #endif
-  /* fprintf(stderr,"%p xembed=%d\n", inst, inst->xembed_mode); */
+  fprintf(stderr,"nsdejavu: using the %s protocol\n",
+          (inst->xembed_mode) ? "XEmbed" : "Xt");
 #if USE_GLIB
   if (inst->xembed_mode && g_io_add_watch)
     return NPERR_NO_ERROR;
@@ -2386,6 +2362,8 @@ NPP_New(NPMIMEType mime, NPP np_inst, uint16 np_mode, int16 argc,
   if (!inst->xembed_mode && XtWindowToWidget)
     return NPERR_NO_ERROR;
 #endif
+  fprintf(stderr,"nsdejavu: browser does not export the %s symbols.\n",
+          (inst->xembed_mode) ? "Glib2" : "Xt" );
   return NPERR_INCOMPATIBLE_VERSION_ERROR;
 }
 
