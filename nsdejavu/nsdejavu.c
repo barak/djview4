@@ -2353,7 +2353,7 @@ NPP_New(NPMIMEType mime, NPP np_inst, uint16 np_mode, int16 argc,
           inst->xembed_mode = 0;
     }
 #endif
-  fprintf(stderr,"nsdejavu: using the %s protocol\n",
+  fprintf(stderr,"nsdejavu: using the %s protocol.\n",
           (inst->xembed_mode) ? "XEmbed" : "Xt");
 #if USE_GLIB
   if (inst->xembed_mode && g_io_add_watch)
