@@ -2463,7 +2463,7 @@ QDjView::open(QString filename)
   open(doc, url);
   documentFileName = filename;
   addRecent(url);
-  setWindowTitle(tr("Djview - %1[*]").arg(getShortFileName()));
+  setWindowTitle(QString("%1[*] - ").arg(getShortFileName()) + tr("DjView"));
   return true;
 }
 
@@ -2500,7 +2500,7 @@ QDjView::open(QUrl url)
     }
   open(doc, url);
   addRecent(docurl);
-  setWindowTitle(tr("Djview - %1[*]").arg(getShortFileName()));
+  setWindowTitle(QString("%1[*] - ").arg(getShortFileName()) + tr("DjView"));
   return true;
 }
 
