@@ -37,6 +37,7 @@
 #include <QTranslator>
 #include <QVariant>
 #include <QWidget>
+#include <QX11EmbedWidget>
 
 // Djview includes
 #include "qdjview.h"
@@ -55,7 +56,7 @@ class QtNPForwarder: public QObject
 {
   Q_OBJECT
 public:
-  QtNPForwarder(QtNPInstance *instance, QObject *parent);
+  QtNPForwarder(QtNPInstance *instance, QObject *parent = 0);
 public slots:
   void showStatus(QString message);
   void getUrl(QUrl url, QString target);
@@ -118,6 +119,25 @@ qtMessageHandler(QtMsgType type, const char *msg)
 }
 
 
+#ifdef Q_WS_X11
+static bool x11EventFilter(void *message, long *)
+{
+  // We define a low level handler because we need to make
+  // the window active before calling the QX11EmbedWidget event filter.
+  XEvent *event = reinterpret_cast<XEvent*>(message);
+  if (event->type == ButtonPress)
+    {
+      QWidget *w = QWidget::find(event->xbutton.window);
+      if (w && qobject_cast<QX11EmbedWidget*>(w->window()))
+        {
+          QApplication *app = (QApplication*)QCoreApplication::instance();
+          app->setActiveWindow(w->window());
+        }
+    }
+  return false;
+}
+#endif
+
 static void
 addDirectory(QStringList &dirs, QString path)
 {
@@ -133,9 +153,9 @@ setupApplication(QtNPInstance *instance)
   // quick
   if (theApp)
     {
+      qtns_initialize(instance);
       if (! djvuContext)
         djvuContext = new QDjVuContext;
-      qtns_initialize(instance);
       return;
     }
   // globals
@@ -148,6 +168,9 @@ setupApplication(QtNPInstance *instance)
   if (! djvuContext)
     djvuContext = new QDjVuContext;
   theApp = (QApplication*)QCoreApplication::instance();
+#ifdef Q_WS_X11
+  theApp->setEventFilter(x11EventFilter);
+#endif
   // translators
   QTranslator *qtTrans = new QTranslator(theApp);
   QTranslator *djviewTrans = new QTranslator(theApp);
@@ -331,10 +354,14 @@ QtNPDocument::newstream(int streamid, QString, QUrl url)
 static void 
 openInstance(QtNPInstance *instance)
 {
-  if (!instance->document)
-    if (instance->url.isValid() && instance->djview)
+  if (! instance->document && instance->url.isValid())
+    {
+      instance->document = new QtNPDocument(instance);
+      instance->document->ref();
+    }
+  if (instance->document && instance->djview)
+    if (! instance->djview->getDocument())
       {
-        instance->document = new QtNPDocument(instance);
         instance->djview->open(instance->document, instance->url);
         // restoreData(djview->getDjVuWidget(), instance->savedData);
         instance->djview->show();
@@ -349,9 +376,10 @@ closeInstance(QtNPInstance *instance)
     {
       // instance->savedData = saveData(djview->getDjVuWidget());
       instance->djview->close();
+      delete instance->djview;
       instance->djview = 0;
-      delete instance->qt.object;
       instance->qt.object = 0;
+      qtns_destroy(instance);
     }
 }
 
@@ -408,11 +436,12 @@ NPP_Destroy(NPP npp, NPSavedData** save)
   if (! instance)
     return NPERR_INVALID_INSTANCE_ERROR;
   closeInstance(instance);
-  if (instance->forwarder)
-    delete instance->forwarder;
+  delete instance->forwarder;
   instance->forwarder = 0;
-  qtns_destroy(instance);
-  if (save && ! instance->savedData.isEmpty())
+  if (instance->document)
+    instance->document->deref();
+  instance->document = 0;
+  if (save && !instance->savedData.isEmpty())
     {
       int len = instance->savedData.size();
       void *data = NPN_MemAlloc(len);
@@ -425,6 +454,7 @@ NPP_Destroy(NPP npp, NPSavedData** save)
           *save = saved;
         }
     }
+  instance->npp->pdata = 0;
   delete instance;
   return NPERR_NO_ERROR;
 }
@@ -436,9 +466,56 @@ NPP_SetWindow(NPP npp, NPWindow* window)
   QtNPInstance *instance = (npp) ? (QtNPInstance*)(npp->pdata) : 0;
   if (! instance)
     return NPERR_INVALID_INSTANCE_ERROR;
-
-  /// GRRRRR
-
+  QRect clipRect;
+  if (window)
+    {
+      clipRect = QRect(window->clipRect.left, window->clipRect.top,
+                       window->clipRect.right - window->clipRect.left,
+                       window->clipRect.bottom - window->clipRect.top);
+      instance->geometry = QRect(window->x, window->y, window->width, window->height);
+    }
+  // take a shortcut if all that was changed is the geometry
+  if (instance->djview && window && 
+      instance->window == (QtNPInstance::Widget)window->window) 
+    {
+      qtns_setGeometry(instance, instance->geometry, clipRect);
+      return NPERR_NO_ERROR;
+    }
+  if (instance->djview)
+    closeInstance(instance);
+  if (! window)
+    {
+      instance->window = 0;
+      return NPERR_NO_ERROR;
+    }
+  instance->window = (QtNPInstance::Widget)window->window;
+  setupApplication(instance);
+  if (! instance->forwarder)
+    instance->forwarder = new QtNPForwarder(instance);
+  QDjView::ViewerMode mode = (instance->fMode == NP_FULL) 
+    ? QDjView::FULLPAGE_PLUGIN : QDjView::EMBEDDED_PLUGIN;
+  QDjView *djview = new QDjView(*djvuContext, mode);
+  djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
+  djview->setAttribute(Qt::WA_DeleteOnClose, false);
+  djview->setObjectName("npdjvu");
+  instance->djview = djview;
+  instance->qt.widget = djview;
+  QObject::connect(djview, SIGNAL(pluginStatusMessage(QString)),
+                   instance->forwarder, SLOT(showStatus(QString)) );
+  QObject::connect(djview, SIGNAL(pluginGetUrl(QUrl,QString)),
+                   instance->forwarder, SLOT(getUrl(QUrl,QString)) );
+  QObject::connect(djview, SIGNAL(pluginOnChange()),
+                   instance->forwarder, SLOT(onChange()) );
+  qtns_embed(instance); 
+  QEvent e(QEvent::EmbeddingControl);
+  QApplication::sendEvent(instance->qt.widget, &e);
+  if (!instance->qt.widget->testAttribute(Qt::WA_PaintOnScreen))
+    instance->qt.widget->setAutoFillBackground(true);
+  instance->qt.widget->raise();
+  qtns_setGeometry(instance, instance->geometry, clipRect);
+  while (instance->args.size() > 0)
+    djview->parseArgument(instance->args.takeFirst());
+  openInstance(instance);
   return NPERR_NO_ERROR;
 }
 
@@ -459,23 +536,20 @@ NPP_NewStream(NPP npp, NPMIMEType mime, NPStream* stream,
           qWarning("npdjvu: invalid url '%s'.", stream->url);
           return NPERR_GENERIC_ERROR;
         }
-      QtNPStream *npstream = 0;
+      // first stream
       if (! instance->url.isValid())
         {
-          // first stream
           instance->url = url;
           url = QDjView::removeDjVuCgiArguments(url);
-          npstream = new QtNPStream(0, url, instance);
-          npstream->checked = true;
+          QtNPStream *s = new QtNPStream(0, url, instance);
+          s->checked = true;
         }
-      else
-        {
-          // more streams
-          foreach(QtNPStream *s, instance->streams)
-            if (! npstream && !s->started)
-              if (s->url == url)
-                npstream = s;
-        }
+      // search streams
+      QtNPStream *npstream = 0;
+      foreach(QtNPStream *s, instance->streams)
+        if (!npstream && !s->started)
+          if (s->url == url)
+            npstream = s;
       // mark started stream
       if (npstream)
         {

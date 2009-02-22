@@ -453,7 +453,9 @@ QDjViewPlugin::Instance::~Instance()
   destroy();
   delete shell;
   delete djview;
-  delete document;
+  if (document)
+    document->deref();
+  document = 0;
 }
 
 
@@ -468,15 +470,18 @@ QDjViewPlugin::Instance::Instance(QDjViewPlugin *parent)
 void
 QDjViewPlugin::Instance::open()
 {
-  if (!document && url.isValid() && djview)
+  if (!document && url.isValid())
     {
       document = new QDjViewPlugin::Document(this);
+      document->ref();
+    }
+  if (document && djview && !djview->getDocument())
+    {
       djview->open(document, url);
       restore(djview->getDjVuWidget());
       shell->show();
     }
 }
-
 
 void
 QDjViewPlugin::Instance::destroy()
