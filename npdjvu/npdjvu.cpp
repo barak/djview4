@@ -18,15 +18,27 @@
 // $Id$
 
 #include "config.h"
+#include <locale.h>
+#include <stdio.h>
+#include <string.h>
 
 // Qt includes
 #include <QtGlobal>
+#include <QApplication>
+#include <QByteArray>
+#include <QDir>
 #include <QObject>
+#include <QLibraryInfo>
+#include <QLocale>
+#include <QRegExp>
+#include <QSettings>
+#include <QString>
+#include <QStringList>
+#include <QTranslator>
 #include <QVariant>
 #include <QWidget>
 
 // Djview includes
-#include "djview.h"
 #include "qdjview.h"
 #include "qdjvu.h"
 
@@ -37,9 +49,6 @@
 
 
 /* ------------------------------------------------------------- */
-
-
-static QDjViewApplication *theApp = 0;
 
 
 class QtNPForwarder: public QObject 
@@ -79,9 +88,152 @@ private:
 };
 
 
+/* ------------------------------------------------------------- */
+/* Setup application */
+
+static QApplication *theApp = 0;
+static QDjVuContext *djvuContext = 0;
+static bool verbose = true;
+
+static void 
+qtMessageHandler(QtMsgType type, const char *msg)
+{
+  switch (type) 
+    {
+    case QtFatalMsg:
+      fprintf(stderr,"djview fatal error: %s\n", msg);
+      abort();
+    case QtCriticalMsg:
+      fprintf(stderr,"djview critical error: %s\n", msg);
+      break;
+    case QtWarningMsg:
+      if (verbose)
+        fprintf(stderr,"djview: %s\n", msg);
+      break;
+    default:
+      if (verbose)
+        fprintf(stderr,"%s\n", msg);
+      break;
+    }
+}
+
+
+static void
+addDirectory(QStringList &dirs, QString path)
+{
+  QString dirname = QDir::cleanPath(path);
+  if (! dirs.contains(dirname))
+    dirs << dirname;
+}
+
+
+static void
+setupApplication(QtNPInstance *instance)
+{
+  // quick
+  if (theApp)
+    {
+      if (! djvuContext)
+        djvuContext = new QDjVuContext;
+      qtns_initialize(instance);
+      return;
+    }
+  // globals
+  QApplication::setOrganizationName(DJVIEW_ORG);
+  QApplication::setOrganizationDomain(DJVIEW_DOMAIN);
+  QApplication::setApplicationName(DJVIEW_APP);
+  qInstallMsgHandler(qtMessageHandler);
+  // application
+  qtns_initialize(instance);
+  if (! djvuContext)
+    djvuContext = new QDjVuContext;
+  theApp = (QApplication*)QCoreApplication::instance();
+  // translators
+  QTranslator *qtTrans = new QTranslator(theApp);
+  QTranslator *djviewTrans = new QTranslator(theApp);
+  // - determine preferred languages
+  QStringList langs; 
+  QString varLanguage = ::getenv("LANGUAGE");
+  if (varLanguage.size())
+    langs += varLanguage.toLower().split(":", QString::SkipEmptyParts);
+#ifdef LC_MESSAGES
+  QString varLcMessages = ::setlocale(LC_MESSAGES, 0);
+  if (varLcMessages.size())
+    langs += varLcMessages.toLower();
+#else
+# ifdef LC_ALL
+  QString varLcMessages = ::setlocale(LC_ALL, 0);
+  if (varLcMessages.size())
+    langs += varLcMessages.toLower();
+# endif
+#endif
+#ifdef Q_WS_MAC
+  langs += QSettings(".", "globalPreferences")
+    .value("AppleLanguages").toStringList();
+#endif
+  QString qtLocale =  QLocale::system().name();
+  if (qtLocale.size())
+    langs += qtLocale.toLower();
+  // - determine potential directories
+  QStringList dirs;
+  QDir dir = QApplication::applicationDirPath();
+  QString dirPath = dir.canonicalPath();
+  addDirectory(dirs, dirPath);
+#ifdef DIR_DATADIR
+  QString datadir = DIR_DATADIR;
+  addDirectory(dirs, datadir + "/djvu/djview4");
+  addDirectory(dirs, datadir + "/djview4");
+#endif
+#ifdef Q_WS_MAC
+  addDirectory(dirs, dirPath + "/Resources/$LANG.lproj");
+  addDirectory(dirs, dirPath + "/../Resources/$LANG.lproj");
+  addDirectory(dirs, dirPath + "/../../Resources/$LANG.lproj");
+#endif
+  addDirectory(dirs, dirPath + "/share/djvu/djview4");
+  addDirectory(dirs, dirPath + "/share/djview4");
+  addDirectory(dirs, dirPath + "/../share/djvu/djview4");
+  addDirectory(dirs, dirPath + "/../share/djview4");
+  addDirectory(dirs, dirPath + "/../../share/djvu/djview4");
+  addDirectory(dirs, dirPath + "/../../share/djview4");
+  addDirectory(dirs, "/usr/share/djvu/djview4");
+  addDirectory(dirs, "/usr/share/djview4");
+  addDirectory(dirs, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+  // - load translators
+  bool qtTransValid = false;
+  bool djviewTransValid = false;
+  foreach (QString lang, langs)
+    {
+      foreach (QString dir, dirs)
+        {
+          dir = dir.replace(QRegExp("\\$LANG(?!\\w)"),lang);
+          QDir qdir(dir);
+          if (! qtTransValid && qdir.exists())
+            qtTransValid = qtTrans->load("qt_" + lang, dir, "_.-");
+          if (! djviewTransValid && qdir.exists())
+            djviewTransValid= djviewTrans->load("djview_" + lang, dir, "_.-");
+        }
+      if (lang == "en" || lang.startsWith("en_") || lang == "c")
+        break;
+    }
+  // - install tranlators
+  if (qtTransValid)
+    theApp->installTranslator(qtTrans);
+  if (djviewTransValid)
+    theApp->installTranslator(djviewTrans);
+}
+
+
+void 
+NPP_Shutdown()
+{
+  delete djvuContext;
+  djvuContext = 0;
+}
+
+
 
 /* ------------------------------------------------------------- */
-
+/* Forwarder */
 
 QtNPForwarder::QtNPForwarder(QtNPInstance *instance, QObject *parent)
   : QObject(parent), instance(instance)
@@ -123,6 +275,7 @@ QtNPForwarder::onChange()
 
 
 /* ------------------------------------------------------------- */
+/* Stream */
 
 
 QtNPStream::QtNPStream(int streamid, QUrl url, QtNPInstance *instance)
@@ -146,30 +299,14 @@ QtNPStream::~QtNPStream()
 
 
 /* ------------------------------------------------------------- */
-
-
-static void 
-openInstance(QtNPInstance *instance)
-{
-}
-
-
-static void 
-closeInstance(QtNPInstance *instance)
-{
-  
-}
-
-
-
-/* ------------------------------------------------------------- */
+/* Document */
 
 
 QtNPDocument::QtNPDocument(QtNPInstance *instance)
   : QDjVuDocument(true), instance(instance)
 {
   QUrl docurl = QDjView::removeDjVuCgiArguments(instance->url);
-  setUrl(theApp->djvuContext(), docurl);
+  setUrl(djvuContext, docurl);
 }
 
 void
@@ -188,28 +325,121 @@ QtNPDocument::newstream(int streamid, QString, QUrl url)
 
 
 /* ------------------------------------------------------------- */
+/* Open/Close djview */
+
+
+static void 
+openInstance(QtNPInstance *instance)
+{
+  if (!instance->document)
+    if (instance->url.isValid() && instance->djview)
+      {
+        instance->document = new QtNPDocument(instance);
+        instance->djview->open(instance->document, instance->url);
+        // restoreData(djview->getDjVuWidget(), instance->savedData);
+        instance->djview->show();
+      }
+}
+
+
+static void 
+closeInstance(QtNPInstance *instance)
+{
+  if (instance->djview)
+    {
+      // instance->savedData = saveData(djview->getDjVuWidget());
+      instance->djview->close();
+      instance->djview = 0;
+      delete instance->qt.object;
+      instance->qt.object = 0;
+    }
+}
+
+
+
+/* ------------------------------------------------------------- */
+/* NPP functions */
 
 
 NPError 
-NPP_New(NPMIMEType pluginType, NPP npp,
+NPP_New(NPMIMEType mime, NPP npp,
         uint16 mode, int16 argc, char* argn[],
         char* argv[], NPSavedData* saved)
 {
-  return NPERR_GENERIC_ERROR;
+  Q_UNUSED(mime)
+  if (! npp)
+    return NPERR_INVALID_INSTANCE_ERROR;
+  QtNPInstance *instance = new QtNPInstance;
+  if (! instance)
+    return NPERR_OUT_OF_MEMORY_ERROR;
+  // initialize
+  npp->pdata = instance;
+  instance->fMode = mode;
+  instance->forwarder = 0;
+  instance->document = 0;
+  instance->djview = 0;
+  instance->npobject = 0;
+  instance->npp = npp;
+  instance->qt.object = 0;
+#ifdef Q_WS_MAC
+  instance->rootWidget = 0;
+#endif
+  if (saved && saved->len)
+    instance->savedData = QByteArray((const char*)saved->buf, saved->len);
+  // arguments
+  for (int i = 0; i < argc; i++) 
+    {
+      QString key = QString::fromUtf8(argn[i]);
+      QString val = QString::fromUtf8(argv[i]);
+      QString k = key.toLower();
+      if (k == "flags")
+        instance->args += val.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+      else
+        instance->args += key + QString("=") + val;
+    }    
+  return NPERR_NO_ERROR;
 }
 
 
 NPError 
 NPP_Destroy(NPP npp, NPSavedData** save)
 {
-  return NPERR_GENERIC_ERROR;
+  QtNPInstance *instance = (npp) ? (QtNPInstance*)(npp->pdata) : 0;
+  if (! instance)
+    return NPERR_INVALID_INSTANCE_ERROR;
+  closeInstance(instance);
+  if (instance->forwarder)
+    delete instance->forwarder;
+  instance->forwarder = 0;
+  qtns_destroy(instance);
+  if (save && ! instance->savedData.isEmpty())
+    {
+      int len = instance->savedData.size();
+      void *data = NPN_MemAlloc(len);
+      NPSavedData *saved = (NPSavedData*)NPN_MemAlloc(sizeof(NPSavedData));
+      if (saved && data)
+        {
+          memcpy(data, instance->savedData.constData(), len);
+          saved->len = len;
+          saved->buf = data;
+          *save = saved;
+        }
+    }
+  delete instance;
+  return NPERR_NO_ERROR;
 }
 
 
 NPError 
 NPP_SetWindow(NPP npp, NPWindow* window)
 {
-  return NPERR_GENERIC_ERROR;
+  QtNPInstance *instance = (npp) ? (QtNPInstance*)(npp->pdata) : 0;
+  if (! instance)
+    return NPERR_INVALID_INSTANCE_ERROR;
+
+  /// GRRRRR
+
+  return NPERR_NO_ERROR;
 }
 
 
@@ -226,7 +456,7 @@ NPP_NewStream(NPP npp, NPMIMEType mime, NPStream* stream,
     {
       if (! url.isValid() )
         {
-          qWarning("npdjvu: invalid url '%s'\n", stream->url);
+          qWarning("npdjvu: invalid url '%s'.", stream->url);
           return NPERR_GENERIC_ERROR;
         }
       QtNPStream *npstream = 0;

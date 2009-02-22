@@ -347,7 +347,6 @@ NPString::operator QString() const
 NPVariant 
 NPVariant::fromQVariant(QtNPInstance*, const QVariant &qvariant)
 {
-    Q_ASSERT(This);
     NPVariant npvar;
     npvar.type = Null;
     QVariant qvar(qvariant);
@@ -442,7 +441,7 @@ NP_Initialize(NPNetscapeFuncs* pFuncs)
     mozilla_has_npruntime = true;    
     if (navMajorVers == 0 && navMinorVers < 14)
       mozilla_has_npruntime = false;
-    if (qNetscapeFuncs->size < (long)(((NPNetscapeFuncs*)0)->setexception))
+    if (qNetscapeFuncs->size < (long)&(((NPNetscapeFuncs*)0)->setexception))
       mozilla_has_npruntime = false;
     return NPERR_NO_ERROR;
 }
@@ -466,7 +465,7 @@ NP_Initialize(NPNetscapeFuncs* nFuncs, NPPluginFuncs* pFuncs)
     mozilla_has_npruntime = true;    
     if (navMajorVers == 0 && navMinorVers < 14)
       mozilla_has_npruntime = false;
-    if (qNetscapeFuncs->size < (long)(((NPNetscapeFuncs*)0)->setexception))
+    if (qNetscapeFuncs->size < (long)&(((NPNetscapeFuncs*)0)->setexception))
       mozilla_has_npruntime = false;
     
     // check if the Browser supports the XEmbed protocol
@@ -482,6 +481,7 @@ NP_Initialize(NPNetscapeFuncs* nFuncs, NPPluginFuncs* pFuncs)
 extern "C" NPError WINAPI 
 NP_Shutdown()
 {
+    NPP_Shutdown();
     qtns_shutdown();
     qNetscapeFuncs = 0;
     return NPERR_NO_ERROR;

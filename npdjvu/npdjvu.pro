@@ -19,7 +19,6 @@
 TARGET = npdjvu
 TEMPLATE = lib
 CONFIG  += dll
-DEFINES += NPDJVU
 
 # ============ qtbrowserplugin stuff
 
@@ -106,7 +105,6 @@ SOURCES += ../src/qdjviewsidebar.cpp
 SOURCES += ../src/qdjviewdialogs.cpp
 SOURCES += ../src/qdjviewexporters.cpp
 SOURCES += ../src/qdjview.cpp
-SOURCES += ../src/djview.cpp
 RESOURCES += ../src/qdjview.qrc 
 FORMS += ../src/qdjviewerrordialog.ui
 FORMS += ../src/qdjviewinfodialog.ui 

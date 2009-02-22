@@ -55,6 +55,8 @@ extern "C" NPError NPP_GetValue(NPP instance,
 extern "C" NPError NPP_SetValue(NPP instance, 
                                 NPPVariable variable, void *value);
 
+extern "C" void NPP_Shutdown();
+
 
 #ifdef Q_WS_X11
 

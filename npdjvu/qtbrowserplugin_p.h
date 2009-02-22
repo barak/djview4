@@ -46,6 +46,7 @@
 #endif
 
 #include <QtGlobal>
+#include <QByteArray>
 #include <QSet>
 #include <QString>
 #include <QStringList>
@@ -84,6 +85,7 @@ struct QtNPInstance
     // the following are npdjvu specific
     QUrl url;
     QStringList args;
+    QByteArray savedData;
     QSet<QtNPStream*> streams;
     QtNPForwarder *forwarder;
     QtNPDocument *document;
