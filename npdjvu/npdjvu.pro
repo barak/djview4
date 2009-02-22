@@ -31,10 +31,6 @@ SOURCES += qtnpapi.cpp
 SOURCES += npdjvu.cpp
 
 win32 {
-  # Uncomment the following line to build a plugin 
-  # that can be used also in Internet Explorer, 
-  # through ActiveX.
-  # CONFIG += qaxserver
   contains(DEFINES,_WIN32_X11_) { CONFIG += x11 }
   RC_FILE = npdjvu.rc
   SOURCES += qtbrowserplugin_win.cpp

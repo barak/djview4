@@ -40,6 +40,9 @@
 **
 ****************************************************************************/
 
+#include <QtGlobal>
+#include <QVariant>
+
 #include "qtbrowserplugin.h"
 #include "qtbrowserplugin_p.h"
 #include "npdjvu.h"

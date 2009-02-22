@@ -40,16 +40,24 @@
 **
 ****************************************************************************/
 
-#include <QtCore/QVariant>
-#include <QtCore/QMutexLocker>
-#include <QtGui/QWidget>
-
 #ifdef Q_WS_X11
-#   include <X11/Xlib.h>
+# include <X11/Xlib.h>
+#  undef None
+#endif
+
+#include <QtGlobal>
+#include <QSet>
+#include <QString>
+#include <QStringList>
+#include <QUrl>
+#include <QVariant>
+#include <QWidget>
 
 class QtNPStream;
-class QtNPBindable;
-#endif
+class QtNPForwarder;
+class QtNPInstance;
+class QtNPDocument;
+class QDjView;
 
 struct QtNPInstance
 {
@@ -63,36 +71,23 @@ struct QtNPInstance
     Display *display;
 #endif
 #ifdef Q_WS_MAC
-    typedef NPPort* Widget;
+    typedef NPPort *Widget;
     QWidget *rootWidget;
 #endif
     Widget window;
     QRect geometry;
-    QString mimetype;
-    QByteArray htmlID;
     union {
         QObject* object;
         QWidget* widget;
     } qt;
 
-#ifdef NPDJVU
-    // changes for npdjvu
-    QList<QString> args;
-    QList<QtNPStream*> streams;
-#else
-    QtNPStream *pendingStream;
-    QtNPBindable* bindable;
-    QObject *filter;
-    QMap<QByteArray, QVariant> parameters;
-    qint32 notificationSeqNum;
-    QMutex seqNumMutex;
-    qint32 getNotificationSeqNum()
-        {
-            QMutexLocker locker(&seqNumMutex);
-
-            if (++notificationSeqNum < 0)
-                notificationSeqNum = 1;
-            return notificationSeqNum;
-        }
-#endif
+    // the following are npdjvu specific
+    QUrl url;
+    QStringList args;
+    QSet<QtNPStream*> streams;
+    QtNPForwarder *forwarder;
+    QtNPDocument *document;
+    QDjView *djview;
+    NPObject *npobject;
+    NPVariant onchange;
 };

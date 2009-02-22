@@ -25,6 +25,7 @@
 #include <QWidget>
 
 #include <QtGlobal>
+
 #include "qtnpapi.h"
 
 extern "C" bool qtns_event(QtNPInstance*, NPEvent*);
