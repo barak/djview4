@@ -99,7 +99,6 @@ HEADERS += ../src/qdjviewsidebar.h
 HEADERS += ../src/qdjviewdialogs.h 
 HEADERS += ../src/qdjviewexporters.h
 HEADERS += ../src/qdjview.h
-HEADERS += ../src/djview.h
 SOURCES += ../src/qdjviewprefs.cpp 
 SOURCES += ../src/qdjviewsidebar.cpp 
 SOURCES += ../src/qdjviewdialogs.cpp
