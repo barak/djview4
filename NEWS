@@ -41,7 +41,7 @@ NEW IN VERSION 4.4
 - Support for Lizardtech's plugin option -showposition.
 
 
-NEW FOR NEXT VERSION
+NEW IN VERSION 4.5
 --------------------
 - Fixed priority of annotation options.
 - Fixed plugin for recent versions of gcc.

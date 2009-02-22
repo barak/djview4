@@ -425,6 +425,17 @@ NPP_New(NPMIMEType mime, NPP npp,
       else
         instance->args += key + QString("=") + val;
     }    
+  fprintf(stderr,"npdjvu: using the QtBrowserPlugin%s\n",
+#if defined(Q_WS_X11)
+          "/XEmbed"
+#elif defined(Q_WS_MAC)
+          "/Mac"
+#elif defined(Q_WS_Win)
+          "/Windows"
+#else
+          ""
+#endif
+          );
   return NPERR_NO_ERROR;
 }
 
