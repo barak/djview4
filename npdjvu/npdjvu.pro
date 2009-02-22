@@ -42,7 +42,7 @@ win32 {
   CONFIG += plugin_bundle
   contains(DEFINES,__USE_WS_X11__) { CONFIG += x11 }
   SOURCES += qtbrowserplugin_max.cpp
-  ICON = images/DjVuApp.icns
+  ICON = ../src/images/DjVuApp.icns
   REZ_FILES += npdjvu.r
   RESOURCES.path = Contents/Resources
   RESOURCES.files = npdjvu.rsrc
@@ -85,43 +85,43 @@ CONFIG(release,debug|release) {
     DEFINES += NDEBUG QT_NO_DEBUG QT_NO_DEBUG_STREAM
 }
 
-# -- djvu files
-HEADERS += qdjvu.h 
-HEADERS += qdjvuhttp.h 
-HEADERS += qdjvuwidget.h
-SOURCES += qdjvu.cpp
-SOURCES += qdjvuhttp.cpp
-SOURCES += qdjvuwidget.cpp
-RESOURCES += qdjvuwidget.qrc 
+# -- djvu
+HEADERS += ../src/qdjvu.h 
+HEADERS += ../src/qdjvuhttp.h 
+HEADERS += ../src/qdjvuwidget.h
+SOURCES += ../src/qdjvu.cpp
+SOURCES += ../src/qdjvuhttp.cpp
+SOURCES += ../src/qdjvuwidget.cpp
+RESOURCES += ../src/qdjvuwidget.qrc 
 
-# -- djview files
-HEADERS += qdjviewprefs.h
-HEADERS += qdjviewsidebar.h
-HEADERS += qdjviewdialogs.h 
-HEADERS += qdjviewexporters.h
-HEADERS += qdjview.h
-HEADERS += djview.h
-SOURCES += qdjviewprefs.cpp 
-SOURCES += qdjviewsidebar.cpp 
-SOURCES += qdjviewdialogs.cpp
-SOURCES += qdjviewexporters.cpp
-SOURCES += qdjview.cpp
-SOURCES += djview.cpp
-RESOURCES += qdjview.qrc 
-FORMS += qdjviewerrordialog.ui
-FORMS += qdjviewinfodialog.ui 
-FORMS += qdjviewmetadialog.ui 
-FORMS += qdjviewsavedialog.ui 
-FORMS += qdjviewprintdialog.ui 
-FORMS += qdjviewexportdialog.ui 
-FORMS += qdjviewexportps1.ui
-FORMS += qdjviewexportps2.ui
-FORMS += qdjviewexportps3.ui
-FORMS += qdjviewexporttiff.ui
-FORMS += qdjviewexportprn.ui
-FORMS += qdjviewprefsdialog.ui 
+# -- djview
+HEADERS += ../src/qdjviewprefs.h
+HEADERS += ../src/qdjviewsidebar.h
+HEADERS += ../src/qdjviewdialogs.h 
+HEADERS += ../src/qdjviewexporters.h
+HEADERS += ../src/qdjview.h
+HEADERS += ../src/djview.h
+SOURCES += ../src/qdjviewprefs.cpp 
+SOURCES += ../src/qdjviewsidebar.cpp 
+SOURCES += ../src/qdjviewdialogs.cpp
+SOURCES += ../src/qdjviewexporters.cpp
+SOURCES += ../src/qdjview.cpp
+SOURCES += ../src/djview.cpp
+RESOURCES += ../src/qdjview.qrc 
+FORMS += ../src/qdjviewerrordialog.ui
+FORMS += ../src/qdjviewinfodialog.ui 
+FORMS += ../src/qdjviewmetadialog.ui 
+FORMS += ../src/qdjviewsavedialog.ui 
+FORMS += ../src/qdjviewprintdialog.ui 
+FORMS += ../src/qdjviewexportdialog.ui 
+FORMS += ../src/qdjviewexportps1.ui
+FORMS += ../src/qdjviewexportps2.ui
+FORMS += ../src/qdjviewexportps3.ui
+FORMS += ../src/qdjviewexporttiff.ui
+FORMS += ../src/qdjviewexportprn.ui
+FORMS += ../src/qdjviewprefsdialog.ui 
 
 # -- helper files
-HEADERS += tiff2pdf.h
-SOURCES += tiff2pdf.c
+HEADERS += ../src/tiff2pdf.h
+SOURCES += ../src/tiff2pdf.c
 
