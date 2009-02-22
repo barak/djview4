@@ -47,6 +47,8 @@ all: all-djview
 
 @NSDEJAVU_YES@all: all-nsdejavu
 
+@NPDJVU_YES@all: all-npdjvu
+
 all: all-desktopfiles
 
 all: all-djview-qm
@@ -56,6 +58,9 @@ all-djview: FORCE
 
 all-nsdejavu: FORCE
 	cd nsdejavu && ${MAKE}
+
+all-npdjvu: FORCE
+	cd npdjvu && ${MAKE}
 
 all-desktopfiles: FORCE
 	cd desktopfiles && ${MAKE}

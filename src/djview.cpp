@@ -1,7 +1,7 @@
 //C-  -*- C++ -*-
 //C- -------------------------------------------------------------------
 //C- DjView4
-//C- Copyright (c) 2006  Leon Bottou
+//C- Copyright (c) 2006-  Leon Bottou
 //C-
 //C- This software is subject to, and may be distributed under, the
 //C- GNU General Public License, either version 2 of the license,
@@ -31,7 +31,9 @@
 #include "qdjvuwidget.h"
 #include "djview.h"
 #ifdef Q_WS_X11
+# ifndef NPDJVU
 #  include "qdjviewplugin.h"
+# endif
 #endif
 
 #include <QtGlobal>
@@ -57,9 +59,6 @@ static bool verbose = true;
 #endif
 
 
-static QtMsgHandler qtDefaultHandler;
-
-
 static void 
 qtMessageHandler(QtMsgType type, const char *msg)
 {
@@ -83,7 +82,6 @@ qtMessageHandler(QtMsgType type, const char *msg)
 }
 
 
-
 static void
 message(QString string, bool prefix=true)
 {
@@ -93,48 +91,11 @@ message(QString string, bool prefix=true)
   fprintf(stderr, "%s\n", (const char*) m);
 }
 
-
-
 static void
 message(QStringList sl)
 {
   foreach (QString s, sl)
     message(s);
-}
-
-
-
-static void 
-usage()
-{
-  QString msg = QDjViewApplication::tr
-    ("Usage: djview [options] [filename-or-url]\n"
-     "Common options include:\n"
-     "-help~~~Prints this message.\n"
-     "-verbose~~~Prints all warning messages.\n"
-     "-display <xdpy>~~~Select the X11 display <xdpy>.\n"
-     "-geometry <xgeom>~~~Select the initial window geometry.\n"
-     "-font <xlfd>~~~Select the X11 name of the main font.\n"
-     "-style <qtstyle>~~~Select the QT user interface style.\n"
-     "-fullscreen, -fs~~~Start djview in full screen mode.\n"
-     "-page=<page>~~~Jump to page <page>.\n"
-     "-zoom=<zoom>~~~Set zoom factor.\n"
-     "-continuous=<yn>~~~Set continuous layout.\n"
-     "-sidebyside=<yn>~~~Set side-by-side layout.\n" );
-  
-  // align tabs
-  QStringList opts = msg.split("\n");
-  int tab = 0;
-  foreach (QString s, opts)
-    tab = qMax(tab, s.indexOf("~~~"));
-  foreach (QString s, opts)
-    {
-      int pos = s.indexOf("~~~");
-      if (pos >= 0)
-        s = QString(" %1  %2").arg(s.left(pos), -tab).arg(s.mid(pos+3));
-      message(s, false);
-    }
-  exit(10);
 }
 
 
@@ -150,6 +111,10 @@ addDirectory(QStringList &dirs, QString path)
 QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   : QApplication(argc, argv), context(argv[0])
 {
+  // Message handler
+  qInstallMsgHandler(qtMessageHandler);
+
+
   // Translators
   QTranslator *qtTrans = new QTranslator(this);
   QTranslator *djviewTrans = new QTranslator(this);
@@ -270,7 +235,6 @@ void
 QDjViewApplication::commitData(QSessionManager &)
 {
 }
- 
 
 void 
 QDjViewApplication::saveState(QSessionManager &sm)
@@ -313,6 +277,41 @@ QDjViewApplication::saveState(QSessionManager &sm)
 #endif
 
 
+#ifndef NPDJVU
+
+static void 
+usage()
+{
+  QString msg = QDjViewApplication::tr
+    ("Usage: djview [options] [filename-or-url]\n"
+     "Common options include:\n"
+     "-help~~~Prints this message.\n"
+     "-verbose~~~Prints all warning messages.\n"
+     "-display <xdpy>~~~Select the X11 display <xdpy>.\n"
+     "-geometry <xgeom>~~~Select the initial window geometry.\n"
+     "-font <xlfd>~~~Select the X11 name of the main font.\n"
+     "-style <qtstyle>~~~Select the QT user interface style.\n"
+     "-fullscreen, -fs~~~Start djview in full screen mode.\n"
+     "-page=<page>~~~Jump to page <page>.\n"
+     "-zoom=<zoom>~~~Set zoom factor.\n"
+     "-continuous=<yn>~~~Set continuous layout.\n"
+     "-sidebyside=<yn>~~~Set side-by-side layout.\n" );
+  
+  // align tabs
+  QStringList opts = msg.split("\n");
+  int tab = 0;
+  foreach (QString s, opts)
+    tab = qMax(tab, s.indexOf("~~~"));
+  foreach (QString s, opts)
+    {
+      int pos = s.indexOf("~~~");
+      if (pos >= 0)
+        s = QString(" %1  %2").arg(s.left(pos), -tab).arg(s.mid(pos+3));
+      message(s, false);
+    }
+  exit(10);
+}
+
 int 
 main(int argc, char *argv[])
 {
@@ -328,7 +327,7 @@ main(int argc, char *argv[])
   QApplication::setApplicationName(DJVIEW_APP);
   
   // Message handler
-  qtDefaultHandler = qInstallMsgHandler(qtMessageHandler);
+  qInstallMsgHandler(qtMessageHandler);
 #ifdef Q_OS_UNIX
   const char *s = ::getenv("DJVIEW_VERBOSE");
   if (s && strcmp(s,"0"))
@@ -430,7 +429,7 @@ main(int argc, char *argv[])
   return app.exec();
 }
 
-
+#endif
 
 
 /* -------------------------------------------------------------

@@ -1,0 +1,24 @@
+This directory contains an experimental portable plugin dll 
+partially based on the Qt solution qtbrowserplugin.
+You need to compile with --enable-npdjvu to compile this.
+
+
+The following files are the genuine qt solution files:
+  qtbrowserpluginax.def
+  qtbrowserplugin.def
+  qtbrowserplugin_mac.cpp
+  qtbrowserplugin_win.cpp
+  qtbrowserplugin_x11.cpp
+  qtnpapi.h
+
+This files is a slightly modified qt solution file:
+  qtbrowserplugin_p.h
+
+These files are derived from the qt solution code:
+  qtbrowserplugin.h
+  qtnpapi.cpp
+
+This is the main file:
+  npdjvu.cpp
+
+

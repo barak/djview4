@@ -872,6 +872,8 @@ NSDEJAVU_LIBS
 INSTALL_SHLIB
 NSDEJAVU_YES
 NSDEJAVU_NO
+NPDJVU_YES
+NPDJVU_NO
 XDG_MIME
 XDG_ICON_RESOURCE
 XDG_DESKTOP_MENU
@@ -1497,6 +1499,7 @@ Optional Features:
   --enable-fast-install[=PKGS]
                           optimize for fast installation [default=yes]
   --disable-libtool-lock  avoid locking (might break parallel builds)
+  --enable-npdjvu         Compile the npdjvu browser plugin.
   --disable-desktopfiles  Do not install scripts to register icons and menus.
 
 Optional Packages:
@@ -7538,6 +7541,8 @@ echo "${ECHO_T}setting TIFF_LIBS=$TIFF_LIBS" >&6; }
    fi
 
 
+
+
 # ----------------------------------------
 # nsdejavu
 # ----------------------------------------
@@ -9724,7 +9729,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 9727 "configure"' > conftest.$ac_ext
+  echo '#line 9732 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -11753,11 +11758,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11756: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11761: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11760: \$? = $ac_status" >&5
+   echo "$as_me:11765: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -12015,11 +12020,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12018: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12023: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:12022: \$? = $ac_status" >&5
+   echo "$as_me:12027: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -12077,11 +12082,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12080: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12085: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:12084: \$? = $ac_status" >&5
+   echo "$as_me:12089: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -14301,7 +14306,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 14304 "configure"
+#line 14309 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14399,7 +14404,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 14402 "configure"
+#line 14407 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -16654,11 +16659,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16657: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16662: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16661: \$? = $ac_status" >&5
+   echo "$as_me:16666: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -16716,11 +16721,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16719: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16724: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16723: \$? = $ac_status" >&5
+   echo "$as_me:16728: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18075,7 +18080,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 18078 "configure"
+#line 18083 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -18173,7 +18178,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 18176 "configure"
+#line 18181 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -19058,11 +19063,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:19061: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:19066: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:19065: \$? = $ac_status" >&5
+   echo "$as_me:19070: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -19120,11 +19125,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:19123: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:19128: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:19127: \$? = $ac_status" >&5
+   echo "$as_me:19132: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -21262,11 +21267,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:21265: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:21270: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:21269: \$? = $ac_status" >&5
+   echo "$as_me:21274: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -21524,11 +21529,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:21527: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:21532: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:21531: \$? = $ac_status" >&5
+   echo "$as_me:21536: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -21586,11 +21591,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:21589: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:21594: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:21593: \$? = $ac_status" >&5
+   echo "$as_me:21598: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -23810,7 +23815,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 23813 "configure"
+#line 23818 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -23908,7 +23913,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 23911 "configure"
+#line 23916 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -24989,6 +24994,27 @@ fi
 
 
 
+# ----------------------------------------
+# npdjvu
+# ----------------------------------------
+
+ac_npdjvu=no
+# Check whether --enable-npdjvu was given.
+if test "${enable_npdjvu+set}" = set; then
+  enableval=$enable_npdjvu; ac_npdjvu=$enableval
+fi
+
+
+if test "$ac_npdjvu" != no ; then
+    NPDJVU_YES=''
+    NPDJVU_NO='#'
+else
+    NPDJVU_YES='#'
+    NPDJVU_NO=''
+fi
+
+
+
 
 # ----------------------------------------
 # Desktop files
@@ -25247,15 +25273,20 @@ AUTO_FLAGS="-I.. $DDJVUAPI_CFLAGS $TIFF_CFLAGS"
 # out-of-tree?
 if test -d src && test -r src/qdjvu.cpp ; then : ; else
   test -d src || mkdir src
-  for n in $srcdir/src/djview.pro $srcdir/src/*.ts ; do
+  test -d npdjvu || mkdir npdjvu
+  for n in $srcdir/src/*.pro $srcdir/src/*.ts ; do
       m=`basename $n`
       test -r $n && ( cmp -s $n src/$m || cp $n src/$m )
   done
-  nsrcdir="$srcdir"
-  case "$srcdir" in .*) nsrcdir="../$srcdir" ;; esac
-  QARG="$QARG VPATH="'"'"$nsrcdir/src"'"'
-  AUTO_FLAGS="-I$nsrcdir/src $AUTO_FLAGS"
+  for n in $srcdir/npdjvu/*.pro ; do
+      m=`basename $n`
+      test -r $n && ( cmp -s $n npdjvu/$m || cp $n npdjvu/$m )
+  done
 fi
+nsrcdir="$srcdir"
+case "$srcdir" in .*) nsrcdir="../$srcdir" ;; esac
+QARG="$QARG VPATH="'"'"$nsrcdir/src $nsrcdir/npdjvu"'"'
+AUTO_FLAGS="-I$nsrcdir/src $AUTO_FLAGS"
 
 # debug
 if test "$ac_debug" = yes ; then
@@ -26071,6 +26102,8 @@ NSDEJAVU_LIBS!$NSDEJAVU_LIBS$ac_delim
 INSTALL_SHLIB!$INSTALL_SHLIB$ac_delim
 NSDEJAVU_YES!$NSDEJAVU_YES$ac_delim
 NSDEJAVU_NO!$NSDEJAVU_NO$ac_delim
+NPDJVU_YES!$NPDJVU_YES$ac_delim
+NPDJVU_NO!$NPDJVU_NO$ac_delim
 XDG_MIME!$XDG_MIME$ac_delim
 XDG_ICON_RESOURCE!$XDG_ICON_RESOURCE$ac_delim
 XDG_DESKTOP_MENU!$XDG_DESKTOP_MENU$ac_delim
@@ -26080,7 +26113,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 13; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 15; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -26486,6 +26519,7 @@ echo "$as_me: executing $ac_file commands" >&6;}
     "src":C)
     echo "config.status: running $QMAKE_COMMAND."
     ( cd src ; eval "$QMAKE_COMMAND" )
+    ( cd npdjvu ; eval "$QMAKE_COMMAND" )
  ;;
 
   esac

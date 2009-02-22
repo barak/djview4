@@ -139,6 +139,8 @@ AC_PATH_TIFF([],[
   AC_MSG_WARN([Cannot find libtiff (required for tiff export).])
 ])
 
+
+
 # ----------------------------------------
 # nsdejavu
 # ----------------------------------------
@@ -214,6 +216,26 @@ AC_SUBST(NSDEJAVU_YES)
 AC_SUBST(NSDEJAVU_NO)
 
 
+# ----------------------------------------
+# npdjvu
+# ----------------------------------------
+
+ac_npdjvu=no
+AC_ARG_ENABLE(npdjvu,
+    AC_HELP_STRING([--enable-npdjvu],
+        [Compile the npdjvu browser plugin.]),
+    [ac_npdjvu=$enableval])
+
+if test "$ac_npdjvu" != no ; then
+    NPDJVU_YES=''
+    NPDJVU_NO='#'
+else
+    NPDJVU_YES='#'
+    NPDJVU_NO=''
+fi
+AC_SUBST(NPDJVU_YES)
+AC_SUBST(NPDJVU_NO)
+
 
 # ----------------------------------------
 # Desktop files
@@ -282,15 +304,20 @@ AUTO_FLAGS="-I.. $DDJVUAPI_CFLAGS $TIFF_CFLAGS"
 # out-of-tree?
 if test -d src && test -r src/qdjvu.cpp ; then : ; else
   test -d src || mkdir src
-  for n in $srcdir/src/djview.pro $srcdir/src/*.ts ; do
+  test -d npdjvu || mkdir npdjvu
+  for n in $srcdir/src/*.pro $srcdir/src/*.ts ; do
       m=`basename $n`
       test -r $n && ( cmp -s $n src/$m || cp $n src/$m )
   done
-  nsrcdir="$srcdir"
-  case "$srcdir" in .*) nsrcdir="../$srcdir" ;; esac
-  QARG="$QARG VPATH="'"'"$nsrcdir/src"'"'
-  AUTO_FLAGS="-I$nsrcdir/src $AUTO_FLAGS"
+  for n in $srcdir/npdjvu/*.pro ; do
+      m=`basename $n`
+      test -r $n && ( cmp -s $n npdjvu/$m || cp $n npdjvu/$m )
+  done
 fi
+nsrcdir="$srcdir"
+case "$srcdir" in .*) nsrcdir="../$srcdir" ;; esac
+QARG="$QARG VPATH="'"'"$nsrcdir/src $nsrcdir/npdjvu"'"'
+AUTO_FLAGS="-I$nsrcdir/src $AUTO_FLAGS"
 
 # debug
 if test "$ac_debug" = yes ; then
@@ -318,6 +345,7 @@ fi
 AC_CONFIG_COMMANDS([src], [
     echo "config.status: running $QMAKE_COMMAND."
     ( cd src ; eval "$QMAKE_COMMAND" )
+    ( cd npdjvu ; eval "$QMAKE_COMMAND" )
 ],[
     read QMAKE_COMMAND <<QMAKE_COMMAND_EOF
 $QENV $QMAKE $QARG

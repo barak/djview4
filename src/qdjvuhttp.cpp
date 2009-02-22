@@ -1,7 +1,7 @@
 //C-  -*- C++ -*-
 //C- -------------------------------------------------------------------
 //C- DjView4
-//C- Copyright (c) 2006  Leon Bottou
+//C- Copyright (c) 2006-  Leon Bottou
 //C-
 //C- This software is subject to, and may be distributed under, the
 //C- GNU General Public License, either version 2 of the license,
