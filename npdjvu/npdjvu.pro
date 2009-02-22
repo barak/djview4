@@ -24,9 +24,11 @@ DEFINES += NPDJVU
 # ============ qtbrowserplugin stuff
 
 HEADERS += qtnpapi.h
+HEADERS += npdjvu.h
 HEADERS += qtbrowserplugin.h
 HEADERS += qtbrowserplugin_p.h
 SOURCES += qtnpapi.cpp
+SOURCES += npdjvu.cpp
 
 win32 {
   # Uncomment the following line to build a plugin 

@@ -2,6 +2,9 @@ This directory contains an experimental portable plugin dll
 partially based on the Qt solution qtbrowserplugin.
 You need to compile with --enable-npdjvu to compile this.
 
+Warning: ongoing developments.
+
+---------------------------------------------------------
 
 The following files are the genuine qt solution files:
   qtbrowserpluginax.def
@@ -20,5 +23,7 @@ These files are derived from the qt solution code:
 
 This is the main file:
   npdjvu.cpp
+
+
 
 

@@ -40,9 +40,9 @@
 **
 ****************************************************************************/
 
-
 #include "qtbrowserplugin.h"
 #include "qtbrowserplugin_p.h"
+#include "npdjvu.h"
 
 #ifndef WINAPI
 # ifdef Q_WS_WIN
@@ -412,7 +412,7 @@ NP_GetEntryPoints(NPPluginFuncs* pFuncs)
     pFuncs->writeready    = MAKE_FUNCTION_POINTER(NPP_WriteReady);
     pFuncs->write         = MAKE_FUNCTION_POINTER(NPP_Write);
     pFuncs->print         = MAKE_FUNCTION_POINTER(NPP_Print);
-    pFuncs->event         = MAKE_FUNCTION_POINTER(NPP_Event);
+    pFuncs->event         = MAKE_FUNCTION_POINTER(NPP_HandleEvent);
     pFuncs->urlnotify     = MAKE_FUNCTION_POINTER(NPP_URLNotify);
     pFuncs->javaClass     = 0;
     pFuncs->getvalue      = MAKE_FUNCTION_POINTER(NPP_GetValue);
