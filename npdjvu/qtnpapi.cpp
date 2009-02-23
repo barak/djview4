@@ -393,6 +393,82 @@ NPVariant::operator QVariant() const
     return QVariant();
 }
 
+static void 
+NPClass_Invalidate(NPObject *npobj)
+{
+  if (npobj)
+    delete npobj->_class;
+    npobj->_class = 0;
+}
+
+static bool 
+NPClass_HasMethod(NPObject*, NPIdentifier)
+{
+  return false;
+}
+
+static bool 
+NPClass_Invoke(NPObject*, NPIdentifier, const NPVariant*, uint32, NPVariant*)
+{
+  return false;
+}
+
+static bool 
+NPClass_InvokeDefault(NPObject*, const NPVariant*, uint32, NPVariant*)
+{
+  return false;
+}
+
+static bool 
+NPClass_HasProperty(NPObject*, NPIdentifier)
+{
+  return false;
+}
+
+static bool 
+NPClass_GetProperty(NPObject*, NPIdentifier, NPVariant*)
+{
+  return false;
+}
+
+static bool 
+NPClass_SetProperty(NPObject*, NPIdentifier, const NPVariant*)
+{
+  return false;
+}
+
+static bool 
+NPClass_RemoveProperty(NPObject *npobj, NPIdentifier name)
+{
+  NPVariant var;
+  return NPClass_SetProperty(npobj, name, &var);
+}
+
+NPClass::NPClass(QtNPInstance *This)
+{
+  structVersion = NP_CLASS_STRUCT_VERSION;
+  allocate = 0;
+  deallocate = 0;
+  invalidate = NPClass_Invalidate;
+  hasMethod = NPClass_HasMethod;
+  invoke = NPClass_Invoke;
+  invokeDefault = NPClass_InvokeDefault;
+  hasProperty = NPClass_HasProperty;
+  getProperty = NPClass_GetProperty;
+  setProperty = NPClass_SetProperty;
+  removeProperty = NPClass_RemoveProperty;
+  qtnp = This;
+  delete_qtnp = false;
+}
+
+NPClass::~NPClass()
+{
+  if (delete_qtnp)
+    delete qtnp;
+}
+
+
+
 // Fills in functiontable used by browser to call entry points in plugin.
 extern "C" NPError WINAPI 
 NP_GetEntryPoints(NPPluginFuncs* pFuncs)

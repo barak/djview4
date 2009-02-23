@@ -25,11 +25,14 @@
 // Qt includes
 #include <QtGlobal>
 #include <QApplication>
+#include <QBuffer>
 #include <QByteArray>
+#include <QDataStream>
 #include <QDir>
 #include <QObject>
 #include <QLibraryInfo>
 #include <QLocale>
+#include <QPointer>
 #include <QRegExp>
 #include <QSettings>
 #include <QString>
@@ -40,8 +43,9 @@
 #include <QX11EmbedWidget>
 
 // Djview includes
-#include "qdjview.h"
 #include "qdjvu.h"
+#include "qdjvuwidget.h"
+#include "qdjview.h"
 
 // Npdjvu includes
 #include "npdjvu.h"
@@ -92,8 +96,8 @@ private:
 /* ------------------------------------------------------------- */
 /* Setup application */
 
-static QApplication *theApp = 0;
-static QDjVuContext *djvuContext = 0;
+static QPointer<QApplication> theApp;
+static QPointer<QDjVuContext> djvuContext;
 static bool verbose = true;
 
 static void 
@@ -129,10 +133,7 @@ static bool x11EventFilter(void *message, long *)
     {
       QWidget *w = QWidget::find(event->xbutton.window);
       if (w && qobject_cast<QX11EmbedWidget*>(w->window()))
-        {
-          QApplication *app = (QApplication*)QCoreApplication::instance();
-          app->setActiveWindow(w->window());
-        }
+        theApp->setActiveWindow(w->window());
     }
   return false;
 }
@@ -145,7 +146,6 @@ addDirectory(QStringList &dirs, QString path)
   if (! dirs.contains(dirname))
     dirs << dirname;
 }
-
 
 static void
 setupApplication(QtNPInstance *instance)
@@ -286,7 +286,8 @@ QtNPForwarder::getUrl(QUrl url, QString target)
 void 
 QtNPForwarder::onChange()
 {
-  if (instance && !instance->onchange.type == NPVariant::String)
+  if (instance && instance->npobject &&
+      instance->onchange.type == NPVariant::String)
     {
       NPVariant res;
       NPString *code = &instance->onchange.value.stringValue;
@@ -351,6 +352,51 @@ QtNPDocument::newstream(int streamid, QString, QUrl url)
 /* Open/Close djview */
 
 
+static QByteArray
+saveData(QDjVuWidget *widget)
+{
+  if (! widget)
+    return QByteArray();
+  QDjVuWidget::Position pos = widget->position();
+  QBuffer buffer;
+  buffer.open(QIODevice::WriteOnly);
+  QDataStream s(&buffer);
+  s << widget->zoom() << widget->rotation();
+  s << widget->sideBySide() << widget->continuous();
+  s << widget->displayMode();
+  s << pos.pageNo << pos.posView;
+  buffer.close();
+  return buffer.data();
+}
+
+
+static void
+restoreData(QDjVuWidget *widget, QByteArray data)
+{
+  if (data.isEmpty())
+    return;
+  QBuffer buffer(&data);
+  buffer.open(QIODevice::ReadOnly);
+  QDataStream s(&buffer);
+  int zoom, rotation, mode;
+  bool sideBySide, continuous;
+  QDjVuWidget::Position pos;
+  s >> zoom >> rotation >> continuous >> sideBySide;
+  s >> mode >> pos.pageNo >> pos.posView;
+  pos.inPage = false;
+  buffer.close();
+  if (s.status() != QDataStream::Ok)
+    return;
+  // apply
+  widget->setZoom(zoom);
+  widget->setRotation(rotation);
+  widget->setSideBySide(sideBySide);
+  widget->setContinuous(continuous);
+  widget->setDisplayMode((QDjVuWidget::DisplayMode)mode);
+  widget->setPosition(pos);
+}
+
+
 static void 
 openInstance(QtNPInstance *instance)
 {
@@ -363,7 +409,7 @@ openInstance(QtNPInstance *instance)
     if (! instance->djview->getDocument())
       {
         instance->djview->open(instance->document, instance->url);
-        // restoreData(djview->getDjVuWidget(), instance->savedData);
+        restoreData(instance->djview->getDjVuWidget(), instance->savedData);
         instance->djview->show();
       }
 }
@@ -374,7 +420,7 @@ closeInstance(QtNPInstance *instance)
 {
   if (instance->djview)
     {
-      // instance->savedData = saveData(djview->getDjVuWidget());
+      instance->savedData = saveData(instance->djview->getDjVuWidget());
       instance->djview->close();
       delete instance->djview;
       instance->djview = 0;
@@ -383,6 +429,140 @@ closeInstance(QtNPInstance *instance)
     }
 }
 
+
+/* ------------------------------------------------------------- */
+/* NPRuntime */
+
+static NPIdentifier npid_getdjvuopt;
+static NPIdentifier npid_setdjvuopt;
+static NPIdentifier npid_onchange;
+static NPIdentifier npid_version;
+
+static bool 
+np_hasmethod(NPObject*, NPIdentifier name)
+{
+  if (name == npid_getdjvuopt ||
+      name == npid_setdjvuopt )
+    return 1;
+  return 0;
+}
+
+static bool
+np_invoke(NPObject *npobj, NPIdentifier name,
+          const NPVariant *args, uint32_t argCount,
+          NPVariant *result)
+{
+  QVariant res;
+  QtNPInstance *instance = (npobj && npobj->_class) ? npobj->_class->qtnp : 0;
+  if (instance && name == npid_getdjvuopt)
+    {
+      // GetDjVuOpt ------------
+      if (argCount != 1)
+        NPN_SetException(npobj, "Exactly one argument is expected");
+      else if (args[0].type != NPVariant::String)
+        NPN_SetException(npobj, "First argument should be a string");
+      else if (instance->djview)
+        {
+          res = instance->djview->getArgument(QVariant(args[0]).toString());
+          *result = NPVariant::fromQVariant(instance, res);
+          return 1;
+        }
+      return 0;
+    }
+  else if (instance && name == npid_setdjvuopt)
+    {
+      // SetDjVuOpt ------------
+      if (argCount != 2)
+        NPN_SetException(npobj, "Exactly two arguments were expected");
+      else if (args[0].type != NPVariant::String)
+        NPN_SetException(npobj, "First argument should be a string");
+      else 
+        {
+          QVariant key = QVariant(args[0]).toString();
+          QVariant val = QVariant(args[1]).toString();
+          if (val.canConvert(QVariant::String))
+            {
+              if (instance->djview)
+                instance->djview->parseArgument(key.toString(), val.toString());
+              else
+                instance->args += key.toString() + "=" + val.toString();
+              *result = NPVariant::fromQVariant(instance, res);
+              return 1;
+            }
+          NPN_SetException(npobj, "Arg 2 should be a string or a number");
+        }
+      return 0;
+    }
+  NPN_SetException(npobj, "Unrecognized method");
+  return 0;
+}
+
+static bool 
+np_hasproperty(NPObject*, NPIdentifier name)
+{
+  if (name == npid_onchange || 
+      name == npid_version)
+    return 1;
+  return 0;
+}
+
+static bool 
+np_getproperty(NPObject *npobj, NPIdentifier name, NPVariant *result)
+{
+  QtNPInstance *instance = (npobj && npobj->_class) ? npobj->_class->qtnp : 0;
+  if (instance && name == npid_onchange)
+    {
+      QVariant var = instance->onchange;
+      *result = NPVariant::fromQVariant(instance, var);
+      return 1;
+    }
+  else if (instance && name == npid_version)
+    {
+      *result = NPVariant::fromQVariant(instance, QString("npdjvu+djview4"));
+      return 1;
+    }
+  return 0;
+}
+
+static bool
+np_setproperty(NPObject *npobj, NPIdentifier name, const NPVariant *value)
+{
+  QtNPInstance *instance = (npobj && npobj->_class) ? npobj->_class->qtnp : 0;
+  if (instance && name == npid_onchange)
+    {
+      if (value->type == NPVariant::String || 
+          value->type == NPVariant::Null )
+        {
+          NPN_ReleaseVariantValue(&instance->onchange);
+          QVariant var = *value;
+          instance->onchange = NPVariant::fromQVariant(instance, var);
+          return 1;
+        }
+      NPN_SetException(npobj, "String or null expected");
+      return 0;
+    }
+  return 0;
+}
+
+static void
+createObject(QtNPInstance *instance)
+{
+  if (! npid_getdjvuopt)
+    npid_getdjvuopt = NPN_GetStringIdentifier("getdjvuopt");
+  if (! npid_setdjvuopt)
+    npid_setdjvuopt = NPN_GetStringIdentifier("setdjvuopt");
+  if (! npid_onchange)
+    npid_onchange = NPN_GetStringIdentifier("onchange");
+  if (! npid_version)
+    npid_version = NPN_GetStringIdentifier("version");
+  NPClass *npclass = new NPClass(instance);
+  npclass->hasMethod = np_hasmethod;
+  npclass->invoke = np_invoke;
+  npclass->hasProperty = np_hasproperty;
+  npclass->getProperty = np_getproperty;
+  npclass->setProperty = np_setproperty;
+  instance->npobject = NPN_CreateObject(instance->npp, npclass);
+}  
 
 
 /* ------------------------------------------------------------- */
@@ -412,6 +592,7 @@ NPP_New(NPMIMEType mime, NPP npp,
 #ifdef Q_WS_MAC
   instance->rootWidget = 0;
 #endif
+  createObject(instance);
   if (saved && saved->len)
     instance->savedData = QByteArray((const char*)saved->buf, saved->len);
   // arguments
@@ -466,6 +647,10 @@ NPP_Destroy(NPP npp, NPSavedData** save)
         }
     }
   instance->npp->pdata = 0;
+  if (instance->onchange.type)
+    NPN_ReleaseVariantValue(&instance->onchange);
+  if (instance->npobject)
+    NPN_ReleaseObject(instance->npobject);
   delete instance;
   return NPERR_NO_ERROR;
 }
@@ -684,6 +869,7 @@ NPP_GetValue(NPP npp,
 {
   Q_UNUSED(npp)
   NPError err = NPERR_GENERIC_ERROR;
+  QtNPInstance *instance = (npp) ? (QtNPInstance*)(npp->pdata) : 0;
   switch (variable)
     {
     case NPPVpluginNameString:
@@ -703,7 +889,11 @@ NPP_GetValue(NPP npp,
       err = NPERR_NO_ERROR;
       break;
     case NPPVpluginScriptableNPObject:
-      *((NPObject**)value) = 0;
+      if (!instance || !instance->npobject)
+        break;
+      NPN_RetainObject(instance->npobject);
+      *((NPObject**)value) = instance->npobject;
+      err = NPERR_NO_ERROR;
       break;
     default:
       break;
