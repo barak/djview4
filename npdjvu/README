@@ -2,7 +2,13 @@ This directory contains an experimental portable plugin dll
 partially based on the Qt solution qtbrowserplugin.
 You need to compile with --enable-npdjvu to compile this.
 
-Warning: ongoing developments.
+Warning: This plugin does not work with konqueror
+or Qt based browsers because of symbol conflicts
+between the Qt library used by the browser
+and the Qt library used by the plugin.
+Static compilation would fix that at the expense
+of considerable bloat.
+
 
 ---------------------------------------------------------
 
