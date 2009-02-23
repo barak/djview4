@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>@EXECUTABLE@</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>BRPL</string>
+	<key>CFBundleSignature</key>
+	<string>DJVU</string>
+        <key>CFBundleGetInfoString</key>
+        <string>npdjvu - DjView4 browser plugin</string>
+	<key>CSResourcesFileMapped</key>
+	<true/>
+	<key>WebPluginDescription</key>
+	<string>The DjView browser plug-in</string>
+	<key>WebPluginMIMETypes</key>
+	<dict>
+		<key>image/x-djvu</key>
+		<dict>
+			<key>WebPluginExtensions</key>
+			<array>
+				<string>djvu</string>
+				<string>djv</string>
+			</array>
+			<key>WebPluginTypeDescription</key>
+			<string>DjVu File</string>
+		</dict>
+		<key>image/x.djvu</key>
+		<dict>
+			<key>WebPluginTypeDescription</key>
+			<string>DjVu File</string>
+		</dict>
+		<key>image/djvu</key>
+		<dict>
+			<key>WebPluginTypeDescription</key>
+			<string>DjVu File</string>
+		</dict>
+		<key>image/x-dejavu</key>
+		<dict>
+			<key>WebPluginTypeDescription</key>
+			<string>DjVu File (obsolete)</string>
+		</dict>
+		<key>image/x-iw44</key>
+		<dict>
+			<key>WebPluginTypeDescription</key>
+			<string>DjVu File (obsolete)</string>
+		</dict>
+		<key>image/vnd.djvu</key>
+		<dict>
+			<key>WebPluginTypeDescription</key>
+			<string>DjVu File</string>
+		</dict>
+	</dict>
+	<key>WebPluginName</key>
+	<string>The DjView4 browser plugin</string>
+</dict>
+</plist>
