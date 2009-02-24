@@ -1,4 +1,5 @@
-1 TYPELIB "npdjvu.rc"
+
+1 ICON DISCARDABLE "../src/images/DjVuApp.ico"
 
 1 VERSIONINFO
  FILEVERSION 1,0,0,1
@@ -38,3 +39,4 @@ BEGIN
         VALUE "Translation", 0x409, 1252
     END
 END
+
