@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="de">
+<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -2661,7 +2662,7 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1144"/>
         <source>&amp;Defaults</source>
-        <translation>&amp;Standartwerte</translation>
+        <translation>&amp;Standardwerte</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1170"/>
