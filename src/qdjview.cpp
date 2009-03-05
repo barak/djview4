@@ -154,6 +154,7 @@ QDjView::fillModeCombo(QComboBox *modeCombo)
   modeCombo->addItem(tr("Stencil","modeCombo"), QDjVuWidget::DISPLAY_STENCIL);
   modeCombo->addItem(tr("Foreground","modeCombo"), QDjVuWidget::DISPLAY_FG);
   modeCombo->addItem(tr("Background","modeCombo"), QDjVuWidget::DISPLAY_BG);
+  modeCombo->addItem(tr("Hidden Text","modeCombo"), QDjVuWidget::DISPLAY_TEXT);
 }  
 
 
@@ -967,7 +968,6 @@ QDjView::updateActions()
   textLabel->setVisible(prefs->showTextLabel);
   actionCopyOutline->setVisible(prefs->advancedFeatures);
   actionCopyAnnotation->setVisible(prefs->advancedFeatures);
-  actionDisplayHiddenText->setVisible(prefs->advancedFeatures);
   actionCopyUrl->setEnabled(pagenum > 0);
   actionCopyOutline->setEnabled(pagenum > 0);
   actionCopyAnnotation->setEnabled(pagenum > 0);
