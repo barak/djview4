@@ -336,9 +336,8 @@ QARG="$QARG QMAKE_CFLAGS+="'"'"$CFLAGS $AUTO_FLAGS"'"'
 QARG="$QARG QMAKE_CXXFLAGS+="'"'"$CXXFLAGS $AUTO_FLAGS"'"'
 
 # qmake environment variables
-QENV=
 if test -n "$QMAKESPEC" ; then
-    QENV="$QENV QMAKESPEC="'"'"$QMAKESPEC"'"'
+    QARG="-spec "'"'"$QMAKESPEC"'"'" $QARG"
 fi
 
 # run
@@ -348,7 +347,7 @@ AC_CONFIG_COMMANDS([src], [
     ( cd npdjvu ; eval "$QMAKE_COMMAND" )
 ],[
     read QMAKE_COMMAND <<QMAKE_COMMAND_EOF
-$QENV $QMAKE $QARG
+$QMAKE $QARG
 QMAKE_COMMAND_EOF
 ] )
 

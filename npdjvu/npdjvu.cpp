@@ -697,6 +697,7 @@ NPP_SetWindow(NPP npp, NPWindow* window)
   djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
   djview->setAttribute(Qt::WA_DeleteOnClose, false);
   djview->setObjectName("npdjvu");
+  djview->setAutoFillBackground(true);
   instance->djview = djview;
   instance->qt.widget = djview;
   QObject::connect(djview, SIGNAL(pluginStatusMessage(QString)),
