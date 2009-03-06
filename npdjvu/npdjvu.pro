@@ -40,7 +40,7 @@ win32 {
   CONFIG += plugin
   CONFIG += plugin_bundle
   contains(DEFINES,__USE_WS_X11__) { CONFIG += x11 }
-  SOURCES += qtbrowserplugin_max.cpp
+  SOURCES += qtbrowserplugin_mac.cpp
   ICON = ../src/images/DjVuApp.icns
   REZ_FILES += npdjvu.r
   RESOURCES.path = Contents/Resources
