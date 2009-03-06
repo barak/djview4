@@ -25305,9 +25305,8 @@ QARG="$QARG QMAKE_CFLAGS+="'"'"$CFLAGS $AUTO_FLAGS"'"'
 QARG="$QARG QMAKE_CXXFLAGS+="'"'"$CXXFLAGS $AUTO_FLAGS"'"'
 
 # qmake environment variables
-QENV=
 if test -n "$QMAKESPEC" ; then
-    QENV="$QENV QMAKESPEC="'"'"$QMAKESPEC"'"'
+    QARG="-spec "'"'"$QMAKESPEC"'"'" $QARG"
 fi
 
 # run
@@ -25879,7 +25878,7 @@ cat >>$CONFIG_STATUS <<_ACEOF
 #
 
     read QMAKE_COMMAND <<QMAKE_COMMAND_EOF
-$QENV $QMAKE $QARG
+$QMAKE $QARG
 QMAKE_COMMAND_EOF
 
 
