@@ -507,6 +507,7 @@ NP_Initialize(NPNetscapeFuncs* pFuncs)
 
     qNetscapeFuncs = pFuncs;
     int navMajorVers = qNetscapeFuncs->version >> 8;
+    int navMinorVers = qNetscapeFuncs->version & 0xff;
 
     // if the plugin's major version is lower than the Navigator's,
     // then they are incompatible, and should return an error

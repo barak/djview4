@@ -40,7 +40,10 @@
 #include <QTranslator>
 #include <QVariant>
 #include <QWidget>
-#include <QX11EmbedWidget>
+
+#ifdef Q_WS_X11
+# include <QX11EmbedWidget>
+#endif
 
 // Djview includes
 #include "qdjvu.h"

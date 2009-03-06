@@ -20,6 +20,8 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
+#include <Carbon/Carbon.h>
+
 #include <QtGui/QApplication>
 #include <QtCore/QStringList>
 #include <QtCore/QPointer>
@@ -30,8 +32,6 @@
 #include <QtGui/QMouseEvent>
 #include <QtGui/QHoverEvent>
 #include <QtGui/QKeyEvent>
-
-#include <Carbon/Carbon.h>
 
 #include "qtnpapi.h"
 

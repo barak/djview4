@@ -41,12 +41,11 @@ win32 {
   CONFIG += plugin_bundle
   contains(DEFINES,__USE_WS_X11__) { CONFIG += x11 }
   SOURCES += qtbrowserplugin_mac.cpp
-  ICON = ../src/images/DjVuApp.icns
   REZ_FILES += npdjvu.r
   RESOURCES.path = Contents/Resources
   RESOURCES.files = npdjvu.rsrc
   QMAKE_BUNDLE_DATA += RESOURCES
-  QMAKE_INFO_PLIST = djview.plist
+  QMAKE_INFO_PLIST = npdjvu.plist
 } else {
   CONFIG += plugin
   CONFIG += x11
