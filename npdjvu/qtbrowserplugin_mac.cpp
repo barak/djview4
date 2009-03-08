@@ -530,7 +530,9 @@ extern "C" void NPP_MacShutdown()
 
 extern "C" int main(NPNetscapeFuncs *npn_funcs, NPPluginFuncs *np_funcs, NPP_ShutdownUPP *shutdown)
 {
-    qtbrowser_use_cfm = true; //quite the heuristic..
+  // qtbrowser_use_cfm = true; 
+  // quite the heuristic.
+  // but breaks firefox.
 
     NPError ret;
     extern NPError NP_Initialize(NPNetscapeFuncs*);
