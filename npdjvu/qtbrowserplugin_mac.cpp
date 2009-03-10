@@ -407,8 +407,7 @@ extern "C" bool qtns_event(QtNPInstance *This, NPEvent *event)
 
 #ifdef QTBROWSER_USE_CFM
 static bool qtbrowser_use_cfm = false;
-static UInt32 gGlueTemplate[6] = { 0x3D800000, 0x618C0000, 0x800C0000,
-                            0x804C0004, 0x7C0903A6, 0x4E800420  };
+
 struct TVector_rec
 {
     ProcPtr fProcPtr;
@@ -439,6 +438,9 @@ void* MachOFunctionPointerForCFMFunctionPointer(void* inCfmProcPtr)
 {
     if(!qtbrowser_use_cfm)
         return inCfmProcPtr;
+    static UInt32 gGlueTemplate[6] = { 
+      0x3D800000, 0x618C0000, 0x800C0000,
+      0x804C0004, 0x7C0903A6, 0x4E800420  };
     UInt32 *vMachProcPtr = (UInt32*)NewPtr(sizeof(gGlueTemplate));
     vMachProcPtr[0] = gGlueTemplate[0] | ((UInt32)inCfmProcPtr >> 16);
     vMachProcPtr[1] = gGlueTemplate[1] | ((UInt32)inCfmProcPtr & 0xFFFF);
@@ -473,8 +475,17 @@ extern "C" void qtns_shutdown()
 {
     if(!ownsqapp)
         return;
-
-    // TODO: find out if other plugin DLL's still need qApp
+    // check if qApp still runs widgets (in other DLLs)
+    QWidgetList widgets = qApp->allWidgets();
+    int count = widgets.count();
+    for (int w = 0; w < widgets.count(); ++w) {
+        // ignore all Qt generated widgets
+        QWidget *widget = widgets.at(w);
+        if (widget->windowFlags() & Qt::Desktop)
+            count--;
+    }
+    if (count) // qApp still used
+        return;
     delete qApp;
     ownsqapp = false;
 }
@@ -493,6 +504,9 @@ extern "C" void qtns_embed(QtNPInstance *This)
         qDebug("No window composition!");
     } else {
         This->rootWidget = new QMacBrowserRoot(root);
+#if QT_VERSION >= 0x40100 // LYB 2009-3-10
+        This->qt.widget->setAttribute(Qt::WA_NativeWindow);
+#endif
         This->qt.widget->setParent(This->rootWidget);
     }
 }
@@ -524,16 +538,15 @@ typedef void (*NPP_ShutdownUPP)(void);
 
 extern "C" void NPP_MacShutdown()
 {
-    //extern NPError NP_Shutdown();
-    //NP_Shutdown();
+    extern NPError NP_Shutdown();
+    NP_Shutdown();
 }
 
 extern "C" int main(NPNetscapeFuncs *npn_funcs, NPPluginFuncs *np_funcs, NPP_ShutdownUPP *shutdown)
 {
-  // qtbrowser_use_cfm = true; 
-  // quite the heuristic.
-  // but breaks firefox.
-
+#ifdef __powerpc__   // LYB 2009-03-10
+    qtbrowser_use_cfm = true; //quite the heuristic..
+#endif
     NPError ret;
     extern NPError NP_Initialize(NPNetscapeFuncs*);
     if((ret=NP_Initialize(npn_funcs)) != NPERR_NO_ERROR)
