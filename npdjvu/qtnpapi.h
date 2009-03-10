@@ -248,7 +248,9 @@ struct NPByteRange
 # define getFocusEvent       (osEvt + 16)
 # define loseFocusEvent      (osEvt + 17)
 # define adjustCursorEvent   (osEvt + 18)
-# define QTBROWSER_USE_CFM
+# if defined(__ppc__) || defined(__powerpc__)  // LYB 2009-03-10
+#   define QTBROWSER_USE_CFM
+# endif
 #endif
 
 #ifdef QTBROWSER_USE_CFM

@@ -405,55 +405,6 @@ extern "C" bool qtns_event(QtNPInstance *This, NPEvent *event)
     return false;
 }
 
-#ifdef QTBROWSER_USE_CFM
-static bool qtbrowser_use_cfm = false;
-
-struct TVector_rec
-{
-    ProcPtr fProcPtr;
-    void *fTOC;
-};
-
-void *CFMFunctionPointerForMachOFunctionPointer(void *inMachProcPtr)
-{
-    if(!qtbrowser_use_cfm)
-        return inMachProcPtr;
-     TVector_rec *vTVector = (TVector_rec*)malloc(sizeof(TVector_rec));
-     if(MemError() == noErr && vTVector != 0) {
-         vTVector->fProcPtr = (ProcPtr)inMachProcPtr;
-         vTVector->fTOC = 0;  // ignored
-     }
-     return((void *)vTVector);
-}
-
-void DisposeCFMFunctionPointer(void *inCfmProcPtr)
-{
-    if(!qtbrowser_use_cfm)
-        return;
-    if(inCfmProcPtr)
-        free(inCfmProcPtr);
-}
-
-void* MachOFunctionPointerForCFMFunctionPointer(void* inCfmProcPtr)
-{
-    if(!qtbrowser_use_cfm)
-        return inCfmProcPtr;
-    static UInt32 gGlueTemplate[6] = { 
-      0x3D800000, 0x618C0000, 0x800C0000,
-      0x804C0004, 0x7C0903A6, 0x4E800420  };
-    UInt32 *vMachProcPtr = (UInt32*)NewPtr(sizeof(gGlueTemplate));
-    vMachProcPtr[0] = gGlueTemplate[0] | ((UInt32)inCfmProcPtr >> 16);
-    vMachProcPtr[1] = gGlueTemplate[1] | ((UInt32)inCfmProcPtr & 0xFFFF);
-    vMachProcPtr[2] = gGlueTemplate[2];
-    vMachProcPtr[3] = gGlueTemplate[3];
-    vMachProcPtr[4] = gGlueTemplate[4];
-    vMachProcPtr[5] = gGlueTemplate[5];
-    MakeDataExecutable(vMachProcPtr, sizeof(gGlueTemplate));
-    return(vMachProcPtr);
-}
-#endif
-
-
 extern "C" void qtns_initialize(QtNPInstance *)
 {
     qt_mac_set_native_menubar(false);
@@ -534,6 +485,58 @@ extern "C" void qtns_setGeometry(QtNPInstance *This, const QRect &rect, const QR
     This->qt.widget->setGeometry(geom);
 }
 
+
+
+#ifdef QTBROWSER_USE_CFM
+
+static bool qtbrowser_use_cfm = false;
+
+struct TVector_rec
+{
+    ProcPtr fProcPtr;
+    void *fTOC;
+};
+
+void *CFMFunctionPointerForMachOFunctionPointer(void *inMachProcPtr)
+{
+    if(!qtbrowser_use_cfm)
+        return inMachProcPtr;
+     TVector_rec *vTVector = (TVector_rec*)malloc(sizeof(TVector_rec));
+     if(MemError() == noErr && vTVector != 0) {
+         vTVector->fProcPtr = (ProcPtr)inMachProcPtr;
+         vTVector->fTOC = 0;  // ignored
+     }
+     return((void *)vTVector);
+}
+
+void DisposeCFMFunctionPointer(void *inCfmProcPtr)
+{
+    if(!qtbrowser_use_cfm)
+        return;
+    if(inCfmProcPtr)
+        free(inCfmProcPtr);
+}
+
+void* MachOFunctionPointerForCFMFunctionPointer(void* inCfmProcPtr)
+{
+    if(!qtbrowser_use_cfm)
+        return inCfmProcPtr;
+    static UInt32 gGlueTemplate[6] = { 
+      0x3D800000, 0x618C0000, 0x800C0000,
+      0x804C0004, 0x7C0903A6, 0x4E800420  };
+    UInt32 *vMachProcPtr = (UInt32*)NewPtr(sizeof(gGlueTemplate));
+    vMachProcPtr[0] = gGlueTemplate[0] | ((UInt32)inCfmProcPtr >> 16);
+    vMachProcPtr[1] = gGlueTemplate[1] | ((UInt32)inCfmProcPtr & 0xFFFF);
+    vMachProcPtr[2] = gGlueTemplate[2];
+    vMachProcPtr[3] = gGlueTemplate[3];
+    vMachProcPtr[4] = gGlueTemplate[4];
+    vMachProcPtr[5] = gGlueTemplate[5];
+    MakeDataExecutable(vMachProcPtr, sizeof(gGlueTemplate));
+    return(vMachProcPtr);
+}
+
+#endif
+
 typedef void (*NPP_ShutdownUPP)(void);
 
 extern "C" void NPP_MacShutdown()
@@ -542,10 +545,11 @@ extern "C" void NPP_MacShutdown()
     NP_Shutdown();
 }
 
-extern "C" int main(NPNetscapeFuncs *npn_funcs, NPPluginFuncs *np_funcs, NPP_ShutdownUPP *shutdown)
+extern "C" int main(NPNetscapeFuncs *npn_funcs, 
+                    NPPluginFuncs *np_funcs, NPP_ShutdownUPP *shutdown)
 {
-#ifdef __powerpc__   // LYB 2009-03-10
-    qtbrowser_use_cfm = true; //quite the heuristic..
+#ifdef QTBROWSER_USE_CFM
+    qtbrowser_use_cfm = true; 
 #endif
     NPError ret;
     extern NPError NP_Initialize(NPNetscapeFuncs*);
@@ -557,3 +561,4 @@ extern "C" int main(NPNetscapeFuncs *npn_funcs, NPPluginFuncs *np_funcs, NPP_Shu
     *shutdown = (NPP_ShutdownUPP)MAKE_FUNCTION_POINTER(NPP_MacShutdown);
     return NPERR_NO_ERROR;
 }
+
