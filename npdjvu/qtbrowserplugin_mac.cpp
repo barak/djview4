@@ -455,7 +455,7 @@ extern "C" void qtns_embed(QtNPInstance *This)
         qDebug("No window composition!");
     } else {
         This->rootWidget = new QMacBrowserRoot(root);
-#if QT_VERSION >= 0x40100 // LYB 2009-3-10
+#if QT_VERSION >= 0x40400 // LYB 2009-3-10
         This->qt.widget->setAttribute(Qt::WA_NativeWindow);
 #endif
         This->qt.widget->setParent(This->rootWidget);
