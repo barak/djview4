@@ -316,7 +316,6 @@ if test -d src && test -r src/qdjvu.cpp ; then : ; else
 fi
 nsrcdir="$srcdir"
 case "$srcdir" in .*) nsrcdir="../$srcdir" ;; esac
-QARG="$QARG VPATH="'"'"$nsrcdir/src $nsrcdir/npdjvu"'"'
 AUTO_FLAGS="-I$nsrcdir/src $AUTO_FLAGS"
 
 # debug
@@ -341,15 +340,25 @@ if test -n "$QMAKESPEC" ; then
 fi
 
 # run
-AC_CONFIG_COMMANDS([src], [
-    echo "config.status: running $QMAKE_COMMAND."
-    ( cd src ; eval "$QMAKE_COMMAND" )
-    ( cd npdjvu ; eval "$QMAKE_COMMAND" )
+AC_CONFIG_COMMANDS([qmake_src], [
+    echo "config.status: running $QMAKE_COMMAND1."
+    ( cd src ; eval "$QMAKE_COMMAND1" )
 ],[
-    read QMAKE_COMMAND <<QMAKE_COMMAND_EOF
-$QMAKE $QARG
+    read QMAKE_COMMAND1 <<QMAKE_COMMAND_EOF
+$QMAKE $QARG VPATH="$nsrcdir/src"
 QMAKE_COMMAND_EOF
 ] )
+
+if test "$ac_npdjvu" != "no" ; then
+AC_CONFIG_COMMANDS([qmake_npdjvu], [
+    echo "config.status (npdjvu) running $QMAKE_COMMAND2."
+    ( cd npdjvu ; eval "$QMAKE_COMMAND2" )
+],[
+    read QMAKE_COMMAND2 <<QMAKE_COMMAND_EOF
+$QMAKE $QARG VPATH="$nsrcdir/src $nsrcdir/npdjvu"
+QMAKE_COMMAND_EOF
+] )
+fi
 
 
 # ----------------------------------------
