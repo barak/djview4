@@ -3889,9 +3889,11 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
               // heuristically choose orientation
               int w = rect.width();
               int h = rect.height();
-              if (((orientation & 1) && (w > 2*h)) ||
-                  (!(orientation & 1) && (h > 2*w)) )
-                orientation ^= 1;
+              const char *str = miniexp_to_str(s);
+              if (str && str[0] && str[1])
+                if (((orientation & 1) && (w > 2*h)) ||
+                    (!(orientation & 1) && (h > 2*w)) )
+                  orientation ^= 1;
               if (!drect.intersects(rect))
                 continue;
               // paint frame
@@ -3909,10 +3911,10 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
               paint.translate(rect.topLeft());
               paint.setPen(Qt::black);
               paint.setBrush(Qt::NoBrush);
-              QString text = miniexp_to_qstring(s).trimmed();
               QFont font = paint.font();
               font.setPixelSize(128);
               QFontMetrics metrics(font);
+              QString text = miniexp_to_qstring(s).trimmed();
 #if QT_VERSION >= 0x40300 && ! defined(Q_WS_WIN)
               QRect brect = metrics.tightBoundingRect(text);
 #else

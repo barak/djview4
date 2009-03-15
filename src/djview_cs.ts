@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="cs_CZ">
+<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -1399,18 +1400,18 @@ Soubor „%1“ nemá žádnou příponu.</translation>
         <location filename="qdjview.cpp" line="616"/>
         <source>&amp;Hidden Text</source>
         <comment>Display|</comment>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Skrytý text</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="618"/>
         <source>Overlay a representation of the hidden text layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nad dokumentem zobrazí vrstvu skrytého textu.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="157"/>
         <source>Hidden Text</source>
         <comment>modeCombo</comment>
-        <translation type="unfinished"></translation>
+        <translation>Skrytý text</translation>
     </message>
 </context>
 <context>
