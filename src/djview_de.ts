@@ -917,200 +917,200 @@
         <translation>&lt;html&gt;&lt;b&gt;Dokumentanzeigegebiet.&lt;/b&gt;&lt;br/&gt; Dies ist der Hauptdisplaybereich für DjVu-Dokumente. Jedoch muß zuerst noch ein DjVu-Dokument geöffnet werden, um irgendetwas damit anfangen zu können.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1435"/>
+        <location filename="qdjview.cpp" line="1436"/>
         <source>Option &apos;%1&apos; requires boolean argument.</source>
         <translation>Option &apos;%1&apos; verlangt nach einem boolschen Argument.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1443"/>
+        <location filename="qdjview.cpp" line="1444"/>
         <source>Illegal value &apos;%2&apos; for option &apos;%1&apos;.</source>
         <translation>Ungültiger Wert &apos;%2&apos; für Option &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1560"/>
+        <location filename="qdjview.cpp" line="1561"/>
         <source>Toolbar option &apos;%1&apos; is not implemented.</source>
         <translation>Werkzeugoption &apos;%1&apos; ist nicht implementiert.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1573"/>
+        <location filename="qdjview.cpp" line="1574"/>
         <source>Toolbar option &apos;%1&apos; is not recognized.</source>
         <translation>Werkzeugoption &apos;%1&apos; ist nicht bekannt.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1619"/>
+        <location filename="qdjview.cpp" line="1620"/>
         <source>Option &apos;%1&apos; requires a standalone viewer.</source>
         <translation>Option &apos;%1&apos; verlangt ein eigenständiges Anzeigeprogramm.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1870"/>
+        <location filename="qdjview.cpp" line="1871"/>
         <source>Deprecated option &apos;%1&apos;</source>
         <translation>Abgelehnte Option &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1909"/>
+        <location filename="qdjview.cpp" line="1917"/>
         <source>Option &apos;%1&apos; is not implemented.</source>
         <translation>Option &apos;%1&apos; ist nicht implementiert.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1914"/>
+        <location filename="qdjview.cpp" line="1922"/>
         <source>Option &apos;%1&apos; is not recognized.</source>
         <translation>Option &apos;%1&apos; ist nicht bekannt.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2503"/>
+        <location filename="qdjview.cpp" line="2511"/>
         <source>DjView</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2359"/>
+        <location filename="qdjview.cpp" line="2367"/>
         <source>&amp;Thumbnails</source>
         <translation>&amp;Vorschaubilder</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2361"/>
+        <location filename="qdjview.cpp" line="2369"/>
         <source>&amp;Outline</source>
         <translation>&amp;Inhalt</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2363"/>
+        <location filename="qdjview.cpp" line="2371"/>
         <source>&amp;Find</source>
         <translation>&amp;Suchen</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2457"/>
+        <location filename="qdjview.cpp" line="2465"/>
         <source>Cannot open file &apos;%1&apos;.</source>
         <translation>Kann Datei &apos;%1&apos; nicht öffnen.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2458"/>
+        <location filename="qdjview.cpp" line="2466"/>
         <source>Opening DjVu file</source>
         <translation>Öffne DjVu-Datei</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2497"/>
+        <location filename="qdjview.cpp" line="2505"/>
         <source>Cannot open URL &apos;%1&apos;.</source>
         <translation>Kann die Adresse &apos;%1&apos; nicht öffnen.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2498"/>
+        <location filename="qdjview.cpp" line="2506"/>
         <source>Opening DjVu document</source>
         <translation>Öffne DjVu-Dokument</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2526"/>
+        <location filename="qdjview.cpp" line="2534"/>
         <source>Cannot find page numbered: %1</source>
         <translation>Seite mit Seitennummer %1 nicht gefunden</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2588"/>
+        <location filename="qdjview.cpp" line="2596"/>
         <source>Cannot find page named: %1</source>
         <translation>Seite mit dem Namen &apos;%1&apos; nicht gefunden</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2738"/>
+        <location filename="qdjview.cpp" line="2746"/>
         <source>Unrecognized sidebar options &apos;%1&apos;.</source>
         <translation>Option &apos;%1&apos; nicht bekannt.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2772"/>
+        <location filename="qdjview.cpp" line="2780"/>
         <source>Print - DjView</source>
         <comment>dialog caption</comment>
         <translation>Drucke - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2789"/>
+        <location filename="qdjview.cpp" line="2797"/>
         <source>Save - DjView</source>
         <comment>dialog caption</comment>
         <translation>Speichern - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2805"/>
+        <location filename="qdjview.cpp" line="2813"/>
         <source>Export - DjView</source>
         <comment>dialog caption</comment>
         <translation>Export - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3066"/>
+        <location filename="qdjview.cpp" line="3078"/>
         <source>Text files</source>
         <comment>save filter</comment>
         <translation>Textdateien</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3114"/>
+        <location filename="qdjview.cpp" line="3126"/>
         <source>All files</source>
         <comment>save filter</comment>
         <translation>alle Dateien</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3068"/>
+        <location filename="qdjview.cpp" line="3080"/>
         <source>Save Text - DjView</source>
         <comment>dialog caption</comment>
         <translation>Speichere Text - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3149"/>
+        <location filename="qdjview.cpp" line="3161"/>
         <source>Error - DjView</source>
         <comment>dialog caption</comment>
         <translation>Fehler - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3151"/>
+        <location filename="qdjview.cpp" line="3163"/>
         <source>Cannot write file &apos;%1&apos;.
 %2.</source>
         <translation>Kann Datei &apos;%1&apos; nicht schreiben:
 %2.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3112"/>
+        <location filename="qdjview.cpp" line="3124"/>
         <source>%1 files (*.%2);;</source>
         <comment>save image filter</comment>
         <translation>%1 Dateien (*.%2);;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3115"/>
+        <location filename="qdjview.cpp" line="3127"/>
         <source>Save Image - DjView</source>
         <comment>dialog caption</comment>
         <translation>Speichere Bild - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3132"/>
+        <location filename="qdjview.cpp" line="3144"/>
         <source>Cannot determine file format.
 Filename &apos;%1&apos; has no suffix.</source>
         <translation>Kann das Dateiformat nicht feststellen.
 Dateiname &apos;%1&apos; hat keine Endung.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3143"/>
+        <location filename="qdjview.cpp" line="3155"/>
         <source>Image format %1 not supported.</source>
         <translation>Bildformat %1 nicht unterstützt.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3352"/>
+        <location filename="qdjview.cpp" line="3365"/>
         <source>Cannot decode page %1.</source>
         <translation>Kann Seite %1 nicht dekodieren.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3354"/>
+        <location filename="qdjview.cpp" line="3367"/>
         <source>Cannot decode document.</source>
         <translation>Kann Dokument nicht dekodieren.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3356"/>
+        <location filename="qdjview.cpp" line="3369"/>
         <source>Decoding DjVu document</source>
         <translation>Dekodiere DjVu-Dokument</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3487"/>
+        <location filename="qdjview.cpp" line="3500"/>
         <source> P%1 %2x%3 %4dpi </source>
         <translation>S%1 %2x%3 %4dpi</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3491"/>
+        <location filename="qdjview.cpp" line="3504"/>
         <source> x=%1 y=%2 </source>
         <translation> x=%1 y=%2 </translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3567"/>
+        <location filename="qdjview.cpp" line="3580"/>
         <source>Go: %n pages forward.</source>
         <translation>
             <numerusform>Gehe %n Seite vorwärts.</numerusform>
@@ -1118,7 +1118,7 @@ Dateiname &apos;%1&apos; hat keine Endung.</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3570"/>
+        <location filename="qdjview.cpp" line="3583"/>
         <source>Go: %n pages backward.</source>
         <translation>
             <numerusform>Gehe %n Seite zurück.</numerusform>
@@ -1126,101 +1126,101 @@ Dateiname &apos;%1&apos; hat keine Endung.</translation>
         </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3575"/>
+        <location filename="qdjview.cpp" line="3588"/>
         <source>Go: page %1.</source>
         <translation>Gehe zu Seite %1.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3577"/>
+        <location filename="qdjview.cpp" line="3590"/>
         <source>Link: %1</source>
         <translation>Verknüpfung: %1</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3579"/>
+        <location filename="qdjview.cpp" line="3592"/>
         <source> (in other window.)</source>
         <translation> (im anderen Fenster.)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3646"/>
+        <location filename="qdjview.cpp" line="3659"/>
         <source>Cannot resolve link &apos;%1&apos;</source>
         <translation>Kann den Link &apos;%1&apos; nicht auflösen</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3674"/>
+        <location filename="qdjview.cpp" line="3687"/>
         <source>Cannot spawn a browser for url &apos;%1&apos;</source>
         <translation>Kann keinen Browser für Adresse &apos;%1&apos; starten</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3694"/>
+        <location filename="qdjview.cpp" line="3707"/>
         <source>Copy text (%1)</source>
         <translation>Kopiere Text (%1)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3695"/>
+        <location filename="qdjview.cpp" line="3708"/>
         <source>Save text as...</source>
         <translation>Speichere Text als...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3701"/>
+        <location filename="qdjview.cpp" line="3714"/>
         <source>Copy image (%1x%2 pixels)</source>
         <translation>Kopiere Bild (%1x%2 Pixel)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3703"/>
+        <location filename="qdjview.cpp" line="3716"/>
         <source>Save image as...</source>
         <translation>Speichere Bild als...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3707"/>
+        <location filename="qdjview.cpp" line="3720"/>
         <source>Zoom to rectangle</source>
         <translation>Zoom das Recheck</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3880"/>
+        <location filename="qdjview.cpp" line="3893"/>
         <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright &#xa9; 2006-- L&#xe9;on Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3882"/>
+        <location filename="qdjview.cpp" line="3895"/>
         <source>About DjView</source>
         <translation>Über DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3904"/>
+        <location filename="qdjview.cpp" line="3917"/>
         <source>Open - DjView</source>
         <comment>dialog caption</comment>
         <translation>Öffne - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3902"/>
+        <location filename="qdjview.cpp" line="3915"/>
         <source>DjVu files</source>
         <translation>DjVu Dateien</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3921"/>
+        <location filename="qdjview.cpp" line="3934"/>
         <source>Open Location - DjView</source>
         <comment>dialog caption</comment>
         <translation>Öffne Adresse -  DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3922"/>
+        <location filename="qdjview.cpp" line="3935"/>
         <source>Enter the URL of a DjVu document.</source>
         <translation>Adresse des DjVu-Dokumentes eingeben.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3939"/>
+        <location filename="qdjview.cpp" line="3952"/>
         <source>Information - DjView</source>
         <comment>dialog caption</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3954"/>
+        <location filename="qdjview.cpp" line="3967"/>
         <source>Metadata - DjView</source>
         <comment>dialog caption</comment>
         <translation>Metadaten - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4092"/>
+        <location filename="qdjview.cpp" line="4105"/>
         <source>&amp;Clear History</source>
         <translation>&amp;Historie löschen</translation>
     </message>
@@ -1230,7 +1230,7 @@ Dateiname &apos;%1&apos; hat keine Endung.</translation>
         <translation>kann  &apos;%1&apos; nicht öffnen.</translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3688"/>
+        <location filename="qdjview.cpp" line="3701"/>
         <source>%n characters</source>
         <translation>
             <numerusform>%n Zeichen</numerusform>
@@ -1238,12 +1238,12 @@ Dateiname &apos;%1&apos; hat keine Endung.</translation>
         </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3567"/>
+        <location filename="qdjview.cpp" line="3580"/>
         <source>Go: 1 page forward.</source>
         <translation>Gehe 1 Seite vorwärts.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3570"/>
+        <location filename="qdjview.cpp" line="3583"/>
         <source>Go: 1 page backward.</source>
         <translation>Gehe 1 Seite zurück.</translation>
     </message>
@@ -1271,42 +1271,42 @@ Dateiname &apos;%1&apos; hat keine Endung.</translation>
         <translation>Kopiere An&amp;merkungen</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3698"/>
+        <location filename="qdjview.cpp" line="3711"/>
         <source>Copy text into the clipboard.</source>
         <translation>Kopiere Text in die Zwischenablage.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3699"/>
+        <location filename="qdjview.cpp" line="3712"/>
         <source>Save text into a file.</source>
         <translation>Speichere Text in eine Datei.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3705"/>
+        <location filename="qdjview.cpp" line="3718"/>
         <source>Save image into a file.</source>
         <translation>Speichere Bild in eine Datei.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3708"/>
+        <location filename="qdjview.cpp" line="3721"/>
         <source>Zoom the selection to fit the window.</source>
         <translation>Passt die Größe des Fensters an.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3714"/>
+        <location filename="qdjview.cpp" line="3727"/>
         <source>Copy URL</source>
         <translation>Kopiere Adresse</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3716"/>
+        <location filename="qdjview.cpp" line="3729"/>
         <source>Save into the clipboard an URL that highlights the selection.</source>
         <translation>Lege eine Adresse der aktuellen Selektion in die Zwischenablage.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3717"/>
+        <location filename="qdjview.cpp" line="3730"/>
         <source>Copy Maparea</source>
         <translation>Kopiere Maparea</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3720"/>
+        <location filename="qdjview.cpp" line="3733"/>
         <source>Save into the clipboard a maparea annotation expression for program djvused.</source>
         <translation>Lege eine &apos;maparea&apos; Anmerkung für djvused in die Zwischenablage.</translation>
     </message>
@@ -1327,7 +1327,7 @@ Dateiname &apos;%1&apos; hat keine Endung.</translation>
         <translation>Lege die Anmerkungen einer Seite als Skript für djvused in der Zwischenablage.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3704"/>
+        <location filename="qdjview.cpp" line="3717"/>
         <source>Copy image into the clipboard.</source>
         <translation>Kopiere Bild in die Zwischenablage.</translation>
     </message>
@@ -1378,7 +1378,7 @@ Dateiname &apos;%1&apos; hat keine Endung.</translation>
         <translation>Zeigt die Seiten von links nach rechts in zweiseitiger Darstellung.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3903"/>
+        <location filename="qdjview.cpp" line="3916"/>
         <source>All files</source>
         <translation>Alle Dateien</translation>
     </message>
@@ -1944,75 +1944,80 @@ Soll die Datei überschrieben werden?</translation>
 <context>
     <name>QDjViewFind</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1529"/>
+        <location filename="qdjviewsidebar.cpp" line="1541"/>
         <source>Erase text</source>
         <translation>Lösche Text</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1531"/>
+        <location filename="qdjviewsidebar.cpp" line="1543"/>
         <source>Case sensitive</source>
         <translation>Groß- und Kleinschreibung beachten</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1534"/>
+        <location filename="qdjviewsidebar.cpp" line="1546"/>
         <source>Words only</source>
         <translation>&amp;Nur ganze Wörter</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1555"/>
+        <location filename="qdjviewsidebar.cpp" line="1571"/>
         <source>Find Previous (Shift+F3) </source>
         <translation>Rück&amp;wärts suchen (Shift+F3) </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1559"/>
+        <location filename="qdjviewsidebar.cpp" line="1575"/>
         <source>Find Next (F3) </source>
         <translation>Weitersuchen (F3) </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1562"/>
+        <location filename="qdjviewsidebar.cpp" line="1578"/>
         <source>Options</source>
         <translation>Optionen</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1612"/>
+        <location filename="qdjviewsidebar.cpp" line="1630"/>
         <source>&lt;html&gt;&lt;b&gt;Finding text.&lt;/b&gt;&lt;br/&gt; Search hits appear progressively as soon as you type a search string. Typing enter jumps to the next hit. To move to the previous or next hit, you can also use the arrow buttons or the shortcuts &lt;tt&gt;F3&lt;/tt&gt; or &lt;tt&gt;Shift-F3&lt;/tt&gt;. You can also double click a page name. Use the &lt;tt&gt;Options&lt;/tt&gt; menu to search words only or to specify the case sensitivity.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Text Suchen.&lt;/b&gt;&lt;br/&gt; Die Treffer der Suche werden sofort angezeigt. Durch drücken der Retruntaste gelangt man zum nächsten Treffer. Zum Navigieren können ebenfalls die Pfeiltasten, bzw &lt;tt&gt;F3&lt;/tt&gt; und &lt;tt&gt;Shift-F3&lt;/tt&gt; genutzt werden. Ein Doppelklick auf dem Seitennamen würde auch funktionieren. Mit Hilfe der Optionen können die Suchparameter angepasst werden.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="qdjviewsidebar.cpp" line="1549"/>
+        <source>Regular expression</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QDjViewFind::Model</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="943"/>
+        <location filename="qdjviewsidebar.cpp" line="945"/>
         <source>1 hit</source>
         <translation>1 Treffer</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1012"/>
+        <location filename="qdjviewsidebar.cpp" line="1014"/>
         <source>Page %1 (1 hit)</source>
         <translation>Seite %1 (1 Treffer)</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1301"/>
+        <location filename="qdjviewsidebar.cpp" line="1306"/>
         <source>Searching page %1 (waiting for data.)</source>
         <translation>Durchsuche Seite %1 (warte auf Daten.)</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1313"/>
+        <location filename="qdjviewsidebar.cpp" line="1318"/>
         <source>Searching page %1.</source>
         <translation>Durchsuche Seite %1.</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1348"/>
+        <location filename="qdjviewsidebar.cpp" line="1353"/>
         <source>No hits!</source>
         <translation>Keine Treffer!</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1355"/>
+        <location filename="qdjviewsidebar.cpp" line="1360"/>
         <source>&lt;html&gt;Document is not searchable. No page contains information about its textual content.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Dokument ist nicht durchsuchbar. Keine Seite enthält Informationen über seinen textlichen Inhalt.&lt;/html&gt;</translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjviewsidebar.cpp" line="944"/>
+        <location filename="qdjviewsidebar.cpp" line="946"/>
         <source>%n hits</source>
         <translation>
             <numerusform>%n Treffer</numerusform>
@@ -2020,12 +2025,17 @@ Soll die Datei überschrieben werden?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjviewsidebar.cpp" line="1014"/>
+        <location filename="qdjviewsidebar.cpp" line="1016"/>
         <source>Page %1 (%n hits)</source>
         <translation>
             <numerusform>Seite %1 (%n Treffer)</numerusform>
             <numerusform>Seite %1 (%n Treffer)</numerusform>
         </translation>
+    </message>
+    <message>
+        <location filename="qdjviewsidebar.cpp" line="1364"/>
+        <source>&lt;html&gt;Invalid regular expression.&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2685,37 +2695,37 @@ Soll die Datei überschrieben werden?</translation>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="701"/>
+        <location filename="qdjviewprefs.cpp" line="705"/>
         <source>Preferences[*] - DjView</source>
         <translation>Vorlieben[*] - DjView</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="791"/>
+        <location filename="qdjviewprefs.cpp" line="795"/>
         <source>&lt;html&gt;&lt;b&gt;Initial interface setup.&lt;/b&gt;&lt;br&gt;DjView can run as a standalone viewer, as a full screen viewer, as a full page browser plugin, or as a plugin embedded inside a html page. For each case, check the &lt;tt&gt;Remember&lt;/tt&gt; box to automatically save and restore the interface setup. Otherwise, specify an initial configuration.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Einrichtung der Oberfläche beim Starten.&lt;/b&gt;&lt;br&gt;DjView kann als  eigenständiges Programm, im Vollbildmodus, als Ganzseiten-Browserplugin oder als Plugin eingebunden in einer Html-Seite verwendet werden. Jede Anwendungsart hat ihre eigene Konfiguration. &lt;tt&gt;Merke ...&lt;/tt&gt; speichert automatisch beim Beenden des Programms die Einstellungen. Ansonsten besteht die Möglichkeit eine Konfiguration fest vorzugeben.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="798"/>
+        <location filename="qdjviewprefs.cpp" line="802"/>
         <source>&lt;html&gt;&lt;b&gt;Modifiers keys.&lt;/b&gt;&lt;br&gt;Define which combination of modifier keys will show the manifying lens, temporarily enable the selection mode, or highlight the hyperlinks.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Modifizierttasten.&lt;/b&gt;&lt;br&gt;Hier besteht die Möglichkeit einzustellen, welche Modifiziertasten die jeweilige Aktion auslösen.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="806"/>
+        <location filename="qdjviewprefs.cpp" line="810"/>
         <source>&lt;html&gt;&lt;b&gt;Magnifying lens.&lt;/b&gt;&lt;br&gt;The magnifying lens appears when you depress the modifier keys specified in tab &lt;tt&gt;Keys&lt;/tt&gt;. This panel lets you choose the power and the size of the magnifying lens.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Vergrößerungsglas.&lt;/b&gt;&lt;br&gt;Das Vergrößerungsglas erscheint, wenn man die in &lt;tt&gt;Tasten&lt;/tt&gt; definierte Taste drückt. Hier kann die Stärke und die Größe der Linse eingestellt werden.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="825"/>
+        <location filename="qdjviewprefs.cpp" line="829"/>
         <source>&lt;html&gt;&lt;b&gt;Caches.&lt;/b&gt;&lt;br&gt;The &lt;i&gt;pixel cache&lt;/i&gt; stores image data located outside the visible area. This cache makes panning smoother. The &lt;i&gt;decoded page cache&lt;/i&gt; contains partially decoded pages. It provides faster response times when navigating a multipage document or when returning to a previously viewed page. Clearing this cache might be useful to reflect a change in the page data without restarting the DjVu viewer.&lt;p&gt;&lt;b&gt;Miscellaneous.&lt;/b&gt;&lt;br&gt;Forcing a manual color correction can be useful when using ancient printers. The advanced features check box enables a small number of additional menu entries useful for authoring DjVu files.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Zwischenspeicher.&lt;/b&gt;&lt;br&gt;Der &lt;i&gt;Cache der Bildpunkte&lt;/i&gt; hält die Daten des Bildes ausserhalb des sichtbaren Bereiches. Durch diesen Speicher wird das Verschieben des Bildes flüssiger. Der &lt;i&gt;Speicher zum Dekodieren&lt;/i&gt; enthält partiell dekodierte Seiten. Dadurch werden kürzere Antwortzeiten bei der Navigation durch das Dokument erreicht. Das Leeren dieses Speichers ist sinnvoll, um die Daten der Seite neu zu laden, ohne das Programm neu zu starten.&lt;/html&gt;&lt;b&gt;Verschiedenes.&lt;/b&gt;&lt;br&gt;Bei alten Druckern kann eine manuelle Korrektur sinnvoll sein. Die erweiterten Funktionen in den Menüs helfen beim Entwicklen von DjVu files.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="834"/>
+        <location filename="qdjviewprefs.cpp" line="838"/>
         <source>&lt;html&gt;&lt;b&gt;Network proxy settings.&lt;/b&gt;&lt;br&gt;These proxy settings are used when the standalone djview viewer accesses a djvu document through a http url. The djview plugin always uses the proxy settings of the web browser.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Netzwerkproxy Einstellungen.&lt;/b&gt;&lt;br&gt;Diese Einstellungen finden Verwendung, wenn DjView als &apos;eigenständiges&apos; Programm verwendet wird und Seiten über Html/Url dargestellt werden sollen. Das Plugin verwendet immer die Proxyeinstellungen des verwendeten Browsers.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="781"/>
+        <location filename="qdjviewprefs.cpp" line="785"/>
         <source>&lt;html&gt;&lt;b&gt;Screen gamma correction.&lt;/b&gt;&lt;br&gt;The best color rendition is achieved by adjusting the gamma correction slider and choosing the position that makes the gray square as uniform as possible.&lt;p&gt;&lt;b&gt;Screen resolution.&lt;/b&gt;&lt;br&gt;This option forces a particular resolution instead of using the unreliable resolution advertised by the operating system. Forcing the resolution to 100 dpi matches the behavior of the djvulibre command line tools.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Gammakorrektur des Bildschirms.&lt;/b&gt;&lt;br&gt;Die beste Farbwiedergabe wird durch Anpassen des Gammaschiebers erreicht. Das graue Rechteck sollte dabei möglichst einheitlich erscheinen.&lt;p&gt;&lt;b&gt;Bildschirmauflösung.&lt;/b&gt;&lt;br&gt;Diese Option erzwingt die eingestelle Auflösung, anstelle der unzuverlässigen, die das Betriebssystem unter Umständen mitteilt. 100 dpi ist die Auflösung die die djvulibre-Kommandozeilen-Programme verwenden.&lt;/html&gt;</translation>
     </message>

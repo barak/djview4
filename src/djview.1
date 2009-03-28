@@ -644,6 +644,31 @@ text layer. It can be used in conjunction with
 .BR "-sidebar=find" 
 to display the text searching interface.
 
+String 
+.I text
+can be terminated by slash
+.BR "" "(" "/" ")"
+followed by letters specifying search options.
+The following letters are recognized
+.br
+.TS
+center,box;
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+.
+c	case-sensitive search.
+C	case-insensitive search (default).
+w	anchor search on word boundaries (default).
+W	do not anchor search on word boundaries.
+r	Perl-like regular-expression search.
+R	string search (default).
+.TE
+.PP
+
 .TP
 .BI "-rotate=(0|90|180|270)"
 Rotate the djvu image by the specified angle expressed

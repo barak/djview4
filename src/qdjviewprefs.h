@@ -161,6 +161,7 @@ public:
   bool       thumbnailSmart;
   bool       searchWordsOnly;
   bool       searchCaseSensitive;
+  bool       searchRegExpMode;
 
   // Dialog preferences
   int        infoDialogTab;     //!< Active tab in info dialog.

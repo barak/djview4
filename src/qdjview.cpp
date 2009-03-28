@@ -1326,6 +1326,7 @@ QDjView::applyPreferences(void)
   // Search preferences
   findWidget->setWordOnly(prefs->searchWordsOnly);
   findWidget->setCaseSensitive(prefs->searchCaseSensitive);
+  findWidget->setRegExpMode(prefs->searchRegExpMode);
 
   // Special preferences for embedded plugins
   if (viewerMode == EMBEDDED_PLUGIN)
@@ -1888,6 +1889,13 @@ QDjView::parseArgument(QString key, QString value)
     }
   else if (key == "find") // new for djview4
     {
+      if (findWidget) 
+        {
+          findWidget->setText(QString::null);
+          findWidget->setRegExpMode(false);
+          findWidget->setWordOnly(true);
+          findWidget->setCaseSensitive(false);
+        }
       pendingFind = value;
       if (! value.isEmpty())
         performPendingLater();
@@ -2821,7 +2829,7 @@ QDjView::find(QString find)
 {
   if (! find.isEmpty())
     {
-      QRegExp options("/[wWcC]*$");
+      QRegExp options("/[wWcCrR]*$");
       if (find.contains(options))
         {
           for (int i=find.lastIndexOf("/"); i<find.size(); i++)
@@ -2835,6 +2843,10 @@ QDjView::find(QString find)
                 findWidget->setWordOnly(true); 
               else if (c == 'W')
                 findWidget->setWordOnly(false); 
+              else if (c == 'r')
+                findWidget->setRegExpMode(true); 
+              else if (c == 'R')
+                findWidget->setRegExpMode(false); 
             }
           find = find.remove(options);
         }
@@ -3244,6 +3256,7 @@ QDjView::closeEvent(QCloseEvent *event)
   prefs->thumbnailSmart = thumbnailWidget->smart();
   prefs->searchWordsOnly = findWidget->wordOnly();
   prefs->searchCaseSensitive = findWidget->caseSensitive();
+  prefs->searchRegExpMode = findWidget->regExpMode();
   prefs->save();
   // continue closing the window
   event->accept();

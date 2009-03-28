@@ -149,6 +149,7 @@ QDjViewPrefs::QDjViewPrefs(void)
     thumbnailSmart(true),
     searchWordsOnly(true),
     searchCaseSensitive(false),
+    searchRegExpMode(false),
     infoDialogTab(0),
     metaDialogTab(0),
     printerGamma(0.0),
@@ -362,6 +363,8 @@ QDjViewPrefs::load()
     searchWordsOnly = s.value("searchWordsOnly").toBool();
   if (s.contains("searchCaseSensitive"))
     searchCaseSensitive = s.value("searchCaseSensitive").toBool();
+  if (s.contains("searchRegExpMode"))
+    searchRegExpMode = s.value("searchRegExpMode").toBool();
   
   if (s.contains("infoDialogTab"))
     infoDialogTab = s.value("infoDialogTab").toInt();
@@ -437,6 +440,7 @@ QDjViewPrefs::save(void)
 
   s.setValue("searchWordsOnly", searchWordsOnly);
   s.setValue("searchCaseSensitive", searchCaseSensitive);
+  s.setValue("searchRegExpMode", searchRegExpMode);
   
   s.setValue("infoDialogTab", infoDialogTab);
   s.setValue("metaDialogTab", metaDialogTab);

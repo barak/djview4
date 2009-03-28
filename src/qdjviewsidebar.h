@@ -129,12 +129,14 @@ public:
   QString text();
   bool caseSensitive();
   bool wordOnly();
+  bool regExpMode();
 public slots:
   void selectAll();
   void eraseText();
   void setText(QString s);
   void setCaseSensitive(bool);
   void setWordOnly(bool);
+  void setRegExpMode(bool);
   void findNext();
   void findPrev();
   void findAgain();
@@ -151,10 +153,12 @@ private:
   QComboBox      *combo;
   QPushButton    *upButton;
   QPushButton    *downButton;
+  QPushButton    *resetButton;
   QStackedLayout *stack;
   QLabel         *label;
   QAction        *caseSensitiveAction;
   QAction        *wordOnlyAction;
+  QAction        *regExpModeAction;
 };
 
 

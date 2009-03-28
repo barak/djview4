@@ -885,6 +885,7 @@ private:
   bool searchBackwards;
   bool caseSensitive;
   bool wordOnly;
+  bool regExpMode;
   bool working;
   bool pending;
 };
@@ -905,6 +906,7 @@ QDjViewFind::Model::Model(QDjViewFind *widget)
     searchBackwards(false),
     caseSensitive(false),
     wordOnly(true),
+    regExpMode(false),
     working(false),
     pending(false)
 {
@@ -1163,10 +1165,13 @@ miniexp_search_text(miniexp_t exp, QRegExp regex)
     {
       QList<miniexp_t> hit;
       int endmatch = match + regex.matchedLength();
+      offset += 1;
+      if (endmatch <= match)
+        continue;
       QMap<int,miniexp_t>::const_iterator pos = positions.lowerBound(match);
       while (pos != positions.begin() && pos.key() > match)
         --pos;
-      for (; pos!=positions.end() && pos.key() < endmatch; ++pos)
+      for (; pos != positions.end() && pos.key() < endmatch; ++pos)
         hit += pos.value();
       hits += hit;
       if (pos != positions.end())
@@ -1354,6 +1359,10 @@ QDjViewFind::Model::workTimeout()
                            "No page contains information "
                            "about its textual content.</html>");
                 }
+              else if (! find.isValid())
+                {
+                  msg = tr("<html>Invalid regular expression.</html>");
+                }
               widget->stack->setCurrentWidget(widget->label);
               widget->label->setText(msg);
             }
@@ -1474,8 +1483,11 @@ QDjViewFind::Model::textChanged()
     }
   else
     {
-      s = QRegExp::escape(widget->text());
-      s.replace(QRegExp("\\s+"), " ");
+      if (!regExpMode)
+        {
+          s = QRegExp::escape(widget->text());
+          s.replace(QRegExp("\\s+"), " ");
+        }
       if (wordOnly)
         s = "\\b" + s;
       find = QRegExp(s);
@@ -1526,39 +1538,45 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   view->setWrapping(false);
   view->setResizeMode(QListView::Adjust);
   
-  QAction *eraseAction = new QAction(tr("Erase text"), this);
-  eraseAction->setIcon(QIcon(":/images/icon_erase.png"));
   caseSensitiveAction = new QAction(tr("Case sensitive"), this);
   caseSensitiveAction->setCheckable(true);
   caseSensitiveAction->setChecked(model->caseSensitive);
   wordOnlyAction = new QAction(tr("Words only"), this);
   wordOnlyAction->setCheckable(true);
   wordOnlyAction->setChecked(model->wordOnly);
+  regExpModeAction = new QAction(tr("Regular expression"), this);
+  regExpModeAction->setCheckable(true);
+  regExpModeAction->setChecked(model->regExpMode);
   menu = new QMenu(this);
   menu->addAction(caseSensitiveAction);
   menu->addAction(wordOnlyAction);
+  menu->addAction(regExpModeAction);
   QBoxLayout *vlayout = new QVBoxLayout(this);
-  QToolBar *tools = new QToolBar(this);
-  tools->addAction(eraseAction);
-  combo = new QComboBox(tools);
+  combo = new QComboBox(this);
   combo->setEditable(true);
   combo->setMaxCount(8);
   combo->setInsertPolicy(QComboBox::InsertAtTop);
   combo->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-  tools->addWidget(combo);
-  tools->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-  vlayout->addWidget(tools);
+  vlayout->addWidget(combo);
   QBoxLayout *hlayout = new QHBoxLayout;
+  hlayout->setSpacing(0);
   vlayout->addLayout(hlayout);
   upButton = new QPushButton(this);
   upButton->setIcon(QIcon(":/images/icon_up.png"));
   upButton->setToolTip(tr("Find Previous (Shift+F3) "));
+  upButton->setFlat(true);
   hlayout->addWidget(upButton);
   downButton = new QPushButton(this);
   downButton->setIcon(QIcon(":/images/icon_down.png"));
   downButton->setToolTip(tr("Find Next (F3) "));
+  downButton->setFlat(true);
   hlayout->addWidget(downButton);
   hlayout->addStretch(2);
+  resetButton = new QPushButton(this);
+  resetButton->setIcon(QIcon(":/images/icon_erase.png"));
+  resetButton->setToolTip(tr("Reset search options to default values."));
+  resetButton->setFlat(true);
+  hlayout->addWidget(resetButton);
   QPushButton *optionButton = new QPushButton(tr("Options"), this);
   optionButton->setMenu(menu);
   optionButton->setFlat(true);
@@ -1590,16 +1608,18 @@ QDjViewFind::QDjViewFind(QDjView *djview)
           model, SLOT(textChanged()));
   connect(combo->lineEdit(), SIGNAL(returnPressed()),
           this, SLOT(findAgain()));
-  connect(eraseAction, SIGNAL(triggered()), 
-          this, SLOT(eraseText()));
   connect(caseSensitiveAction, SIGNAL(triggered(bool)),
           this, SLOT(setCaseSensitive(bool)));
   connect(wordOnlyAction, SIGNAL(triggered(bool)),
           this, SLOT(setWordOnly(bool)));
+  connect(regExpModeAction, SIGNAL(triggered(bool)),
+          this, SLOT(setRegExpMode(bool)));
   connect(upButton, SIGNAL(clicked()), 
           this, SLOT(findPrev()));
   connect(downButton, SIGNAL(clicked()), 
           this, SLOT(findNext()));
+  connect(resetButton, SIGNAL(clicked()), 
+          this, SLOT(eraseText()));
   
   setWhatsThis(tr("<html><b>Finding text.</b><br/> "
                   "Search hits appear progressively as soon as you type "
@@ -1653,6 +1673,13 @@ QDjViewFind::wordOnly()
 }
 
 
+bool 
+QDjViewFind::regExpMode()
+{
+  return model->regExpMode;
+}
+
+
 void 
 QDjViewFind::setText(QString s)
 {
@@ -1672,7 +1699,10 @@ QDjViewFind::selectAll()
 void 
 QDjViewFind::eraseText()
 {
-  setText(QString());
+  setText(QString::null);
+  setRegExpMode(false);
+  setWordOnly(true);
+  setCaseSensitive(false);
 }
 
 
@@ -1695,6 +1725,18 @@ QDjViewFind::setWordOnly(bool b)
     {
       wordOnlyAction->setChecked(b);
       model->wordOnly = b;
+      model->textChanged();
+    }
+}
+
+
+void 
+QDjViewFind::setRegExpMode(bool b)
+{
+  if (b != model->regExpMode)
+    {
+      regExpModeAction->setChecked(b);
+      model->regExpMode = b;
       model->textChanged();
     }
 }
