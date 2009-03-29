@@ -4673,6 +4673,7 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Space:
           readNext();
           return;
+        case Qt::Key_B:
         case Qt::Key_Backspace:
           readPrev();
           return;
