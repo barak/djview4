@@ -1738,6 +1738,32 @@ QDjViewFind::setRegExpMode(bool b)
       regExpModeAction->setChecked(b);
       model->regExpMode = b;
       model->textChanged();
+      QString regExpHelp = 
+        tr("<html><b>RegExp Quick Guide</b><ul>"
+           "<li>The dot <tt>.</tt> matches any character.</li>"
+           "<li>Most characters match themselves.</li>"
+           "<li>Prepend a backslash <tt>\\</tt> to match special"
+           "    characters <tt>()[]{}|*+.?!^$\\</tt>.</li>"
+           "<li><tt>\\b</tt> matches a word boundary.</li>"
+           "<li><tt>\\d</tt> matches a digit.</li>"
+           "<li><tt>\\s</tt> matches a white space.</li>"
+           "<li><tt>\\w</tt> matches a word character.</li>"
+           "<li><tt>[<i>a</i>-<i>b</i>]</tt> matches characters in range"
+           "    <tt><i>a</i></tt>-<tt><i>b</i></tt>.</li>"
+           "<li><tt>[^<i>a</i>-<i>b</i>]</tt> matches characters outside range"
+           "    <tt><i>a</i></tt>-<tt><i>b</i></tt>.</li>"
+           "<li><tt><i>a</i>|<i>b</i></tt> matches either regular expression"
+           "    <tt><i>a</i></tt> or regular expression <tt><i>b</i></tt>.</li>"
+           "<li><tt><i>a</i>{<i>n</i>,<i>m</i>}</tt> matches regular expression"
+           "    <tt><i>a</i></tt> repeated <tt><i>n</i></tt> to <tt><i>m</i></tt>"
+           "    times.</li>"
+           "<li><tt><i>a</i>?</tt>, <tt><i>a</i>*</tt>, and <tt><i>a</i>+</tt>"
+           "    are shorthands for <tt><i>a</i>{0,1}</tt>, <tt><i>a</i>{0,}</tt>, "
+           "    and <tt><i>a</i>{1,}</tt>.</li>"
+           "<li>Use parentheses <tt>()</tt> to group regular expressions "
+           "    before <tt>?+*{</tt>.</li>"
+           "</ul></html>");
+      combo->setWhatsThis((b) ? regExpHelp : QString::null);
     }
 }
 
