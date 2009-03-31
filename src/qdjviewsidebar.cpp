@@ -1064,7 +1064,7 @@ QDjViewFind::Model::documentClosed(QDjVuDocument *doc)
   widget->eraseText();
   widget->combo->setEnabled(false);
   widget->label->setText(QString());
-  widget->stack->setCurrentIndex(0);
+  widget->stack->setCurrentWidget(widget->label);
 }
 
 
@@ -1110,12 +1110,29 @@ miniexp_get_rect(miniexp_t &r, QRect &rect)
 }
 
 
+static int
+parse_text_type(miniexp_t exp)
+{
+  static const char *names[] = { 
+    "char", "word", "line", "para", "region", "column", "page"
+  };
+  static const int nsymbs = sizeof(names)/sizeof(const char*);
+  static miniexp_t symbs[nsymbs];
+  if (! symbs[0])
+    for (int i=0; i<nsymbs; i++)
+      symbs[i] = miniexp_symbol(names[i]);
+  for (int i=0; i<nsymbs; i++)
+    if (exp == symbs[i])
+      return i;
+  return -1;
+}
+
 static bool
-miniexp_get_text(miniexp_t exp, 
-                 QString &result, QMap<int,miniexp_t> &positions,
-                 QList<miniexp_t> nospace, QString &comma)
+miniexp_get_text(miniexp_t exp, QString &result, 
+                 QMap<int,miniexp_t> &positions, int &state)
 {
   miniexp_t type = miniexp_car(exp);
+  int typenum = parse_text_type(type);
   miniexp_t r = exp = miniexp_cdr(exp);
   if (! miniexp_symbolp(type))
     return false;
@@ -1123,25 +1140,24 @@ miniexp_get_text(miniexp_t exp,
   if (! miniexp_get_rect(r, rect))
     return false;
   miniexp_t s = miniexp_car(r);
+  state = qMax(state, typenum);
   if (miniexp_stringp(s) && !miniexp_cdr(r))
     {
-      result += comma;
+      result += (state >= 2) ? "\n" : (state >= 1) ? " " : "";
+      state = -1;
       positions[result.size()] = exp;
       result += QString::fromUtf8(miniexp_to_str(s));
-      if (comma.isEmpty() && !nospace.contains(type))
-        comma = " ";
-      return true;
+      r = miniexp_cdr(r);
     }
   while(miniexp_consp(s))
     {
-      miniexp_get_text(s, result, positions, nospace, comma);
+      miniexp_get_text(s, result, positions, state);
       r = miniexp_cdr(r);
       s = miniexp_car(r);
     }
   if (r) 
     return false;
-  if (comma.isEmpty() && !nospace.contains(type))
-    comma = " ";
+  state = qMax(state, typenum);
   return true;
 }
 
@@ -1153,10 +1169,8 @@ miniexp_search_text(miniexp_t exp, QRegExp regex)
   QString text;
   QMap<int, miniexp_t> positions;
   // build string
-  QList<miniexp_t> nospace;
-  QString comma;
-  nospace << miniexp_symbol("char");
-  if (! miniexp_get_text(exp, text, positions, nospace, comma))
+  int state = -1;
+  if (! miniexp_get_text(exp, text, positions, state))
     return hits;
   // search hits
   int offset = 0;
@@ -1414,7 +1428,7 @@ QDjViewFind::Model::startFind(bool backwards, int delay)
   if (! find.isEmpty() && djview->pageNum() > 0)
     {
       widget->label->setText(QString());
-      widget->stack->setCurrentIndex(0);
+      widget->stack->setCurrentWidget(widget->view);
       animButton = (backwards) ? widget->upButton : widget->downButton;
       animIcon = animButton->icon();
       animTimer->start(250);
@@ -1476,7 +1490,7 @@ QDjViewFind::Model::textChanged()
   clear();
   QString s = widget->text();
   widget->label->setText(QString());
-  widget->stack->setCurrentIndex(0);
+  widget->stack->setCurrentWidget(widget->label);
   if (s.isEmpty())
     {
       find = QRegExp();
@@ -1537,7 +1551,6 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   view->setViewMode(QListView::ListMode);
   view->setWrapping(false);
   view->setResizeMode(QListView::Adjust);
-  
   caseSensitiveAction = new QAction(tr("Case sensitive"), this);
   caseSensitiveAction->setCheckable(true);
   caseSensitiveAction->setChecked(model->caseSensitive);
@@ -1581,6 +1594,7 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   optionButton->setMenu(menu);
   optionButton->setFlat(true);
   optionButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+  optionButton->setAttribute(Qt::WA_CustomWhatsThis);
   hlayout->addWidget(optionButton);
   stack = new QStackedLayout();
   view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -1621,16 +1635,52 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   connect(resetButton, SIGNAL(clicked()), 
           this, SLOT(eraseText()));
   
-  setWhatsThis(tr("<html><b>Finding text.</b><br/> "
-                  "Search hits appear progressively as soon as you type "
-                  "a search string. Typing enter jumps to the next hit. "
-                  "To move to the previous or next hit, you can also use "
-                  "the arrow buttons or the shortcuts <tt>F3</tt> or "
-                  "<tt>Shift-F3</tt>. You can also double click a page name. "
-                  "Use the <tt>Options</tt> menu to search words only or "
-                  "to specify the case sensitivity."
-                  "</html>"));
+  setWhatsThis
+    (tr("<html><b>Finding text.</b><br/> "
+        "Search hits appear progressively as soon as you type "
+        "a search string. Typing enter jumps to the next hit. "
+        "To move to the previous or next hit, you can also use "
+        "the arrow buttons or the shortcuts <tt>F3</tt> or "
+        "<tt>Shift-F3</tt>. You can also double click a page name. "
+        "Use the <tt>Options</tt> menu to search words only or "
+        "to specify the case sensitivity."
+        "</html>"));
+  wordOnlyAction->setStatusTip
+    (tr("Specify whether search hits must begin on a word boundary."));
+  caseSensitiveAction->setStatusTip
+    (tr("Specify whether searches are case sensitive."));
+  regExpModeAction->setStatusTip
+    (tr("Regular expressions describe complex string matching patterns."));
+  regExpModeAction->setWhatsThis
+    (tr("<html><b>Regular Expression Quick Guide</b><ul>"
+        "<li>The dot <tt>.</tt> matches any character.</li>"
+        "<li>Most characters match themselves.</li>"
+        "<li>Prepend a backslash <tt>\\</tt> to match special"
+        "    characters <tt>()[]{}|*+.?!^$\\</tt>.</li>"
+        "<li><tt>\\b</tt> matches a word boundary.</li>"
+        "<li><tt>\\d</tt> matches a digit.</li>"
+        "<li><tt>\\s</tt> matches a blank character.</li>"
+        "<li><tt>\\n</tt> matches a newline character.</li>"
+        "<li><tt>[<i>a</i>-<i>b</i>]</tt> matches characters in range"
+        "    <tt><i>a</i></tt>-<tt><i>b</i></tt>.</li>"
+        "<li><tt>[^<i>a</i>-<i>b</i>]</tt> matches characters outside range"
+        "    <tt><i>a</i></tt>-<tt><i>b</i></tt>.</li>"
+        "<li><tt><i>a</i>|<i>b</i></tt> matches either regular expression"
+        "    <tt><i>a</i></tt> or regular expression <tt><i>b</i></tt>.</li>"
+        "<li><tt><i>a</i>{<i>n</i>,<i>m</i>}</tt> matches regular expression"
+        "    <tt><i>a</i></tt> repeated <tt><i>n</i></tt> to <tt><i>m</i></tt>"
+        "    times.</li>"
+        "<li><tt><i>a</i>?</tt>, <tt><i>a</i>*</tt>, and <tt><i>a</i>+</tt>"
+        "    are shorthands for <tt><i>a</i>{0,1}</tt>, <tt><i>a</i>{0,}</tt>, "
+        "    and <tt><i>a</i>{1,}</tt>.</li>"
+        "<li>Use parentheses <tt>()</tt> to group regular expressions "
+        "    before <tt>?+*{</tt>.</li>"
+        "</ul></html>"));
 
+  eraseText();
+  combo->setEnabled(false);
+  label->setText(QString());
+  stack->setCurrentWidget(label);
   if (djview->getDocument())
     model->documentReady(djview->getDocument());
 }
@@ -1738,32 +1788,6 @@ QDjViewFind::setRegExpMode(bool b)
       regExpModeAction->setChecked(b);
       model->regExpMode = b;
       model->textChanged();
-      QString regExpHelp = 
-        tr("<html><b>Regular Expression Quick Guide</b><ul>"
-           "<li>The dot <tt>.</tt> matches any character.</li>"
-           "<li>Most characters match themselves.</li>"
-           "<li>Prepend a backslash <tt>\\</tt> to match special"
-           "    characters <tt>()[]{}|*+.?!^$\\</tt>.</li>"
-           "<li><tt>\\b</tt> matches a word boundary.</li>"
-           "<li><tt>\\d</tt> matches a digit.</li>"
-           "<li><tt>\\s</tt> matches a blank character.</li>"
-           "<li><tt>\\n</tt> matches a newline character.</li>"
-           "<li><tt>[<i>a</i>-<i>b</i>]</tt> matches characters in range"
-           "    <tt><i>a</i></tt>-<tt><i>b</i></tt>.</li>"
-           "<li><tt>[^<i>a</i>-<i>b</i>]</tt> matches characters outside range"
-           "    <tt><i>a</i></tt>-<tt><i>b</i></tt>.</li>"
-           "<li><tt><i>a</i>|<i>b</i></tt> matches either regular expression"
-           "    <tt><i>a</i></tt> or regular expression <tt><i>b</i></tt>.</li>"
-           "<li><tt><i>a</i>{<i>n</i>,<i>m</i>}</tt> matches regular expression"
-           "    <tt><i>a</i></tt> repeated <tt><i>n</i></tt> to <tt><i>m</i></tt>"
-           "    times.</li>"
-           "<li><tt><i>a</i>?</tt>, <tt><i>a</i>*</tt>, and <tt><i>a</i>+</tt>"
-           "    are shorthands for <tt><i>a</i>{0,1}</tt>, <tt><i>a</i>{0,}</tt>, "
-           "    and <tt><i>a</i>{1,}</tt>.</li>"
-           "<li>Use parentheses <tt>()</tt> to group regular expressions "
-           "    before <tt>?+*{</tt>.</li>"
-           "</ul></html>");
-      combo->setWhatsThis((b) ? regExpHelp : QString::null);
     }
 }
 

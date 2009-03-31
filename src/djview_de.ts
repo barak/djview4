@@ -1949,48 +1949,63 @@ Soll die Datei überschrieben werden?</translation>
         <translation type="obsolete">Lösche Text</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1541"/>
+        <location filename="qdjviewsidebar.cpp" line="1554"/>
         <source>Case sensitive</source>
         <translation>Groß- und Kleinschreibung beachten</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1544"/>
+        <location filename="qdjviewsidebar.cpp" line="1557"/>
         <source>Words only</source>
         <translation>&amp;Nur ganze Wörter</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1566"/>
+        <location filename="qdjviewsidebar.cpp" line="1579"/>
         <source>Find Previous (Shift+F3) </source>
         <translation>Rück&amp;wärts suchen (Shift+F3) </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1571"/>
+        <location filename="qdjviewsidebar.cpp" line="1584"/>
         <source>Find Next (F3) </source>
         <translation>Weitersuchen (F3) </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1580"/>
+        <location filename="qdjviewsidebar.cpp" line="1593"/>
         <source>Options</source>
         <translation>Optionen</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1632"/>
+        <location filename="qdjviewsidebar.cpp" line="1647"/>
         <source>&lt;html&gt;&lt;b&gt;Finding text.&lt;/b&gt;&lt;br/&gt; Search hits appear progressively as soon as you type a search string. Typing enter jumps to the next hit. To move to the previous or next hit, you can also use the arrow buttons or the shortcuts &lt;tt&gt;F3&lt;/tt&gt; or &lt;tt&gt;Shift-F3&lt;/tt&gt;. You can also double click a page name. Use the &lt;tt&gt;Options&lt;/tt&gt; menu to search words only or to specify the case sensitivity.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Text Suchen.&lt;/b&gt;&lt;br/&gt; Die Treffer der Suche werden sofort angezeigt. Durch drücken der Retruntaste gelangt man zum nächsten Treffer. Zum Navigieren können ebenfalls die Pfeiltasten, bzw &lt;tt&gt;F3&lt;/tt&gt; und &lt;tt&gt;Shift-F3&lt;/tt&gt; genutzt werden. Ein Doppelklick auf dem Seitennamen würde auch funktionieren. Mit Hilfe der Optionen können die Suchparameter angepasst werden.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1547"/>
+        <location filename="qdjviewsidebar.cpp" line="1560"/>
         <source>Regular expression</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1577"/>
+        <location filename="qdjviewsidebar.cpp" line="1590"/>
         <source>Reset search options to default values.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1765"/>
+        <location filename="qdjviewsidebar.cpp" line="1678"/>
         <source>&lt;html&gt;&lt;b&gt;Regular Expression Quick Guide&lt;/b&gt;&lt;ul&gt;&lt;li&gt;The dot &lt;tt&gt;.&lt;/tt&gt; matches any character.&lt;/li&gt;&lt;li&gt;Most characters match themselves.&lt;/li&gt;&lt;li&gt;Prepend a backslash &lt;tt&gt;\&lt;/tt&gt; to match special    characters &lt;tt&gt;()[]{}|*+.?!^$\&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\b&lt;/tt&gt; matches a word boundary.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\d&lt;/tt&gt; matches a digit.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\s&lt;/tt&gt; matches a blank character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\n&lt;/tt&gt; matches a newline character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; matches characters in range    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[^&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; matches characters outside range    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;|&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt; matches either regular expression    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt; or regular expression &lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{&lt;i&gt;n&lt;/i&gt;,&lt;i&gt;m&lt;/i&gt;}&lt;/tt&gt; matches regular expression    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt; repeated &lt;tt&gt;&lt;i&gt;n&lt;/i&gt;&lt;/tt&gt; to &lt;tt&gt;&lt;i&gt;m&lt;/i&gt;&lt;/tt&gt;    times.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;?&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;*&lt;/tt&gt;, and &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;+&lt;/tt&gt;    are shorthands for &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,1}&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,}&lt;/tt&gt;,     and &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{1,}&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;Use parentheses &lt;tt&gt;()&lt;/tt&gt; to group regular expressions     before &lt;tt&gt;?+*{&lt;/tt&gt;.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qdjviewsidebar.cpp" line="1649"/>
+        <source>Specify whether search hits must begin on a word boundary.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qdjviewsidebar.cpp" line="1651"/>
+        <source>Specify whether searches are case sensitive.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qdjviewsidebar.cpp" line="1653"/>
+        <source>Regular expressions describe complex string matching patterns.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2007,22 +2022,22 @@ Soll die Datei überschrieben werden?</translation>
         <translation>Seite %1 (1 Treffer)</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1306"/>
+        <location filename="qdjviewsidebar.cpp" line="1320"/>
         <source>Searching page %1 (waiting for data.)</source>
         <translation>Durchsuche Seite %1 (warte auf Daten.)</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1318"/>
+        <location filename="qdjviewsidebar.cpp" line="1332"/>
         <source>Searching page %1.</source>
         <translation>Durchsuche Seite %1.</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1353"/>
+        <location filename="qdjviewsidebar.cpp" line="1367"/>
         <source>No hits!</source>
         <translation>Keine Treffer!</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1360"/>
+        <location filename="qdjviewsidebar.cpp" line="1374"/>
         <source>&lt;html&gt;Document is not searchable. No page contains information about its textual content.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Dokument ist nicht durchsuchbar. Keine Seite enthält Informationen über seinen textlichen Inhalt.&lt;/html&gt;</translation>
     </message>
@@ -2043,7 +2058,7 @@ Soll die Datei überschrieben werden?</translation>
         </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1364"/>
+        <location filename="qdjviewsidebar.cpp" line="1378"/>
         <source>&lt;html&gt;Invalid regular expression.&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>

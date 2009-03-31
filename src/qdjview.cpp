@@ -1326,7 +1326,7 @@ QDjView::applyPreferences(void)
   // Search preferences
   findWidget->setWordOnly(prefs->searchWordsOnly);
   findWidget->setCaseSensitive(prefs->searchCaseSensitive);
-  findWidget->setRegExpMode(prefs->searchRegExpMode);
+  // Too risky:  findWidget->setRegExpMode(prefs->searchRegExpMode);
 
   // Special preferences for embedded plugins
   if (viewerMode == EMBEDDED_PLUGIN)
