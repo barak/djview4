@@ -1739,15 +1739,15 @@ QDjViewFind::setRegExpMode(bool b)
       model->regExpMode = b;
       model->textChanged();
       QString regExpHelp = 
-        tr("<html><b>RegExp Quick Guide</b><ul>"
+        tr("<html><b>Regular Expression Quick Guide</b><ul>"
            "<li>The dot <tt>.</tt> matches any character.</li>"
            "<li>Most characters match themselves.</li>"
            "<li>Prepend a backslash <tt>\\</tt> to match special"
            "    characters <tt>()[]{}|*+.?!^$\\</tt>.</li>"
            "<li><tt>\\b</tt> matches a word boundary.</li>"
            "<li><tt>\\d</tt> matches a digit.</li>"
-           "<li><tt>\\s</tt> matches a white space.</li>"
-           "<li><tt>\\w</tt> matches a word character.</li>"
+           "<li><tt>\\s</tt> matches a blank character.</li>"
+           "<li><tt>\\n</tt> matches a newline character.</li>"
            "<li><tt>[<i>a</i>-<i>b</i>]</tt> matches characters in range"
            "    <tt><i>a</i></tt>-<tt><i>b</i></tt>.</li>"
            "<li><tt>[^<i>a</i>-<i>b</i>]</tt> matches characters outside range"
