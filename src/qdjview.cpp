@@ -2812,10 +2812,8 @@ QDjView::showSideBar(QString args, QStringList &errors)
     }
   if (! tabs)
     tabs = ~0;
-  if (no)
-    areas = 0;
-  else if (! areas)
-    areas = Qt::AllDockWidgetAreas;
+  if (! areas)
+    areas = (no) ? 0 : Qt::AllDockWidgetAreas;
   if (showSideBar(areas, tabs))
     return ret;
   return false;

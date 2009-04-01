@@ -562,8 +562,12 @@ located at the bottom of the window.
 
 .TP
 .BI "-sidebar=" keyword "{," keyword "}"
-Enable or disable the side bar.
-The following keywords are recognized.
+Control the dockable panels.
+The argument is a comma separated list of keywords.
+A first group of keywords selects which panels are affected.
+Omitting these keywords selects all panels.
+A second group of keywords then controls the visibility and 
+the position of the selected panels.
 .br
 .TS
 center,box;
@@ -577,18 +581,18 @@ lfB l
 lfB l
 lfB l
 .
-no,false	hide the sidebar.
-yes,true	show the sidebar.
-thumbnails	sidebar displays the thumbnails.
-outline,bookmarks	sidebar displays the document outline.
-search,find	sidebar displays the search interface.
-left	sidebar can dock on the left side.
-right	sidebar can dock on the right side.
-top	sidebar can dock on the top side.
-bottom	sidebar can dock on the bottom side.
+thumbnails	specify the thumbnail panel.
+outline,bookmarks	specify the outline panel.
+search,find	specify the search panel.
+=
+yes,true	show the specified panels (default).
+no,false	hide the specified panels.
+left	dock specified panels on the left side.
+right	dock specified panels on the right side.
+top	dock specified panels on the top side.
+bottom	dock specified panels on the bottom side.
 .TE
 .PP
-
 .TP
 .BI "-thumbnails=" keyword "{," keyword "}"
 Compatibility alias for 
