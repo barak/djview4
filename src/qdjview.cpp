@@ -2832,11 +2832,27 @@ QDjView::showSideBar(QString args)
 }
 
 
-/*! Overloaded version of \a showSideBar for convenience. */
+/*! Overloaded version of \a showSideBar for convenience. 
+  This version makes great efforts to show docks with
+  the exact layout they had before being hidden. */
 
 bool
 QDjView::showSideBar(bool show)
 {
+  if (! show)
+    {
+      // save everything about dock geometry
+      savedDockState = saveState();
+    }
+  else if (savedDockState.size() > 0) 
+    {
+      // hack toolbar name to avoid restoring its state
+      QString savedToolBarName = toolBar->objectName();
+      toolBar->setObjectName(QString::null);
+      restoreState(savedDockState);
+      toolBar->setObjectName(savedToolBarName);
+    }
+  // set visibility
   thumbnailDock->setVisible(show);
   outlineDock->setVisible(show);
   findDock->setVisible(show);

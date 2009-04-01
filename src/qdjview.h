@@ -357,6 +357,7 @@ protected:
   Saved fsSavedNormal;
   Saved fsSavedFullScreen;
   Qt::WindowStates fsWindowState;
+  QByteArray savedDockState;
   // undo/redo
   class UndoRedo 
   {
