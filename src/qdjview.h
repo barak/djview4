@@ -65,8 +65,9 @@ class QStackedLayout;
 class QStatusBar;
 class QStringList;
 class QTimer;
+class QTabWidget;
 class QToolBar;
-class QToolBox;
+
 
 
 #if DDJVUAPI_VERSION < 18
@@ -114,6 +115,8 @@ class QDjView : public QMainWindow
   QString     pageName(int pageno, bool titleonly=false);
   int         pageNumber(QString name, int from = -1);
   QDjView    *copyWindow(bool openDocument=true);
+  int         visibleSideBarTabs();
+  int         hiddenSideBarTabs();
   bool        saveTextFile(QString text, QString filename=QString());
   bool        saveImageFile(QImage image, QString filename=QString());
   bool        startBrowser(QUrl url);
@@ -136,9 +139,10 @@ public slots:
   void  setPageLabelText(QString s = QString());
   void  setMouseLabelText(QString s = QString());
   void  statusMessage(QString s = QString());
-  bool  showSideBar(Qt::DockWidgetAreas areas, int tab=-1);
+  bool  showSideBar(Qt::DockWidgetAreas areas, int tabs);
   bool  showSideBar(QString args, QStringList &errors);
   bool  showSideBar(QString args);
+  bool  showSideBar(bool);
   void  print(void);
   void  saveAs(void);
   void  exportAs(void);
@@ -170,7 +174,7 @@ protected:
   Saved   *getSavedPrefs(void);
   void     enableContextMenu(bool);
   void     enableScrollBars(bool);
-  void     applyOptions(void);
+  void     applyOptions(bool remember=true);
   void     updateOptions(void);
   void     applySaved(Saved *saved);
   void     updateSaved(Saved *saved);
@@ -259,11 +263,12 @@ protected:
   QComboBox          *modeCombo;
   QComboBox          *zoomCombo;
   QComboBox          *pageCombo;
-  QDockWidget        *sideBar;
-  QToolBox           *sideToolBox;
   QDjViewOutline     *outlineWidget;
+  QDockWidget        *outlineDock;
   QDjViewThumbnails  *thumbnailWidget;
+  QDockWidget        *thumbnailDock;
   QDjViewFind        *findWidget;
+  QDockWidget        *findDock;
   // document data
   QDjVuContext           &djvuContext;
   QDjVuDocument          *document;

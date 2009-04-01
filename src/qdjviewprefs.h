@@ -130,7 +130,6 @@ public:
     Options    options;         //!< Miscellaneous flags.
     int        zoom;            //!< Zoom factor.
     QByteArray state;           //!< Toolbar and sidebar geometry.
-    int        sidebarTab;      //!< Selected sidebar tab. 
   };
 
   // Preferences remembered between program invocations.

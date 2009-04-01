@@ -88,8 +88,8 @@
 #include <QString>
 #include <QTextStream>
 #include <QTimer>
+#include <QTabWidget>
 #include <QToolBar>
-#include <QToolBox>
 #include <QUrl>
 #include <QWhatsThis>
 
@@ -624,13 +624,11 @@ QDjView::createActions()
     << tr("Show the preferences dialog.")
     << Trigger(this, SLOT(performPreferences()));
 
-  actionViewSideBar = sideBar->toggleViewAction() 
-    << tr("Show &Sidebar", "Settings|")
+  actionViewSideBar = makeAction(tr("Show &Sidebar", "Settings|"), true)
     << QKeySequence(tr("Ctrl+F9", "Settings|Show sidebar"))
     << QKeySequence(tr("F9", "Settings|Show sidebar"))
-    // << QIcon(":/images/icon_sidebar.png")
     << tr("Show/hide the side bar.")
-    << Trigger(this, SLOT(updateActionsLater()));
+    << Trigger(this, SLOT(showSideBar(bool)));
 
   actionViewToolBar = toolBar->toggleViewAction()
     << tr("Show &Toolbar", "Settings|")
@@ -971,6 +969,7 @@ QDjView::updateActions()
   actionCopyUrl->setEnabled(pagenum > 0);
   actionCopyOutline->setEnabled(pagenum > 0);
   actionCopyAnnotation->setEnabled(pagenum > 0);
+  actionViewSideBar->setChecked(hiddenSideBarTabs() == 0);
   
   // Disable almost everything when document==0
   if (! document)
@@ -1189,11 +1188,10 @@ QDjView::enableScrollBars(bool enable)
 
 
 void 
-QDjView::applyOptions(void)
+QDjView::applyOptions(bool remember)
 {
   menuBar->setVisible(options & QDjViewPrefs::SHOW_MENUBAR);
   toolBar->setVisible(options & QDjViewPrefs::SHOW_TOOLBAR);
-  sideBar->setVisible(options & QDjViewPrefs::SHOW_SIDEBAR);
   statusBar->setVisible(options & QDjViewPrefs::SHOW_STATUSBAR);
   enableScrollBars(options & QDjViewPrefs::SHOW_SCROLLBARS);
   widget->setDisplayFrame(options & QDjViewPrefs::SHOW_FRAME);
@@ -1206,6 +1204,8 @@ QDjView::applyOptions(void)
   widget->enableKeyboard(options & QDjViewPrefs::HANDLE_KEYBOARD);
   widget->enableHyperlink(options & QDjViewPrefs::HANDLE_LINKS);
   enableContextMenu(options & QDjViewPrefs::HANDLE_CONTEXTMENU);
+  if (!remember)
+    showSideBar((bool)(options & QDjViewPrefs::SHOW_SIDEBAR));
 }
 
 
@@ -1217,10 +1217,10 @@ QDjView::updateOptions(void)
     options |= QDjViewPrefs::SHOW_MENUBAR;
   if (! toolBar->isHidden())
     options |= QDjViewPrefs::SHOW_TOOLBAR;
-  if (! sideBar->isHidden())
-    options |= QDjViewPrefs::SHOW_SIDEBAR;
   if (! statusBar->isHidden())
     options |= QDjViewPrefs::SHOW_STATUSBAR;
+  if (! hiddenSideBarTabs())
+    options |= QDjViewPrefs::SHOW_SIDEBAR;    
   if (widget->verticalScrollBarPolicy() != Qt::ScrollBarAlwaysOff)
     options |= QDjViewPrefs::SHOW_SCROLLBARS;
   if (widget->displayFrame())
@@ -1250,20 +1250,20 @@ QDjView::updateOptions(void)
 void
 QDjView::applySaved(Saved *saved)
 {
+  // default dock geometry
+  tabifyDockWidget(thumbnailDock, outlineDock);
+  tabifyDockWidget(thumbnailDock, findDock);
+  thumbnailDock->raise();
   // main saved states
   options = saved->options;
   if (saved->state.size() > 0)
     restoreState(saved->state);
-  applyOptions();
+  applyOptions(saved->remember);
   widget->setZoom(saved->zoom);
   // global window size in standalone mode
   if (saved == &prefs->forStandalone)
     if (! (prefs->windowSize.isNull()))
       resize(prefs->windowSize);
-  // sidebar tab
-  if (saved->sidebarTab >= 0 
-      && saved->sidebarTab < sideToolBox->count())
-    sideToolBox->setCurrentIndex(saved->sidebarTab);
 }
 
 
@@ -1296,8 +1296,6 @@ QDjView::updateSaved(Saved *saved)
       if (saved == &prefs->forStandalone)
         if (! (windowState() & unusualWindowStates))
           prefs->windowSize = size();
-      // sidebar tab
-      saved->sidebarTab = sideToolBox->currentIndex();
     }
 }
 
@@ -1364,7 +1362,6 @@ QDjView::saveSession(QSettings *s)
   s->setValue("name", objectName());
   s->setValue("options", prefs->optionsToString(saved.options));
   s->setValue("state", saved.state);
-  s->setValue("sidebarTab", saved.sidebarTab);
   s->setValue("tools", prefs->toolsToString(tools));
   s->setValue("documentUrl", getDecoratedUrl().toString());
 }
@@ -1376,8 +1373,6 @@ QDjView::restoreSession(QSettings *s)
   Tools tools = this->tools;
   Saved saved;
   updateSaved(&saved);
-  if (s->contains("sidebarTab"))
-    saved.sidebarTab = s->value("sidebarTab").toInt();
   if (s->contains("options"))
     saved.options = prefs->stringToOptions(s->value("options").toString());
   if (s->contains("zoom")) // compat
@@ -1648,7 +1643,9 @@ QDjView::parseArgument(QString key, QString value)
           enableContextMenu(false);
           menuBar->setVisible(false);
           statusBar->setVisible(false);
-          sideBar->setVisible(false);
+          thumbnailDock->setVisible(false);
+          outlineDock->setVisible(false);
+          findDock->setVisible(false);
           toolBar->setVisible(false);
           if (key == "passive")
             widget->setZoom(QDjVuWidget::ZOOM_FITPAGE);
@@ -2117,7 +2114,8 @@ QDjView::getArgument(QString key)
     {
       if (widget->horizontalScrollBarPolicy() == Qt::ScrollBarAlwaysOff 
           && !menuBar->isVisible() && !statusBar->isVisible()
-          && !sideBar->isVisible() && !toolBar->isVisible()
+          && !thumbnailDock->isVisible() && !outlineDock->isVisible()
+          && !findDock->isVisible() && !toolBar->isVisible()
           && !widget->continuous() && !widget->sideBySide()
           && !widget->keyboardEnabled() && !widget->mouseEnabled() 
           && widget->contextMenu() == 0 )
@@ -2132,15 +2130,17 @@ QDjView::getArgument(QString key)
     }
   else if (key == "sidebar")
     { // without position 
-      int s = sideToolBox->currentIndex();
-      if (! sideBar->isVisible())
+      QStringList what;
+      if (thumbnailDock->isVisible())
+        what << "thumbnails";
+      if (outlineDock->isVisible())
+        what << "outline";
+      if (findDock->isVisible())
+        what << "find";
+      if (what.size() > 0)
+        return QString("yes,") + what.join(",");
+      else
         return QString("no");
-      else if (s == 0)
-        return QString("yes,thumbnails");
-      else if (s == 1)
-        return QString("yes,outline");
-      else if (s == 2)
-        return QString("yes,search");
     }
   else if (key == "toolbar")
     { // Currently without toolbar content
@@ -2347,28 +2347,31 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
           this, SLOT(pageComboEdited()) );
   
   // Create sidebar  
-  sideBar = new QDockWidget(this); 
-  sideBar->setObjectName("sidebar");
-  sideBar->setAllowedAreas(Qt::AllDockWidgetAreas);
-  addDockWidget(Qt::LeftDockWidgetArea, sideBar);
-  sideBar->installEventFilter(this);
-  sideToolBox = new QToolBox(sideBar);
-  sideToolBox->setBackgroundRole(QPalette::Background);
-  sideBar->setWidget(sideToolBox);
-  connect(sideToolBox, SIGNAL(currentChanged(int)),
-          this, SLOT(updateActionsLater()) );
+  thumbnailWidget = new QDjViewThumbnails(this);
+  thumbnailDock = new QDockWidget(this);
+  thumbnailDock->setObjectName("thumbnailDock");
+  thumbnailDock->setWindowTitle(tr("&Thumbnails"));
+  thumbnailDock->setWidget(thumbnailWidget);
+  thumbnailDock->installEventFilter(this);
+  addDockWidget(Qt::LeftDockWidgetArea, thumbnailDock);
+  outlineWidget = new QDjViewOutline(this);
+  outlineDock = new QDockWidget(this);
+  outlineDock->setObjectName("outlineDock");
+  outlineDock->setWindowTitle(tr("&Outline")); 
+  outlineDock->setWidget(outlineWidget);
+  outlineDock->installEventFilter(this);
+  addDockWidget(Qt::LeftDockWidgetArea, outlineDock);
+  findWidget = new QDjViewFind(this);
+  findDock = new QDockWidget(this);
+  findDock->setObjectName("findDock");
+  findDock->setWindowTitle(tr("&Find")); 
+  findDock->setWidget(findWidget);
+  findDock->installEventFilter(this);
+  addDockWidget(Qt::LeftDockWidgetArea, findDock);
 
   // Create escape shortcut for sidebar
   shortcutEscape = new QShortcut(QKeySequence("Esc"), this);
   connect(shortcutEscape, SIGNAL(activated()), this, SLOT(performEscape()));
-  
-  // Create sidebar components
-  thumbnailWidget = new QDjViewThumbnails(this);
-  sideToolBox->addItem(thumbnailWidget, tr("&Thumbnails"));
-  outlineWidget = new QDjViewOutline(this);
-  sideToolBox->addItem(outlineWidget, tr("&Outline")); 
-  findWidget = new QDjViewFind(this);
-  sideToolBox->addItem(findWidget, tr("&Find")); 
 
   // Create undoTimer.
   undoTimer = new QTimer(this);
@@ -2678,32 +2681,92 @@ QDjView::statusMessage(QString message)
 }
 
 
-/*! Change the position and composition of the sidebar. */
+/*! Returns a bitmask of the visible sidebar tabs. */
+
+int
+QDjView::visibleSideBarTabs()
+{
+  int tabs = 0;
+  if (! thumbnailDock->isHidden())
+    tabs |= 1;
+  if (! outlineDock->isHidden())
+    tabs |= 2;
+  if (! findDock->isHidden())
+    tabs |= 4;
+  return tabs;
+}
+
+
+/*! Returns a bitmask of the hidden sidebar tabs. */
+
+int
+QDjView::hiddenSideBarTabs()
+{
+  int tabs = 0;
+  if (thumbnailDock->isHidden())
+    tabs |= 1;
+  if (outlineDock->isHidden())
+    tabs |= 2;
+  if (findDock->isHidden())
+    tabs |= 4;
+  return tabs;
+}
+
+
+/*! Change the position and the visibility of 
+    the sidebars specified by bitmask \a tabs. */
 
 bool  
-QDjView::showSideBar(Qt::DockWidgetAreas areas, int tab)
+QDjView::showSideBar(Qt::DockWidgetAreas areas, int tabs)
 {
-  // Position
-  if (areas && !(dockWidgetArea(sideBar) & areas))
+  QList<QDockWidget*> allDocks;
+  allDocks << thumbnailDock << outlineDock << findDock;
+  // find first tab in desired area
+  QDockWidget *first = 0;
+  foreach(QDockWidget *w, allDocks)
+    if (!first && !w->isHidden() && !w->isFloating())
+      if (dockWidgetArea(w) & areas)
+        first = w;
+  // find relevant docks
+  QList<QDockWidget*> docks;
+  if (tabs & 1)
+    docks << thumbnailDock;
+  if (tabs & 2)
+    docks << outlineDock;
+  if (tabs & 4)
+    docks << findDock;
+  // hide all
+  foreach(QDockWidget *w, docks)
+    w->hide();
+  if (areas)
     {
-      removeDockWidget(sideBar);
+      Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
       if (areas & Qt::LeftDockWidgetArea)
-        addDockWidget(Qt::LeftDockWidgetArea, sideBar);
+        area = Qt::LeftDockWidgetArea;
       else if (areas & Qt::RightDockWidgetArea)
-        addDockWidget(Qt::RightDockWidgetArea, sideBar);
+        area = Qt::RightDockWidgetArea;
       else if (areas & Qt::TopDockWidgetArea)
-        addDockWidget(Qt::TopDockWidgetArea, sideBar);
+        area = Qt::TopDockWidgetArea;
       else if (areas & Qt::BottomDockWidgetArea)
-        addDockWidget(Qt::BottomDockWidgetArea, sideBar);
-      else
-        addDockWidget(Qt::LeftDockWidgetArea, sideBar);
+        area = Qt::BottomDockWidgetArea;
+      foreach(QDockWidget *w, docks)
+        {
+          w->show();
+          if (w->isFloating())
+            w->setFloating(false);
+          if (! (areas & dockWidgetArea(w)))
+            {
+              removeDockWidget(w);
+              addDockWidget(area, w);
+              if (first)
+                tabifyDockWidget(first, w);
+              else 
+                first = w;
+            }
+          w->show();
+          w->raise();
+        }
     }
-  sideBar->setVisible(areas != 0);
-  // Tab
-  if (tab >= 0 && tab < sideToolBox->count())
-    sideToolBox->setCurrentIndex(tab);
-  if (tab == 2 && findWidget)
-    findWidget->takeFocus(Qt::ShortcutFocusReason);
   // Okay
   return true;
 }
@@ -2720,7 +2783,7 @@ QDjView::showSideBar(QString args, QStringList &errors)
 {
   bool no = false;
   bool ret = true;
-  int tab = -1;
+  int tabs = 0;
   Qt::DockWidgetAreas areas = 0;
   QString arg;
   foreach(arg, args.split(",", QString::SkipEmptyParts))
@@ -2737,21 +2800,23 @@ QDjView::showSideBar(QString args, QStringList &errors)
       else if (arg == "bottom")
         areas |= Qt::BottomDockWidgetArea;
       else if (arg == "thumbnails" || arg == "thumbnail")
-        tab = 0;
+        tabs |= 1;
       else if (arg == "outline" || arg == "bookmarks")
-        tab = 1;
+        tabs |= 2;
       else if (arg == "search" || arg == "find")
-        tab = 2;
+        tabs |= 4;
       else if (arg != "yes" && arg != "true") {
         errors << tr("Unrecognized sidebar options '%1'.").arg(arg);
         ret = false;
       }
     }
+  if (! tabs)
+    tabs = ~0;
   if (no)
     areas = 0;
   else if (! areas)
-    areas |= Qt::AllDockWidgetAreas;
-  if (showSideBar(areas, tab))
+    areas = Qt::AllDockWidgetAreas;
+  if (showSideBar(areas, tabs))
     return ret;
   return false;
 }
@@ -2766,6 +2831,17 @@ QDjView::showSideBar(QString args)
   return showSideBar(args, errors);
 }
 
+
+/*! Overloaded version of \a showSideBar for convenience. */
+
+bool
+QDjView::showSideBar(bool show)
+{
+  thumbnailDock->setVisible(show);
+  outlineDock->setVisible(show);
+  findDock->setVisible(show);
+  return true;
+}
 
 
 /*! Pops up a print dialog */
@@ -3041,8 +3117,8 @@ QDjView::copyWindow(bool openDocument)
     {
       other->resize( size() );
       other->toolBar->setVisible(!toolBar->isHidden());
-      other->sideBar->setVisible(!sideBar->isHidden());
       other->statusBar->setVisible(!statusBar->isHidden());
+      other->restoreState(saveState());
     }
   // copy essential properties 
   otherWidget->setDisplayMode( widget->displayMode() );
@@ -3311,8 +3387,14 @@ QDjView::eventFilter(QObject *watched, QEvent *event)
 {
   switch(event->type())
     {
+    case QEvent::Show:
+    case QEvent::Hide:
+      if (qobject_cast<QDockWidget*>(watched))
+        updateActionsLater();
+      break;
     case QEvent::Leave:
-      if (watched == widget->viewport() || watched == sideBar)
+      if ((watched == widget->viewport()) ||
+          (qobject_cast<QDockWidget*>(watched)) )
         {
           pageLabel->clear();
           mouseLabel->clear();
@@ -4052,7 +4134,9 @@ QDjView::performViewFullScreen(bool checked)
 void 
 QDjView::performFind()
 {
-  showSideBar("find");
+  findDock->show();
+  findDock->raise();
+  findWidget->takeFocus(Qt::ShortcutFocusReason);
   findWidget->findNext();
   findWidget->selectAll();
 }
@@ -4061,8 +4145,8 @@ QDjView::performFind()
 void 
 QDjView::performEscape()
 {
-  if (sideBar && !sideBar->isHidden())
-    sideBar->hide();
+  if (actionViewSideBar->isChecked())
+    actionViewSideBar->activate(QAction::Trigger);
   else if (actionViewFullScreen->isChecked())
     actionViewFullScreen->activate(QAction::Trigger);
 }
