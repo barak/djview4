@@ -2781,7 +2781,7 @@ QDjView::showSideBar(Qt::DockWidgetAreas areas, int tabs)
 bool
 QDjView::showSideBar(QString args, QStringList &errors)
 {
-  bool no = false;
+  bool yes = true;
   bool ret = true;
   int tabs = 0;
   Qt::DockWidgetAreas areas = 0;
@@ -2790,7 +2790,7 @@ QDjView::showSideBar(QString args, QStringList &errors)
     {
       arg = arg.toLower();
       if (arg == "no" || arg == "false")
-        no = true;
+        yes = false;
       else if (arg == "left")
         areas |= Qt::LeftDockWidgetArea;
       else if (arg == "right")
@@ -2810,10 +2810,10 @@ QDjView::showSideBar(QString args, QStringList &errors)
         ret = false;
       }
     }
-  if (! tabs)
+  if (!tabs)
     tabs = ~0;
-  if (! areas)
-    areas = (no) ? 0 : Qt::AllDockWidgetAreas;
+  if (yes && !areas)
+    areas = Qt::AllDockWidgetAreas;
   if (showSideBar(areas, tabs))
     return ret;
   return false;
