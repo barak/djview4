@@ -18,9 +18,8 @@
 
 TARGET = npdjvu
 TEMPLATE = lib
-CONFIG  += dll
 
-# ============ qtbrowserplugin stuff
+# ============ qtbrowserplugin code
 
 HEADERS += qtnpapi.h
 HEADERS += npdjvu.h
@@ -29,27 +28,38 @@ HEADERS += qtbrowserplugin_p.h
 SOURCES += qtnpapi.cpp
 SOURCES += npdjvu.cpp
 
+# ============ test for X11
+
 win32 {
-  contains(DEFINES,_WIN32_X11_) { CONFIG += x11 }
-  RC_FILE = npdjvu.rc
-  SOURCES += qtbrowserplugin_win.cpp
-  LIBS += -luser32
-  qaxserver { DEF_FILE += qtbrowserpluginax.def }
-  else { DEF_FILE += qtbrowserplugin.def }
+    contains(DEFINES,__USE_WS_X11__) { CONFIG += x11 }
 } else:mac {
-  CONFIG += plugin
-  CONFIG += plugin_bundle
-  contains(DEFINES,__USE_WS_X11__) { CONFIG += x11 }
-  SOURCES += qtbrowserplugin_mac.cpp
-  REZ_FILES += npdjvu.r
-  RESOURCES.path = Contents/Resources
-  RESOURCES.files = npdjvu.rsrc
-  QMAKE_BUNDLE_DATA += RESOURCES
-  QMAKE_INFO_PLIST = npdjvu.plist
+    contains(DEFINES,__USE_WS_X11__) { CONFIG += x11 }
 } else {
-  CONFIG += plugin
-  CONFIG += x11
-  SOURCES += qtbrowserplugin_x11.cpp
+    CONFIG += x11
+}
+
+# ============ plugin stuff
+
+x11 {
+    CONFIG += dll
+    CONFIG += plugin
+    SOURCES += qtbrowserplugin_x11.cpp
+} else:win32 {
+    CONFIG  += dll
+    SOURCES += qtbrowserplugin_win.cpp
+    RC_FILE = npdjvu.rc
+    DEF_FILE += qtbrowserplugin.def
+    LIBS += -luser32
+} else:mac {
+    CONFIG += dll
+    CONFIG += plugin
+    CONFIG += plugin_bundle
+    SOURCES += qtbrowserplugin_mac.cpp
+    REZ_FILES += npdjvu.r
+    RESOURCES.path = Contents/Resources
+    RESOURCES.files = npdjvu.rsrc
+    QMAKE_BUNDLE_DATA += RESOURCES
+    QMAKE_INFO_PLIST = npdjvu.plist
 }
 
 
