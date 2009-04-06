@@ -55,6 +55,7 @@
 #include <QStringList>
 #include <QTimer>
 #include <QToolBar>
+#include <QToolButton>
 #include <QTreeWidget>
 #include <QVariant>
 #include <QVBoxLayout>
@@ -875,7 +876,7 @@ private:
   QTimer *animTimer;
   QTimer *workTimer;
   QItemSelectionModel *selection;
-  QPushButton *animButton;
+  QAbstractButton *animButton;
   QIcon animIcon;
   QIcon findIcon;
   QRegExp find;
@@ -1574,27 +1575,29 @@ QDjViewFind::QDjViewFind(QDjView *djview)
   QBoxLayout *hlayout = new QHBoxLayout;
   hlayout->setSpacing(0);
   vlayout->addLayout(hlayout);
-  upButton = new QPushButton(this);
+  upButton = new QToolButton(this);
   upButton->setIcon(QIcon(":/images/icon_up.png"));
   upButton->setToolTip(tr("Find Previous (Shift+F3) "));
-  upButton->setFlat(true);
+  upButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
   hlayout->addWidget(upButton);
-  downButton = new QPushButton(this);
+  downButton = new QToolButton(this);
   downButton->setIcon(QIcon(":/images/icon_down.png"));
   downButton->setToolTip(tr("Find Next (F3) "));
-  downButton->setFlat(true);
+  downButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
   hlayout->addWidget(downButton);
   hlayout->addStretch(2);
-  resetButton = new QPushButton(this);
+  resetButton = new QToolButton(this);
   resetButton->setIcon(QIcon(":/images/icon_erase.png"));
   resetButton->setToolTip(tr("Reset search options to default values."));
-  resetButton->setFlat(true);
+  resetButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
   hlayout->addWidget(resetButton);
-  QPushButton *optionButton = new QPushButton(tr("Options"), this);
+  QToolButton *optionButton = new QToolButton(this);
+  optionButton->setText(tr("Options"));
+  optionButton->setPopupMode(QToolButton::InstantPopup);
+  optionButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
   optionButton->setMenu(menu);
-  optionButton->setFlat(true);
-  optionButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
   optionButton->setAttribute(Qt::WA_CustomWhatsThis);
+  optionButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
   hlayout->addWidget(optionButton);
   stack = new QStackedLayout();
   view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

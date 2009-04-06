@@ -48,6 +48,7 @@ class QListView;
 class QMenu;
 class QPushButton;
 class QStackedLayout;
+class QToolButton;
 class QTreeWidget;
 class QTreeWidgetItem;
 
@@ -151,9 +152,9 @@ private:
   QListView      *view;
   QMenu          *menu;
   QComboBox      *combo;
-  QPushButton    *upButton;
-  QPushButton    *downButton;
-  QPushButton    *resetButton;
+  QToolButton    *upButton;
+  QToolButton    *downButton;
+  QToolButton    *resetButton;
   QStackedLayout *stack;
   QLabel         *label;
   QAction        *caseSensitiveAction;
