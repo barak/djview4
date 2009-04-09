@@ -1256,9 +1256,15 @@ QDjView::applySaved(Saved *saved)
   thumbnailDock->raise();
   // main saved states
   options = saved->options;
+  setUnifiedTitleAndToolBarOnMac(false);
   if (saved->state.size() > 0)
     restoreState(saved->state);
   applyOptions(saved->remember);
+#ifdef UNIFIED_TOOLBAR_ON_THE_MAC
+  if (viewerMode == STANDALONE && !isFullScreen() && !toolBar->isHidden())
+    if (toolBarArea(toolBar) & Qt::TopToolBarArea)  
+      setUnifiedTitleAndToolBarOnMac(true);
+#endif
   widget->setZoom(saved->zoom);
   // global window size in standalone mode
   if (saved == &prefs->forStandalone)
@@ -4121,6 +4127,7 @@ QDjView::performViewFullScreen(bool checked)
       fsWindowState = wstate;
       wstate &= ~unusualWindowStates;
       wstate |= Qt::WindowFullScreen;
+      setUnifiedTitleAndToolBarOnMac(false);
       setWindowState(wstate);
       applySaved(&fsSavedFullScreen);
       // Make sure full screen action remains accessible (F11)
