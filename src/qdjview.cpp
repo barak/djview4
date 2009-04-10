@@ -875,6 +875,11 @@ QDjView::updateActions()
   // Rebuild toolbar if necessary
   if (tools != toolsCached)
     fillToolBar(toolBar);
+#ifdef Q_WS_MAC_WITH_UNIFIED_TITLE_AND_TOOLBAR
+  if (viewerMode == STANDALONE && !isFullScreen())
+    setUnifiedTitleAndToolBarOnMac((! toolBar->isHidden()) && 
+                                   (toolBarArea(toolBar) & Qt::TopToolBarArea) );
+#endif
   
   // Enable all actions
   foreach(QAction *action, allActions)
@@ -1256,15 +1261,9 @@ QDjView::applySaved(Saved *saved)
   thumbnailDock->raise();
   // main saved states
   options = saved->options;
-  setUnifiedTitleAndToolBarOnMac(false);
   if (saved->state.size() > 0)
     restoreState(saved->state);
   applyOptions(saved->remember);
-#ifdef UNIFIED_TOOLBAR_ON_THE_MAC
-  if (viewerMode == STANDALONE && !isFullScreen() && !toolBar->isHidden())
-    if (toolBarArea(toolBar) & Qt::TopToolBarArea)  
-      setUnifiedTitleAndToolBarOnMac(true);
-#endif
   widget->setZoom(saved->zoom);
   // global window size in standalone mode
   if (saved == &prefs->forStandalone)
@@ -2343,10 +2342,10 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 
   // Create page combo box
   pageCombo = new QComboBox(toolBar);
-  pageCombo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-  pageCombo->setMinimumWidth(80);
   pageCombo->setEditable(true);
   pageCombo->setInsertPolicy(QComboBox::NoInsert);
+  pageCombo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+  pageCombo->setMinimumWidth(80);
   connect(pageCombo, SIGNAL(activated(int)),
           this, SLOT(pageComboActivated(int)));
   connect(pageCombo->lineEdit(), SIGNAL(editingFinished()),
