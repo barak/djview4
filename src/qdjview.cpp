@@ -77,7 +77,6 @@
 #include <QPalette>
 #include <QProcess>
 #include <QRegExp>
-#include <QRegExp>
 #include <QRegExpValidator>
 #include <QScrollBar>
 #include <QSettings>
@@ -2295,11 +2294,12 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   connect(textLabelTimer,SIGNAL(timeout()),this,SLOT(updateTextLabel()));
   textLabel = new QLabel(statusBar);
   textLabel->setFont(font);
+  textLabel->setAutoFillBackground(true);
   textLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
   textLabel->setFrameStyle(QFrame::Panel);
   textLabel->setFrameShadow(QFrame::Sunken);
   textLabel->setMinimumWidth(metric.width("M")*48);
-  statusBar->addPermanentWidget(textLabel);
+  statusBar->addWidget(textLabel, 1);
   pageLabel = new QLabel(statusBar);
   pageLabel->setFont(font);
   pageLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
@@ -2454,6 +2454,11 @@ QDjView::open(QDjVuDocument *doc, QUrl url)
   widget->reduceOptionsToPriority(QDjVuWidget::PRIORITY_CGI);
   // set focus
   widget->setFocus();
+  // set title
+  setWindowTitle(QString("%1[*] - ").arg(getShortFileName()) + tr("DjView"));
+#if QT_VERSION > 0x40400
+  setWindowFilePath(url.toLocalFile());
+#endif
 }
 
 
@@ -2479,7 +2484,6 @@ QDjView::open(QString filename)
   open(doc, url);
   documentFileName = filename;
   addRecent(url);
-  setWindowTitle(QString("%1[*] - ").arg(getShortFileName()) + tr("DjView"));
   return true;
 }
 
@@ -2516,7 +2520,6 @@ QDjView::open(QUrl url)
     }
   open(doc, url);
   addRecent(docurl);
-  setWindowTitle(QString("%1[*] - ").arg(getShortFileName()) + tr("DjView"));
   return true;
 }
 
@@ -3440,7 +3443,8 @@ QDjView::eventFilter(QObject *watched, QEvent *event)
 void 
 QDjView::info(QString message)
 {
-  // just for calling qWarning
+  if (! message.contains(QRegExp("^\\[\\d+")))
+    statusBar->showMessage(message, 2000);
   qWarning("INFO: %s", (const char*)message.toLocal8Bit());
 }
 
