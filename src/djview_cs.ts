@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="cs_CZ">
+<!DOCTYPE TS><TS version="1.1" language="cs_CZ">
+<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -498,7 +498,7 @@
     </message>
     <message>
         <location filename="qdjview.cpp" line="546"/>
-        <source>Rotate &amp;0°</source>
+        <source>Rotate &amp;0&#xb0;</source>
         <comment>Rotate|</comment>
         <translation>Otočení &amp;0 °</translation>
     </message>
@@ -509,7 +509,7 @@
     </message>
     <message>
         <location filename="qdjview.cpp" line="552"/>
-        <source>Rotate &amp;90°</source>
+        <source>Rotate &amp;90&#xb0;</source>
         <comment>Rotate|</comment>
         <translation>Otočení &amp;90 °</translation>
     </message>
@@ -520,7 +520,7 @@
     </message>
     <message>
         <location filename="qdjview.cpp" line="558"/>
-        <source>Rotate &amp;180°</source>
+        <source>Rotate &amp;180&#xb0;</source>
         <comment>Rotate|</comment>
         <translation>Otočení &amp;180 °</translation>
     </message>
@@ -531,7 +531,7 @@
     </message>
     <message>
         <location filename="qdjview.cpp" line="564"/>
-        <source>Rotate &amp;270°</source>
+        <source>Rotate &amp;270&#xb0;</source>
         <comment>Rotate|</comment>
         <translation>Otočení &amp;270 °</translation>
     </message>
@@ -736,28 +736,24 @@
         <translation>&amp;Zobrazení</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="750"/>
         <location filename="qdjview.cpp" line="815"/>
         <source>&amp;Zoom</source>
         <comment>View|Zoom</comment>
         <translation>Z&amp;většení</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="764"/>
         <location filename="qdjview.cpp" line="829"/>
         <source>&amp;Rotate</source>
         <comment>View|Rotate</comment>
         <translation>&amp;Otočení</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="772"/>
         <location filename="qdjview.cpp" line="837"/>
         <source>&amp;Display</source>
         <comment>View|Display</comment>
         <translation>&amp;Zobrazení</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="790"/>
         <location filename="qdjview.cpp" line="810"/>
         <source>&amp;Go</source>
         <comment>Go|</comment>
@@ -901,8 +897,6 @@
         <translation>Přepínač „%1“ není znám.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2194"/>
-        <location filename="qdjview.cpp" line="2482"/>
         <location filename="qdjview.cpp" line="2519"/>
         <source>DjView</source>
         <translation>DjView</translation>
@@ -948,7 +942,6 @@
         <translation>Nelze najít stránku číslo: %1</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2574"/>
         <location filename="qdjview.cpp" line="2604"/>
         <source>Cannot find page named: %1</source>
         <translation>Nelze najít stránku pojmenovanou: %1</translation>
@@ -983,7 +976,6 @@
         <translation>Textové soubory</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3174"/>
         <location filename="qdjview.cpp" line="3221"/>
         <source>All files</source>
         <comment>save filter</comment>
@@ -996,15 +988,12 @@
         <translation>Uložit text – DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3191"/>
-        <location filename="qdjview.cpp" line="3236"/>
         <location filename="qdjview.cpp" line="3256"/>
         <source>Error - DjView</source>
         <comment>dialog caption</comment>
         <translation>Chyba – DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3192"/>
         <location filename="qdjview.cpp" line="3257"/>
         <source>Cannot write file &apos;%1&apos;.
 %2.</source>
@@ -1073,7 +1062,6 @@ Soubor „%1“ nemá žádnou příponu.</translation>
         </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3687"/>
         <location filename="qdjview.cpp" line="3689"/>
         <source>Go: page %1.</source>
         <translation>Přejít: na stranu %1.</translation>
@@ -1125,7 +1113,7 @@ Soubor „%1“ nemá žádnou příponu.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3977"/>
-        <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright &#xa9; 2006-- L&#xe9;on Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Prohlížeč dokumentů DjVu&lt;br/&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br/&gt;Copyright © 2006 – Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;Tento program je svobodné programové vybavení. Můžete jej šířit nebo upravovat podle pravidel Obecné veřejné licence GNU (GNU GPL) vydané nadací Free Software Foundation. Tento program je šířen &lt;i&gt;bez jakékoliv záruky&lt;/i&gt;. Pro podrobnosti nahlédněte do Obecné veřejné licence GNU (GNU General Public License)&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -1473,7 +1461,6 @@ Mezi obecné přepínače patří:
         <translation>Svázaný dokument DjVu</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="328"/>
         <location filename="qdjviewexporters.cpp" line="332"/>
         <source>DjVu Files (*.djvu *.djv)</source>
         <translation>Soubory DjVu (*.djvu *.djv)</translation>
@@ -1524,7 +1511,6 @@ Mezi obecné přepínače patří:
 <context>
     <name>QDjViewErrorDialog</name>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="125"/>
         <location filename="qdjviewerrordialog.ui" line="16"/>
         <source>DjView Error</source>
         <translation>Chyba DjView</translation>
@@ -1578,7 +1564,6 @@ Chcete jej nahradit?</translation>
         <translation>&amp;Nahradit</translation>
     </message>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="1331"/>
         <location filename="qdjviewexportdialog.ui" line="256"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Zrušit</translation>
@@ -1611,7 +1596,6 @@ Chcete jej nahradit?</translation>
         <translation>Dialog</translation>
     </message>
     <message>
-        <location filename="qdjviewexportdialog.ui" line="26"/>
         <location filename="qdjviewexportdialog.ui" line="38"/>
         <source>Export</source>
         <translation>Exportovat</translation>
@@ -1982,7 +1966,7 @@ Chcete jej nahradit?</translation>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1558"/>
         <source>Words only</source>
-        <translation>Jen celé slova</translation>
+        <translation>Jen celá slova</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1580"/>
@@ -2012,32 +1996,32 @@ Chcete jej nahradit?</translation>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1561"/>
         <source>Regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Regulární výraz</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1591"/>
         <source>Reset search options to default values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrátit možnosti hledání na jejich výchozí hodnoty.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1652"/>
         <source>Specify whether search hits must begin on a word boundary.</source>
-        <translation type="unfinished"></translation>
+        <translation>Určuje, zda výsledky hledání musí začínat na hranici slova.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1654"/>
         <source>Specify whether searches are case sensitive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Určute, zda hledání rozlišuje velikost písmen.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1656"/>
         <source>Regular expressions describe complex string matching patterns.</source>
-        <translation type="unfinished"></translation>
+        <translation>Regulární výrazy popisují vzory pro hledání složitých řetězců.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1658"/>
         <source>&lt;html&gt;&lt;b&gt;Regular Expression Quick Guide&lt;/b&gt;&lt;ul&gt;&lt;li&gt;The dot &lt;tt&gt;.&lt;/tt&gt; matches any character.&lt;/li&gt;&lt;li&gt;Most characters match themselves.&lt;/li&gt;&lt;li&gt;Prepend a backslash &lt;tt&gt;\&lt;/tt&gt; to match special    characters &lt;tt&gt;()[]{}|*+.?!^$\&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\b&lt;/tt&gt; matches a word boundary.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\w&lt;/tt&gt; matches a word character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\d&lt;/tt&gt; matches a digit character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\s&lt;/tt&gt; matches a blank character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\n&lt;/tt&gt; matches a newline character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; matches characters in range    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[^&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; matches characters outside range    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;|&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt; matches either regular expression    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt; or regular expression &lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{&lt;i&gt;n&lt;/i&gt;,&lt;i&gt;m&lt;/i&gt;}&lt;/tt&gt; matches regular expression    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt; repeated &lt;tt&gt;&lt;i&gt;n&lt;/i&gt;&lt;/tt&gt; to &lt;tt&gt;&lt;i&gt;m&lt;/i&gt;&lt;/tt&gt;    times.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;?&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;*&lt;/tt&gt;, and &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;+&lt;/tt&gt;    are shorthands for &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,1}&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,}&lt;/tt&gt;,     and &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{1,}&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;Use parentheses &lt;tt&gt;()&lt;/tt&gt; to group regular expressions     before &lt;tt&gt;?+*{&lt;/tt&gt;.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;b&gt;Rychlý úvod do regulárních výrazů&lt;/b&gt;&lt;ul&gt;&lt;li&gt;Tečka &lt;tt&gt;.&lt;/tt&gt; odpovídá libovolnému znaku.&lt;/li&gt;&lt;li&gt;Většina znaků odpovídá sama sobě.&lt;/li&gt;&lt;li&gt;Výběr zvláštních znaků &lt;tt&gt;()[]{}|*+.?!^$\&lt;/tt&gt; je nutné uvést zpětným lomítkem &lt;tt&gt;\&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\b&lt;/tt&gt; odpovídá hranici slova.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\w&lt;/tt&gt; odpovídá znaku slova.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\d&lt;/tt&gt; odpovídá číslici.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\s&lt;/tt&gt; odpovídá bílému znaku.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\n&lt;/tt&gt; odpovídá znaku nový řádek.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; odpovídá znakům z rozsahu &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;–&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[^&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; odpovídá znakům mimo rozsah &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;–&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;|&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt; odpovídá buď regulárnímu výrazu &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;, nebo regulárnímu výrazu &lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{&lt;i&gt;n&lt;/i&gt;,&lt;i&gt;m&lt;/i&gt;}&lt;/tt&gt; odpovídá regulárnímu výrazu  &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt; opakovanému &lt;tt&gt;&lt;i&gt;n&lt;/i&gt;&lt;/tt&gt; až &lt;tt&gt;&lt;i&gt;m&lt;/i&gt;&lt;/tt&gt;-krát.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;?&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;*&lt;/tt&gt; a &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;+&lt;/tt&gt; jsou zkratky pro &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,1}&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,}&lt;/tt&gt; a &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{1,}&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;Regulární výrazy před &lt;tt&gt;?+*{&lt;/tt&gt; lze uzavřít do skupiny pomocí závorek &lt;tt&gt;()&lt;/tt&gt;.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -2093,7 +2077,7 @@ Chcete jej nahradit?</translation>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1379"/>
         <source>&lt;html&gt;Invalid regular expression.&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Neplatný regulární výraz.&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -2171,7 +2155,7 @@ Chcete jej nahradit?</translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="437"/>
-        <source>Page #%1 - « %2 »</source>
+        <source>Page #%1 - &#xab; %2 &#xbb;</source>
         <translation>Strana č. %1 – „%2“</translation>
     </message>
     <message>
@@ -2225,7 +2209,6 @@ Chcete jej nahradit?</translation>
         <translation>Zastaralý volný dokument DjVu</translation>
     </message>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="509"/>
         <location filename="qdjviewdialogs.cpp" line="516"/>
         <source>n/a</source>
         <translation>není známo</translation>
@@ -2383,13 +2366,11 @@ Chcete jej nahradit?</translation>
         <translation>Strany</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="172"/>
         <location filename="qdjviewsidebar.cpp" line="207"/>
         <source>Page %1</source>
         <translation>Strana %1</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="175"/>
         <location filename="qdjviewsidebar.cpp" line="215"/>
         <source>Go to page %1</source>
         <translation>Přejít na stranu %1</translation>
@@ -2403,7 +2384,6 @@ Chcete jej nahradit?</translation>
         <translation>PostScript</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="545"/>
         <location filename="qdjviewexporters.cpp" line="549"/>
         <source>PostScript Files (*.ps *.eps)</source>
         <translation>Postscriptový soubor (*.ps *.eps)</translation>
@@ -2498,7 +2478,6 @@ Chcete jej nahradit?</translation>
         <translation>Výstupní soubor nelze vytvořit.</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1742"/>
         <location filename="qdjviewexporters.cpp" line="1781"/>
         <source>System error: %1.</source>
         <translation>Systémová chyba: %1.</translation>
@@ -2871,7 +2850,6 @@ Chcete jej nahradit?</translation>
         <translation>Zapnout pokročilé možnosti v nabídkách</translation>
     </message>
     <message>
-        <location filename="qdjviewprefsdialog.ui" line="992"/>
         <location filename="qdjviewprefsdialog.ui" line="1005"/>
         <source> MB</source>
         <translation> MB</translation>
@@ -2945,7 +2923,6 @@ Chcete jej nahradit?</translation>
         <translation>&amp;Nahradit</translation>
     </message>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="1738"/>
         <location filename="qdjviewprintdialog.ui" line="280"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Zrušit</translation>
@@ -2966,7 +2943,6 @@ Chcete jej nahradit?</translation>
         <translation>Dialog</translation>
     </message>
     <message>
-        <location filename="qdjviewprintdialog.ui" line="29"/>
         <location filename="qdjviewprintdialog.ui" line="41"/>
         <source>Print</source>
         <translation>Tisknout</translation>
@@ -3097,7 +3073,6 @@ Do you want to replace it?</source>
         <translation>&amp;Nahradit</translation>
     </message>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="984"/>
         <location filename="qdjviewsavedialog.ui" line="222"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Zrušit</translation>
