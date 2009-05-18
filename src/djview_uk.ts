@@ -401,12 +401,12 @@
     <message>
         <location filename="qdjview.cpp" line="1090"/>
         <source>&lt;html&gt;&lt;b&gt;Continuous layout.&lt;/b&gt;&lt;br/&gt; Display all the document pages arranged vertically inside the scrollable document viewing area.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Неперервний показ.&lt;/b&gt;&lt;br/&gt; Показує всі сторінки документу розташовані вертикально всередині області перегляду документа з прокручуванням.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Неперервний показ.&lt;/b&gt;&lt;br/&gt; Показує всі сторінки документу розташовані вертикально всередині області перегляду, придатної для гортання.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="1095"/>
         <source>&lt;html&gt;&lt;b&gt;Side by side layout.&lt;/b&gt;&lt;br/&gt; Display pairs of pages side by side inside the scrollable document viewing area.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Розташування поруч.&lt;/b&gt;&lt;br/&gt; Показує пари сторінок поруч одна з одною всередині області перегляду документа з прокручуванням.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Розташування поруч.&lt;/b&gt;&lt;br/&gt; Показує пари сторінок поруч одна з одною всередині області перегляду документа, придатної для гортання.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="1100"/>
@@ -1812,7 +1812,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewexportps3.ui" line="196"/>
         <source>Center:</source>
-        <translation>Посередині</translation>
+        <translation>Посередині:</translation>
     </message>
     <message>
         <location filename="qdjviewexportps3.ui" line="203"/>
@@ -1996,32 +1996,32 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1561"/>
         <source>Regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Формальний вираз</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1591"/>
         <source>Reset search options to default values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Відновити типові значення параметрів пошуку.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1652"/>
         <source>Specify whether search hits must begin on a word boundary.</source>
-        <translation type="unfinished"></translation>
+        <translation>Визначіть, чи має шуканий рядок бути розташованим на межі слова.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1654"/>
         <source>Specify whether searches are case sensitive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вкажіть, чи слід враховувати регістр символів під час пошуку.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1656"/>
         <source>Regular expressions describe complex string matching patterns.</source>
-        <translation type="unfinished"></translation>
+        <translation>За допомогою формальних виразів можна описати складні шаблони відповідності.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1658"/>
         <source>&lt;html&gt;&lt;b&gt;Regular Expression Quick Guide&lt;/b&gt;&lt;ul&gt;&lt;li&gt;The dot &lt;tt&gt;.&lt;/tt&gt; matches any character.&lt;/li&gt;&lt;li&gt;Most characters match themselves.&lt;/li&gt;&lt;li&gt;Prepend a backslash &lt;tt&gt;\&lt;/tt&gt; to match special    characters &lt;tt&gt;()[]{}|*+.?!^$\&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\b&lt;/tt&gt; matches a word boundary.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\w&lt;/tt&gt; matches a word character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\d&lt;/tt&gt; matches a digit character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\s&lt;/tt&gt; matches a blank character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\n&lt;/tt&gt; matches a newline character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; matches characters in range    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[^&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; matches characters outside range    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;|&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt; matches either regular expression    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt; or regular expression &lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{&lt;i&gt;n&lt;/i&gt;,&lt;i&gt;m&lt;/i&gt;}&lt;/tt&gt; matches regular expression    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt; repeated &lt;tt&gt;&lt;i&gt;n&lt;/i&gt;&lt;/tt&gt; to &lt;tt&gt;&lt;i&gt;m&lt;/i&gt;&lt;/tt&gt;    times.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;?&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;*&lt;/tt&gt;, and &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;+&lt;/tt&gt;    are shorthands for &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,1}&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,}&lt;/tt&gt;,     and &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{1,}&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;Use parentheses &lt;tt&gt;()&lt;/tt&gt; to group regular expressions     before &lt;tt&gt;?+*{&lt;/tt&gt;.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;b&gt;Коротка інструкція з формальних виразів&lt;/b&gt;&lt;ul&gt;&lt;li&gt;Крапка &lt;tt&gt;.&lt;/tt&gt; відповідає довільному символу.&lt;/li&gt;&lt;li&gt;Більшість символів відповідаються самим собі.&lt;/li&gt;&lt;li&gt;До спеціальних символів, &lt;tt&gt;()[]{}|*+.?!^$\&lt;/tt&gt;, слід додавати префікс &lt;tt&gt;\&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\b&lt;/tt&gt; відповідає межі слова.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\w&lt;/tt&gt; відповідає літері.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\d&lt;/tt&gt; відповідає числовому символу.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\s&lt;/tt&gt; відповідає пробілу.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\n&lt;/tt&gt; відповідає символу нового рядка.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; відповідає діапазону символів    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[^&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; відповідає символам поза діапазоном    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;|&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt; відповідає або формальному виразу    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;, або формальному виразу &lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{&lt;i&gt;n&lt;/i&gt;,&lt;i&gt;m&lt;/i&gt;}&lt;/tt&gt; відповідає формальному виразу    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;, повтореному від &lt;tt&gt;&lt;i&gt;n&lt;/i&gt;&lt;/tt&gt; до &lt;tt&gt;&lt;i&gt;m&lt;/i&gt;&lt;/tt&gt;    разів.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;?&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;*&lt;/tt&gt; і &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;+&lt;/tt&gt;  — скорочення шаблонів &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,1}&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,}&lt;/tt&gt;     і &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{1,}&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;Для групування формальних виразів додайте &lt;tt&gt;()&lt;/tt&gt; перед &lt;tt&gt;?+*{&lt;/tt&gt;.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -2077,7 +2077,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1379"/>
         <source>&lt;html&gt;Invalid regular expression.&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Некоректний формальний вираз.&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -2576,7 +2576,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="353"/>
         <source>Sc&amp;rollbars</source>
-        <translation>Смуги про&amp;кручування</translation>
+        <translation>Смуги &amp;гортання</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="360"/>
