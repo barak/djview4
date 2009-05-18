@@ -4040,7 +4040,7 @@ QDjView::performOpenLocation(void)
   if (viewerMode != STANDALONE)
     return;
   QString caption = tr("Open Location - DjView", "dialog caption");
-  QString label = tr("Enter the URL of a DjVu document.");
+  QString label = tr("Enter the URL of a DjVu document:");
   QString text = "http://";
   bool ok;
   QUrl url  = QInputDialog::getText(this, caption, label, 

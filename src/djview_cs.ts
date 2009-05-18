@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="cs_CZ">
+<!DOCTYPE TS>
+<TS version="2.0" language="cs_CZ">
 <defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
@@ -17,827 +18,831 @@
         <translation>„%1“ nelze otevřít.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="136"/>
+        <location filename="qdjview.cpp" line="135"/>
         <source>FitWidth</source>
         <comment>zoomCombo</comment>
         <translation>Na šířku</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="137"/>
+        <location filename="qdjview.cpp" line="136"/>
         <source>FitPage</source>
         <comment>zoomCombo</comment>
         <translation>Celá stránka</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="138"/>
+        <location filename="qdjview.cpp" line="137"/>
         <source>Stretch</source>
         <comment>zoomCombo</comment>
         <translation>Roztáhnout</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="139"/>
+        <location filename="qdjview.cpp" line="138"/>
         <source>1:1</source>
         <comment>zoomCombo</comment>
         <translation>1:1</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="140"/>
+        <location filename="qdjview.cpp" line="139"/>
         <source>300%</source>
         <comment>zoomCombo</comment>
         <translation>300 %</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="141"/>
+        <location filename="qdjview.cpp" line="140"/>
         <source>200%</source>
         <comment>zoomCombo</comment>
         <translation>200 %</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="142"/>
+        <location filename="qdjview.cpp" line="141"/>
         <source>150%</source>
         <comment>zoomCombo</comment>
         <translation>150 %</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="143"/>
+        <location filename="qdjview.cpp" line="142"/>
         <source>100%</source>
         <comment>zoomCombo</comment>
         <translation>100 %</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="144"/>
+        <location filename="qdjview.cpp" line="143"/>
         <source>75%</source>
         <comment>zoomCombo</comment>
         <translation>75 %</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="145"/>
+        <location filename="qdjview.cpp" line="144"/>
         <source>50%</source>
         <comment>zoomCombo</comment>
         <translation>50 %</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="153"/>
+        <location filename="qdjview.cpp" line="152"/>
         <source>Color</source>
         <comment>modeCombo</comment>
         <translation>Barevně</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="154"/>
+        <location filename="qdjview.cpp" line="153"/>
         <source>Stencil</source>
         <comment>modeCombo</comment>
         <translation>Kresbu</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="155"/>
+        <location filename="qdjview.cpp" line="154"/>
         <source>Foreground</source>
         <comment>modeCombo</comment>
         <translation>Popředí</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="156"/>
+        <location filename="qdjview.cpp" line="155"/>
         <source>Background</source>
         <comment>modeCombo</comment>
         <translation>Pozadí</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="363"/>
+        <location filename="qdjview.cpp" line="362"/>
         <source>&amp;New</source>
         <comment>File|</comment>
         <translation>&amp;Nové okno</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="364"/>
+        <location filename="qdjview.cpp" line="363"/>
         <source>Ctrl+N</source>
         <comment>File|New</comment>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="366"/>
+        <location filename="qdjview.cpp" line="365"/>
         <source>Create a new DjView window.</source>
         <translation>Vytvoří nové okno s DjView.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="369"/>
+        <location filename="qdjview.cpp" line="368"/>
         <source>&amp;Open</source>
         <comment>File|</comment>
         <translation>&amp;Otevřít</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="370"/>
+        <location filename="qdjview.cpp" line="369"/>
         <source>Ctrl+O</source>
         <comment>File|Open</comment>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="372"/>
+        <location filename="qdjview.cpp" line="371"/>
         <source>Open a DjVu document.</source>
         <translation>Otevře dokument DjVu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="380"/>
+        <location filename="qdjview.cpp" line="379"/>
         <source>&amp;Close</source>
         <comment>File|</comment>
         <translation>&amp;Zavřít</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="381"/>
+        <location filename="qdjview.cpp" line="380"/>
         <source>Ctrl+W</source>
         <comment>File|Close</comment>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="383"/>
+        <location filename="qdjview.cpp" line="382"/>
         <source>Close this window.</source>
         <translation>Zavře toto okno.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="386"/>
+        <location filename="qdjview.cpp" line="385"/>
         <source>&amp;Quit</source>
         <comment>File|</comment>
         <translation>U&amp;končit</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="387"/>
+        <location filename="qdjview.cpp" line="386"/>
         <source>Ctrl+Q</source>
         <comment>File|Quit</comment>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="389"/>
+        <location filename="qdjview.cpp" line="388"/>
         <source>Close all windows and quit the application.</source>
         <translation>Zavře všechna okna a ukončí aplikaci.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="392"/>
+        <location filename="qdjview.cpp" line="391"/>
         <source>Save &amp;as...</source>
         <comment>File|</comment>
         <translation>Uložit &amp;jako…</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="393"/>
+        <location filename="qdjview.cpp" line="392"/>
         <source>Ctrl+S</source>
         <comment>File|SaveAs</comment>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="395"/>
+        <location filename="qdjview.cpp" line="394"/>
         <source>Save the DjVu document.</source>
         <translation>Uloží dokument DjVu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="398"/>
+        <location filename="qdjview.cpp" line="397"/>
         <source>&amp;Export as...</source>
         <comment>File|</comment>
         <translation>&amp;Exportovat jako…</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="399"/>
+        <location filename="qdjview.cpp" line="398"/>
         <source>Ctrl+E</source>
         <comment>File|ExportAs</comment>
         <translation>Ctrl+E</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="401"/>
+        <location filename="qdjview.cpp" line="400"/>
         <source>Export DjVu page or document to other formats.</source>
         <translation>Exportuje stránku DjVu nebo celý dokument do jiného formátu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="404"/>
+        <location filename="qdjview.cpp" line="403"/>
         <source>&amp;Print...</source>
         <comment>File|</comment>
         <translation>&amp;Tisknout…</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="405"/>
+        <location filename="qdjview.cpp" line="404"/>
         <source>Ctrl+P</source>
         <comment>File|Print</comment>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="407"/>
+        <location filename="qdjview.cpp" line="406"/>
         <source>Print the DjVu document.</source>
         <translation>Vytiskne dokument DjVu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="410"/>
+        <location filename="qdjview.cpp" line="409"/>
         <source>&amp;Find...</source>
         <comment>Edit|</comment>
         <translation>Na&amp;jít…</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="411"/>
+        <location filename="qdjview.cpp" line="410"/>
         <source>Ctrl+F</source>
         <comment>Edit|Find</comment>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="413"/>
+        <location filename="qdjview.cpp" line="412"/>
         <source>Find text in the document.</source>
         <translation>Hledá text v dokumentu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="416"/>
+        <location filename="qdjview.cpp" line="415"/>
         <source>Find &amp;Next</source>
         <comment>Edit|</comment>
         <translation>Najít &amp;další</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="418"/>
+        <location filename="qdjview.cpp" line="417"/>
         <source>F3</source>
         <comment>Edit|Find Next</comment>
         <translation>F3</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="419"/>
+        <location filename="qdjview.cpp" line="418"/>
         <source>Find next occurence of search text in the document.</source>
         <translation>Hledá v dokumentu další výskyt hledaného textu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="422"/>
+        <location filename="qdjview.cpp" line="421"/>
         <source>Find &amp;Previous</source>
         <comment>Edit|</comment>
         <translation>Najít &amp;předchozí</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="423"/>
+        <location filename="qdjview.cpp" line="422"/>
         <source>Shift+F3</source>
         <comment>Edit|Find Previous</comment>
         <translation>Shift+F3</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="424"/>
+        <location filename="qdjview.cpp" line="423"/>
         <source>Find previous occurence of search text in the document.</source>
         <translation>Hledá v dokumentu předchozí výskyt hledaného textu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="427"/>
+        <location filename="qdjview.cpp" line="426"/>
         <source>&amp;Select</source>
         <comment>Edit|</comment>
         <translation>&amp;Vybrat</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="429"/>
+        <location filename="qdjview.cpp" line="428"/>
         <source>F2</source>
         <comment>Edit|Select</comment>
         <translation>F2</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="431"/>
+        <location filename="qdjview.cpp" line="430"/>
         <source>Select a rectangle in the document.</source>
         <translation>Vyberte v dokumentu obdélníkovou oblast.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="434"/>
+        <location filename="qdjview.cpp" line="433"/>
         <source>Zoom &amp;In</source>
         <comment>Zoom|</comment>
         <translation>&amp;Přiblížit</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="436"/>
+        <location filename="qdjview.cpp" line="435"/>
         <source>Increase the magnification.</source>
         <translation>Zvýší zvětšení.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="439"/>
+        <location filename="qdjview.cpp" line="438"/>
         <source>Zoom &amp;Out</source>
         <comment>Zoom|</comment>
         <translation>&amp;Oddálit</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="441"/>
+        <location filename="qdjview.cpp" line="440"/>
         <source>Decrease the magnification.</source>
         <translation>Sníží zvětšení.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="444"/>
+        <location filename="qdjview.cpp" line="443"/>
         <source>Fit &amp;Width</source>
         <comment>Zoom|</comment>
         <translation>Na šíř&amp;ku</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="445"/>
+        <location filename="qdjview.cpp" line="444"/>
         <source>Set magnification to fit page width.</source>
         <translation>Nastaví takové zvětšení, aby se stránka vešla na šířku okna.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="450"/>
+        <location filename="qdjview.cpp" line="449"/>
         <source>Fit &amp;Page</source>
         <comment>Zoom|</comment>
         <translation>&amp;Celá stránka</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="451"/>
+        <location filename="qdjview.cpp" line="450"/>
         <source>Set magnification to fit page.</source>
         <translation>Nastaví takové zvětšení, aby se stránka vešla do okna.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="456"/>
+        <location filename="qdjview.cpp" line="455"/>
         <source>One &amp;to one</source>
         <comment>Zoom|</comment>
         <translation>Zvětšení &amp;1:1</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="457"/>
+        <location filename="qdjview.cpp" line="456"/>
         <source>Set full resolution magnification.</source>
         <translation>Nastaví plné zvětšení.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="462"/>
+        <location filename="qdjview.cpp" line="461"/>
         <source>&amp;300%</source>
         <comment>Zoom|</comment>
         <translation>&amp;300 %</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="463"/>
+        <location filename="qdjview.cpp" line="462"/>
         <source>Magnify 300%</source>
         <translation>Zvětšení 300 %</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="468"/>
+        <location filename="qdjview.cpp" line="467"/>
         <source>&amp;200%</source>
         <comment>Zoom|</comment>
         <translation>&amp;200%</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="469"/>
+        <location filename="qdjview.cpp" line="468"/>
         <source>Magnify 20%</source>
         <translation>Zvětšení 20 %</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="474"/>
+        <location filename="qdjview.cpp" line="473"/>
         <source>150%</source>
         <comment>Zoom|</comment>
         <translation>150 %</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="475"/>
+        <location filename="qdjview.cpp" line="474"/>
         <source>Magnify 150%</source>
         <translation>Zvětšení 150 %</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="480"/>
+        <location filename="qdjview.cpp" line="479"/>
         <source>&amp;100%</source>
         <comment>Zoom|</comment>
         <translation>&amp;100 %</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="481"/>
+        <location filename="qdjview.cpp" line="480"/>
         <source>Magnify 100%</source>
         <translation>Zvětšení 100 %</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="486"/>
+        <location filename="qdjview.cpp" line="485"/>
         <source>&amp;75%</source>
         <comment>Zoom|</comment>
         <translation>&amp;75 %</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="487"/>
+        <location filename="qdjview.cpp" line="486"/>
         <source>Magnify 75%</source>
         <translation>Zvětšení 75 %</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="492"/>
+        <location filename="qdjview.cpp" line="491"/>
         <source>&amp;50%</source>
         <comment>Zoom|</comment>
         <translation>&amp;50 %</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="493"/>
+        <location filename="qdjview.cpp" line="492"/>
         <source>Magnify 50%</source>
         <translation>Zvětšení 50 %</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="498"/>
+        <location filename="qdjview.cpp" line="497"/>
         <source>&amp;First Page</source>
         <comment>Go|</comment>
         <translation>P&amp;rvní stránka</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="500"/>
+        <location filename="qdjview.cpp" line="499"/>
         <source>Jump to first document page.</source>
         <translation>Nalistuje první stránku v dokumentu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="504"/>
+        <location filename="qdjview.cpp" line="503"/>
         <source>&amp;Next Page</source>
         <comment>Go|</comment>
         <translation>&amp;Následující stránka</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="506"/>
+        <location filename="qdjview.cpp" line="505"/>
         <source>Jump to next document page.</source>
         <translation>Nalistuje následující stránku v dokumentu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="510"/>
+        <location filename="qdjview.cpp" line="509"/>
         <source>&amp;Previous Page</source>
         <comment>Go|</comment>
         <translation>&amp;Předchozí stránka</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="512"/>
+        <location filename="qdjview.cpp" line="511"/>
         <source>Jump to previous document page.</source>
         <translation>Nalistuje předchozí stránku v dokumentu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="516"/>
+        <location filename="qdjview.cpp" line="515"/>
         <source>&amp;Last Page</source>
         <comment>Go|</comment>
         <translation>Pos&amp;lední stránka</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="518"/>
+        <location filename="qdjview.cpp" line="517"/>
         <source>Jump to last document page.</source>
         <translation>Nalistuje poslední stránku v dokumentu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="522"/>
+        <location filename="qdjview.cpp" line="521"/>
         <source>&amp;Backward</source>
         <comment>Go|</comment>
         <translation>&amp;Zpět</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="524"/>
+        <location filename="qdjview.cpp" line="523"/>
         <source>Backward in history.</source>
         <translation>Zpět v historii.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="528"/>
+        <location filename="qdjview.cpp" line="527"/>
         <source>&amp;Forward</source>
         <comment>Go|</comment>
         <translation>&amp;Dopředu</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="530"/>
+        <location filename="qdjview.cpp" line="529"/>
         <source>Forward in history.</source>
         <translation>Dopředu v historii.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="534"/>
+        <location filename="qdjview.cpp" line="533"/>
         <source>Rotate &amp;Left</source>
         <comment>Rotate|</comment>
         <translation>Otočit do&amp;leva</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="536"/>
+        <location filename="qdjview.cpp" line="535"/>
         <source>Rotate page image counter-clockwise.</source>
         <translation>Otočí stránku proti směru hodinových ručiček.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="540"/>
+        <location filename="qdjview.cpp" line="539"/>
         <source>Rotate &amp;Right</source>
         <comment>Rotate|</comment>
         <translation>Otočit do&amp;prava</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="542"/>
+        <location filename="qdjview.cpp" line="541"/>
         <source>Rotate page image clockwise.</source>
         <translation>Otočí stránku ve směru hodinových ručiček.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="546"/>
-        <source>Rotate &amp;0&#xb0;</source>
+        <location filename="qdjview.cpp" line="545"/>
+        <source>Rotate &amp;0°</source>
         <comment>Rotate|</comment>
         <translation>Otočení &amp;0 °</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="547"/>
+        <location filename="qdjview.cpp" line="546"/>
         <source>Set natural page orientation.</source>
         <translation>Nastaví přirozený směr stránky.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="552"/>
-        <source>Rotate &amp;90&#xb0;</source>
+        <location filename="qdjview.cpp" line="551"/>
+        <source>Rotate &amp;90°</source>
         <comment>Rotate|</comment>
         <translation>Otočení &amp;90 °</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="553"/>
+        <location filename="qdjview.cpp" line="552"/>
         <source>Turn page on its left side.</source>
         <translation>Stránku otočí na svoji levou stranu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="558"/>
-        <source>Rotate &amp;180&#xb0;</source>
+        <location filename="qdjview.cpp" line="557"/>
+        <source>Rotate &amp;180°</source>
         <comment>Rotate|</comment>
         <translation>Otočení &amp;180 °</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="559"/>
+        <location filename="qdjview.cpp" line="558"/>
         <source>Turn page upside-down.</source>
         <translation>Otočí stránku vzhůru nohama.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="564"/>
-        <source>Rotate &amp;270&#xb0;</source>
+        <location filename="qdjview.cpp" line="563"/>
+        <source>Rotate &amp;270°</source>
         <comment>Rotate|</comment>
         <translation>Otočení &amp;270 °</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="565"/>
+        <location filename="qdjview.cpp" line="564"/>
         <source>Turn page on its right side.</source>
         <translation>Stránku otočí na svoji pravou stranu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="570"/>
+        <location filename="qdjview.cpp" line="569"/>
         <source>&amp;Information...</source>
         <comment>Edit|</comment>
         <translation>&amp;Informace…</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="571"/>
+        <location filename="qdjview.cpp" line="570"/>
         <source>Ctrl+I</source>
         <comment>Edit|Information</comment>
         <translation>Ctrl+I</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="572"/>
+        <location filename="qdjview.cpp" line="571"/>
         <source>Show information about the document encoding and structure.</source>
         <translation>Zobrazí informace o kódování dokumentu a jeho struktuře.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="575"/>
+        <location filename="qdjview.cpp" line="574"/>
         <source>&amp;Metadata...</source>
         <comment>Edit|</comment>
         <translation>&amp;Metadata…</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="576"/>
+        <location filename="qdjview.cpp" line="575"/>
         <source>Ctrl+M</source>
         <comment>Edit|Metadata</comment>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="577"/>
+        <location filename="qdjview.cpp" line="576"/>
         <source>Show the document and page meta data.</source>
         <translation>Zobrazí metadata o stránce a celém dokumentu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="582"/>
+        <location filename="qdjview.cpp" line="581"/>
         <source>&amp;About DjView...</source>
         <translation>&amp;O DjView…</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="586"/>
+        <location filename="qdjview.cpp" line="585"/>
         <source>Show information about this program.</source>
         <translation>Zobrazí informace o tomto programu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="589"/>
+        <location filename="qdjview.cpp" line="588"/>
         <source>&amp;Color</source>
         <comment>Display|</comment>
         <translation>&amp;Barevně</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="590"/>
+        <location filename="qdjview.cpp" line="589"/>
         <source>Display everything.</source>
         <translation>Zobrazí vše.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="595"/>
+        <location filename="qdjview.cpp" line="594"/>
         <source>&amp;Stencil</source>
         <comment>Display|</comment>
         <translation>&amp;Kresbu</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="596"/>
+        <location filename="qdjview.cpp" line="595"/>
         <source>Only display the document bitonal stencil.</source>
         <translation>Zobrazí pouze dvoubarevnou kresbu dokumentu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="602"/>
+        <location filename="qdjview.cpp" line="601"/>
         <source>&amp;Foreground</source>
         <comment>Display|</comment>
         <translation>&amp;Popředí</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="603"/>
+        <location filename="qdjview.cpp" line="602"/>
         <source>Only display the foreground layer.</source>
         <translation>Zobrazí pouze vrstvu popředí.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="609"/>
+        <location filename="qdjview.cpp" line="608"/>
         <source>&amp;Background</source>
         <comment>Display|</comment>
         <translation>Po&amp;zadí</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="610"/>
+        <location filename="qdjview.cpp" line="609"/>
         <source>Only display the background layer.</source>
         <translation>Zobrazí pouze vrstvu pozadí.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="622"/>
+        <location filename="qdjview.cpp" line="621"/>
         <source>Prefere&amp;nces...</source>
         <comment>Settings|</comment>
         <translation>Nasta&amp;vení…</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="624"/>
+        <location filename="qdjview.cpp" line="623"/>
         <source>Show the preferences dialog.</source>
         <translation>Zobrazí dialog s nastavením.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="629"/>
+        <location filename="qdjview.cpp" line="628"/>
         <source>F9</source>
         <comment>Settings|Show sidebar</comment>
         <translation>F9</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="630"/>
+        <location filename="qdjview.cpp" line="629"/>
         <source>Show/hide the side bar.</source>
         <translation>Zobrazí/skryje postranní panel.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="636"/>
+        <location filename="qdjview.cpp" line="635"/>
         <source>F10</source>
         <comment>Settings|Show toolbar</comment>
         <translation>F10</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="637"/>
+        <location filename="qdjview.cpp" line="636"/>
         <source>Show/hide the standard tool bar.</source>
         <translation>Zobrazí/skryje standardní lištu nástrojů.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="641"/>
+        <location filename="qdjview.cpp" line="640"/>
         <source>Show/hide the status bar.</source>
         <translation>Zobrazí/skryje stavový řádek.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="646"/>
+        <location filename="qdjview.cpp" line="645"/>
         <source>F&amp;ull Screen</source>
         <comment>View|</comment>
         <translation>&amp;Celá obrazovka</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="648"/>
+        <location filename="qdjview.cpp" line="647"/>
         <source>F11</source>
         <comment>View|FullScreen</comment>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="650"/>
+        <location filename="qdjview.cpp" line="649"/>
         <source>Toggle full screen mode.</source>
         <translation>Přepne celoobrazovkový režim.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="653"/>
+        <location filename="qdjview.cpp" line="652"/>
         <source>&amp;Continuous</source>
         <comment>Layout|</comment>
         <translation>&amp;Navazující stránky</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="656"/>
+        <location filename="qdjview.cpp" line="655"/>
         <source>F4</source>
         <comment>Layout|Continuous</comment>
         <translation>F4</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="657"/>
+        <location filename="qdjview.cpp" line="656"/>
         <source>Toggle continuous layout mode.</source>
         <translation>Přepne souvislý režim zobrazení.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="661"/>
+        <location filename="qdjview.cpp" line="660"/>
         <source>Side &amp;by Side</source>
         <comment>Layout|</comment>
         <translation>&amp;Po dvou stránkách</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="664"/>
+        <location filename="qdjview.cpp" line="663"/>
         <source>F5</source>
         <comment>Layout|SideBySide</comment>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="665"/>
+        <location filename="qdjview.cpp" line="664"/>
         <source>Toggle side-by-side layout mode.</source>
         <translation>Přepne režim zobrazení po dvou stránkách.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="720"/>
+        <location filename="qdjview.cpp" line="719"/>
         <source>&amp;File</source>
         <comment>File|</comment>
         <translation>&amp;Soubor</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="740"/>
+        <location filename="qdjview.cpp" line="739"/>
         <source>&amp;Edit</source>
         <comment>Edit|</comment>
         <translation>Ú&amp;pravy</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="749"/>
+        <location filename="qdjview.cpp" line="748"/>
         <source>&amp;View</source>
         <comment>View|</comment>
         <translation>&amp;Zobrazení</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="815"/>
+        <location filename="qdjview.cpp" line="749"/>
+        <location filename="qdjview.cpp" line="814"/>
         <source>&amp;Zoom</source>
         <comment>View|Zoom</comment>
         <translation>Z&amp;většení</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="829"/>
+        <location filename="qdjview.cpp" line="763"/>
+        <location filename="qdjview.cpp" line="828"/>
         <source>&amp;Rotate</source>
         <comment>View|Rotate</comment>
         <translation>&amp;Otočení</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="837"/>
+        <location filename="qdjview.cpp" line="771"/>
+        <location filename="qdjview.cpp" line="836"/>
         <source>&amp;Display</source>
         <comment>View|Display</comment>
         <translation>&amp;Zobrazení</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="810"/>
+        <location filename="qdjview.cpp" line="789"/>
+        <location filename="qdjview.cpp" line="809"/>
         <source>&amp;Go</source>
         <comment>Go|</comment>
         <translation>Pře&amp;jít</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="798"/>
+        <location filename="qdjview.cpp" line="797"/>
         <source>&amp;Settings</source>
         <comment>Settings|</comment>
         <translation>Nasta&amp;vení</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="804"/>
+        <location filename="qdjview.cpp" line="803"/>
         <source>&amp;Help</source>
         <comment>Help|</comment>
         <translation>&amp;Nápověda</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1026"/>
+        <location filename="qdjview.cpp" line="1025"/>
         <source>Control Left Mouse Button</source>
         <translation>Ovládat levým tlačítkem myši</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1028"/>
+        <location filename="qdjview.cpp" line="1027"/>
         <source>Right Mouse Button</source>
         <translation>Pravé tlačítko myši</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1035"/>
+        <location filename="qdjview.cpp" line="1034"/>
         <source>&lt;html&gt;&lt;b&gt;Selecting a rectangle.&lt;/b&gt;&lt;br/&gt; Once a rectangular area is selected, a popup menu lets you copy the corresponding text or image. Instead of using this tool, you can also hold %1 and use the Left Mouse Button.&lt;/html&gt;</source>
         <translation>&lt;html&lt;b&gt;Obdélníkový výběr.&lt;/b&gt;&lt;br/&gt;Jakmile vyberete obdélníkovou oblast, vyskočí nabídka umožňující zkopírování odpovídajícího textu nebo obrázku. Místo tohoto nástroje můžete podržet %1 a použít levé tlačítko myši.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1043"/>
+        <location filename="qdjview.cpp" line="1042"/>
         <source>&lt;html&gt;&lt;b&gt;Zooming.&lt;/b&gt;&lt;br/&gt; Choose a zoom level for viewing the document. Zoom level 100% displays the document for a 100 dpi screen. Zoom levels &lt;tt&gt;Fit Page&lt;/tt&gt; and &lt;tt&gt;Fit Width&lt;/tt&gt; ensure that the full page or the page width fit in the window. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Zvětšení.&lt;/b&gt;&lt;br/&gt;Vybere míru zvětšení při prohlížení dokumentu. Hodnota 100 % zobrazí dokument pro 100dpi obrazovku. Hodnoty &lt;tt&gt;Celá stránka&lt;/tt&gt; a &lt;tt&gt;Na šířku&lt;/tt&gt; zajistí, že celá stránka nebo celá šířka stránky se vměstná do okna.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1055"/>
+        <location filename="qdjview.cpp" line="1054"/>
         <source>&lt;html&gt;&lt;b&gt;Rotating the pages.&lt;/b&gt;&lt;br/&gt; Choose to display pages in portrait or landscape mode. You can also turn them upside down.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Otáčení stránek.&lt;/b&gt;&lt;br/&gt;Vyberte pro zobrazení stránek v orientaci na výšku nebo na šířku. Taktéž je můžete otočit vzhůru nohama.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1062"/>
+        <location filename="qdjview.cpp" line="1061"/>
         <source>&lt;html&gt;&lt;b&gt;Display mode.&lt;/b&gt;&lt;br/&gt; DjVu images compose a background layer and a foreground layer using a stencil. The display mode specifies with layers should be displayed.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Režim zobrazení.&lt;/b&gt;&lt;br/&gt;Obrázku DjVu se skládají z vrstvy s pozadím a popředím za pomoc kresby textu. Režim zobrazení určuje, které vrstvy mají být zobrazeny.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1070"/>
+        <location filename="qdjview.cpp" line="1069"/>
         <source>&lt;html&gt;&lt;b&gt;Navigating the document.&lt;/b&gt;&lt;br/&gt; The page selector lets you jump to any page by name. The navigation buttons jump to the first page, the previous page, the next page, or the last page. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Navigace po dokumentu.&lt;/b&gt;&lt;br/&gt;Tanto výběr stránky vám dovolí přejít na libovolnou stránku podle jejího jména. Tlačítka navigace směřují na stránku první, předcházející, následující nebo poslední.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1078"/>
+        <location filename="qdjview.cpp" line="1077"/>
         <source>&lt;html&gt;&lt;b&gt;Document and page information.&lt;/b&gt;&lt;br&gt; Display a dialog window for viewing encoding information pertaining to the document or to a specific page.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Informace o dokumentu a stránkách&lt;/b&gt;&lt;br/&gt;Zobrazí interaktivní okno s informacemi o kódování dokumentu nebo určité stránky.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1084"/>
+        <location filename="qdjview.cpp" line="1083"/>
         <source>&lt;html&gt;&lt;b&gt;Document and page metadata.&lt;/b&gt;&lt;br&gt; Display a dialog window for viewing metadata pertaining to the document or to a specific page.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Metadata o dokumentu a stránkách.&lt;/b&gt;&lt;br/&gt;Zobrazí interaktivní okno s metadaty o dokumentu nebo určité stránce.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1090"/>
+        <location filename="qdjview.cpp" line="1089"/>
         <source>&lt;html&gt;&lt;b&gt;Continuous layout.&lt;/b&gt;&lt;br/&gt; Display all the document pages arranged vertically inside the scrollable document viewing area.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Navazující pohled.&lt;/b&gt;&lt;br/&gt;Všechny stránky dokumentu budou svisle seřazeny uvnitř jediné velké rolovatelné oblasti (jako leporelo).&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1095"/>
+        <location filename="qdjview.cpp" line="1094"/>
         <source>&lt;html&gt;&lt;b&gt;Side by side layout.&lt;/b&gt;&lt;br/&gt; Display pairs of pages side by side inside the scrollable document viewing area.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Pohled po dvou stránkách.&lt;/bn&gt;&lt;br/&gt;Uvnitř rolovatelné oblasti budou zobrazeny vždy dvě sousedící stránky vedle sebe (jako otevřená kniha).&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1100"/>
+        <location filename="qdjview.cpp" line="1099"/>
         <source>&lt;html&gt;&lt;b&gt;Page information.&lt;/b&gt;&lt;br/&gt; Display information about the page located under the cursor: the sequential page number, the page size in pixels, and the page resolution in dots per inch. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Informace o stránce.&lt;/b&gt;&lt;br/&gt;Zobrazí informace o stránce umístěné pod kurzorem: pořadové číslo stránky, rozměry stránky v pixelech a rozlišení stránky v bodech na palec.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1106"/>
+        <location filename="qdjview.cpp" line="1105"/>
         <source>&lt;html&gt;&lt;b&gt;Cursor information.&lt;/b&gt;&lt;br/&gt; Display the position of the mouse cursor expressed in page coordinates. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Informace o kurzoru.&lt;/b&gt;&lt;br/&gt;Zobrazí pozici ukazatele myši v souřadném systému stránky.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1111"/>
+        <location filename="qdjview.cpp" line="1110"/>
         <source>&lt;html&gt;&lt;b&gt;Document viewing area.&lt;/b&gt;&lt;br/&gt; This is the main display area for the DjVu document. &lt;ul&gt;&lt;li&gt;Arrows and page keys to navigate the document.&lt;/li&gt;&lt;li&gt;Space and BackSpace to read the document.&lt;/li&gt;&lt;li&gt;Keys &lt;tt&gt;+&lt;/tt&gt; &lt;tt&gt;-&lt;/tt&gt; &lt;tt&gt;[&lt;/tt&gt; &lt;tt&gt;]&lt;/tt&gt; to zoom or rotate the document.&lt;/li&gt;&lt;li&gt;Left Mouse Button for panning and selecting links.&lt;/li&gt;&lt;li&gt;%3 for displaying the contextual menu.&lt;/li&gt;&lt;li&gt;%1 Left Mouse Button for selecting text or images.&lt;/li&gt;&lt;li&gt;%2 for popping the magnification lens.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Oblast pro zobrazování
             dokumentu.&lt;/bn&gt;&lt;br/&gt;Toto je hlavní zobrazovací plocha
@@ -852,52 +857,53 @@
             a obrázků.&lt;/li&gt;&lt;li&gt;%2 pro zobrazení lupy.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1124"/>
+        <location filename="qdjview.cpp" line="1123"/>
         <source>&lt;html&gt;&lt;b&gt;Document viewing area.&lt;/b&gt;&lt;br/&gt; This is the main display area for the DjVu document. But you must first open a DjVu document to see anything.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Plocha pro zobrazování dokumentu.&lt;/b&gt;&lt;br/&gt;Toto je hlavní plocha pro zobrazování dokumentů DjVu. Avšak abyste něco viděli, musíte nejprve nějaký dokument DjVu otevřít.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1436"/>
+        <location filename="qdjview.cpp" line="1435"/>
         <source>Option &apos;%1&apos; requires boolean argument.</source>
         <translation>Přepínač „%1“ vyžaduje pravdivostní argument.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1443"/>
+        <location filename="qdjview.cpp" line="1442"/>
         <source>Illegal value &apos;%2&apos; for option &apos;%1&apos;.</source>
         <translation>Neplatná hodnota „%2“ pro přepínač „%1“.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1561"/>
+        <location filename="qdjview.cpp" line="1560"/>
         <source>Toolbar option &apos;%1&apos; is not implemented.</source>
         <translation>Přepínač lišty nástrojů „%1“ není implementován.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1574"/>
+        <location filename="qdjview.cpp" line="1573"/>
         <source>Toolbar option &apos;%1&apos; is not recognized.</source>
         <translation>Přepínač lišty nástrojů „%1“ není znám.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1620"/>
+        <location filename="qdjview.cpp" line="1619"/>
         <source>Option &apos;%1&apos; requires a standalone viewer.</source>
         <translation>Přepínač „%1“ vyžaduje samostatný prohlížeč.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1873"/>
+        <location filename="qdjview.cpp" line="1872"/>
         <source>Deprecated option &apos;%1&apos;</source>
         <translation>Zastaralý přepínač „%1“</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1919"/>
+        <location filename="qdjview.cpp" line="1918"/>
         <source>Option &apos;%1&apos; is not implemented.</source>
         <translation>Přepínač „%1“ není implementován.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1924"/>
+        <location filename="qdjview.cpp" line="1923"/>
         <source>Option &apos;%1&apos; is not recognized.</source>
         <translation>Přepínač „%1“ není znám.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2519"/>
+        <location filename="qdjview.cpp" line="2193"/>
+        <location filename="qdjview.cpp" line="2458"/>
         <source>DjView</source>
         <translation>DjView</translation>
     </message>
@@ -917,134 +923,139 @@
         <translation>Na&amp;jít</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2473"/>
+        <location filename="qdjview.cpp" line="2478"/>
         <source>Cannot open file &apos;%1&apos;.</source>
         <translation>Soubor „%1“ nelze otevřít.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2474"/>
+        <location filename="qdjview.cpp" line="2479"/>
         <source>Opening DjVu file</source>
         <translation>Otevírám soubor DjVu</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2513"/>
+        <location filename="qdjview.cpp" line="2517"/>
         <source>Cannot open URL &apos;%1&apos;.</source>
         <translation>URL „%1“ nelze otevřít.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2514"/>
+        <location filename="qdjview.cpp" line="2518"/>
         <source>Opening DjVu document</source>
         <translation>Otevírám dokument DjVu</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2542"/>
+        <location filename="qdjview.cpp" line="2545"/>
         <source>Cannot find page numbered: %1</source>
         <translation>Nelze najít stránku číslo: %1</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2604"/>
+        <location filename="qdjview.cpp" line="2577"/>
+        <location filename="qdjview.cpp" line="2607"/>
         <source>Cannot find page named: %1</source>
         <translation>Nelze najít stránku pojmenovanou: %1</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2814"/>
+        <location filename="qdjview.cpp" line="2820"/>
         <source>Unrecognized sidebar options &apos;%1&apos;.</source>
         <translation>Nerozpoznané volby postranního panelu „%1“.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2875"/>
+        <location filename="qdjview.cpp" line="2881"/>
         <source>Print - DjView</source>
         <comment>dialog caption</comment>
         <translation>Tisk – DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2892"/>
+        <location filename="qdjview.cpp" line="2898"/>
         <source>Save - DjView</source>
         <comment>dialog caption</comment>
         <translation>Uložení – DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2908"/>
+        <location filename="qdjview.cpp" line="2914"/>
         <source>Export - DjView</source>
         <comment>dialog caption</comment>
         <translation>Export – DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3173"/>
+        <location filename="qdjview.cpp" line="3179"/>
         <source>Text files</source>
         <comment>save filter</comment>
         <translation>Textové soubory</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3221"/>
+        <location filename="qdjview.cpp" line="3180"/>
+        <location filename="qdjview.cpp" line="3227"/>
         <source>All files</source>
         <comment>save filter</comment>
         <translation>Všechny soubory</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3175"/>
+        <location filename="qdjview.cpp" line="3181"/>
         <source>Save Text - DjView</source>
         <comment>dialog caption</comment>
         <translation>Uložit text – DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3256"/>
+        <location filename="qdjview.cpp" line="3197"/>
+        <location filename="qdjview.cpp" line="3242"/>
+        <location filename="qdjview.cpp" line="3262"/>
         <source>Error - DjView</source>
         <comment>dialog caption</comment>
         <translation>Chyba – DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3257"/>
+        <location filename="qdjview.cpp" line="3198"/>
+        <location filename="qdjview.cpp" line="3263"/>
         <source>Cannot write file &apos;%1&apos;.
 %2.</source>
         <translation>Soubor „%1“ nelze zapsat.
 %2.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3222"/>
+        <location filename="qdjview.cpp" line="3228"/>
         <source>Save Image - DjView</source>
         <comment>dialog caption</comment>
         <translation>Uložit obrázek – DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3237"/>
+        <location filename="qdjview.cpp" line="3243"/>
         <source>Cannot determine file format.
 Filename &apos;%1&apos; has no suffix.</source>
         <translation>Formát souboru nelze určit.
 Soubor „%1“ nemá žádnou příponu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3250"/>
+        <location filename="qdjview.cpp" line="3256"/>
         <source>Image format %1 not supported.</source>
         <translation>Formát souboru %1 není podporován.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3466"/>
+        <location filename="qdjview.cpp" line="3473"/>
         <source>Cannot decode page %1.</source>
         <translation>Stránku %1 nelze dekódovat.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3468"/>
+        <location filename="qdjview.cpp" line="3475"/>
         <source>Cannot decode document.</source>
         <translation>Dokument nelze dekódovat.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3470"/>
+        <location filename="qdjview.cpp" line="3477"/>
         <source>Decoding DjVu document</source>
         <translation>Dekóduji dokument DjVu</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3600"/>
+        <location filename="qdjview.cpp" line="3607"/>
         <source> P%1 %2x%3 %4dpi </source>
         <translation> S%1 %2×%3 %4 dpi </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3604"/>
+        <location filename="qdjview.cpp" line="3611"/>
         <source> x=%1 y=%2 </source>
         <translation> x=%1 y=%2 </translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3681"/>
+        <location filename="qdjview.cpp" line="3688"/>
         <source>Go: %n pages forward.</source>
         <translation>
             <numerusform>Přejít: %n stranu vpřed.</numerusform>
@@ -1053,7 +1064,7 @@ Soubor „%1“ nemá žádnou příponu.</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3684"/>
+        <location filename="qdjview.cpp" line="3691"/>
         <source>Go: %n pages backward.</source>
         <translation>
             <numerusform>Přejít: %n stranu zpět.</numerusform>
@@ -1062,188 +1073,189 @@ Soubor „%1“ nemá žádnou příponu.</translation>
         </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3689"/>
+        <location filename="qdjview.cpp" line="3694"/>
+        <location filename="qdjview.cpp" line="3696"/>
         <source>Go: page %1.</source>
         <translation>Přejít: na stranu %1.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3691"/>
+        <location filename="qdjview.cpp" line="3698"/>
         <source>Link: %1</source>
         <translation>Odkaz: %1</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3693"/>
+        <location filename="qdjview.cpp" line="3700"/>
         <source> (in other window.)</source>
         <translation> (v dalším okně.)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3760"/>
+        <location filename="qdjview.cpp" line="3767"/>
         <source>Cannot resolve link &apos;%1&apos;</source>
         <translation>Odkaz „%1“ nelze vyhodnotit</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3788"/>
+        <location filename="qdjview.cpp" line="3795"/>
         <source>Cannot spawn a browser for url &apos;%1&apos;</source>
         <translation>Pro URL „%1“ nelze vyvolat prohlížeč</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3808"/>
+        <location filename="qdjview.cpp" line="3815"/>
         <source>Copy text (%1)</source>
         <translation>Zkopírovat text (%1)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3809"/>
+        <location filename="qdjview.cpp" line="3816"/>
         <source>Save text as...</source>
         <translation>Uložit text jako…</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3815"/>
+        <location filename="qdjview.cpp" line="3822"/>
         <source>Copy image (%1x%2 pixels)</source>
         <translation>Zkopírovat obrázek (%1×%2 pixelů)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3817"/>
+        <location filename="qdjview.cpp" line="3824"/>
         <source>Save image as...</source>
         <translation>Uložit obrázek jako…</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3821"/>
+        <location filename="qdjview.cpp" line="3828"/>
         <source>Zoom to rectangle</source>
         <translation>Zvětšit na obdélník</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3977"/>
-        <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright &#xa9; 2006-- L&#xe9;on Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
+        <location filename="qdjview.cpp" line="3984"/>
+        <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Prohlížeč dokumentů DjVu&lt;br/&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br/&gt;Copyright © 2006 – Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;Tento program je svobodné programové vybavení. Můžete jej šířit nebo upravovat podle pravidel Obecné veřejné licence GNU (GNU GPL) vydané nadací Free Software Foundation. Tento program je šířen &lt;i&gt;bez jakékoliv záruky&lt;/i&gt;. Pro podrobnosti nahlédněte do Obecné veřejné licence GNU (GNU General Public License)&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3996"/>
+        <location filename="qdjview.cpp" line="4003"/>
         <source>About DjView</source>
         <translation>O DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4016"/>
+        <location filename="qdjview.cpp" line="4023"/>
         <source>DjVu files</source>
         <translation>Soubory DjVu</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4053"/>
+        <location filename="qdjview.cpp" line="4043"/>
+        <source>Enter the URL of a DjVu document:</source>
+        <translation>Zadejte URL  dokumentu DjVu:</translation>
+    </message>
+    <message>
+        <location filename="qdjview.cpp" line="4060"/>
         <source>Information - DjView</source>
         <comment>dialog caption</comment>
         <translation>Informace – DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4068"/>
+        <location filename="qdjview.cpp" line="4075"/>
         <source>Metadata - DjView</source>
         <comment>dialog caption</comment>
         <translation>Metadata – DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="375"/>
+        <location filename="qdjview.cpp" line="374"/>
         <source>Open &amp;Location...</source>
         <comment>File|</comment>
         <translation>Otevřít z &amp;adresy…</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="376"/>
+        <location filename="qdjview.cpp" line="375"/>
         <source>Open a remote DjVu document.</source>
         <translation>Otevře vzdálený dokument DjVu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="417"/>
+        <location filename="qdjview.cpp" line="416"/>
         <source>Ctrl+F3</source>
         <comment>Edit|Find Next</comment>
         <translation>Ctrl+F3</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="428"/>
+        <location filename="qdjview.cpp" line="427"/>
         <source>Ctrl+F2</source>
         <comment>Edit|Select</comment>
         <translation>Ctrl+F2</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="627"/>
+        <location filename="qdjview.cpp" line="626"/>
         <source>Show &amp;Sidebar</source>
         <comment>Settings|</comment>
         <translation>Zobrazit &amp;postranní panel</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="628"/>
+        <location filename="qdjview.cpp" line="627"/>
         <source>Ctrl+F9</source>
         <comment>Settings|Show sidebar</comment>
         <translation>Ctrl+F9</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="634"/>
+        <location filename="qdjview.cpp" line="633"/>
         <source>Show &amp;Toolbar</source>
         <comment>Settings|</comment>
         <translation>Zobrazit lištu &amp;nástrojů</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="635"/>
+        <location filename="qdjview.cpp" line="634"/>
         <source>Ctrl+F10</source>
         <comment>Settings|Show toolbar</comment>
         <translation>Ctrl+F10</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="640"/>
+        <location filename="qdjview.cpp" line="639"/>
         <source>Show Stat&amp;usbar</source>
         <comment>Settings|</comment>
         <translation>Zobrazit &amp;stavový řádek</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="647"/>
+        <location filename="qdjview.cpp" line="646"/>
         <source>Ctrl+F11</source>
         <comment>View|FullScreen</comment>
         <translation>Ctrl+F11</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="655"/>
+        <location filename="qdjview.cpp" line="654"/>
         <source>Ctrl+F4</source>
         <comment>Layout|Continuous</comment>
         <translation>Ctrl+F4</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="663"/>
+        <location filename="qdjview.cpp" line="662"/>
         <source>Ctrl+F5</source>
         <comment>Layout|SideBySide</comment>
         <translation>Ctrl+F5</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="726"/>
+        <location filename="qdjview.cpp" line="725"/>
         <source>Open &amp;Recent</source>
         <translation>Otevřít &amp;nedávné</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3218"/>
+        <location filename="qdjview.cpp" line="3224"/>
         <source>%1 files (*.%2);;</source>
         <comment>save image filter</comment>
         <translation>%1 souborů (*.%2);;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4018"/>
+        <location filename="qdjview.cpp" line="4025"/>
         <source>Open - DjView</source>
         <comment>dialog caption</comment>
         <translation>Otevření – DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4035"/>
+        <location filename="qdjview.cpp" line="4042"/>
         <source>Open Location - DjView</source>
         <comment>dialog caption</comment>
         <translation>Otevření z adresy – DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4036"/>
-        <source>Enter the URL of a DjVu document.</source>
-        <translation>Zadejte URL  dokumentu DjVu.</translation>
-    </message>
-    <message>
-        <location filename="qdjview.cpp" line="4209"/>
+        <location filename="qdjview.cpp" line="4216"/>
         <source>&amp;Clear History</source>
         <translation>&amp;Smazat historii</translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3802"/>
+        <location filename="qdjview.cpp" line="3809"/>
         <source>%n characters</source>
         <translation>
             <numerusform>%n znak</numerusform>
@@ -1252,163 +1264,163 @@ Soubor „%1“ nemá žádnou příponu.</translation>
         </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3680"/>
+        <location filename="qdjview.cpp" line="3687"/>
         <source>Go: 1 page forward.</source>
         <translation>Přejít: 1 stranu vpřed.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3683"/>
+        <location filename="qdjview.cpp" line="3690"/>
         <source>Go: 1 page backward.</source>
         <translation>Přejít: 1 stranu zpět.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="689"/>
+        <location filename="qdjview.cpp" line="688"/>
         <source>Copy &amp;URL</source>
         <comment>Edit|</comment>
         <translation>Kopírovat &amp;URL</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="690"/>
+        <location filename="qdjview.cpp" line="689"/>
         <source>Save an URL for the current page into the clipboard.</source>
         <translation>Uloží do schránky URL současné stránky.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="694"/>
+        <location filename="qdjview.cpp" line="693"/>
         <source>Copy &amp;Outline</source>
         <comment>Edit|</comment>
         <translation>Kopírovat &amp;osnovu</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="698"/>
+        <location filename="qdjview.cpp" line="697"/>
         <source>Copy &amp;Annotations</source>
         <comment>Edit|</comment>
         <translation>Kopírovat po&amp;známky</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3812"/>
+        <location filename="qdjview.cpp" line="3819"/>
         <source>Copy text into the clipboard.</source>
         <translation>Uloží text do schránky.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3813"/>
+        <location filename="qdjview.cpp" line="3820"/>
         <source>Save text into a file.</source>
         <translation>Uloží text do souboru.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3818"/>
+        <location filename="qdjview.cpp" line="3825"/>
         <source>Copy image into the clipboard.</source>
         <translation>Uloží obrázek do schránky.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3819"/>
+        <location filename="qdjview.cpp" line="3826"/>
         <source>Save image into a file.</source>
         <translation>Uloží obrázek do souboru.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3822"/>
+        <location filename="qdjview.cpp" line="3829"/>
         <source>Zoom the selection to fit the window.</source>
         <translation>Zvětší vybranou oblast tak, aby vyplnila okno.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3828"/>
+        <location filename="qdjview.cpp" line="3835"/>
         <source>Copy URL</source>
         <translation>Kopírovat URL</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3829"/>
+        <location filename="qdjview.cpp" line="3836"/>
         <source>Save into the clipboard an URL that highlights the selection.</source>
         <translation>Uloží do schránky URL, které se nachází ve výběru.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3831"/>
+        <location filename="qdjview.cpp" line="3838"/>
         <source>Copy Maparea</source>
         <translation>Kopírovat maparea</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3832"/>
+        <location filename="qdjview.cpp" line="3839"/>
         <source>Save into the clipboard a maparea annotation expression for program djvused.</source>
         <translation>Uloží do schránky maparea výraz pro program djvused.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="691"/>
+        <location filename="qdjview.cpp" line="690"/>
         <source>Ctrl+C</source>
         <comment>Edit|CopyURL</comment>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="695"/>
+        <location filename="qdjview.cpp" line="694"/>
         <source>Save the djvused code for the outline into the clipboard.</source>
         <translation>Uloží do schránky djvused kód s osnovou.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="699"/>
+        <location filename="qdjview.cpp" line="698"/>
         <source>Save the djvused code for the page annotations into the clipboard.</source>
         <translation>Uloží do schránky dvjused kód s poznámkami na této stánce.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="669"/>
+        <location filename="qdjview.cpp" line="668"/>
         <source>Co&amp;ver Page</source>
         <comment>Layout|</comment>
         <translation>Pře&amp;bal</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="673"/>
+        <location filename="qdjview.cpp" line="672"/>
         <source>Ctrl+F6</source>
         <comment>Layout|CoverPage</comment>
         <translation>Ctrl+F6</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="674"/>
+        <location filename="qdjview.cpp" line="673"/>
         <source>F6</source>
         <comment>Layout|CoverPage</comment>
         <translation>F6</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="675"/>
+        <location filename="qdjview.cpp" line="674"/>
         <source>Show the cover page alone in side-by-side mode.</source>
         <translation>Při zobrazení pod dvou stránkách zobrazí přebal samostatně. </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="679"/>
+        <location filename="qdjview.cpp" line="678"/>
         <source>&amp;Right to Left</source>
         <comment>Layout|</comment>
         <translation>Zp&amp;rava doleva</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="683"/>
+        <location filename="qdjview.cpp" line="682"/>
         <source>Ctrl+Shift+F6</source>
         <comment>Layout|RightToLeft</comment>
         <translation>Ctrl+Shift+F6</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="684"/>
+        <location filename="qdjview.cpp" line="683"/>
         <source>Shift+F6</source>
         <comment>Layout|RightToLeft</comment>
         <translation>Shift+F6</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="685"/>
+        <location filename="qdjview.cpp" line="684"/>
         <source>Show pages right-to-left in side-by-side mode.</source>
         <translation>Při zobrazení po dvou stránkách zobrazuje zprava doleva.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4017"/>
+        <location filename="qdjview.cpp" line="4024"/>
         <source>All files</source>
         <translation>Všechny soubory</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="616"/>
+        <location filename="qdjview.cpp" line="615"/>
         <source>&amp;Hidden Text</source>
         <comment>Display|</comment>
         <translation>&amp;Skrytý text</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="617"/>
+        <location filename="qdjview.cpp" line="616"/>
         <source>Overlay a representation of the hidden text layer.</source>
         <translation>Nad dokumentem zobrazí vrstvu skrytého textu.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="157"/>
+        <location filename="qdjview.cpp" line="156"/>
         <source>Hidden Text</source>
         <comment>modeCombo</comment>
         <translation>Skrytý text</translation>
@@ -1461,6 +1473,7 @@ Mezi obecné přepínače patří:
         <translation>Svázaný dokument DjVu</translation>
     </message>
     <message>
+        <location filename="qdjviewexporters.cpp" line="328"/>
         <location filename="qdjviewexporters.cpp" line="332"/>
         <source>DjVu Files (*.djvu *.djv)</source>
         <translation>Soubory DjVu (*.djvu *.djv)</translation>
@@ -1511,6 +1524,7 @@ Mezi obecné přepínače patří:
 <context>
     <name>QDjViewErrorDialog</name>
     <message>
+        <location filename="qdjviewdialogs.cpp" line="125"/>
         <location filename="qdjviewerrordialog.ui" line="16"/>
         <source>DjView Error</source>
         <translation>Chyba DjView</translation>
@@ -1564,6 +1578,7 @@ Chcete jej nahradit?</translation>
         <translation>&amp;Nahradit</translation>
     </message>
     <message>
+        <location filename="qdjviewdialogs.cpp" line="1331"/>
         <location filename="qdjviewexportdialog.ui" line="256"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Zrušit</translation>
@@ -1596,6 +1611,7 @@ Chcete jej nahradit?</translation>
         <translation>Dialog</translation>
     </message>
     <message>
+        <location filename="qdjviewexportdialog.ui" line="26"/>
         <location filename="qdjviewexportdialog.ui" line="38"/>
         <source>Export</source>
         <translation>Exportovat</translation>
@@ -2155,7 +2171,7 @@ Chcete jej nahradit?</translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="437"/>
-        <source>Page #%1 - &#xab; %2 &#xbb;</source>
+        <source>Page #%1 - « %2 »</source>
         <translation>Strana č. %1 – „%2“</translation>
     </message>
     <message>
@@ -2209,6 +2225,7 @@ Chcete jej nahradit?</translation>
         <translation>Zastaralý volný dokument DjVu</translation>
     </message>
     <message>
+        <location filename="qdjviewdialogs.cpp" line="509"/>
         <location filename="qdjviewdialogs.cpp" line="516"/>
         <source>n/a</source>
         <translation>není známo</translation>
@@ -2366,11 +2383,13 @@ Chcete jej nahradit?</translation>
         <translation>Strany</translation>
     </message>
     <message>
+        <location filename="qdjviewsidebar.cpp" line="172"/>
         <location filename="qdjviewsidebar.cpp" line="207"/>
         <source>Page %1</source>
         <translation>Strana %1</translation>
     </message>
     <message>
+        <location filename="qdjviewsidebar.cpp" line="175"/>
         <location filename="qdjviewsidebar.cpp" line="215"/>
         <source>Go to page %1</source>
         <translation>Přejít na stranu %1</translation>
@@ -2384,6 +2403,7 @@ Chcete jej nahradit?</translation>
         <translation>PostScript</translation>
     </message>
     <message>
+        <location filename="qdjviewexporters.cpp" line="545"/>
         <location filename="qdjviewexporters.cpp" line="549"/>
         <source>PostScript Files (*.ps *.eps)</source>
         <translation>Postscriptový soubor (*.ps *.eps)</translation>
@@ -2478,6 +2498,7 @@ Chcete jej nahradit?</translation>
         <translation>Výstupní soubor nelze vytvořit.</translation>
     </message>
     <message>
+        <location filename="qdjviewexporters.cpp" line="1742"/>
         <location filename="qdjviewexporters.cpp" line="1781"/>
         <source>System error: %1.</source>
         <translation>Systémová chyba: %1.</translation>
@@ -2850,6 +2871,7 @@ Chcete jej nahradit?</translation>
         <translation>Zapnout pokročilé možnosti v nabídkách</translation>
     </message>
     <message>
+        <location filename="qdjviewprefsdialog.ui" line="992"/>
         <location filename="qdjviewprefsdialog.ui" line="1005"/>
         <source> MB</source>
         <translation> MB</translation>
@@ -2923,6 +2945,7 @@ Chcete jej nahradit?</translation>
         <translation>&amp;Nahradit</translation>
     </message>
     <message>
+        <location filename="qdjviewdialogs.cpp" line="1738"/>
         <location filename="qdjviewprintdialog.ui" line="280"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Zrušit</translation>
@@ -2943,6 +2966,7 @@ Chcete jej nahradit?</translation>
         <translation>Dialog</translation>
     </message>
     <message>
+        <location filename="qdjviewprintdialog.ui" line="29"/>
         <location filename="qdjviewprintdialog.ui" line="41"/>
         <source>Print</source>
         <translation>Tisknout</translation>
@@ -3073,6 +3097,7 @@ Do you want to replace it?</source>
         <translation>&amp;Nahradit</translation>
     </message>
     <message>
+        <location filename="qdjviewdialogs.cpp" line="984"/>
         <location filename="qdjviewsavedialog.ui" line="222"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Zrušit</translation>
