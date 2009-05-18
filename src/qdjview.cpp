@@ -2684,7 +2684,10 @@ QDjView::setMouseLabelText(QString s)
 void  
 QDjView::statusMessage(QString message)
 {
-  statusBar->showMessage(message);
+  if (message.isEmpty())
+    statusBar->clearMessage();
+  else
+    statusBar->showMessage(message);
   emit pluginStatusMessage(message);
 }
 
