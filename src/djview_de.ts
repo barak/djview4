@@ -1398,18 +1398,18 @@ Dateiname &apos;%1&apos; hat keine Endung.</translation>
         <location filename="qdjview.cpp" line="615"/>
         <source>&amp;Hidden Text</source>
         <comment>Display|</comment>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Versteckter Text</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="616"/>
         <source>Overlay a representation of the hidden text layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Überzieht eine Darstellung der verborgenen Textschicht.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="156"/>
         <source>Hidden Text</source>
         <comment>modeCombo</comment>
-        <translation type="unfinished"></translation>
+        <translation>Versteckter Text</translation>
     </message>
 </context>
 <context>
@@ -1967,12 +1967,12 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1558"/>
         <source>Words only</source>
-        <translation>&amp;Nur ganze Wörter</translation>
+        <translation>Nur ganze Wörter</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1580"/>
         <source>Find Previous (Shift+F3) </source>
-        <translation>Rück&amp;wärts suchen (Shift+F3) </translation>
+        <translation>Rückwärts suchen (Shift+F3) </translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1585"/>
@@ -1992,27 +1992,27 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1561"/>
         <source>Regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Regulären Ausdruck</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1591"/>
         <source>Reset search options to default values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Setzt die Suche Optionen auf ihre Standardwerte.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1652"/>
         <source>Specify whether search hits must begin on a word boundary.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lässt Sucherfolge an einer Wortgrenze beginnen.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1654"/>
         <source>Specify whether searches are case sensitive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sucht ohne Unterscheidung der Groß-und Kleinschreibung.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1656"/>
         <source>Regular expressions describe complex string matching patterns.</source>
-        <translation type="unfinished"></translation>
+        <translation>Reguläre Ausdrücke beschreiben komplizierte Schnur-Suchmuster.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1658"/>
@@ -2071,7 +2071,7 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1379"/>
         <source>&lt;html&gt;Invalid regular expression.&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Ungültiger regulärer Ausdruck.&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
