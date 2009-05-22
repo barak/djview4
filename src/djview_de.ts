@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="de">
+<!DOCTYPE TS><TS version="1.1" language="de">
+<defaultcodec></defaultcodec>
 <context>
     <name>QApplication</name>
     <message>
@@ -516,7 +516,7 @@
     </message>
     <message>
         <location filename="qdjview.cpp" line="545"/>
-        <source>Rotate &amp;0°</source>
+        <source>Rotate &amp;0&#xb0;</source>
         <comment>Rotate|</comment>
         <translation>Drehe um &amp;0°</translation>
     </message>
@@ -527,7 +527,7 @@
     </message>
     <message>
         <location filename="qdjview.cpp" line="551"/>
-        <source>Rotate &amp;90°</source>
+        <source>Rotate &amp;90&#xb0;</source>
         <comment>Rotate|</comment>
         <translation>Drehe um &amp;90°</translation>
     </message>
@@ -538,7 +538,7 @@
     </message>
     <message>
         <location filename="qdjview.cpp" line="557"/>
-        <source>Rotate &amp;180°</source>
+        <source>Rotate &amp;180&#xb0;</source>
         <comment>Rotate|</comment>
         <translation>Drehe um &amp;180°</translation>
     </message>
@@ -549,7 +549,7 @@
     </message>
     <message>
         <location filename="qdjview.cpp" line="563"/>
-        <source>Rotate &amp;270°</source>
+        <source>Rotate &amp;270&#xb0;</source>
         <comment>Rotate|</comment>
         <translation>Drehe um &amp;270°</translation>
     </message>
@@ -807,28 +807,24 @@
         <translation>&amp;Ansicht</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="749"/>
         <location filename="qdjview.cpp" line="814"/>
         <source>&amp;Zoom</source>
         <comment>View|Zoom</comment>
         <translation>&amp;Maßstab</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="763"/>
         <location filename="qdjview.cpp" line="828"/>
         <source>&amp;Rotate</source>
         <comment>View|Rotate</comment>
         <translation>D&amp;rehen</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="771"/>
         <location filename="qdjview.cpp" line="836"/>
         <source>&amp;Display</source>
         <comment>View|Display</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="789"/>
         <location filename="qdjview.cpp" line="809"/>
         <source>&amp;Go</source>
         <comment>Go|</comment>
@@ -962,7 +958,6 @@
         <translation>Option &apos;%1&apos; ist nicht bekannt.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2193"/>
         <location filename="qdjview.cpp" line="2458"/>
         <source>DjView</source>
         <translation></translation>
@@ -1008,7 +1003,6 @@
         <translation>Seite mit Seitennummer %1 nicht gefunden</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2577"/>
         <location filename="qdjview.cpp" line="2607"/>
         <source>Cannot find page named: %1</source>
         <translation>Seite mit dem Namen &apos;%1&apos; nicht gefunden</translation>
@@ -1043,7 +1037,6 @@
         <translation>Textdateien</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3180"/>
         <location filename="qdjview.cpp" line="3227"/>
         <source>All files</source>
         <comment>save filter</comment>
@@ -1056,15 +1049,12 @@
         <translation>Speichere Text - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3197"/>
-        <location filename="qdjview.cpp" line="3242"/>
         <location filename="qdjview.cpp" line="3262"/>
         <source>Error - DjView</source>
         <comment>dialog caption</comment>
         <translation>Fehler - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3198"/>
         <location filename="qdjview.cpp" line="3263"/>
         <source>Cannot write file &apos;%1&apos;.
 %2.</source>
@@ -1137,7 +1127,6 @@ Dateiname &apos;%1&apos; hat keine Endung.</translation>
         </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3694"/>
         <location filename="qdjview.cpp" line="3696"/>
         <source>Go: page %1.</source>
         <translation>Gehe zu Seite %1.</translation>
@@ -1189,7 +1178,7 @@ Dateiname &apos;%1&apos; hat keine Endung.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3984"/>
-        <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright &#xa9; 2006-- L&#xe9;on Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -1398,18 +1387,18 @@ Dateiname &apos;%1&apos; hat keine Endung.</translation>
         <location filename="qdjview.cpp" line="615"/>
         <source>&amp;Hidden Text</source>
         <comment>Display|</comment>
-        <translation>&amp;Versteckter Text</translation>
+        <translation>&amp;Verborgener Text</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="616"/>
         <source>Overlay a representation of the hidden text layer.</source>
-        <translation>Überzieht eine Darstellung der verborgenen Textschicht.</translation>
+        <translation>Überlagert die Darstellung der verborgenen Textschicht.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="156"/>
         <source>Hidden Text</source>
         <comment>modeCombo</comment>
-        <translation>Versteckter Text</translation>
+        <translation>Verborgener Text</translation>
     </message>
 </context>
 <context>
@@ -1459,7 +1448,6 @@ Optionen sind:
         <translation>DjVu Bundled-Dokument</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="328"/>
         <location filename="qdjviewexporters.cpp" line="332"/>
         <source>DjVu Files (*.djvu *.djv)</source>
         <translation>DjVu Dateien (*.djvu *.djv)</translation>
@@ -1509,7 +1497,6 @@ Optionen sind:
 <context>
     <name>QDjViewErrorDialog</name>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="125"/>
         <location filename="qdjviewerrordialog.ui" line="16"/>
         <source>DjView Error</source>
         <translation>DjView Fehler</translation>
@@ -1534,7 +1521,6 @@ Optionen sind:
         <translation></translation>
     </message>
     <message>
-        <location filename="qdjviewexportdialog.ui" line="26"/>
         <location filename="qdjviewexportdialog.ui" line="38"/>
         <source>Export</source>
         <translation></translation>
@@ -1580,7 +1566,6 @@ Optionen sind:
         <translation></translation>
     </message>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="1331"/>
         <location filename="qdjviewexportdialog.ui" line="256"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Abbrechen</translation>
@@ -1677,7 +1662,7 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewexportps1.ui" line="80"/>
         <source>Print image &amp;frame</source>
-        <translation>Drucke Bildrahmen</translation>
+        <translation>Drucke Bild&amp;rahmen</translation>
     </message>
     <message>
         <location filename="qdjviewexportps1.ui" line="87"/>
@@ -1992,12 +1977,12 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1561"/>
         <source>Regular expression</source>
-        <translation>Regulären Ausdruck</translation>
+        <translation>Regulärer Ausdruck</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1591"/>
         <source>Reset search options to default values.</source>
-        <translation>Setzt die Suche Optionen auf ihre Standardwerte.</translation>
+        <translation>Setzt die Optionen der Suche auf ihre Standardwerte.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1652"/>
@@ -2012,12 +1997,12 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1656"/>
         <source>Regular expressions describe complex string matching patterns.</source>
-        <translation>Reguläre Ausdrücke beschreiben komplizierte Schnur-Suchmuster.</translation>
+        <translation>Reguläre Ausdrücke beschreiben komplizierte Textsuchmuster.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1658"/>
         <source>&lt;html&gt;&lt;b&gt;Regular Expression Quick Guide&lt;/b&gt;&lt;ul&gt;&lt;li&gt;The dot &lt;tt&gt;.&lt;/tt&gt; matches any character.&lt;/li&gt;&lt;li&gt;Most characters match themselves.&lt;/li&gt;&lt;li&gt;Prepend a backslash &lt;tt&gt;\&lt;/tt&gt; to match special    characters &lt;tt&gt;()[]{}|*+.?!^$\&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\b&lt;/tt&gt; matches a word boundary.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\w&lt;/tt&gt; matches a word character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\d&lt;/tt&gt; matches a digit character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\s&lt;/tt&gt; matches a blank character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\n&lt;/tt&gt; matches a newline character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; matches characters in range    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[^&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; matches characters outside range    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;|&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt; matches either regular expression    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt; or regular expression &lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{&lt;i&gt;n&lt;/i&gt;,&lt;i&gt;m&lt;/i&gt;}&lt;/tt&gt; matches regular expression    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt; repeated &lt;tt&gt;&lt;i&gt;n&lt;/i&gt;&lt;/tt&gt; to &lt;tt&gt;&lt;i&gt;m&lt;/i&gt;&lt;/tt&gt;    times.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;?&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;*&lt;/tt&gt;, and &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;+&lt;/tt&gt;    are shorthands for &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,1}&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,}&lt;/tt&gt;,     and &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{1,}&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;Use parentheses &lt;tt&gt;()&lt;/tt&gt; to group regular expressions     before &lt;tt&gt;?+*{&lt;/tt&gt;.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;b&gt;Reguläre Ausdrücke Kurz Anleitung&lt;/b&gt;&lt;ul&gt;&lt;li&gt;Der Punkt &lt;tt&gt;.&lt;/tt&gt; trifft jedes Zeichen.&lt;/li&gt;&lt;li&gt;Die meisten Zeichen treffen sich selbst.&lt;/li&gt;&lt;li&gt;Ein vorraugestellter Backslash &lt;tt&gt;\&lt;/tt&gt; ermöglicht die Eingabe&lt;br&gt;der Spezialzeichen &lt;tt&gt;()[]{}|*+.?!^$\&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\b&lt;/tt&gt; trifft.die Wortbegrenzung.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\w&lt;/tt&gt; trifft ein Wortzeichen.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\d&lt;/tt&gt; trifft das Zeicher einer Zahl.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\s&lt;/tt&gt; triff ein leeres Zeichen.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\n&lt;/tt&gt; trifft das Zeilenumbruchzeichen.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; trifft Zeichen in einem Bereich    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[^&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; trifft Zeichen ausserhalb des Bereichs    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;|&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt; trifft entweder den regulären Ausdruck    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt; oder regulären Ausdruck &lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{&lt;i&gt;n&lt;/i&gt;,&lt;i&gt;m&lt;/i&gt;}&lt;/tt&gt; trifft wiederholt den    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt; regulären Ausdruck &lt;tt&gt;&lt;i&gt;n&lt;/i&gt;&lt;/tt&gt; genau &lt;tt&gt;&lt;i&gt;m&lt;/i&gt;&lt;/tt&gt;    mal.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;?&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;*&lt;/tt&gt;, und &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;+&lt;/tt&gt;    sind Kurzschreibweisen für &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,1}&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,}&lt;/tt&gt;,  und &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{1,}&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;Verwende runde Klammern &lt;tt&gt;()&lt;/tt&gt; zum Gruppieren von regulären&lt;br&gt; Ausdrücken vor &lt;tt&gt;?+*{&lt;/tt&gt;.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -2178,7 +2163,7 @@ Soll die Datei überschrieben werden?</translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="437"/>
-        <source>Page #%1 - « %2 »</source>
+        <source>Page #%1 - &#xab; %2 &#xbb;</source>
         <translation>Seite #%1 - « %2 »</translation>
     </message>
     <message>
@@ -2232,7 +2217,6 @@ Soll die Datei überschrieben werden?</translation>
         <translation>Veraltetes indexed DjVu-Dokument</translation>
     </message>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="509"/>
         <location filename="qdjviewdialogs.cpp" line="516"/>
         <source>n/a</source>
         <translation>n/a</translation>
@@ -2356,13 +2340,11 @@ Soll die Datei überschrieben werden?</translation>
         <translation>Seiten</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="172"/>
         <location filename="qdjviewsidebar.cpp" line="207"/>
         <source>Page %1</source>
         <translation>Seite %1</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="175"/>
         <location filename="qdjviewsidebar.cpp" line="215"/>
         <source>Go to page %1</source>
         <translation>Gehe zu Seite %1</translation>
@@ -2376,7 +2358,6 @@ Soll die Datei überschrieben werden?</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="545"/>
         <location filename="qdjviewexporters.cpp" line="549"/>
         <source>PostScript Files (*.ps *.eps)</source>
         <translation>PostScript Dateien (*.ps *.eps)</translation>
@@ -2459,7 +2440,6 @@ Soll die Datei überschrieben werden?</translation>
         <translation>Die Ausgabedatei konnte nicht angelegt werden.</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1742"/>
         <location filename="qdjviewexporters.cpp" line="1781"/>
         <source>System error: %1.</source>
         <translation>Systemfehler: %1.</translation>
@@ -2816,7 +2796,6 @@ Soll die Datei überschrieben werden?</translation>
         <translation>Erweiterte Funktionen in Menüs freischalten</translation>
     </message>
     <message>
-        <location filename="qdjviewprefsdialog.ui" line="992"/>
         <location filename="qdjviewprefsdialog.ui" line="1005"/>
         <source> MB</source>
         <translation> MB</translation>
@@ -2860,7 +2839,6 @@ Soll die Datei überschrieben werden?</translation>
         <translation>Dialog</translation>
     </message>
     <message>
-        <location filename="qdjviewprintdialog.ui" line="29"/>
         <location filename="qdjviewprintdialog.ui" line="41"/>
         <source>Print</source>
         <translation>Drucke </translation>
@@ -2916,7 +2894,6 @@ Soll die Datei überschrieben werden?</translation>
         <translation>&amp;Ok</translation>
     </message>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="1738"/>
         <location filename="qdjviewprintdialog.ui" line="280"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Abbrechen</translation>
@@ -3064,7 +3041,6 @@ Soll die Datei überschrieben werden?</translation>
         <translation>&amp;Ok</translation>
     </message>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="984"/>
         <location filename="qdjviewsavedialog.ui" line="222"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Abbrechen</translation>
