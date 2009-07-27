@@ -114,7 +114,7 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   // Message handler
   qInstallMsgHandler(qtMessageHandler);
 
-  // Locale should not mess with printf.
+  // Locale should not mess with printf
 #ifdef LC_NUMERIC
   ::setlocale(LC_NUMERIC, "C");
 #endif
