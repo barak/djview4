@@ -599,11 +599,13 @@ QDjViewMetaDialog::QDjViewMetaDialog(QDjView *parent)
   d->ui.docTable->setHorizontalHeaderLabels(labels);
   d->ui.docTable->horizontalHeader()->setHighlightSections(false);
   d->ui.docTable->horizontalHeader()->setStretchLastSection(true);
+  d->ui.docTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   d->ui.docTable->verticalHeader()->hide();
   d->ui.pageTable->setColumnCount(2);
   d->ui.pageTable->setHorizontalHeaderLabels(labels);
   d->ui.pageTable->horizontalHeader()->setHighlightSections(false);
   d->ui.pageTable->horizontalHeader()->setStretchLastSection(true);
+  d->ui.pageTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   d->ui.pageTable->verticalHeader()->hide();
   d->ui.pageCombo->setEnabled(false);
   d->ui.jumpButton->setEnabled(false);
@@ -706,9 +708,9 @@ metadataFill(QTableWidget *table, QMap<QString,QString> m)
       table->setItem(j, 0, kitem);
       table->setItem(j, 1, vitem);
     }
-  table->resizeColumnsToContents();
-  table->resizeRowsToContents();
+  table->resizeColumnToContents(0);
 }
+
 
 void 
 QDjViewMetaDialog::refresh()
