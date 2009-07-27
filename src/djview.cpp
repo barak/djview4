@@ -114,7 +114,11 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   // Message handler
   qInstallMsgHandler(qtMessageHandler);
 
-
+  // Locale should not mess with printf.
+#ifdef LC_NUMERIC
+  ::setlocale(LC_NUMERIC, "C");
+#endif
+  
   // Translators
   QTranslator *qtTrans = new QTranslator(this);
   QTranslator *djviewTrans = new QTranslator(this);
@@ -423,7 +427,7 @@ main(int argc, char *argv[])
           exit(10);
         }
     }
-
+  
   // Process events
   main->show();
   return app.exec();
