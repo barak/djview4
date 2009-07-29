@@ -92,6 +92,11 @@
 #include <QUrl>
 #include <QWhatsThis>
 
+#if QT_VERSION >= 0x40200
+# include <QDesktopServices>
+#endif
+
+
 #include "qdjvu.h"
 #include "qdjvuhttp.h"
 #include "qdjvuwidget.h"
@@ -3277,12 +3282,14 @@ QDjView::startBrowser(QUrl url)
 {
   // Determine browsers to try
   QStringList browsers;
-#ifdef Q_OS_WIN32
-  browsers << "firefox.exe";
-  browsers << "iexplore.exe";
-#endif
 #ifdef Q_WS_MAC
   browsers << "open";
+#endif
+#ifdef Q_OS_WIN32
+# if QT_VERSION < 0x40200
+  browsers << "firefox.exe";
+  browsers << "iexplore.exe";
+# endif
 #endif
 #ifdef Q_OS_UNIX
   browsers << "x-www-browser" << "firefox" << "konqueror";
@@ -3313,7 +3320,12 @@ QDjView::startBrowser(QUrl url)
       if (QProcess::startDetached(browser, args))
         return true;
     }
+  // fallback
+#if QT_VERSION >= 0x40200
+  return QDesktopServices::openUrl(url);
+#else
   return false;
+#endif
 }
 
 
