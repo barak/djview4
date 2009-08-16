@@ -409,13 +409,19 @@ QDjVuDocument::setFileName(QDjVuContext *ctx, QString f, bool cache)
       document = 0;
     }
   QFileInfo info(f);
-  QByteArray b = QFile::encodeName(f);
   if (! info.isReadable())
     {
       qWarning("QDjVuDocument::setFileName: cannot read file");
       return false;
     }
-  if (! (document = ddjvu_document_create_by_filename(*ctx, b, cache)))
+#if DDJVUAPI_VERSION >= 19
+  QByteArray b = f.toUtf8();
+  document = ddjvu_document_create_by_filename_utf8(*ctx, b, cache);
+#else
+  QByteArray b = QFile::encodeName(f);
+  document = ddjvu_document_create_by_filename(*ctx, b, cache);
+#endif
+  if (! document)
     {
       qWarning("QDjVuDocument::setFileName: cannot create decoder");    
       return false;
