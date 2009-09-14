@@ -1875,7 +1875,7 @@ QDjView::parseArgument(QString key, QString value)
            key == "nomenu" )
     {
       QString msg = tr("Deprecated option '%1'").arg(key);
-      qWarning((const char*)msg.toLocal8Bit());
+      qWarning("%s",(const char*)msg.toLocal8Bit());
       if (key == "notoolbar" && value.isNull())
         toolBar->setVisible(false);
       else if (key == "noscrollbars" && value.isNull())
@@ -1921,7 +1921,7 @@ QDjView::parseArgument(QString key, QString value)
   else if (key == "logo" || key == "textsel" || key == "search")
     {
       QString msg = tr("Option '%1' is not implemented.").arg(key);
-      qWarning((const char*)msg.toLocal8Bit());
+      qWarning("%s",(const char*)msg.toLocal8Bit());
     }
   else
     {
@@ -1968,7 +1968,7 @@ QDjView::parseDjVuCgiArguments(QUrl url)
   // warning for errors
   if (djvuopts && errors.size() > 0)
     foreach(QString error, errors)
-      qWarning((const char*)error.toLocal8Bit());
+      qWarning("%s",(const char*)error.toLocal8Bit());
 }
 
 
@@ -2548,7 +2548,7 @@ QDjView::goToPage(int pageno)
       else
         {
           QString msg = tr("Cannot find page numbered: %1").arg(pageno+1);
-          qWarning((const char*)msg.toLocal8Bit());
+          qWarning("%s",(const char*)msg.toLocal8Bit());
         }
       updateActionsLater();
     }
@@ -2580,7 +2580,7 @@ QDjView::goToPage(QString name, int from)
       else
         {
           QString msg = tr("Cannot find page named: %1").arg(name);
-          qWarning((const char*)msg.toLocal8Bit());
+          qWarning("%s",(const char*)msg.toLocal8Bit());
         }
       updateActionsLater();
     }
@@ -2610,7 +2610,7 @@ QDjView::goToPosition(QString name, double px, double py)
       if (pageno < 0 || pageno >= pagenum)
         {
           QString msg = tr("Cannot find page named: %1").arg(name);
-          qWarning((const char*)msg.toLocal8Bit());
+          qWarning("%s",(const char*)msg.toLocal8Bit());
         }
       else 
         {
@@ -3777,7 +3777,7 @@ QDjView::goToLink(QString link, QString target, int fromPage)
   if (! url.isValid() || url.isRelative())
     {
       QString msg = tr("Cannot resolve link '%1'").arg(link);
-      qWarning(msg.toLocal8Bit());
+      qWarning("%s", (const char*)msg.toLocal8Bit());
       return;
     }
   // Signal browser
@@ -3805,7 +3805,7 @@ QDjView::goToLink(QString link, QString target, int fromPage)
   if (! startBrowser(url))
     {
       QString msg = tr("Cannot spawn a browser for url '%1'").arg(link);
-      qWarning((const char*)msg.toLocal8Bit());
+      qWarning("%s",(const char*)msg.toLocal8Bit());
     }
 }
 

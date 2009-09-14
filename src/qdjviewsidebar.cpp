@@ -144,7 +144,7 @@ QDjViewOutline::refresh()
               miniexp_car(outline) != miniexp_symbol("bookmarks"))
             {
               QString msg = tr("Outline data is corrupted");
-              qWarning((const char*)msg.toLocal8Bit());
+              qWarning("%s", (const char*)msg.toLocal8Bit());
             }
           tree->clear();
           QTreeWidgetItem *root = new QTreeWidgetItem();
