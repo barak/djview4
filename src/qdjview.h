@@ -288,7 +288,6 @@ protected:
   QTimer *textLabelTimer;
   QRect   textLabelRect;
   // action lists
-  QList<QAction*> allActions;
   QActionGroup *zoomActionGroup;
   QActionGroup *modeActionGroup;
   QActionGroup *rotationActionGroup;

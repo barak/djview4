@@ -706,14 +706,6 @@ QDjView::createActions()
   actionAbout->setMenuRole(QAction::AboutRole);
   actionQuit->setMenuRole(QAction::QuitRole);
   actionPreferences->setMenuRole(QAction::PreferencesRole);
-
-  // Enumerate all actions
-  QAction *a;
-  QObject *o;
-  allActions.clear();
-  foreach(o, children())
-    if ((a = qobject_cast<QAction*>(o)))
-      allActions << a;
 }
 
 
@@ -886,8 +878,9 @@ QDjView::updateActions()
 #endif
   
   // Enable all actions
-  foreach(QAction *action, allActions)
-    action->setEnabled(true);
+  foreach(QObject *object, children())
+    if (QAction *action = qobject_cast<QAction*>(object))
+      action->setEnabled(true);
 
   // Some actions are explicitly disabled
   actionSave->setEnabled(savingAllowed);
@@ -983,20 +976,21 @@ QDjView::updateActions()
   // Disable almost everything when document==0
   if (! document)
     {
-      foreach(QAction *action, allActions)
-        if (action != actionNew &&
-            action != actionOpen &&
-            action != actionOpenLocation &&
-            action != actionClose &&
-            action != actionQuit &&
-            action != actionPreferences &&
-            action != actionViewToolBar &&
-            action != actionViewStatusBar &&
-            action != actionViewSideBar &&
-            action != actionViewFullScreen &&
-            action != actionWhatsThis &&
-            action != actionAbout )
-          action->setEnabled(false);
+      foreach(QObject *object, children())
+        if (QAction *action = qobject_cast<QAction*>(object))
+          if (action != actionNew &&
+              action != actionOpen &&
+              action != actionOpenLocation &&
+              action != actionClose &&
+              action != actionQuit &&
+              action != actionPreferences &&
+              action != actionViewToolBar &&
+              action != actionViewStatusBar &&
+              action != actionViewSideBar &&
+              action != actionViewFullScreen &&
+              action != actionWhatsThis &&
+              action != actionAbout )
+            action->setEnabled(false);
     }
   
   // Finished
