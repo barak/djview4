@@ -22,8 +22,6 @@ TARGET = djview
 CONFIG += qt thread warn_on 
 QT += network 
 
-message($$QMAKESPEC)
-
 # -- find libraries
 CONFIG(autoconf) {
     # for use with autoconf
