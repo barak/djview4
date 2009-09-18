@@ -113,14 +113,16 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
 {
   // Message handler
   qInstallMsgHandler(qtMessageHandler);
-#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA)
-  extern void qt_mac_set_native_menubar(bool);
-  qt_mac_set_native_menubar(false);
-#endif
   
   // Locale should not mess with printf
 #ifdef LC_NUMERIC
   ::setlocale(LC_NUMERIC, "C");
+#endif
+  
+  // Mac/Cocoa bug workaround
+#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA) && QT_VERSION<0x40503
+  extern void qt_mac_set_native_menubar(bool);
+  qt_mac_set_native_menubar(false);
 #endif
   
   // Translators
