@@ -1,3 +1,11 @@
+djview4 (4.5-2) unstable; urgency=low
+
+  * rev deb std
+  * fancier shorter debian/rules
+  * lintian issues (stop ignoring errors in installation scripts)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Mon, 28 Sep 2009 10:53:40 -0400
+
 djview4 (4.5-1) unstable; urgency=low
 
   * Upstream release 4.5
