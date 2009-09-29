@@ -1,3 +1,9 @@
+djview4 (4.5-3) unstable; urgency=low
+
+  * missing dh debian/control misc:depends
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Tue, 29 Sep 2009 15:40:28 -0400
+
 djview4 (4.5-2) unstable; urgency=low
 
   * rev deb std
