@@ -166,6 +166,18 @@ setupApplication(QtNPInstance *instance)
   QApplication::setOrganizationDomain(DJVIEW_DOMAIN);
   QApplication::setApplicationName(DJVIEW_APP);
   qInstallMsgHandler(qtMessageHandler);
+  // locale 
+#ifdef LC_NUMERIC
+  //   This is needed in the pdf export code in order to make
+  //   sure numbers are represented properly. But is it really
+  //   good to change the global state of the browser?
+  ::setlocale(LC_NUMERIC, "C");
+#endif
+  // mac
+#ifdef Q_WS_MAC
+  extern void qt_mac_set_native_menubar(bool);
+  qt_mac_set_native_menubar(false);
+#endif
   // application
   qtns_initialize(instance);
   if (! djvuContext)
@@ -671,7 +683,8 @@ NPP_SetWindow(NPP npp, NPWindow* window)
       clipRect = QRect(window->clipRect.left, window->clipRect.top,
                        window->clipRect.right - window->clipRect.left,
                        window->clipRect.bottom - window->clipRect.top);
-      instance->geometry = QRect(window->x, window->y, window->width, window->height);
+      instance->geometry = QRect(window->x, window->y, 
+                                 window->width, window->height);
     }
   // take a shortcut if all that was changed is the geometry
   if (instance->djview && window && 
