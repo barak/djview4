@@ -13,11 +13,10 @@ of considerable bloat.
 ---------------------------------------------------------
 
 The following files are the genuine qt solution files:
-  qtbrowserpluginax.def
-  qtbrowserplugin.def
-  qtbrowserplugin_mac.cpp  (with changes to make it work!)
-  qtbrowserplugin_win.cpp
+  qtbrowserplugin_mac.cpp  (does not work)
   qtbrowserplugin_x11.cpp
+  qtbrowserplugin_win.cpp
+  qtbrowserplugin.def
   qtnpapi.h
 
 This files is a slightly modified qt solution file:
