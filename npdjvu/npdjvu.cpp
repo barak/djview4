@@ -166,13 +166,6 @@ setupApplication(QtNPInstance *instance)
   QApplication::setOrganizationDomain(DJVIEW_DOMAIN);
   QApplication::setApplicationName(DJVIEW_APP);
   qInstallMsgHandler(qtMessageHandler);
-  // locale 
-#ifdef LC_NUMERIC
-  //   This is needed in the pdf export code in order to make
-  //   sure numbers are represented properly. But is it really
-  //   good to change the global state of the browser?
-  ::setlocale(LC_NUMERIC, "C");
-#endif
   // mac
 #ifdef Q_WS_MAC
   extern void qt_mac_set_native_menubar(bool);
@@ -185,6 +178,12 @@ setupApplication(QtNPInstance *instance)
   theApp = (QApplication*)QCoreApplication::instance();
 #ifdef Q_WS_X11
   theApp->setEventFilter(x11EventFilter);
+#endif
+#ifdef LC_NUMERIC
+  //   This is needed in the pdf export code in order to make
+  //   sure numbers are represented properly. But is it really
+  //   good to change the global state of the browser?
+  ::setlocale(LC_NUMERIC, "C");
 #endif
   // translators
   QTranslator *qtTrans = new QTranslator(theApp);
