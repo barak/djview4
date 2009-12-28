@@ -109,14 +109,20 @@ addDirectory(QStringList &dirs, QString path)
 
 
 QDjViewApplication::QDjViewApplication(int &argc, char **argv)
-  : QApplication(argc, argv), context(argv[0])
+  : QApplication(argc, argv), 
+    context(argv[0])
 {
   // Message handler
   qInstallMsgHandler(qtMessageHandler);
   
   // Locale should not mess with printf
-#ifdef LC_NUMERIC
+  // We do this again because old libdjvulibre
+  // did not correctly set LC_NUMERIC.
+#ifdef LC_ALL
+  ::setlocale(LC_ALL, "");
+# ifdef LC_NUMERIC
   ::setlocale(LC_NUMERIC, "C");
+# endif
 #endif
   
   // Mac/Cocoa bug workaround
@@ -325,12 +331,6 @@ usage()
 int 
 main(int argc, char *argv[])
 {
-  // Locale
-#ifdef LC_ALL
-  ::setlocale(LC_ALL, "");
-  ::setlocale(LC_NUMERIC, "C");
-#endif
-
   // Application data
   QApplication::setOrganizationName(DJVIEW_ORG);
   QApplication::setOrganizationDomain(DJVIEW_DOMAIN);
