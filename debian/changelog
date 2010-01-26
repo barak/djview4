@@ -1,7 +1,8 @@
 djview4 (4.5-4) unstable; urgency=low
 
   * Build dependency on libwmf-bin for wmf2eps (closes: #556813)
-
+    or libmagickcore2-extra to allow convert to do the job
+  
  -- Barak A. Pearlmutter <bap@debian.org>  Mon, 30 Nov 2009 21:09:05 +0000
 
 djview4 (4.5-3) unstable; urgency=low
