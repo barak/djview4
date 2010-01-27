@@ -1,7 +1,12 @@
 djview4 for Debian
 -----------------
 
-Currently we ignore the nsdejavu stuff
-since the one distributed with djvulibre works as well.
+The nsdejavu stuff is ignored, since the one distributed with
+djvulibre works as well.
 
- -- Leon Bottou <leon@bottou.org>, Tue, 16 Jan 2007 20:01:58 -0500
+The Debian CVS repository is shared with upstream.
+ cvs -d :ext:UID@djvu.cvs.sourceforge.net:/cvsroot/djvu checkout djview
+This makes the appropriate build command something like
+ cvs-buildpackage -U release_4_5 -M djview -F
+
+ -- Barak A. Pearlmutter <bap@debian.org>, Wed, 27 Jan 2010 12:03:43 +0100
