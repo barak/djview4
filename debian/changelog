@@ -1,3 +1,10 @@
+djview4 (4.5-5) unstable; urgency=low
+
+  * rev deb std
+  * work around autobuilder inability to install B when build-dep: A | B
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Thu, 28 Jan 2010 20:34:54 +0100
+
 djview4 (4.5-4) unstable; urgency=low
 
   * Build dependency on libwmf-bin for wmf2eps (closes: #556813)
