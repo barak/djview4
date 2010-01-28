@@ -885,7 +885,7 @@ QDjViewPrefsDialog::load(QDjView *djview)
   // 4- lens tab
   bool lens = (prefs->lensPower > 0) && (prefs->lensSize > 0);
   d->ui.lensEnableCheckBox->setChecked(lens);
-  d->ui.lensPowerSpinBox->setValue(lens ? qBound(2,prefs->lensPower,10) : 3);
+  d->ui.lensPowerSpinBox->setValue(lens ? qBound(1,prefs->lensPower,10) : 3);
   d->ui.lensSizeSpinBox->setValue(lens ? qBound(50,prefs->lensSize,500) : 300);
   // 5- network tab
   bool proxy = prefs->proxyUrl.isValid();
