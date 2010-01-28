@@ -4967,7 +4967,10 @@ QDjVuLens::paintEvent(QPaintEvent *event)
               if (ddjvu_page_render(*dp, mode, &pr, &rr, priv->renderFormat,
                                     img.bytesPerLine(), (char*)img.bits() ))
                 {
-                  priv->paintHiddenText(img, p, r, &prect);
+                  // priv->paintHiddenText(img, p, r, &prect);
+                  //   When displaying in hidden text mode, 
+                  //   the above line paints the hidden text in the lens.
+                  //   But the opposite behavior is more convenient for proofreading.
                   priv->paintMapAreas(img, p, r, true, &prect);
                   paint.drawImage(r.topLeft(), img, img.rect(),
                                   Qt::ThresholdDither);
