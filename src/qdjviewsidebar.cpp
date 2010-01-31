@@ -163,7 +163,7 @@ QDjViewOutline::refresh()
           tree->clear();
           QTreeWidgetItem *root = new QTreeWidgetItem(tree);
           root->setText(0, tr("Pages"));
-          root->setFlags(0);
+          root->setFlags(Qt::ItemIsEnabled);
           root->setData(0, Qt::UserRole, -1);
           for (int pageno=0; pageno<djview->pageNum(); pageno++)
             {
