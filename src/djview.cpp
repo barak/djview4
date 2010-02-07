@@ -136,6 +136,9 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   QTranslator *djviewTrans = new QTranslator(this);
   // - determine preferred languages
   QStringList langs; 
+  QString langOverride = QSettings().value("language").toString();
+  if (! langOverride.isEmpty())
+    langs += langOverride;
   QString varLanguage = ::getenv("LANGUAGE");
   if (varLanguage.size())
     langs += varLanguage.toLower().split(":", QString::SkipEmptyParts);
