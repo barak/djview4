@@ -2304,7 +2304,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   pageLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
   pageLabel->setFrameStyle(QFrame::Panel);
   pageLabel->setFrameShadow(QFrame::Sunken);
-  pageLabel->setMinimumWidth(metric.width(" P88 8888x8888 888dpi ")); 
+  pageLabel->setMinimumWidth(metric.width(" P88/888 8888x8888 888dpi ")); 
   statusBar->addPermanentWidget(pageLabel);
   mouseLabel = new QLabel(statusBar);
   mouseLabel->setFont(font);
@@ -3427,7 +3427,6 @@ QDjView::eventFilter(QObject *watched, QEvent *event)
       if ((watched == widget->viewport()) ||
           (qobject_cast<QDockWidget*>(watched)) )
         {
-          pageLabel->clear();
           mouseLabel->clear();
           textLabel->clear();
           statusMessage();
@@ -3608,11 +3607,14 @@ QDjView::pointerPosition(const Position &pos, const PageInfo &info)
   // setup page label
   QString p = "";
   QString m = "";
+  if (pos.pageNo >= 0)
+    {
+      p = tr(" P%1/%2 %3x%4 %5dpi ")
+        .arg(pos.pageNo+1).arg(documentPages.size()) 
+        .arg(info.width).arg(info.height).arg(info.dpi);
+    }
   if (pos.inPage || !info.segment.isEmpty())
     {
-      p = tr(" P%1 %2x%3 %4dpi ")
-        .arg(pos.pageNo+1) 
-        .arg(info.width).arg(info.height).arg(info.dpi);
       if (info.segment.isEmpty())
         m = tr(" x=%1 y=%2 ")
           .arg(pos.posPage.x())
