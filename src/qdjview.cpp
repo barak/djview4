@@ -3760,6 +3760,13 @@ QDjView::goToLink(QString link, QString target, int fromPage)
       if (pageno>=0 && pageno<=documentPages.size())
         url.addQueryItem("page", QString::fromUtf8(documentPages[pageno].id));
     }
+  else if (link.startsWith("?"))
+    {
+      if (inPlace)
+        foreach(QString opt, link.mid(1).split("&"))
+          parseArgument(opt);
+      return;
+    }
   else
     {
       // Resolve url
