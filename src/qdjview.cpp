@@ -3769,8 +3769,10 @@ QDjView::goToLink(QString link, QString target, int fromPage)
     }
   else
     {
+      // Decode url
+      QUrl linkUrl;
+      linkUrl.setEncodedUrl(link.toUtf8());
       // Resolve url
-      QUrl linkUrl(link);
       QList<QPair<QString, QString> > empty;
       url.setQueryItems(empty);
       url = url.resolved(linkUrl);
