@@ -180,10 +180,12 @@ if test "$ac_nsdejavu" != no ; then
     fi
 fi
 
+# only nsdejavu needs libtool.
+# but some combinations of libtool and autoconf
+# break when libtool is in a conditional path.
+AC_DISABLE_STATIC
+AC_PROG_LIBTOOL
 if test "$ac_nsdejavu" != no ; then
-    # need libtool
-    AC_DISABLE_STATIC
-    AC_PROG_LIBTOOL
     # prepare flags
     NSDEJAVU_CFLAGS=
     NSDEJAVU_LIBS=
