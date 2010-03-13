@@ -2344,7 +2344,7 @@ NPP_New(NPMIMEType mime, NPP np_inst, uint16 np_mode, int16 argc,
   if (xembedable)
     NPN_GetValue(np_inst, NPNVSupportsXEmbedBool, &inst->xembed_mode);
 #endif
-#if USE_XT
+#if USE_XT_IN_PRIORITY  
   if (inst->xembed_mode && XtWindowToWidget)
     {
         NPNToolkitType toolkit = 0;
