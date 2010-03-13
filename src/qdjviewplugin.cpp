@@ -1198,7 +1198,7 @@ QDjViewPlugin::cmdSetDjVuOpt()
   // print error messages
   if (errors.size() > 0)
     foreach(QString error, errors)
-      qWarning((const char*)error.toLocal8Bit());
+      qWarning("djvuopt: %s",(const char*)error.toLocal8Bit());
 }
 
 
