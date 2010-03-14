@@ -928,16 +928,17 @@ map_insert(Map *m, void *key, void *val)
 
 
 typedef struct {
-  Window	window;
-  NPP		np_instance;
-  int		full_mode;
-  int           xembed_mode;
+  Window	 window;
+  NPP		 np_instance;
+  int		 full_mode;
+  int            xembed_mode;
+  NPNToolkitType toolkit;
 #if USE_XT
-  Window        client;
-  Widget	widget;
+  Window         client;
+  Widget 	 widget;
 #endif
-  NPObject     *npobject;
-  NPVariant     onchange;
+  NPObject      *npobject;
+  NPVariant      onchange;
 } Instance;
 
 
@@ -1659,7 +1660,7 @@ Resize(void * id)
   if (inst->xembed_mode)
     return 1;
 #if USE_XT
-  else if (inst->widget && !inst->xembed_mode)
+  else if (inst->widget)
     {
       Dimension width, height;
       XtVaGetValues(inst->widget, XtNwidth, &width, XtNheight, &height, NULL);
@@ -2349,14 +2350,11 @@ NPP_New(NPMIMEType mime, NPP np_inst, uint16 np_mode, int16 argc,
   if (xembedable)
     NPN_GetValue(np_inst, NPNVSupportsXEmbedBool, &inst->xembed_mode);
 #endif
-#if USE_XT_IN_PRIORITY  
-  if (inst->xembed_mode && XtWindowToWidget)
-    {
-        NPNToolkitType toolkit = 0;
-        if (NPN_GetValue(np_inst, NPNVToolkit, &toolkit) 
-            != NPERR_NO_ERROR || toolkit != NPNVGtk2 )
-          inst->xembed_mode = 0;
-    }
+  if (NPN_GetValue(np_inst, NPNVToolkit, &inst->toolkit) != NPERR_NO_ERROR)
+    inst->toolkit = (NPNToolkitType)(-1);
+#if USE_XT_IN_PRIORITY
+  if (inst->xembed_mode && inst->toolkit != NPNVGtk2 && XtWindowToWidget)
+    inst->xembed_mode = 0;
 #endif
   fprintf(stderr,"nsdejavu: using the %s protocol.\n",
           (inst->xembed_mode) ? "XEmbed" : "Xt");
