@@ -943,6 +943,9 @@ QDjViewPlugin::cmdAttachWindow()
       djview = new QDjView(*context, instance->viewerMode, shell);
       djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
       djview->setAttribute(Qt::WA_DeleteOnClose, false);
+#if QT_VERSION >= 0x40400
+      djview->setAttribute(Qt::WA_NativeWindow, true);
+#endif
       QLayout *layout = new QHBoxLayout(shell);
       layout->setMargin(0);
       layout->setSpacing(0);
