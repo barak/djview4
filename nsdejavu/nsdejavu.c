@@ -154,6 +154,7 @@
 #endif
 
 #if USE_XT
+# define XTSTRINGDEFINES 1
 # include <X11/Intrinsic.h>
 # include <X11/IntrinsicP.h>
 # include <X11/StringDefs.h>
@@ -164,6 +165,7 @@
 # pragma weak XtRemoveCallback
 # pragma weak XtRemoveEventHandler
 # pragma weak XtRemoveInput
+# pragma weak XtShellStrings
 # pragma weak XtStrings
 # pragma weak XtVaGetValues
 # pragma weak XtWidgetToApplicationContext
