@@ -1,3 +1,12 @@
+djview4 (4.5-6) unstable; urgency=low
+
+  * source depend (debian/control) on librsvg2-bin binary used by new
+    imagemagick, and work around failure of direct conversion by convert via
+    step-by-step manual convertion in debian/rules (closes: #574297)
+  * automatically clean generated bitmaps in debian/ (debian/clean)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Thu, 18 Mar 2010 14:51:54 +0000
+
 djview4 (4.5-5) unstable; urgency=low
 
   * rev deb std
