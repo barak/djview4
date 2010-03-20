@@ -89,16 +89,23 @@ AC_PROG_LN_S
 AC_PATH_PROG(RM, rm)
 AC_PATH_PROG(TOUCH, touch)
 AC_PATH_PROG(MKDIR, mkdir)
+AC_PATH_PROG(RSVG, rsvg, false)
 AC_PATH_PROG(CONVERT, convert, false)
 AC_PROG_INSTALL
 
 # Libtool & Compilers
 AC_PROG_CC
 AC_PROG_CXX
-
-# C++
 AC_LANG(C++)
 AC_CXX_OPTIMIZE
+
+# Only nsdejavu needs libtool.
+# But some combinations of libtool and autoconf
+# break when libtool is in a conditional path.
+RM="$RM -f"
+AC_DISABLE_STATIC
+AC_PROG_LIBTOOL
+
 
 # ----------------------------------------
 # Header Files
@@ -180,11 +187,6 @@ if test "$ac_nsdejavu" != no ; then
     fi
 fi
 
-# only nsdejavu needs libtool.
-# but some combinations of libtool and autoconf
-# break when libtool is in a conditional path.
-AC_DISABLE_STATIC
-AC_PROG_LIBTOOL
 if test "$ac_nsdejavu" != no ; then
     # prepare flags
     NSDEJAVU_CFLAGS=

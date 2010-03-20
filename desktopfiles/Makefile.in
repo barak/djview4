@@ -31,6 +31,7 @@ mandir = @mandir@
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
+RSVG = @RSVG@
 CONVERT = @CONVERT@
 XDG_MIME = @XDG_MIME@
 XDG_ICON_RESOURCE = @XDG_ICON_RESOURCE@
@@ -48,7 +49,8 @@ icons: hi-djview4.svgz hi32-djview4.png hi64-djview4.png
 
 hi32-djview4.png hi64-djview4.png: djview.svg
 	s=`echo $@ | sed -e 's/[a-z]*\([0-9]*\).*/\1/'`; \
-	${CONVERT} -geometry $${s}x$${s} -depth 8 -background none $< $@ \
+	  ${RSVG} -w $${s} -h $${s} $< $@ \
+	  || ${CONVERT} -geometry $${s}x$${s} -depth 8 -background none $< $@ \
 	  || cp ${srcdir}/prebuilt-$@ $@
 
 hi-djview4.svgz: djview.svg

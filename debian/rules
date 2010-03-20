@@ -3,14 +3,6 @@
 override_dh_auto_configure:
 	dh_auto_configure -- --disable-nsdejavu --disable-desktopfiles
 
-override_dh_auto_build: debian/djvulibre-djview4.xpm
-	dh_auto_build
-
-debian/djvulibre-djview4.xpm: desktopfiles/djview.svg
-	convert -geometry 32x32 -depth 8 -background none $< $@ \
-	|| ( rsvg-convert --height=32 --width=32 -o $@.png $< \
-	     && convert -geometry 32x32 -depth 8 -background none $@.png $@)
-
 icon=djvulibre-djview4
 iconbasedir=debian/tmp/usr/share/icons/hicolor
 

@@ -7,9 +7,7 @@ Build-Depends: debhelper (>= 7.2.5), autotools-dev, pkg-config,
     x11proto-core-dev, libx11-dev, libxext-dev, libxt-dev,
     libqt4-dev (>= 4.2),
     libtiff4-dev | libtiff3g-dev | libtiff-dev,
-    imagemagick,
-    libmagickcore3-extra | libmagickcore2-extra | libwmf-bin | imagemagick (<= 7:6.5.5.3-1),
-    librsvg2-bin | imagemagick (<= 7:6.5.5.3-1)
+    librsvg2-bin | imagemagick
 Vcs-Cvs: :ext:@djvu.cvs.sourceforge.net:/cvsroot/djvu
 VCS-Browser: http://djvu.cvs.sourceforge.net/djvu/djview/
 Homepage: http://djvu.sourceforge.net/

@@ -1793,7 +1793,8 @@ Attach(Display * displ, Window window, void * id)
           cell.flags = DoRed | DoGreen | DoBlue;
           cell.pixel = back_color;
           XQueryColor(displ, cmap, &cell);
-          sprintf(protocol_str, "rgb:%X/%X/%X", cell.red, cell.green, cell.blue);
+          sprintf(protocol_str, "rgb:%X/%X/%X", 
+                  cell.red, cell.green, cell.blue);
         }
       if (widget && !inst->xembed_mode)
         XtMapWidget(widget);
