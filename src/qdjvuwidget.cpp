@@ -1931,7 +1931,6 @@ QDjVuWidget::QDjVuWidget(QDjVuDocument *doc, QWidget *parent)
   viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
 #endif
   viewport()->setAttribute(Qt::WA_NoSystemBackground);
-  viewport()->setAttribute(Qt::WA_PaintOnScreen);
   viewport()->setAttribute(Qt::WA_StaticContents);
   viewport()->setMouseTracking(true);
   setDocument(doc);
