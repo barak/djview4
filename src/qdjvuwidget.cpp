@@ -153,6 +153,59 @@ all_numbers(const char *s)
   return true;
 }
 
+template<class T> static inline void 
+swap(T& x, T& y)
+{
+  T tmp;
+  tmp = x;
+  x = y;
+  y = tmp;
+}
+
+template<class T> static inline int
+ksmallest(T *v, int n, int k)
+{
+  int lo = 0;
+  int hi = n-1;
+  while (lo<hi)
+    {
+      int m,l,h;
+      T pivot;
+      /* Sort v[lo], v[m], v[hi] by insertion */
+      m = (lo+hi)/2;
+      if (v[lo]>v[m])
+        swap(v[lo],v[m]);
+      if (v[m]>v[hi]) {
+        swap(v[m],v[hi]);
+        if (v[lo]>v[m])
+          swap(v[lo],v[m]);
+      }
+      /* Extract pivot, place sentinel */
+      pivot = v[m];
+      v[m] = v[lo+1];
+      v[lo+1] = v[lo];
+      v[lo] = pivot;
+      /* Partition */
+      l = lo;
+      h = hi;
+     loop:
+      do ++l; while (v[l]<pivot);
+      do --h; while (v[h]>pivot);
+      if (l < h) { 
+        swap(v[l],v[h]); 
+        goto loop; 
+      }
+      /* Finish up */
+      if (k <= h)
+        hi = h; 
+      else if (k >= l)
+        lo = l;
+      else
+        break;
+    }
+  return v[k];
+}
+
 static QCursor
 qcursor_by_name(const char *s, int hotx=8, int hoty=8)
 {
@@ -632,18 +685,19 @@ struct Cache
 };
 
 enum {
-  CHANGE_PAGES        = 0x1,    // change the displayed pages
-  CHANGE_SIZE         = 0x2,    // update the recorded size of displayed pages
-  CHANGE_SCALE        = 0x4,    // update the scale of displayed pages
-  CHANGE_POSITIONS    = 0x8,    // update the disposition of the pages
-  CHANGE_SCALE_PASS2  = 0x10,   // internal
-  CHANGE_VIEW         = 0x20,   // move to a new position
-  CHANGE_VISIBLE      = 0x40,   // update the visible rectangle
-  CHANGE_SCROLLBARS   = 0x80,   // update the scrollbars
-  UPDATE_BORDERS      = 0x100,  // redisplay the visible desk surface
-  UPDATE_PAGES        = 0x200,  // redisplay, possibly by scrolling smartly
-  UPDATE_ALL          = 0x400,  // redisplay everything
-  REFRESH_PAGES       = 0x800,  // redraw pages with new pixels
+  CHANGE_STATS        = 0x1,    // recompute estimated page sizes
+  CHANGE_PAGES        = 0x2,    // change the displayed pages
+  CHANGE_SIZE         = 0x4,    // update the recorded size of displayed pages
+  CHANGE_SCALE        = 0x8,    // update the scale of displayed pages
+  CHANGE_POSITIONS    = 0x10,   // update the disposition of the pages
+  CHANGE_SCALE_PASS2  = 0x20,   // internal
+  CHANGE_VIEW         = 0x40,   // move to a new position
+  CHANGE_VISIBLE      = 0x80,   // update the visible rectangle
+  CHANGE_SCROLLBARS   = 0x100,  // update the scrollbars
+  UPDATE_BORDERS      = 0x200,  // redisplay the visible desk surface
+  UPDATE_PAGES        = 0x400,  // redisplay, possibly by scrolling smartly
+  UPDATE_ALL          = 0x800,  // redisplay everything
+  REFRESH_PAGES       = 0x1000, // redraw pages with new pixels
   SCHEDULED           = 0x8000  // internal: change scheduled
 };
 
@@ -702,6 +756,8 @@ public:
   QRect           deskRect;     // desk rectangle (0,0,w,h)
   QRect           visibleRect;  // visible rectangle (desk coordinates)
   int             zoomFactor;   // effective zoom level
+  int        estimatedWidth;    // median of known page widths
+  int        estimatedHeight;   // median of known page heights
   QSize    unknownSize;         // displayed page size when unknown (pixels)
   int      borderSize;          // size of borders around pages (pixels)
   int      separatorSize;       // size of separation between pages (pixels)
@@ -931,8 +987,37 @@ QDjVuPrivate::makeLayout()
   // adjust layout information
   while (layoutChange && docReady)
     {
+      // Recompute estimated page sizes
+      if (layoutChange & CHANGE_STATS)
+        {
+          int k = 0;
+          QVector<int> widthVec(numPages+1);
+          QVector<int> heightVec(numPages+1);
+          layoutChange &= ~CHANGE_STATS;
+          futureLayoutChange |= CHANGE_STATS;
+          for (int i=0; i<numPages; i++)
+            if (pageData[i].dpi > 0)
+              {
+                int dpi = pageData[i].dpi;
+                widthVec[k] = pageData[i].width * 100 / dpi;
+                heightVec[k] = pageData[i].height * 100 / dpi;
+                k += 1;
+              }
+          if (k > 0)
+            {
+              futureLayoutChange &= ~CHANGE_STATS;
+              estimatedWidth = ksmallest(widthVec.data(), k, k/2);
+              estimatedHeight = ksmallest(heightVec.data(), k, k/2);
+              for (int i=0; i<numPages; i++)
+                if (pageData[i].dpi <= 0)
+                  {
+                    pageData[i].width = estimatedWidth;
+                    pageData[i].height = estimatedHeight;
+                  }
+            }
+        }
       // Layout composition
-      if (layoutChange & CHANGE_PAGES)
+      else if (layoutChange & CHANGE_PAGES)
         {
           layoutChange &= ~CHANGE_PAGES;
           layoutChange |= CHANGE_SIZE;
@@ -991,16 +1076,15 @@ QDjVuPrivate::makeLayout()
                   ddjvu_status_t status;
                   status = ddjvu_document_get_pageinfo(*doc, n, &info); 
                   if (status == DDJVU_JOB_OK)
-                    {
-                      p->dpi = info.dpi;
-                      p->width = info.width;
-                      p->height = info.height;
+                    if (info.dpi > 0 && info.width > 0 && info.height > 0)
+                      {
+                        p->dpi = info.dpi;
+                        p->width = info.width;
+                        p->height = info.height;
 #if DDJVUAPI_VERSION >= 18
-                      p->initialRot = info.rotation;
+                        p->initialRot = info.rotation;
 #endif
-                      if (p->width <= 0 || p->height <= 0)
-                        p->dpi = 0;
-                    }
+                      }
                   layoutChange |= CHANGE_SCALE;
                   layoutChange |= UPDATE_BORDERS;
                 }
@@ -1026,8 +1110,10 @@ QDjVuPrivate::makeLayout()
           foreach(p, pageLayout)
             {
               QSize size;
-              if (p->dpi <= 0)
-                size = unknownSize;   // unknown size
+              if (p->width <= 0 || p->height <= 0)
+                size = unknownSize;
+              else if (p->dpi <= 0)
+                size = scale_size(p->width, p->height, zoom*sdpi, 10000, r);
               else if (layoutChange & CHANGE_SCALE_PASS2)
                 size = scale_size(p->width, p->height, sdpi, p->dpi, r);
               else if (zoom == ZOOM_ONE2ONE) 
@@ -1173,8 +1259,8 @@ QDjVuPrivate::makeLayout()
           // setup mappers
           foreach(p, pageLayout)
             {
-              int w = p->width ? p->width : unknownSize.width();
-              int h = p->height ? p->height : unknownSize.height();
+              int w = (p->width>0) ? p->width : unknownSize.width();
+              int h = (p->height>0) ? p->height : unknownSize.height();
               p->mapper.setMap(QRect(0,0,w,h), p->rect);
               p->mapper.setTransform(rotation, false, true);
             }
@@ -1208,8 +1294,8 @@ QDjVuPrivate::makeLayout()
           foreach(p, pageLayout)
             {
               QSize size = unknownSize;
-              int dpi = p->dpi;
-              if (p->dpi>0 && p->width>0 && p->height>0)
+              int dpi = (p->dpi > 0) ? p->dpi : 100;
+              if (p->width>0 && p->height>0)
                 size = scale_size(p->width, p->height, vw * sdpi, dw * dpi, r);
               p->rect.setSize(size);
             }
@@ -1730,13 +1816,17 @@ QDjVuPrivate::pageinfoPage()
               ddjvu_page_rotation_t rot;
               rot = ddjvu_page_get_initial_rotation(*page);
               ddjvu_page_set_rotation(*page, rot);
-              p->width = ddjvu_page_get_width(*page);
-              p->height = ddjvu_page_get_height(*page);
-              p->dpi = ddjvu_page_get_resolution(*page);
-              p->initialRot = rot;
-              if (p->width <= 0 || p->height <= 0)
-                p->dpi = 0;
-              changeLayout(CHANGE_SCALE|UPDATE_BORDERS);
+              int w = ddjvu_page_get_width(*page);
+              int h = ddjvu_page_get_height(*page);
+              int d = ddjvu_page_get_resolution(*page);
+              if (d > 0 && w > 0 && h > 0)
+                {
+                  p->width = w;
+                  p->height = h;
+                  p->dpi = d;
+                  p->initialRot = rot;
+                  changeLayout(CHANGE_STATS|CHANGE_SCALE|UPDATE_BORDERS);
+                }
             }
           break;
         case DDJVU_JOB_STOPPED:
@@ -1955,13 +2045,15 @@ QDjVuWidget::setDocument(QDjVuDocument *d)
           priv->docinfo();
         }
       // update
+      priv->estimatedWidth = 0;
+      priv->estimatedHeight = 0;
       priv->visibleRect.setRect(0,0,0,0);
       priv->currentPos = Position();
       priv->currentPoint = QPoint(priv->borderSize,priv->borderSize);
       priv->cursorPos = Position();
       priv->cursorPoint = QPoint(0,0);
       priv->layoutChange = 0;
-      priv->changeLayout(CHANGE_PAGES|UPDATE_ALL);
+      priv->changeLayout(CHANGE_STATS|CHANGE_PAGES|UPDATE_ALL);
     }
 }
 
@@ -4779,7 +4871,7 @@ QDjVuWidget::paintEmpty(QPainter &p, const QRect &rect,
   QString name;
   QPixmap pixmap;
   if (waiting)
-    name = ":/images/djvu_wait.png";
+    name = ":/images/djvu_logo.png";
   else if (stopped)
     name = ":/images/djvu_stop.png";
   else if (error)
@@ -4792,7 +4884,20 @@ QDjVuWidget::paintEmpty(QPainter &p, const QRect &rect,
   if (pixmap.isNull()) return;
   if (pixmap.width() > rect.width()) return;
   if (pixmap.height() > rect.height()) return;
-  p.drawPixmap(rect.center()-pixmap.rect().center(), pixmap);
+  p.save();
+  p.setClipRect(rect, Qt::IntersectClip);
+  QSize s = pixmap.size() * 5 / 4;
+  QPoint c = rect.center();
+  int imin = (rect.left() - c.x())/s.width();
+  int imax = (rect.right() - c.x())/s.width();
+  int jmin = (rect.top() - c.y())/s.height();
+  int jmax = (rect.bottom() - c.y())/s.height();
+  c -= QPoint( pixmap.width()/2, pixmap.height()/2 );
+  for (int i=imin; i<=imax; i++)
+    for (int j=jmin; j<=jmax; j++)
+      if (! ((i + j) & 1))
+        p.drawPixmap(c.x()+i*s.width(), c.y()+j*s.height(), pixmap);
+  p.restore();
 }
 
 /*!
