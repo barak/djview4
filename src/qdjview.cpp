@@ -943,7 +943,12 @@ QDjView::updateActions()
   pageCombo->clearEditText();
   pageCombo->setCurrentIndex(pageCombo->findData(QVariant(pageno)));
   if (pageno >= 0 && pagenum > 0)
-    pageCombo->setEditText(pageName(pageno));
+    {
+      if (pageName(pageno,true).isEmpty())
+        pageCombo->setEditText(QString("%1 / %2").arg(pageno+1).arg(pagenum));
+      else
+        pageCombo->setEditText(pageName(pageno));
+    }
   pageCombo->setEnabled(pagenum > 0);
   actionNavFirst->setEnabled(pagenum>0 && pageno>0);
   actionNavPrev->setEnabled(pagenum>0 && pageno>0);
@@ -2344,7 +2349,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   pageCombo->setEditable(true);
   pageCombo->setInsertPolicy(QComboBox::NoInsert);
   pageCombo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-  pageCombo->setMinimumWidth(80);
+  pageCombo->setMinimumWidth(90);
   connect(pageCombo, SIGNAL(activated(int)),
           this, SLOT(pageComboActivated(int)));
   connect(pageCombo->lineEdit(), SIGNAL(editingFinished()),
