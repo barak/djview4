@@ -5199,8 +5199,14 @@ QDjVuWidget::nextPage(void)
   while (pageNo < priv->numPages - 1)
     {
       pageNo += 1;
-      if (! priv->pageMap.contains(pageNo) ||
-          ! priv->visibleRect.contains(priv->pageMap[pageNo]->rect) )
+      if (! priv->pageMap.contains(pageNo))
+        break;
+      // make sure there is a meaningful visible change
+      const QRect &vr = priv->visibleRect;
+      const QRect &pr = priv->pageMap[pageNo]->rect;
+      if (pr.top() != vr.top() + priv->borderSize ||
+          pr.left() < vr.left() ||
+          pr.right() > pr.right() )
         break;
     }
   setPage(pageNo);
@@ -5214,8 +5220,14 @@ QDjVuWidget::prevPage(void)
   while (pageNo > 0)
     {
       pageNo -= 1;
-      if (! priv->pageMap.contains(pageNo) ||
-          ! priv->visibleRect.contains(priv->pageMap[pageNo]->rect) )
+      if (! priv->pageMap.contains(pageNo))
+        break;
+      // make sure there is a meaningful visible change
+      const QRect &vr = priv->visibleRect;
+      const QRect &pr = priv->pageMap[pageNo]->rect;
+      if (pr.top() != vr.top() + priv->borderSize ||
+          pr.left() < vr.left() ||
+          pr.right() > pr.right() )
         break;
     }
   setPage(pageNo);
