@@ -3736,6 +3736,7 @@ QDjVuWidget::getImageForRect(const QRect &rect)
   paint.begin(&img);
   paint.translate(- rect.topLeft());
   priv->paintAll(paint, region);
+
   paint.end();
   return img;
 }
@@ -4260,6 +4261,13 @@ QDjVuWidget::paintEvent(QPaintEvent *event)
   QPainter paint(viewport());
   QRegion region = event->region();
   priv->paintAll(paint, region);
+  // debugging code
+#ifdef DEBUG_SHOW_PAINTED_AREAS
+  QColor color(rand()%256,rand()%256,rand()%256);
+  color.setAlpha(128);
+  paint.setClipRegion(region);
+  paint.fillRect(region.boundingRect(), color);
+#endif
 }
 
 
