@@ -3989,7 +3989,7 @@ QDjView::pageComboEdited(void)
   int pagenum = documentPages.size();
   QRegExp pattern = QRegExp(QString("\\s*(\\d+)\\s*/\\s*%1\\s*").arg(pagenum));
   if (pattern.exactMatch(data))
-    goToPage(pattern.cap(1).toInt());
+    goToPage(qMax(0, pattern.cap(1).toInt() - 1));
   else
     goToPage(data);
   updateActionsLater();
