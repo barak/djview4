@@ -3985,7 +3985,13 @@ void
 QDjView::pageComboEdited(void)
 {
   int oldpage = widget->page();
-  goToPage(pageCombo->lineEdit()->text().trimmed());
+  QString data = pageCombo->lineEdit()->text().trimmed();
+  int pagenum = documentPages.size();
+  QRegExp pattern = QRegExp(QString("\\s*(\\d+)\\s*/\\s*%1\\s*").arg(pagenum));
+  if (pattern.exactMatch(data))
+    goToPage(pattern.cap(1).toInt());
+  else
+    goToPage(data);
   updateActionsLater();
   if (oldpage != widget->page())
     widget->setFocus();
