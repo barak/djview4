@@ -1,3 +1,10 @@
+djview4 (4.5-7) unstable; urgency=low
+
+  * switch to dpkg-source 3.0 (quilt) format
+  * really automatically clean generated bitmaps in debian/ (debian/clean)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Wed, 28 Apr 2010 14:09:52 +0100
+
 djview4 (4.5-6) unstable; urgency=low
 
   * source depend (debian/control) on librsvg2-bin binary used by new
