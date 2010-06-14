@@ -894,10 +894,10 @@ QDjViewPSExporter::openFile()
               int nfd = 256;
 #endif
               ::close(0);
-              ::dup(fds[0]);
+              int status = ::dup(fds[0]);
               for (int i=1; i<nfd; i++)
                 ::close(i);
-              if (fork() == 0)
+              if (status >= 0 && fork() == 0)
                 {
                   // try lp and lpr
                   (void)execvp("lpr", (char**)lprargs.data());
