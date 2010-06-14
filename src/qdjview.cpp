@@ -1268,10 +1268,6 @@ QDjView::applySaved(Saved *saved)
     restoreState(saved->state);
   applyOptions(saved->remember);
   widget->setZoom(saved->zoom);
-  // global window size in standalone mode
-  if (saved == &prefs->forStandalone)
-    if (! (prefs->windowSize.isNull()))
-      resize(prefs->windowSize);
 }
 
 
@@ -2234,10 +2230,8 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   widget = new QDjVuWidget(central);
   widget->setFrameShape(QFrame::NoFrame);
   if (viewerMode == STANDALONE)
-    {
-      widget->setFrameShadow(QFrame::Sunken);
-      widget->setFrameShape(QFrame::Box);
-    }
+    widget->setFrameShadow(QFrame::Sunken);
+
   widget->viewport()->installEventFilter(this);
   connect(widget, SIGNAL(errorCondition(int)),
           this, SLOT(errorCondition(int)));
@@ -2397,6 +2391,11 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   applyPreferences();
   updateActions();
 
+  // Remembered geometry (before the window is shown)
+  if (viewerMode == STANDALONE)
+    if (! (prefs->windowSize.isNull()))
+      resize(prefs->windowSize);
+  
   // Options set so far have default priority
   widget->reduceOptionsToPriority(QDjVuWidget::PRIORITY_DEFAULT);
 }
