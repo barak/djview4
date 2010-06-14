@@ -2264,7 +2264,6 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 
   // Create splash screen
   splash = new QLabel(central);
-  splash->setFrameShape(QFrame::Box);
   splash->setFrameShadow(QFrame::Sunken);
   splash->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
   splash->setPixmap(QPixmap(":/images/splash.png"));
