@@ -1090,7 +1090,7 @@ static void t2p_validate(T2P* t2p){
 		if(t2p->pdf_defaultcompressionquality%100 !=0){
 			TIFFError(
 				TIFF2PDF_MODULE, 
-				"PNG Group predictor differencing not implemented, assuming compresion quality %u", 
+				"PNG Group predictor differencing not implemented, assuming compression quality %u", 
 				t2p->pdf_defaultcompressionquality);
 		}
 		t2p->pdf_defaultcompressionquality%=100;
@@ -5018,13 +5018,14 @@ static tsize_t t2p_write_pdf_trailer(T2P* t2p, TIFF* output)
 	tsize_t written = 0;
 	char buffer[32];
 	int buflen = 0;
-	char fileidbuf[16];
+        int ifileidbuf[4];
+	char *fileidbuf = (char*)ifileidbuf;
 	int i = 0;
 
-	((int*)fileidbuf)[0] = rand();
-	((int*)fileidbuf)[1] = rand();
-	((int*)fileidbuf)[2] = rand();
-	((int*)fileidbuf)[3] = rand();
+	ifileidbuf[0] = rand();
+	ifileidbuf[1] = rand();
+	ifileidbuf[2] = rand();
+	ifileidbuf[3] = rand();
 	t2p->pdf_fileid = (char*)_TIFFmalloc(33);
 	if(t2p->pdf_fileid == NULL) {
 		TIFFError(
