@@ -301,7 +301,7 @@ public:
   virtual void stop();
   virtual ddjvu_status_t status();
 protected:
-  QString fileName;
+  QFile file;
   QDjVuJob *job;
   FILE *output;
   bool indirect;
@@ -347,11 +347,6 @@ QDjViewDjVuExporter::QDjViewDjVuExporter(QDialog *parent, QDjView *djview,
 
 QDjViewDjVuExporter::~QDjViewDjVuExporter()
 {
-  if (output)
-    ::fclose(output);
-  output = 0;
-  if (djview)
-    ddjvu_cache_clear(djview->getDjVuContext());
   switch(status())
     {
     case DDJVU_JOB_STARTED:
@@ -359,23 +354,29 @@ QDjViewDjVuExporter::~QDjViewDjVuExporter()
         ddjvu_job_stop(*job);
     case DDJVU_JOB_FAILED:
     case DDJVU_JOB_STOPPED:
-      if (! fileName.isEmpty())
-        ::remove(QFile::encodeName(fileName).data());
+      if (file.openMode() & (QIODevice::WriteOnly|QIODevice::Append))
+        file.remove();
     default:
       break;
     }
+  if (output)
+    ::fclose(output);
+  if (file.openMode())
+    file.close();
+  if (djview)
+    ddjvu_cache_clear(djview->getDjVuContext());
+  output = 0;
 }
 
 
 bool 
 QDjViewDjVuExporter::save(QString fname)
 {
-  fileName = fname;
   QDjVuDocument *document = djview->getDocument();
   int pagenum = djview->pageNum();
-  if (document==0 || pagenum <= 0 || fileName.isEmpty())
+  if (output || document==0 || pagenum <= 0 || fname.isEmpty())
     return false;
-  QFileInfo info(fileName);
+  QFileInfo info(fname);
   QDir::Filters filters = QDir::AllEntries|QDir::NoDotAndDotDot;
   if (indirect && !info.dir().entryList(filters).isEmpty() &&
       QMessageBox::question(parent,
@@ -398,7 +399,7 @@ QDjViewDjVuExporter::save(QString fname)
     pagespec.append(QString("--pages=%1-%2").arg(fromPage+1).arg(toPage+1));
   QByteArray namespec;
   if (indirect)
-    namespec = "--indirect=" + QFile::encodeName(fileName);
+    namespec = "--indirect=" + fname.toUtf8();
 
   int argc = 0;
   const char *argv[2];
@@ -407,17 +408,16 @@ QDjViewDjVuExporter::save(QString fname)
   if (! pagespec.isEmpty())
     argv[argc++] = pagespec.data();
   
-  QByteArray fn = QFile::encodeName(fileName);
-  ::remove(fn.data());
-  output = ::fopen(fn.data(), "w");
+  file.setFileName(fname);
+  file.remove();
+  if (file.open(QIODevice::WriteOnly))
+    output = ::fdopen(file.handle(), "wb");
   if (! output)
     {
       failed = true;
       QString message = tr("Unknown error.");
-#ifdef HAVE_STRERROR
-      if (errno)
-        message = tr("System error: %1.").arg(strerror(errno));
-#endif
+      if (! file.errorString().isEmpty())
+        message = tr("System error: %1.").arg(file.errorString());
       error(message, __FILE__, __LINE__);
       return false;
     }
@@ -506,10 +506,10 @@ protected:
   void openFile();
   void closeFile();
 protected:
-  QString fileName;
+  QFile file;
   QDjVuJob *job;
-  int   outputfd;
   FILE *output;
+  int outputfd;
   int copies;
   bool collate;
   bool lastfirst;
@@ -554,7 +554,6 @@ QDjViewPSExporter::setup()
 QDjViewPSExporter::~QDjViewPSExporter()
 {
   // cleanup output
-  closeFile();
   switch(status())
     {
     case DDJVU_JOB_STARTED:
@@ -562,11 +561,12 @@ QDjViewPSExporter::~QDjViewPSExporter()
         ddjvu_job_stop(*job);
     case DDJVU_JOB_FAILED:
     case DDJVU_JOB_STOPPED:
-      if (! fileName.isEmpty())
-        ::remove(QFile::encodeName(fileName).data());
+      if (file.openMode() & (QIODevice::WriteOnly|QIODevice::Append))
+        file.remove();
     default:
       break;
     }
+  closeFile();
   // delete property pages
   delete page1;
   delete page2;
@@ -578,8 +578,8 @@ QDjViewPSExporter::QDjViewPSExporter(QDialog *parent, QDjView *djview,
                                      QString name, bool eps)
   : QDjViewExporter(parent, djview, name),
     job(0), 
-    outputfd(-1),
     output(0),
+    outputfd(-1),
     copies(1),
     collate(true),
     lastfirst(false),
@@ -776,16 +776,15 @@ QDjViewPSExporter::openFile()
 {
   if (printer)
     {
-      fileName = QString::null;
+      file.close();
       if (! printer->outputFileName().isEmpty())
-        fileName = printer->outputFileName();
+        file.setFileName(printer->outputFileName());
     }
-  if (! fileName.isEmpty())
+  if (! file.fileName().isEmpty())
     {
-      QByteArray fname = QFile::encodeName(fileName);
-      ::remove(fname.data());
-      outputfd = -1;
-      output = ::fopen(fname.data(), "w");
+      file.remove();
+      if (file.open(QIODevice::WriteOnly))
+        output = ::fdopen(file.handle(), "wb");
     }
   else if (printer)
     {
@@ -916,7 +915,7 @@ QDjViewPSExporter::openFile()
             }
           ::close(fds[0]);
           outputfd = fds[1];
-          output = fdopen(outputfd, "w");
+          output = fdopen(outputfd, "wb");
           if (pid >= 0)
             {
 # if HAVE_WAITPID
@@ -940,6 +939,8 @@ QDjViewPSExporter::closeFile()
     ::fclose(output);
   if (outputfd >= 0)
     ::close(outputfd);
+  if (file.openMode())
+    file.close();
   output = 0;
   outputfd = -1;
   printer = 0;
@@ -949,8 +950,11 @@ QDjViewPSExporter::closeFile()
 bool
 QDjViewPSExporter::save(QString fname)
 {
+  if (output) 
+    return false;
   printer = 0;
-  fileName = fname;
+  file.close();
+  file.setFileName(fname);
   return start();
 }
 
@@ -958,8 +962,11 @@ QDjViewPSExporter::save(QString fname)
 bool
 QDjViewPSExporter::print(QPrinter *qprinter)
 {
+  if (output) 
+    return false;
   printer = qprinter;
-  fileName = QString::null;
+  file.close();
+  file.setFileName(QString::null);
   QDjViewPrefs *prefs = QDjViewPrefs::instance();
   prefs->printReverse = lastfirst;
   prefs->printCollate = collate;
@@ -1004,8 +1011,10 @@ QDjViewPSExporter::printSetup(QPrintDialog *dialog, bool dir)
     {
       bool grayscale = ui1.grayScaleButton->isChecked();
       bool landscape = ui2.landscapeButton->isChecked();
-      printer->setColorMode(grayscale ? QPrinter::GrayScale : QPrinter::Color);
-      printer->setOrientation(landscape ? QPrinter::Landscape : QPrinter::Portrait);
+      printer->setColorMode(grayscale ? 
+                            QPrinter::GrayScale : QPrinter::Color);
+      printer->setOrientation(landscape ? 
+                              QPrinter::Landscape : QPrinter::Portrait);
     }
   return true;
 }
@@ -1304,7 +1313,7 @@ protected:
   void checkTiffSupport();
   Ui::QDjViewExportTiff ui;
   QPointer<QWidget> page;
-  QString fileName;
+  QFile file;
 #if HAVE_TIFF
   TIFF *tiff;
 #else
@@ -1471,15 +1480,18 @@ QDjViewTiffExporter::closeFile()
     TIFFClose(tiff);
 #endif
   tiff = 0;
-  if (curStatus > DDJVU_JOB_OK && !fileName.isEmpty())
-    ::remove(QFile::encodeName(fileName).data());
+  if (curStatus > DDJVU_JOB_OK)
+    if (file.openMode() & (QIODevice::WriteOnly|QIODevice::Append))
+      file.remove();
 }
 
 
 bool 
 QDjViewTiffExporter::save(QString fname)
 {
-  fileName = fname;
+  if (file.openMode())
+    return false;
+  file.setFileName(fname);
   return start();
 }
 
@@ -1498,8 +1510,8 @@ QDjViewTiffExporter::doPage()
   // open file or write directory
   if (tiff)
     TIFFWriteDirectory(tiff);
-  else
-    tiff = TIFFOpen(QFile::encodeName(fileName).data(), "w");
+  else if (file.open(QIODevice::ReadWrite))
+    tiff = TIFFFdOpen(file.handle(), file.fileName().toLocal8Bit().data(),"w");
   if (!tiff)
     message = tr("Cannot open output file.");
   else
@@ -1660,7 +1672,7 @@ protected:
   virtual void doFinal();
 protected:
   QTemporaryFile tempFile;
-  QString pdfFileName;
+  QFile pdfFile;
 };
 
 
@@ -1716,17 +1728,17 @@ QDjViewPdfExporter::doFinal()
     TIFFClose(tiff);
   tiff = 0;
   // open files
-  QByteArray inameArray = QFile::encodeName(fileName);
-  QByteArray onameArray = QFile::encodeName(pdfFileName);  
-  fileName = pdfFileName;
-  TIFF *input = TIFFOpen(inameArray.data(), "r");
-  FILE *output = fopen(onameArray.data(), "wb");
+  TIFF *input = 0;
+  FILE *output = 0;
+  QByteArray inameArray = file.fileName().toLocal8Bit();
+  QByteArray onameArray = pdfFile.fileName().toLocal8Bit();
+  file.close();
+  if (file.open(QIODevice::ReadOnly))
+    input = TIFFFdOpen(file.handle(), inameArray.data(), "r");
+  if (pdfFile.open(QIODevice::WriteOnly))
+    output = fdopen(pdfFile.handle(),"wb");
   if (input && output)
     {
-# ifdef Q_OS_UNIX
-      if (tempFile.exists())
-        tempFile.remove();
-# endif
       const char *argv[3];
       argv[0] = "tiff2pdf";
       argv[1] = "-o";
@@ -1737,10 +1749,8 @@ QDjViewPdfExporter::doFinal()
   else if (! output)
     {
       message = tr("Unable to create output file.");
-# ifdef HAVE_STRERROR
-      if (errno)
-        message = tr("System error: %1.").arg(strerror(errno));
-# endif
+      if (! pdfFile.errorString().isEmpty())
+        message = tr("System error: %1.").arg(pdfFile.errorString());
     }
   else
     message = tr("Unable to reopen temporary file.");
@@ -1749,6 +1759,10 @@ QDjViewPdfExporter::doFinal()
     TIFFClose(input);
   if (output)
     fclose(output);
+  if (file.openMode())
+    file.close();
+  if (pdfFile.openMode())
+    pdfFile.close();
   if (tempFile.exists())
     tempFile.remove();
 #else
@@ -1765,21 +1779,20 @@ QDjViewPdfExporter::doFinal()
 bool 
 QDjViewPdfExporter::save(QString fname)
 {
-  pdfFileName = fname;
+  if (file.openMode() || tempFile.openMode() || pdfFile.openMode())
+    return false;
+  pdfFile.setFileName(fname);
   tempFile.setFileTemplate(fname);
   if (tempFile.open())
     {
-      fileName = tempFile.fileName();
+      file.setFileName(tempFile.fileName());
       tempFile.close();
-      start();
-      return true;
+      return start();
     }
   // prepare error message
   QString message = tr("Unable to create temporary file.");
-#ifdef HAVE_STRERROR
-  if (errno)
-    message = tr("System error: %1.").arg(strerror(errno));
-#endif
+  if (! tempFile.errorString().isEmpty())
+    message = tr("System error: %1.").arg(tempFile.errorString());
   error(message, __FILE__, __LINE__);
   return false;
 }
