@@ -5302,6 +5302,8 @@ QDjVuWidget::moveToPageTop(void)
   Position pos = priv->currentPos;
   pos.inPage = false;
   pos.posView = pos.posPage = QPoint(0,0);
+  pos.hAnchor = 0;
+  pos.vAnchor = 0;
   setPosition(pos);
 }
 
@@ -5313,7 +5315,8 @@ QDjVuWidget::moveToPageBottom(void)
   Position pos = priv->currentPos;
   pos.inPage = false;
   pos.posView = pos.posPage = QPoint(0,0);
-  pos.hAnchor = pos.vAnchor = 100;
+  pos.hAnchor = 0;
+  pos.vAnchor = 100;
   QPoint p;
   p.rx() = priv->visibleRect.width() - priv->borderSize;
   p.ry() = priv->visibleRect.height() - priv->borderSize;
@@ -5358,7 +5361,7 @@ QDjVuWidget::readNext(void)
         break;
     }
   pos.inPage = false;
-  pos.valid = false;
+  pos.valid = true;
   setPosition(pos, point);
 }
 
@@ -5400,7 +5403,7 @@ QDjVuWidget::readPrev(void)
         break;
     }
   pos.inPage = false;
-  pos.valid = false;
+  pos.valid = true;
   setPosition(pos, point);
 }
 
