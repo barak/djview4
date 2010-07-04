@@ -5284,13 +5284,11 @@ void
 QDjVuWidget::lastPage(void)
 {
   Position pos;
-  QPoint p;
   pos.pageNo = priv->numPages - 1;
   pos.inPage = false;
-  pos.posPage = QPoint(0,0);
-  pos.posView = QPoint(0,0);
-  pos.hAnchor = 100;
-  pos.vAnchor = 100;
+  pos.posView = pos.posPage = QPoint(0,0);
+  pos.hAnchor = pos.vAnchor = 100;
+  QPoint p;
   p.rx() = priv->visibleRect.width() - priv->borderSize;
   p.ry() = priv->visibleRect.height() - priv->borderSize;
   setPosition(pos, p);
@@ -5302,11 +5300,9 @@ void
 QDjVuWidget::moveToPageTop(void)
 {
   Position pos = priv->currentPos;
-  QPoint point = priv->currentPoint;
   pos.inPage = false;
-  pos.posView.ry() = 0;
-  point.ry() = priv->borderSize;
-  setPosition(pos, point);
+  pos.posView = pos.posPage = QPoint(0,0);
+  setPosition(pos);
 }
 
 
@@ -5315,12 +5311,13 @@ void
 QDjVuWidget::moveToPageBottom(void)
 {
   Position pos = priv->currentPos;
-  QPoint point = priv->currentPoint;
   pos.inPage = false;
-  if (pos.pageNo>=0 && pos.pageNo<priv->numPages)
-   pos.posView.ry() = priv->pageData[pos.pageNo].rect.height();
-  point.ry() = priv->visibleRect.height() - priv->borderSize;
-  setPosition(pos, point);
+  pos.posView = pos.posPage = QPoint(0,0);
+  pos.hAnchor = pos.vAnchor = 100;
+  QPoint p;
+  p.rx() = priv->visibleRect.width() - priv->borderSize;
+  p.ry() = priv->visibleRect.height() - priv->borderSize;
+  setPosition(pos, p);
 }
 
 
@@ -5352,15 +5349,16 @@ QDjVuWidget::readNext(void)
   while (pos.pageNo < priv->numPages - 1)
     {
       pos.pageNo += 1;
-      pos.posView = QPoint(0,0);
+      pos.posView.ry() = 0;
       pos.vAnchor = 0;
       pos.hAnchor = 0;
+      point.ry() = bs;
       if (! priv->pageMap.contains(pos.pageNo) ||
           ! priv->visibleRect.contains(priv->pageMap[pos.pageNo]->rect) )
         break;
     }
-  point.rx() = bs;
-  point.ry() = bs;
+  pos.inPage = false;
+  pos.valid = false;
   setPosition(pos, point);
 }
 
@@ -5393,16 +5391,16 @@ QDjVuWidget::readPrev(void)
   while (pos.pageNo > 0)
     {
       pos.pageNo -= 1;
-      pos.inPage = false;
-      pos.posView = QPoint(0,0);
+      pos.posView.ry() = 0;
       pos.vAnchor = 100;
       pos.hAnchor = 0;
+      point.ry() = priv->visibleRect.height() - bs;
       if (! priv->pageMap.contains(pos.pageNo) ||
           ! priv->visibleRect.contains(priv->pageMap[pos.pageNo]->rect) )
         break;
     }
-  point.rx() = bs;
-  point.ry() = priv->visibleRect.height() - bs;
+  pos.inPage = false;
+  pos.valid = false;
   setPosition(pos, point);
 }
 

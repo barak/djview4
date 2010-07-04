@@ -57,3 +57,4 @@ NEW IN VERSION 4.6
 - Show total page number in page combo and page info box.
 - Decode percent encoding in annotation and outline hyperlinks.
 - Properly handle non-ascii filenames in export and save dialogs.
+- Subtle changes to PgUp/PgDn/Home/End/Space/Backspace view changes.
