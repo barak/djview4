@@ -577,7 +577,9 @@ QDjView::createActions()
     << Trigger(this, SLOT(performInformation()));
 
   actionMetadata = makeAction(tr("&Metadata...", "Edit|"))
+#ifndef Q_WS_MAC
     << QKeySequence(tr("Ctrl+M", "Edit|Metadata"))
+#endif
     << tr("Show the document and page meta data.")
     << Trigger(this, SLOT(performMetadata()));
 
