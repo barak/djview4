@@ -397,10 +397,8 @@ flatten_hiddentext(miniexp_t p)
   the coordinates of the reference point as a percentages
   of the width and height relative to the top left corner.
   These are always zero when the position is returned
-  with QDjVuWidget::position.
-
-  Finally flag \a valid indicates whether both \a posPage and
-  \a posView have consistent values. */
+  with QDjVuWidget::position. Finally flag \a valid indicates 
+  that \a pageNo is indeed the closest page. */
 
 Position::Position()
   : pageNo(0), 
@@ -817,6 +815,7 @@ public:
   void changeLayout(int change, int delay=0);
   void getAnnotationsAndText(Page *p);
   bool requestPage(Page *p);
+  int findClosestPage(const QPoint&, const QList<Page*>&, Page**, int*);
   Position findPosition(const QPoint &point, bool closestAnchor=false);
   void updateModifiers(Qt::KeyboardModifiers, Qt::MouseButtons);
   void updatePosition(const QPoint &point, bool click=false, bool links=true);
@@ -1314,15 +1313,20 @@ QDjVuPrivate::makeLayout()
                 dp.rx() += p->rect.width() * movePos.hAnchor / 100 - 1;
               if (movePos.vAnchor > 0 && movePos.vAnchor <= 100)
                 dp.ry() += p->rect.height() * movePos.vAnchor / 100 - 1;
+              QPoint sdp = dp;
               if (movePos.inPage && p->dpi)
                 dp =  p->mapper.mapped(movePos.posPage);
               else if (!movePos.inPage)
                 dp += movePos.posView;
+              // special case: unknown page geometry
               if (! p->dpi)
                 if (movePos.inPage || movePos.vAnchor || movePos.hAnchor)
-                  // page geometry is still unknown.
-                  // we have to come back later.
                   futureLayoutChange = CHANGE_VIEW;
+              // special case: not the closest page
+              if (movePos.valid)
+                if (movePos.pageNo != findClosestPage(dp, pageLayout, 0, 0))
+                  dp = sdp;
+              // perform move
               visibleRect.moveTo(dp - movePoint);
             }
           layoutChange |= CHANGE_VISIBLE;
@@ -1612,16 +1616,17 @@ QDjVuPrivate::requestPage(Page *p)
   return result;
 }
 
-// compute Position for a given viewport point.
-Position
-QDjVuPrivate::findPosition(const QPoint &point, bool closestAnchor)
+
+// finds closest page to a point in desk coordinates
+int
+QDjVuPrivate::findClosestPage(const QPoint &deskPoint, 
+                              const QList<Page*> &pages, 
+                              Page **pp, int *pd)
 {
-  Position pos; 
-  QPoint deskPoint = visibleRect.topLeft() + point;
   Page *p;
   Page *bestPage = 0;
   int bestDistance = 0;
-  foreach(p, pageVisible)
+  foreach(p, pages)
     {
       int distance = 0;
       if (deskPoint.y() < p->rect.top())
@@ -1640,6 +1645,24 @@ QDjVuPrivate::findPosition(const QPoint &point, bool closestAnchor)
             break;
         }
     }
+  if (! bestPage)
+    return -1;
+  if (pp)
+    *pp = bestPage;
+  if (pd)
+    *pd = bestDistance;
+  return bestPage->pageno;
+}
+
+// compute Position for a given viewport point.
+Position
+QDjVuPrivate::findPosition(const QPoint &point, bool closestAnchor)
+{
+  Position pos; 
+  Page *bestPage = 0;
+  int bestDistance = 0;
+  QPoint deskPoint = visibleRect.topLeft() + point;
+  findClosestPage(deskPoint, pageVisible, &bestPage, &bestDistance);
   if (bestPage)
     {
       pos.pageNo = bestPage->pageno;
@@ -1650,11 +1673,11 @@ QDjVuPrivate::findPosition(const QPoint &point, bool closestAnchor)
         {
           int w = bestPage->rect.width();
           int h = bestPage->rect.height();
-          int x = qBound(0, pos.posView.x(), w);
-          int y = qBound(0, pos.posView.y(), h);
+          pos.hAnchor = 100 * qBound(0, pos.posView.x(), w) / w;
+          pos.vAnchor = 100 * qBound(0, pos.posView.y(), h) / h;
+          int x = w * pos.hAnchor / 100 - 1;
+          int y = h * pos.vAnchor / 100 - 1;
           pos.posView = pos.posView - QPoint(x,y);
-          pos.hAnchor = (100 * x) / w;
-          pos.vAnchor = (100 * y) / h;
         }
       pos.valid = true;
     }
@@ -2060,8 +2083,8 @@ QDjVuWidget::setDocument(QDjVuDocument *d)
   The page currently displayed.
   When getting the property, this is the number of the page
   that is closest to the center of the display area.
-  When setting the property, the desired page number
-  goes near the topleft corner of the display area.
+  When setting the property, the topleft corner of the
+  desired page replaces the topleft corner of the current page.
   Default: page 0.
 */
 
@@ -2074,14 +2097,17 @@ QDjVuWidget::page(void) const
 void 
 QDjVuWidget::setPage(int n)
 {
-  if (n != page() && n>=0 && n<priv->numPages)
+  int currentPageNo = page();
+  if (n != currentPageNo && n>=0 && n<priv->numPages)
     {
       Position pos;
       pos.pageNo = n;
+      pos.valid = true;
       pos.inPage = false;
-      pos.posView = QPoint(0,0);
-      pos.posPage = QPoint(0,0);
-      setPosition(pos);
+      QPoint tlr(priv->borderSize, priv->borderSize);
+      if (priv->pageMap.contains(currentPageNo))
+        pos.posView = tlr - priv->pageMap[currentPageNo]->viewRect.topLeft();
+      setPosition(pos, tlr);
     }
 }
 
@@ -5202,20 +5228,20 @@ QDjVuWidget::displayModeText(void)
 void 
 QDjVuWidget::nextPage(void)
 {
-  // Skip all fully displayed pages
   int pageNo = page();
+  const QRect &dr = priv->deskRect;
+  const QRect &vr = priv->visibleRect;
+  const QRect &cr = priv->pageMap[pageNo]->rect;
   while (pageNo < priv->numPages - 1)
     {
       pageNo += 1;
-      if (! priv->pageMap.contains(pageNo))
+      if (priv->layoutChange || !priv->pageMap.contains(pageNo))
         break;
-      // make sure there is a meaningful visible change
-      const QRect &vr = priv->visibleRect;
+      // Skip pages until we get a meaningful change.
       const QRect &pr = priv->pageMap[pageNo]->rect;
-      if (pr.top() != vr.top() + priv->borderSize ||
-          pr.left() < vr.left() ||
-          pr.right() > pr.right() )
-        break;
+      if (! vr.contains(pr))
+        if (pr.top() != cr.top() || vr.width() < dr.width())
+          break;
     }
   setPage(pageNo);
 }
@@ -5225,18 +5251,19 @@ void
 QDjVuWidget::prevPage(void)
 {
   int pageNo = page();
+  const QRect &dr = priv->deskRect;
+  const QRect &vr = priv->visibleRect;
+  const QRect &cr = priv->pageMap[pageNo]->rect;
   while (pageNo > 0)
     {
       pageNo -= 1;
-      if (! priv->pageMap.contains(pageNo))
+      if (priv->layoutChange || !priv->pageMap.contains(pageNo))
         break;
-      // make sure there is a meaningful visible change
-      const QRect &vr = priv->visibleRect;
+      // Skip pages until we get a meaningful change.
       const QRect &pr = priv->pageMap[pageNo]->rect;
-      if (pr.top() != vr.top() + priv->borderSize ||
-          pr.left() < vr.left() ||
-          pr.right() > pr.right() )
-        break;
+      if (! vr.contains(pr))
+        if (pr.top() != cr.top() || vr.width() < dr.width())
+          break;
     }
   setPage(pageNo);
 }
@@ -5325,14 +5352,15 @@ QDjVuWidget::readNext(void)
   while (pos.pageNo < priv->numPages - 1)
     {
       pos.pageNo += 1;
+      pos.posView = QPoint(0,0);
+      pos.vAnchor = 0;
+      pos.hAnchor = 0;
       if (! priv->pageMap.contains(pos.pageNo) ||
           ! priv->visibleRect.contains(priv->pageMap[pos.pageNo]->rect) )
         break;
     }
   point.rx() = bs;
   point.ry() = bs;
-  pos.inPage = false;
-  pos.posView = QPoint(0,0);
   setPosition(pos, point);
 }
 
@@ -5365,15 +5393,16 @@ QDjVuWidget::readPrev(void)
   while (pos.pageNo > 0)
     {
       pos.pageNo -= 1;
+      pos.inPage = false;
+      pos.posView = QPoint(0,0);
+      pos.vAnchor = 100;
+      pos.hAnchor = 0;
       if (! priv->pageMap.contains(pos.pageNo) ||
           ! priv->visibleRect.contains(priv->pageMap[pos.pageNo]->rect) )
         break;
     }
   point.rx() = bs;
   point.ry() = priv->visibleRect.height() - bs;
-  pos.inPage = false;
-  pos.posView = QPoint(0,0);
-  pos.vAnchor = 100;
   setPosition(pos, point);
 }
 
