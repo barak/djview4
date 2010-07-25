@@ -1064,8 +1064,8 @@ QDjViewSaveDialog::browse()
   if (! fname.isEmpty())
     {
       QFileInfo finfo(fname);
-      if (finfo.completeSuffix().isEmpty() && !suffix.isEmpty())
-        fname = QFileInfo(finfo.dir(), finfo.baseName() 
+      if (finfo.suffix().isEmpty() && !suffix.isEmpty())
+        fname = QFileInfo(finfo.dir(), finfo.completeBaseName() 
                           + "." + suffix).filePath();
       d->ui.fileNameEdit->setText(fname);
     }
@@ -1245,8 +1245,8 @@ QDjViewExportDialog::refresh()
             {
               QString suffix = info[1];
               QFileInfo finfo(fname);
-              if (!finfo.completeSuffix().isEmpty() && !suffix.isEmpty())
-                fname = QFileInfo(finfo.dir(), finfo.baseName() 
+              if (!finfo.suffix().isEmpty() && !suffix.isEmpty())
+                fname = QFileInfo(finfo.dir(), finfo.completeBaseName() 
                                   + "." + suffix).filePath();
               d->ui.fileNameEdit->setText(fname);
             }
@@ -1413,8 +1413,8 @@ QDjViewExportDialog::browse()
   if (! fname.isEmpty())
     {
       QFileInfo finfo(fname);
-      if (finfo.completeSuffix().isEmpty() && !suffix.isEmpty())
-        fname = QFileInfo(finfo.dir(), finfo.baseName() 
+      if (finfo.suffix().isEmpty() && !suffix.isEmpty())
+        fname = QFileInfo(finfo.dir(), finfo.completeBaseName() 
                           + "." + suffix).filePath();
       d->ui.fileNameEdit->setText(fname);
     }
@@ -1661,8 +1661,8 @@ QDjViewPrintDialog::browse()
   if (! fname.isEmpty())
     {
       QFileInfo finfo(fname);
-      if (finfo.completeSuffix().isEmpty() && !suffix.isEmpty())
-        fname = QFileInfo(finfo.dir(), finfo.baseName() 
+      if (finfo.suffix().isEmpty() && !suffix.isEmpty())
+        fname = QFileInfo(finfo.dir(), finfo.completeBaseName() 
                           + "." + suffix).filePath();
       d->ui.fileNameEdit->setText(fname);
     }

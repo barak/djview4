@@ -58,3 +58,4 @@ NEW IN VERSION 4.6
 - Decode percent encoding in annotation and outline hyperlinks.
 - Properly handle non-ascii filenames in export and save dialogs.
 - Subtle changes to PgUp/PgDn/Home/End/Space/Backspace view changes.
+- Fixed suffix management in export/save/print dialogs.

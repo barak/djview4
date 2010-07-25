@@ -5117,7 +5117,7 @@ static tsize_t t2p_write_pdf(T2P* t2p, TIFF* input, TIFF* output){
 		TIFFError(
 			TIFF2PDF_MODULE, 
 			"Can't allocate %lu bytes of memory for t2p_write_pdf", 
-			t2p->pdf_xrefcount * sizeof(uint32) );
+			(unsigned long)(t2p->pdf_xrefcount * sizeof(uint32)) );
 		return(written);
 	}
 	t2p->pdf_xrefcount=0;
