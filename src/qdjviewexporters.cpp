@@ -1617,7 +1617,7 @@ QDjViewTiffExporter::doPage()
         }
       }
       // render and save
-      char white = 0xff;
+      char white = (char)0xff;
       int rowsize = rect.w * 3;
       if (style == DDJVU_FORMAT_MSBTOLSB) {
         white = 0x00;
