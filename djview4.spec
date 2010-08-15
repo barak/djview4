@@ -1,5 +1,5 @@
 %define release 1
-%define version 4.5
+%define version 4.6
 
 Summary: DjVu viewer
 Name: djview4
