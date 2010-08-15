@@ -50,7 +50,7 @@
 # define DJVIEW_APP "DjView"
 #endif
 #ifndef DJVIEW_VERSION
-# define DJVIEW_VERSION 0x40500
+# define DJVIEW_VERSION 0x40600
 #endif
 
 
