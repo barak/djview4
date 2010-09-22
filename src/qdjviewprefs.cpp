@@ -26,6 +26,7 @@
 #include <libdjvu/miniexp.h>
 #include <libdjvu/ddjvuapi.h>
 
+#include <QColor>
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QDebug>
@@ -134,6 +135,7 @@ QDjViewPrefs::QDjViewPrefs(void)
     windowSize(640,400),
     tools(defaultTools),
     gamma(2.2),
+    white(QColor(Qt::white)),
     resolution(100),
     cacheSize(10*1024*1024),
     pixelCacheSize(256*1024),
@@ -323,6 +325,8 @@ QDjViewPrefs::load()
     tools |= TOOL_BACKFORW;
   if (s.contains("gamma"))
     gamma = s.value("gamma").toDouble();
+  if (s.contains("white"))
+    white = QColor(s.value("white").toString());
   if (s.contains("resolution"))
     resolution = s.value("resolution").toInt();
   if (s.contains("cacheSize"))
@@ -418,6 +422,7 @@ QDjViewPrefs::save(void)
   s.setValue("windowSize", windowSize);
   s.setValue("tools", toolsToString(tools));
   s.setValue("gamma", gamma);
+  s.setValue("white", white.name());
   s.setValue("resolution", resolution);
   s.setValue("cacheSize", cacheSize);
   s.setValue("pixelCacheSize", pixelCacheSize);

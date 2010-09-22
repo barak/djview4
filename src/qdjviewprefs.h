@@ -142,6 +142,7 @@ public:
   // Preferences set via the preference dialog.
   Tools      tools;             //!< Toolbar composition.
   double     gamma;             //!< Gamma value of the target screen.
+  QColor     white;             //!< White point of the target screen.
   int        resolution;        //!< Forced screen resolution or zero.
   qlonglong  cacheSize;         //!< Size of the decoded page cache.
   int        pixelCacheSize;    //!< Size of the pixel cache.

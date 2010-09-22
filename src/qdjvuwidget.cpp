@@ -767,6 +767,7 @@ public:
   int         pixelCacheSize;   // size of pixel cache
   QRect       selectedRect;     // selection rectangle (viewport coord)
   double          gamma;        // display gamma
+  QColor          white;        // display white point
   int             sdpi;         // screen dpi
   ddjvu_format_t *renderFormat; // ddjvu format
   QList<Cache>    pixelCache;   // pixel cache
@@ -919,6 +920,7 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   pageRequestTimer->setSingleShot(true);
   // render format
   gamma = 2.2;
+  white = QColor(Qt::white);
   sdpi = 100;
 #if DDJVUAPI_VERSION < 18
   unsigned int masks[3] = { 0xff0000, 0xff00, 0xff };
@@ -2288,6 +2290,28 @@ QDjVuWidget::setGamma(double gamma)
   ddjvu_format_set_gamma(priv->renderFormat, gamma);
   priv->pixelCache.clear();
   priv->changeLayout(UPDATE_ALL);
+}
+
+/*! \property QDjVuWidget::white
+  White point of the display. 
+  This is a noop when DDJVUAPI_VERSION<20.
+  Default 0xffffff. */
+
+QColor
+QDjVuWidget::white(void) const
+{
+  return priv->white;
+}
+
+void
+QDjVuWidget::setWhite(QColor w)
+{
+#if DDJVUAPI_VERSION >= 20
+  priv->white = w;
+  ddjvu_format_set_white(priv->renderFormat, w.blue(), w.green(), w.red());
+  priv->pixelCache.clear();
+  priv->changeLayout(UPDATE_ALL);
+#endif
 }
 
 
@@ -4912,7 +4936,7 @@ QDjVuWidget::paintEmpty(QPainter &p, const QRect &rect,
   if (!name.isEmpty())
     pixmap.load(name);
   // start painting
-  QBrush brush(Qt::white);
+  QBrush brush(priv->white);
   p.fillRect(rect, brush);
   if (pixmap.isNull()) return;
   if (pixmap.width() > rect.width()) return;
