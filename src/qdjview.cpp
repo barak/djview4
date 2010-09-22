@@ -4009,9 +4009,14 @@ QDjView::pageComboEdited(void)
 void
 QDjView::performAbout(void)
 {
+#if DDJVUAPI_VERSION >= 20
+  QString vstr = QString("(%1)<p>").arg(ddjvu_get_version_string());
+#else
+  QString vstr = "";
+#endif
   QString html = 
     tr("<html>"
-       "<h2>DjVuLibre DjView %1</h2>"
+       "<h2>DjVuLibre DjView %1</h2>%2"
        "<p>"
        "Viewer for DjVu documents<br>"
        "<a href=http://djvulibre.djvuzone.org>"
@@ -4027,7 +4032,8 @@ QDjView::performAbout(void)
        "See the GNU General Public License for more details."
        "</small></p>"
        "</html>")
-    .arg(QDjViewPrefs::versionString());
+    .arg(QDjViewPrefs::versionString())
+    .arg(vstr);
 
   QMessageBox::about(this, tr("About DjView"), html);
 }

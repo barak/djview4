@@ -4,7 +4,7 @@
 <context>
     <name>QApplication</name>
     <message>
-        <location filename="djview.cpp" line="406"/>
+        <location filename="djview.cpp" line="415"/>
         <source>Option &apos;-fix&apos; is deprecated.</source>
         <translation>Параметр &apos;-fix&apos; є застарілим.</translation>
     </message>
@@ -284,192 +284,192 @@
         <translation>Показати інформацію про кодування документу та його структуру.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="581"/>
+        <location filename="qdjview.cpp" line="583"/>
         <source>Show the document and page meta data.</source>
         <translation>Показати метадані документу та сторінки.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="586"/>
+        <location filename="qdjview.cpp" line="588"/>
         <source>&amp;About DjView...</source>
         <translation>&amp;Про DjView...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="590"/>
+        <location filename="qdjview.cpp" line="592"/>
         <source>Show information about this program.</source>
         <translation>Показати інформацію про цю програму.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="594"/>
+        <location filename="qdjview.cpp" line="596"/>
         <source>Display everything.</source>
         <translation>Показувати все.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="600"/>
+        <location filename="qdjview.cpp" line="602"/>
         <source>Only display the document bitonal stencil.</source>
         <translation>Показати тільки двокольоровий шаблон документу.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="607"/>
+        <location filename="qdjview.cpp" line="609"/>
         <source>Only display the foreground layer.</source>
         <translation>Показувати лише передній план.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="614"/>
+        <location filename="qdjview.cpp" line="616"/>
         <source>Only display the background layer.</source>
         <translation>Показувати лише задній план.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="628"/>
+        <location filename="qdjview.cpp" line="630"/>
         <source>Show the preferences dialog.</source>
         <translation>Показати діалог налаштування.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="634"/>
+        <location filename="qdjview.cpp" line="636"/>
         <source>Show/hide the side bar.</source>
         <translation>Показати або сховати бічний пенал.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="641"/>
+        <location filename="qdjview.cpp" line="643"/>
         <source>Show/hide the standard tool bar.</source>
         <translation>Показати або сховати панель інструментів.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="645"/>
+        <location filename="qdjview.cpp" line="647"/>
         <source>Show/hide the status bar.</source>
         <translation>Показати або сховати панель стану.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="654"/>
+        <location filename="qdjview.cpp" line="656"/>
         <source>Toggle full screen mode.</source>
         <translation>Перемикач повноекранного режиму.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="661"/>
+        <location filename="qdjview.cpp" line="663"/>
         <source>Toggle continuous layout mode.</source>
         <translation>Перемикач режиму неперервного перегляду сторінок.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="669"/>
+        <location filename="qdjview.cpp" line="671"/>
         <source>Toggle side-by-side layout mode.</source>
         <translation>Перемикач режиму відображення сторінок поруч.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1030"/>
+        <location filename="qdjview.cpp" line="1031"/>
         <source>Control Left Mouse Button</source>
         <translation>Контроль правою кнопкою миші</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1032"/>
+        <location filename="qdjview.cpp" line="1033"/>
         <source>Right Mouse Button</source>
         <translation>Права кнопка миші</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1039"/>
+        <location filename="qdjview.cpp" line="1040"/>
         <source>&lt;html&gt;&lt;b&gt;Selecting a rectangle.&lt;/b&gt;&lt;br/&gt; Once a rectangular area is selected, a popup menu lets you copy the corresponding text or image. Instead of using this tool, you can also hold %1 and use the Left Mouse Button.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Вибір прямокутної області.&lt;/b&gt;&lt;br/&gt; Тільки-но обрано прямокутну область, спадне меню надасть вам змогу скопіювати відповідний текст чи картинку. Замість використання цього інструменту Ви можете натиснути %1 та використати ліву кнопку миші.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1047"/>
+        <location filename="qdjview.cpp" line="1048"/>
         <source>&lt;html&gt;&lt;b&gt;Zooming.&lt;/b&gt;&lt;br/&gt; Choose a zoom level for viewing the document. Zoom level 100% displays the document for a 100 dpi screen. Zoom levels &lt;tt&gt;Fit Page&lt;/tt&gt; and &lt;tt&gt;Fit Width&lt;/tt&gt; ensure that the full page or the page width fit in the window. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Масштабування.&lt;/b&gt;&lt;br/&gt; Оберіть масштаб для перегляду документа. Масштаб у 100% покаже документ у роздільній здатності екрана 100 т/д. Масштаб &lt;tt&gt;Підібрати під сторінку&lt;/tt&gt; та &lt;tt&gt;Підібрати ширину&lt;/tt&gt; надасть змогу бачити на екрані всю сторінку або всю ширину сторінки. &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1059"/>
+        <location filename="qdjview.cpp" line="1060"/>
         <source>&lt;html&gt;&lt;b&gt;Rotating the pages.&lt;/b&gt;&lt;br/&gt; Choose to display pages in portrait or landscape mode. You can also turn them upside down.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Поворот сторінок.&lt;/b&gt;&lt;br/&gt; Оберіть, щоб переглядати сторінки у книжковому чи альбомному режимі. Ви також можете перевернути їх догори низом.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1066"/>
+        <location filename="qdjview.cpp" line="1067"/>
         <source>&lt;html&gt;&lt;b&gt;Display mode.&lt;/b&gt;&lt;br/&gt; DjVu images compose a background layer and a foreground layer using a stencil. The display mode specifies with layers should be displayed.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Режим відображення.&lt;/b&gt;&lt;br/&gt; Картинки DjVu складаються з шару тла та шару переднього плану за допомогою шаблону. Режим відображення визначає шари, що буде відображено.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1074"/>
+        <location filename="qdjview.cpp" line="1075"/>
         <source>&lt;html&gt;&lt;b&gt;Navigating the document.&lt;/b&gt;&lt;br/&gt; The page selector lets you jump to any page by name. The navigation buttons jump to the first page, the previous page, the next page, or the last page. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Навігація документом.&lt;/b&gt;&lt;br/&gt; Вибір сторінки дозволить Вам перейти до будь-якої сторінки за назвою. Кнопки навігації дозволять перейти до першої, попередньої, наступної, останньої сторінки. &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1082"/>
+        <location filename="qdjview.cpp" line="1083"/>
         <source>&lt;html&gt;&lt;b&gt;Document and page information.&lt;/b&gt;&lt;br&gt; Display a dialog window for viewing encoding information pertaining to the document or to a specific page.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Інформація про документ та сторінку.&lt;/b&gt;&lt;br&gt; Показує вікно діалогу для перегляду інформації про кодування, що стосується документу або певної сторінки.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1088"/>
+        <location filename="qdjview.cpp" line="1089"/>
         <source>&lt;html&gt;&lt;b&gt;Document and page metadata.&lt;/b&gt;&lt;br&gt; Display a dialog window for viewing metadata pertaining to the document or to a specific page.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Метадані документу та сторінки.&lt;/b&gt;&lt;br&gt; Показує вікно діалогу для перегляду метаданих, що стосуються документу або певної сторінки.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1094"/>
+        <location filename="qdjview.cpp" line="1095"/>
         <source>&lt;html&gt;&lt;b&gt;Continuous layout.&lt;/b&gt;&lt;br/&gt; Display all the document pages arranged vertically inside the scrollable document viewing area.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Неперервний показ.&lt;/b&gt;&lt;br/&gt; Показує всі сторінки документу розташовані вертикально всередині області перегляду, придатної для гортання.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1099"/>
+        <location filename="qdjview.cpp" line="1100"/>
         <source>&lt;html&gt;&lt;b&gt;Side by side layout.&lt;/b&gt;&lt;br/&gt; Display pairs of pages side by side inside the scrollable document viewing area.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Розташування поруч.&lt;/b&gt;&lt;br/&gt; Показує пари сторінок поруч одна з одною всередині області перегляду документа, придатної для гортання.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1104"/>
+        <location filename="qdjview.cpp" line="1105"/>
         <source>&lt;html&gt;&lt;b&gt;Page information.&lt;/b&gt;&lt;br/&gt; Display information about the page located under the cursor: the sequential page number, the page size in pixels, and the page resolution in dots per inch. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Інформація про сторінку.&lt;/b&gt;&lt;br/&gt; Показує інформацію про сторінку розташовану під вказівником: номер сторінки по порядку, розмір сторінки у точках та роздільну здатність сторінки у точках на дюйм. &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1110"/>
+        <location filename="qdjview.cpp" line="1111"/>
         <source>&lt;html&gt;&lt;b&gt;Cursor information.&lt;/b&gt;&lt;br/&gt; Display the position of the mouse cursor expressed in page coordinates. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Інформація про вказівник.&lt;/b&gt;&lt;br/&gt; Показує позицію вказівника миші виражену у координатах сторінки. &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1115"/>
+        <location filename="qdjview.cpp" line="1116"/>
         <source>&lt;html&gt;&lt;b&gt;Document viewing area.&lt;/b&gt;&lt;br/&gt; This is the main display area for the DjVu document. &lt;ul&gt;&lt;li&gt;Arrows and page keys to navigate the document.&lt;/li&gt;&lt;li&gt;Space and BackSpace to read the document.&lt;/li&gt;&lt;li&gt;Keys &lt;tt&gt;+&lt;/tt&gt; &lt;tt&gt;-&lt;/tt&gt; &lt;tt&gt;[&lt;/tt&gt; &lt;tt&gt;]&lt;/tt&gt; to zoom or rotate the document.&lt;/li&gt;&lt;li&gt;Left Mouse Button for panning and selecting links.&lt;/li&gt;&lt;li&gt;%3 for displaying the contextual menu.&lt;/li&gt;&lt;li&gt;%1 Left Mouse Button for selecting text or images.&lt;/li&gt;&lt;li&gt;%2 for popping the magnification lens.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Область перегляду документа.&lt;/b&gt;&lt;br/&gt; Це головна область відображення документа DjVu. &lt;ul&gt;&lt;li&gt;Стрілки та клавіші переміщення сторінки може бути використано для навігації документом.&lt;/li&gt;&lt;li&gt;Пробіл та BackSpace - для читання документа.&lt;/li&gt;&lt;li&gt;Клавіші &lt;tt&gt;+&lt;/tt&gt; &lt;tt&gt;-&lt;/tt&gt; &lt;tt&gt;[&lt;/tt&gt; &lt;tt&gt;]&lt;/tt&gt; - для масштабування та повороту документа.&lt;/li&gt;&lt;li&gt;Ліва кнопка миші - для панорамування та вибору посилань.&lt;/li&gt;&lt;li&gt;%3 - для відображення контекстного меню.&lt;/li&gt;&lt;li&gt;%1 ліва кнопка миші - для вибору тексту або картинок.&lt;/li&gt;&lt;li&gt;%2 - для виклику збільшувальної лінзи.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1128"/>
+        <location filename="qdjview.cpp" line="1129"/>
         <source>&lt;html&gt;&lt;b&gt;Document viewing area.&lt;/b&gt;&lt;br/&gt; This is the main display area for the DjVu document. But you must first open a DjVu document to see anything.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Область перегляду документа.&lt;/b&gt;&lt;br/&gt; Це головна область перегляду для документа DjVu. Але перед цим Вам, звичайно, слід відкрити документ DjVu, щоб щось побачити.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1440"/>
+        <location filename="qdjview.cpp" line="1438"/>
         <source>Option &apos;%1&apos; requires boolean argument.</source>
         <translation>Параметр &apos;%1&apos; потребує булівського аргументу.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1447"/>
+        <location filename="qdjview.cpp" line="1445"/>
         <source>Illegal value &apos;%2&apos; for option &apos;%1&apos;.</source>
         <translation>Некоректне значення &apos;%2&apos; для параметра&apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1565"/>
+        <location filename="qdjview.cpp" line="1563"/>
         <source>Toolbar option &apos;%1&apos; is not implemented.</source>
         <translation>Параметр панелі інструментів &apos;%1&apos; не може бути застосований.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1578"/>
+        <location filename="qdjview.cpp" line="1576"/>
         <source>Toolbar option &apos;%1&apos; is not recognized.</source>
         <translation>Параметр панелі інструментів &apos;%1&apos; неможливо розпізнати.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1624"/>
+        <location filename="qdjview.cpp" line="1622"/>
         <source>Option &apos;%1&apos; requires a standalone viewer.</source>
         <translation>Параметр &apos;%1&apos; потребує самодостатнього переглядача.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1877"/>
+        <location filename="qdjview.cpp" line="1875"/>
         <source>Deprecated option &apos;%1&apos;</source>
         <translation>Небажаний параметр &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1923"/>
+        <location filename="qdjview.cpp" line="1921"/>
         <source>Option &apos;%1&apos; is not implemented.</source>
         <translation>Параметр &apos;%1&apos; не може бути застосований.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1928"/>
+        <location filename="qdjview.cpp" line="1926"/>
         <source>Option &apos;%1&apos; is not recognized.</source>
         <translation>Параметр &apos;%1&apos; неможливо розпізнати.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2198"/>
+        <location filename="qdjview.cpp" line="2196"/>
         <location filename="qdjview.cpp" line="2463"/>
         <source>DjView</source>
         <translation>DjView</translation>
@@ -531,32 +531,31 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>Формат картинки %1 не підтримується.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3485"/>
+        <location filename="qdjview.cpp" line="3484"/>
         <source>Cannot decode page %1.</source>
         <translation>Неможливо розкодувати сторінку %1.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3487"/>
+        <location filename="qdjview.cpp" line="3486"/>
         <source>Cannot decode document.</source>
         <translation>Неможливо розкодувати документ.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3489"/>
+        <location filename="qdjview.cpp" line="3488"/>
         <source>Decoding DjVu document</source>
         <translation>Розкодування документу DjVu</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3619"/>
         <source> P%1 %2x%3 %4dpi </source>
-        <translation> С%1 %2x%3 %4т/д </translation>
+        <translation type="obsolete"> С%1 %2x%3 %4т/д </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3623"/>
+        <location filename="qdjview.cpp" line="3625"/>
         <source> x=%1 y=%2 </source>
         <translation> x=%1 y=%2 </translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3700"/>
+        <location filename="qdjview.cpp" line="3702"/>
         <source>Go: %n pages forward.</source>
         <translation>
             <numerusform>Перехід на %n сторінку вперед.</numerusform>
@@ -565,7 +564,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3703"/>
+        <location filename="qdjview.cpp" line="3705"/>
         <source>Go: %n pages backward.</source>
         <translation>
             <numerusform>Перехід на %n сторінку назад.</numerusform>
@@ -574,73 +573,73 @@ Filename &apos;%1&apos; has no suffix.</source>
         </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3706"/>
         <location filename="qdjview.cpp" line="3708"/>
+        <location filename="qdjview.cpp" line="3710"/>
         <source>Go: page %1.</source>
         <translation>Перехід: сторінка %1.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3710"/>
+        <location filename="qdjview.cpp" line="3712"/>
         <source>Link: %1</source>
         <translation>Посилання: %1</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3712"/>
+        <location filename="qdjview.cpp" line="3714"/>
         <source> (in other window.)</source>
         <translation> (у іншому вікні.)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3779"/>
+        <location filename="qdjview.cpp" line="3790"/>
         <source>Cannot resolve link &apos;%1&apos;</source>
         <translation>Неможливо розпізнати посилання &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3807"/>
+        <location filename="qdjview.cpp" line="3818"/>
         <source>Cannot spawn a browser for url &apos;%1&apos;</source>
         <translation>Неможливо викликати переглядач для url &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3827"/>
+        <location filename="qdjview.cpp" line="3838"/>
         <source>Copy text (%1)</source>
         <translation>Копіювання тексту (%1)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3828"/>
+        <location filename="qdjview.cpp" line="3839"/>
         <source>Save text as...</source>
         <translation>Збереження тексту як...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3834"/>
+        <location filename="qdjview.cpp" line="3845"/>
         <source>Copy image (%1x%2 pixels)</source>
         <translation>Копіювання картинки (%1x%2 пікселів)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3836"/>
+        <location filename="qdjview.cpp" line="3847"/>
         <source>Save image as...</source>
         <translation>Збереження картинки як...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3840"/>
+        <location filename="qdjview.cpp" line="3851"/>
         <source>Zoom to rectangle</source>
         <translation>Масштабувати до прямокутника</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3996"/>
-        <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;&lt;p&gt;Переглядач документів DjVu&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Авторські права© 2006 — Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;Ця програма є вільним програмним забезпеченням. Ви можете поширювати або змінювати її за умов дотримання GNU General Public License у тому вигляді, у якому її оприлюднено Free Software Foundation. Ця програма поширюється &lt;i&gt;без жодних гарантій&lt;/i&gt;. Щоб дізнатися більше, прочитайте GNU General Public License.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</translation>
+        <location filename="qdjview.cpp" line="4018"/>
+        <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;%2&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;%2&lt;p&gt;Переглядач документів DjVu&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Авторські права© 2006 — Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;Ця програма є вільним програмним забезпеченням. Ви можете поширювати або змінювати її за умов дотримання GNU General Public License у тому вигляді, у якому її оприлюднено Free Software Foundation. Ця програма поширюється &lt;i&gt;без жодних гарантій&lt;/i&gt;. Щоб дізнатися більше, прочитайте GNU General Public License.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4015"/>
+        <location filename="qdjview.cpp" line="4038"/>
         <source>About DjView</source>
         <translation>Про DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4035"/>
+        <location filename="qdjview.cpp" line="4058"/>
         <source>DjVu files</source>
         <translation>Файли DjVu</translation>
     </message>
     <message>
-        <location filename="djview.cpp" line="426"/>
+        <location filename="djview.cpp" line="435"/>
         <source>cannot open &apos;%1&apos;.</source>
         <translation>неможливо відкрити &apos;%1&apos;.</translation>
     </message>
@@ -926,159 +925,159 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>&amp;Метадані...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="580"/>
+        <location filename="qdjview.cpp" line="581"/>
         <source>Ctrl+M</source>
         <comment>Edit|Metadata</comment>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="593"/>
+        <location filename="qdjview.cpp" line="595"/>
         <source>&amp;Color</source>
         <comment>Display|</comment>
         <translation>&amp;Колір</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="599"/>
+        <location filename="qdjview.cpp" line="601"/>
         <source>&amp;Stencil</source>
         <comment>Display|</comment>
         <translation>&amp;Шаблон</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="606"/>
+        <location filename="qdjview.cpp" line="608"/>
         <source>&amp;Foreground</source>
         <comment>Display|</comment>
         <translation>&amp;Передній план</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="613"/>
+        <location filename="qdjview.cpp" line="615"/>
         <source>&amp;Background</source>
         <comment>Display|</comment>
         <translation>&amp;Тло</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="626"/>
+        <location filename="qdjview.cpp" line="628"/>
         <source>Prefere&amp;nces...</source>
         <comment>Settings|</comment>
         <translation>Нала&amp;штування...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="633"/>
+        <location filename="qdjview.cpp" line="635"/>
         <source>F9</source>
         <comment>Settings|Show sidebar</comment>
         <translation>F9</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="640"/>
+        <location filename="qdjview.cpp" line="642"/>
         <source>F10</source>
         <comment>Settings|Show toolbar</comment>
         <translation>F10</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="650"/>
+        <location filename="qdjview.cpp" line="652"/>
         <source>F&amp;ull Screen</source>
         <comment>View|</comment>
         <translation>На весь &amp;екран</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="652"/>
+        <location filename="qdjview.cpp" line="654"/>
         <source>F11</source>
         <comment>View|FullScreen</comment>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="657"/>
+        <location filename="qdjview.cpp" line="659"/>
         <source>&amp;Continuous</source>
         <comment>Layout|</comment>
         <translation>&amp;Неперервно</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="660"/>
+        <location filename="qdjview.cpp" line="662"/>
         <source>F4</source>
         <comment>Layout|Continuous</comment>
         <translation>F4</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="665"/>
+        <location filename="qdjview.cpp" line="667"/>
         <source>Side &amp;by Side</source>
         <comment>Layout|</comment>
         <translation>Сторінки &amp;поруч</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="668"/>
+        <location filename="qdjview.cpp" line="670"/>
         <source>F5</source>
         <comment>Layout|SideBySide</comment>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="724"/>
+        <location filename="qdjview.cpp" line="718"/>
         <source>&amp;File</source>
         <comment>File|</comment>
         <translation>&amp;Файл</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="744"/>
+        <location filename="qdjview.cpp" line="738"/>
         <source>&amp;Edit</source>
         <comment>Edit|</comment>
         <translation>&amp;Редагування</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="753"/>
+        <location filename="qdjview.cpp" line="747"/>
         <source>&amp;View</source>
         <comment>View|</comment>
         <translation>&amp;Перегляд</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="754"/>
-        <location filename="qdjview.cpp" line="819"/>
+        <location filename="qdjview.cpp" line="748"/>
+        <location filename="qdjview.cpp" line="813"/>
         <source>&amp;Zoom</source>
         <comment>View|Zoom</comment>
         <translation>&amp;Масштаб</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="768"/>
-        <location filename="qdjview.cpp" line="833"/>
+        <location filename="qdjview.cpp" line="762"/>
+        <location filename="qdjview.cpp" line="827"/>
         <source>&amp;Rotate</source>
         <comment>View|Rotate</comment>
         <translation>&amp;Обертати</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="776"/>
-        <location filename="qdjview.cpp" line="841"/>
+        <location filename="qdjview.cpp" line="770"/>
+        <location filename="qdjview.cpp" line="835"/>
         <source>&amp;Display</source>
         <comment>View|Display</comment>
         <translation>&amp;Вигляд</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="794"/>
-        <location filename="qdjview.cpp" line="814"/>
+        <location filename="qdjview.cpp" line="788"/>
+        <location filename="qdjview.cpp" line="808"/>
         <source>&amp;Go</source>
         <comment>Go|</comment>
         <translation>Пере&amp;хід</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="802"/>
+        <location filename="qdjview.cpp" line="796"/>
         <source>&amp;Settings</source>
         <comment>Settings|</comment>
         <translation>Пара&amp;метри</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="808"/>
+        <location filename="qdjview.cpp" line="802"/>
         <source>&amp;Help</source>
         <comment>Help|</comment>
         <translation>&amp;Довідка</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2363"/>
+        <location filename="qdjview.cpp" line="2358"/>
         <source>Thumbnails</source>
         <translation>Піктограми</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2370"/>
+        <location filename="qdjview.cpp" line="2365"/>
         <source>Outline</source>
         <translation>Ескіз</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2377"/>
+        <location filename="qdjview.cpp" line="2372"/>
         <source>Find</source>
         <translation>Пошук</translation>
     </message>
@@ -1128,29 +1127,34 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>Зберегти картинку - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4055"/>
+        <location filename="qdjview.cpp" line="3618"/>
+        <source> P%1/%2 %3x%4 %5dpi </source>
+        <translation> P%1/%2 %3x%4 %5dpi </translation>
+    </message>
+    <message>
+        <location filename="qdjview.cpp" line="4078"/>
         <source>Enter the URL of a DjVu document:</source>
         <translation>Введіть адресу документа DjVu:</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4072"/>
+        <location filename="qdjview.cpp" line="4095"/>
         <source>Information - DjView</source>
         <comment>dialog caption</comment>
         <translation>Інформація - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4087"/>
+        <location filename="qdjview.cpp" line="4110"/>
         <source>Metadata - DjView</source>
         <comment>dialog caption</comment>
         <translation>Метадані - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="730"/>
+        <location filename="qdjview.cpp" line="724"/>
         <source>Open &amp;Recent</source>
         <translation>Відкрити &amp;нещодавній</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4228"/>
+        <location filename="qdjview.cpp" line="4251"/>
         <source>&amp;Clear History</source>
         <translation>&amp;Очистити журнал</translation>
     </message>
@@ -1178,61 +1182,61 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>Ctrl+F2</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="632"/>
+        <location filename="qdjview.cpp" line="634"/>
         <source>Ctrl+F9</source>
         <comment>Settings|Show sidebar</comment>
         <translation>Ctrl+F9</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="639"/>
+        <location filename="qdjview.cpp" line="641"/>
         <source>Ctrl+F10</source>
         <comment>Settings|Show toolbar</comment>
         <translation>Ctrl+F10</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="651"/>
+        <location filename="qdjview.cpp" line="653"/>
         <source>Ctrl+F11</source>
         <comment>View|FullScreen</comment>
         <translation>Ctrl+F11</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="659"/>
+        <location filename="qdjview.cpp" line="661"/>
         <source>Ctrl+F4</source>
         <comment>Layout|Continuous</comment>
         <translation>Ctrl+F4</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="667"/>
+        <location filename="qdjview.cpp" line="669"/>
         <source>Ctrl+F5</source>
         <comment>Layout|SideBySide</comment>
         <translation>Ctrl+F5</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4054"/>
+        <location filename="qdjview.cpp" line="4077"/>
         <source>Open Location - DjView</source>
         <comment>dialog caption</comment>
         <translation>Відкриття адреси - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4037"/>
+        <location filename="qdjview.cpp" line="4060"/>
         <source>Open - DjView</source>
         <comment>dialog caption</comment>
         <translation>Відкрити - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="631"/>
+        <location filename="qdjview.cpp" line="633"/>
         <source>Show &amp;Sidebar</source>
         <comment>Settings|</comment>
         <translation>Показ &amp;бічного пеналу</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="638"/>
+        <location filename="qdjview.cpp" line="640"/>
         <source>Show &amp;Toolbar</source>
         <comment>Settings|</comment>
         <translation>Показ панелі &amp;інструментів</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="644"/>
+        <location filename="qdjview.cpp" line="646"/>
         <source>Show Stat&amp;usbar</source>
         <comment>Settings|</comment>
         <translation>Показ панелі &amp;стану</translation>
@@ -1244,7 +1248,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>%1 Файлів (*.%2)</translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3821"/>
+        <location filename="qdjview.cpp" line="3832"/>
         <source>%n characters</source>
         <translation>
             <numerusform>%n символ</numerusform>
@@ -1253,158 +1257,158 @@ Filename &apos;%1&apos; has no suffix.</source>
         </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3699"/>
+        <location filename="qdjview.cpp" line="3701"/>
         <source>Go: 1 page forward.</source>
         <translation>Перехід: 1 сторінка вперед.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3702"/>
+        <location filename="qdjview.cpp" line="3704"/>
         <source>Go: 1 page backward.</source>
         <translation>Перехід: 1 сторінка назад.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="693"/>
+        <location filename="qdjview.cpp" line="695"/>
         <source>Copy &amp;URL</source>
         <comment>Edit|</comment>
         <translation>Копіювати &amp;URL</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="694"/>
+        <location filename="qdjview.cpp" line="696"/>
         <source>Save an URL for the current page into the clipboard.</source>
         <translation>Зберегти адресу URL поточної сторінки у буфері.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="698"/>
+        <location filename="qdjview.cpp" line="700"/>
         <source>Copy &amp;Outline</source>
         <comment>Edit|</comment>
         <translation>Копіювати &amp;ескіз</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="702"/>
+        <location filename="qdjview.cpp" line="704"/>
         <source>Copy &amp;Annotations</source>
         <comment>Edit|</comment>
         <translation>Копіювати &amp;анотації</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3831"/>
+        <location filename="qdjview.cpp" line="3842"/>
         <source>Copy text into the clipboard.</source>
         <translation>Копіювати текст до буфера.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3832"/>
+        <location filename="qdjview.cpp" line="3843"/>
         <source>Save text into a file.</source>
         <translation>Зберегти текст до файла.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3838"/>
+        <location filename="qdjview.cpp" line="3849"/>
         <source>Save image into a file.</source>
         <translation>Зберегти зображення до файла.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3841"/>
+        <location filename="qdjview.cpp" line="3852"/>
         <source>Zoom the selection to fit the window.</source>
         <translation>Підібрати область перегляду під виділене.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3847"/>
+        <location filename="qdjview.cpp" line="3858"/>
         <source>Copy URL</source>
         <translation>Копіювати адресу URL</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3848"/>
+        <location filename="qdjview.cpp" line="3859"/>
         <source>Save into the clipboard an URL that highlights the selection.</source>
         <translation>Зберегти до буфера адресу URL, яку виділено у вибраному.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3850"/>
+        <location filename="qdjview.cpp" line="3861"/>
         <source>Copy Maparea</source>
         <translation>Копіювати область карти</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3851"/>
+        <location filename="qdjview.cpp" line="3862"/>
         <source>Save into the clipboard a maparea annotation expression for program djvused.</source>
         <translation>Зберегти до буфера вираз анотації карти області для програми djvused.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="695"/>
+        <location filename="qdjview.cpp" line="697"/>
         <source>Ctrl+C</source>
         <comment>Edit|CopyURL</comment>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="699"/>
+        <location filename="qdjview.cpp" line="701"/>
         <source>Save the djvused code for the outline into the clipboard.</source>
         <translation>Зберегти код djvused ескіза до буфера.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="703"/>
+        <location filename="qdjview.cpp" line="705"/>
         <source>Save the djvused code for the page annotations into the clipboard.</source>
         <translation>Зберегти код djvused анотації сторінки до буфера.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3837"/>
+        <location filename="qdjview.cpp" line="3848"/>
         <source>Copy image into the clipboard.</source>
         <translation>Копіювати зображення до буфера.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="673"/>
+        <location filename="qdjview.cpp" line="675"/>
         <source>Co&amp;ver Page</source>
         <comment>Layout|</comment>
         <translation>&amp;Обкладинка</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="677"/>
+        <location filename="qdjview.cpp" line="679"/>
         <source>Ctrl+F6</source>
         <comment>Layout|CoverPage</comment>
         <translation>Ctrl+F6</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="678"/>
+        <location filename="qdjview.cpp" line="680"/>
         <source>F6</source>
         <comment>Layout|CoverPage</comment>
         <translation>F6</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="679"/>
+        <location filename="qdjview.cpp" line="681"/>
         <source>Show the cover page alone in side-by-side mode.</source>
         <translation>У режимі зі сторінками, розташованими поруч, показувати першу сторінку окремо.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="683"/>
+        <location filename="qdjview.cpp" line="685"/>
         <source>&amp;Right to Left</source>
         <comment>Layout|</comment>
         <translation>&amp;Справа ліворуч</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="687"/>
+        <location filename="qdjview.cpp" line="689"/>
         <source>Ctrl+Shift+F6</source>
         <comment>Layout|RightToLeft</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="688"/>
+        <location filename="qdjview.cpp" line="690"/>
         <source>Shift+F6</source>
         <comment>Layout|RightToLeft</comment>
         <translation>Shift+F6</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="689"/>
+        <location filename="qdjview.cpp" line="691"/>
         <source>Show pages right-to-left in side-by-side mode.</source>
         <translation>Показувати сторінки лівописних мов у режимі сторінок поруч.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4036"/>
+        <location filename="qdjview.cpp" line="4059"/>
         <source>All files</source>
         <translation>Всі файли</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="620"/>
+        <location filename="qdjview.cpp" line="622"/>
         <source>&amp;Hidden Text</source>
         <comment>Display|</comment>
         <translation>При&amp;хований текст</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="621"/>
+        <location filename="qdjview.cpp" line="623"/>
         <source>Overlay a representation of the hidden text layer.</source>
         <translation>Накласти на зображення представлення шару прихованого тексту.</translation>
     </message>
@@ -1418,7 +1422,7 @@ Filename &apos;%1&apos; has no suffix.</source>
 <context>
     <name>QDjViewApplication</name>
     <message>
-        <location filename="djview.cpp" line="289"/>
+        <location filename="djview.cpp" line="304"/>
         <source>Usage: djview [options] [filename-or-url]
 Common options include:
 -help~~~Prints this message.
@@ -1449,7 +1453,7 @@ Common options include:
 </translation>
     </message>
     <message>
-        <location filename="djview.cpp" line="223"/>
+        <location filename="djview.cpp" line="238"/>
         <source>cannot open &apos;%1&apos;.</source>
         <translation>неможливо відкрити &apos;%1&apos;.</translation>
     </message>
@@ -1457,17 +1461,17 @@ Common options include:
 <context>
     <name>QDjViewDjVuExporter</name>
     <message>
-        <location filename="qdjviewexporters.cpp" line="383"/>
+        <location filename="qdjviewexporters.cpp" line="384"/>
         <source>&lt;html&gt; This file belongs to a non empty directory. Saving an indirect document creates many files in this directory. Do you want to continue and risk overwriting files in this directory?&lt;/html&gt;</source>
         <translation>&lt;html&gt; Цей файл належить до не порожньої теки. Збереження непрямого документу створить багато файлів у цій теці. Бажаєте продовжувати з ризиком перезапису файлів у цій теці?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="389"/>
+        <location filename="qdjviewexporters.cpp" line="390"/>
         <source>Con&amp;tinue</source>
         <translation>Про&amp;довжувати</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="390"/>
+        <location filename="qdjviewexporters.cpp" line="391"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Скасувати</translation>
     </message>
@@ -1493,17 +1497,17 @@ Common options include:
         <translation>Непрямий документ DjVu</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="416"/>
+        <location filename="qdjviewexporters.cpp" line="418"/>
         <source>Unknown error.</source>
         <translation>Невідома помилка.</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="419"/>
+        <location filename="qdjviewexporters.cpp" line="420"/>
         <source>System error: %1.</source>
         <translation>Системна помилка: %1.</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="382"/>
+        <location filename="qdjviewexporters.cpp" line="383"/>
         <source>Question - DjView</source>
         <comment>dialog caption</comment>
         <translation>Запитання - DjView</translation>
@@ -1512,8 +1516,8 @@ Common options include:
 <context>
     <name>QDjViewErrorDialog</name>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="125"/>
         <location filename="qdjviewerrordialog.ui" line="16"/>
+        <location filename="qdjviewdialogs.cpp" line="125"/>
         <source>DjView Error</source>
         <translation>Помилка DjView</translation>
     </message>
@@ -1583,8 +1587,8 @@ Common options include:
         <translation>&amp;Гаразд</translation>
     </message>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="1333"/>
         <location filename="qdjviewexportdialog.ui" line="256"/>
+        <location filename="qdjviewdialogs.cpp" line="1333"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Скасувати</translation>
     </message>
@@ -2082,23 +2086,23 @@ Do you want to replace it?</source>
 <context>
     <name>QDjViewImgExporter</name>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1901"/>
+        <location filename="qdjviewexporters.cpp" line="1914"/>
         <source>Cannot render page.</source>
         <translation>Відображення сторінки неможливе.</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1911"/>
+        <location filename="qdjviewexporters.cpp" line="1924"/>
         <source>Image format %1 not supported.</source>
         <translation>Формат картинки %1 не підтримується.</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1834"/>
+        <location filename="qdjviewexporters.cpp" line="1847"/>
         <source>%1 Image</source>
         <comment>JPG Image</comment>
         <translation>%1 Зображення</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1835"/>
+        <location filename="qdjviewexporters.cpp" line="1848"/>
         <source>%1 Files (*.%2)</source>
         <comment>JPG Files</comment>
         <translation>%1 Файлів (*.%2)</translation>
@@ -2393,7 +2397,7 @@ Do you want to replace it?</source>
         <translation>&lt;html&gt;&lt;b&gt;Виготовлення буклетів.&lt;/b&gt;&lt;br&gt;Режим буклету дозволяє друк обраних сторінок у вигляді листів придатних для виготовлення одного чи декількох буклетів. Декілька буклетів буде виготовлено, якщо зазначена максимальна кількість листів у буклеті. Ви можете використовувати двобічну друкарку або друкувати верхні та нижні боки сторінки окремо.&lt;p&gt; Зсув верхніх та нижніх боків може бути корисний для двобічних друкарок з неякісним вирівнюванням. Центральне поле визначає як багато місця буде залишено між сторінками для наступного згортання у буклет. Ця відстань повільно зростає від внутрішніх листів до зовнішніх.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1107"/>
+        <location filename="qdjviewexporters.cpp" line="1116"/>
         <source>Save job creation failed!</source>
         <translation>Створення процесу збереження зазнало невдачі!</translation>
     </message>
@@ -2435,54 +2439,54 @@ Do you want to replace it?</source>
 <context>
     <name>QDjViewPdfExporter</name>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1680"/>
+        <location filename="qdjviewexporters.cpp" line="1692"/>
         <source>PDF Document</source>
         <translation>Документ PDF</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1681"/>
+        <location filename="qdjviewexporters.cpp" line="1693"/>
         <source>PDF Files (*.pdf)</source>
         <translation>Файли PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1690"/>
+        <location filename="qdjviewexporters.cpp" line="1702"/>
         <source>PDF Options</source>
         <comment>tab caption</comment>
         <translation>Параметри PDF</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1691"/>
+        <location filename="qdjviewexporters.cpp" line="1703"/>
         <source>&lt;html&gt;&lt;b&gt;PDF options.&lt;/b&gt;&lt;br&gt;These options control the characteristics of the images embedded in the exported PDF files. The resolution box limits their maximal resolution. Forcing bitonal G4 compression encodes all pages in black and white using the CCITT Group 4 compression. Allowing JPEG compression uses lossy JPEG for all non bitonal or subsampled images. Otherwise, allowing deflate compression produces more compact files. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Параметри PDF.&lt;/b&gt;&lt;br&gt;Ці параметри впливають на характеристики зображень, вбудованих до файлів PDF, що експортуються. Поле \&quot;роздільна здатність\&quot; обмежує максимальну роздільну здатність. Примусове двотональне стиснення G4 кодує всі сторінки у чорно-білому вигляді за допомогою методу стиснення CCITT Group 4. Використання стиснення JPEG дозволяє стискати за допомогою стиснення з втратами JPEG всі не чорно-білі зображення або зображення з підвибірками. Або ж дозвіл на стиснення призводить до отримання компактніших файлів. &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1735"/>
+        <location filename="qdjviewexporters.cpp" line="1747"/>
         <source>Error while creating pdf file.</source>
         <translation>Помилка під час створення файла pdf.</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1755"/>
+        <location filename="qdjviewexporters.cpp" line="1769"/>
         <source>PDF export was not compiled.</source>
         <translation>Експорт до PDF не було використано під час збирання програми.</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1739"/>
+        <location filename="qdjviewexporters.cpp" line="1751"/>
         <source>Unable to create output file.</source>
         <translation>Неможливо створити файл виведення.</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1742"/>
-        <location filename="qdjviewexporters.cpp" line="1781"/>
+        <location filename="qdjviewexporters.cpp" line="1753"/>
+        <location filename="qdjviewexporters.cpp" line="1795"/>
         <source>System error: %1.</source>
         <translation>Системна помилка: %1.</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1746"/>
+        <location filename="qdjviewexporters.cpp" line="1756"/>
         <source>Unable to reopen temporary file.</source>
         <translation>Неможливо знову відкрити тимчасовий файл.</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1778"/>
+        <location filename="qdjviewexporters.cpp" line="1793"/>
         <source>Unable to create temporary file.</source>
         <translation>Неможливо створити тимчасовий файл.</translation>
     </message>
@@ -2743,37 +2747,37 @@ Do you want to replace it?</source>
         <translation>Скасувати</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="701"/>
+        <location filename="qdjviewprefs.cpp" line="706"/>
         <source>Preferences[*] - DjView</source>
         <translation>Налаштування[*] - DjView</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="784"/>
+        <location filename="qdjviewprefs.cpp" line="789"/>
         <source>&lt;html&gt;&lt;b&gt;Initial interface setup.&lt;/b&gt;&lt;br&gt;DjView can run as a standalone viewer, as a full screen viewer, as a full page browser plugin, or as a plugin embedded inside a html page. For each case, check the &lt;tt&gt;Remember&lt;/tt&gt; box to automatically save and restore the interface setup. Otherwise, specify an initial configuration.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Початкове налаштування відображення.&lt;/b&gt;&lt;br&gt;DjView може працювати як самодостатній переглядач, як повноекранний переглядач, як додаток переглядача на повну сторінку, як додаток вбудований до сторінки html. У будь-якому випадку, позначте &lt;tt&gt;Запам&apos;ятати&lt;/tt&gt;, щоб автоматично зберігати та відновлювати налаштування відображення. У протилежному випадку зазначте початкову конфігурацію.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="794"/>
+        <location filename="qdjviewprefs.cpp" line="799"/>
         <source>&lt;html&gt;&lt;b&gt;Modifiers keys.&lt;/b&gt;&lt;br&gt;Define which combination of modifier keys will show the manifying lens, temporarily enable the selection mode, or highlight the hyperlinks.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Клавіші-модифікатори.&lt;/b&gt;&lt;br&gt;Визначте яка комбінація клавіш-модифікаторів показуватиме збільшувальну лінзу, тимчасово вмикатиме режим вибору або підсвічуватиме гіперпосилання.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="801"/>
+        <location filename="qdjviewprefs.cpp" line="806"/>
         <source>&lt;html&gt;&lt;b&gt;Magnifying lens.&lt;/b&gt;&lt;br&gt;The magnifying lens appears when you depress the modifier keys specified in tab &lt;tt&gt;Keys&lt;/tt&gt;. This panel lets you choose the power and the size of the magnifying lens.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Збільшувальна лінза.&lt;/b&gt;&lt;br&gt;Збільшувальна лінза з&apos;являється коли Ви натиснете клавіші-модифікатори задані на сторінці меню &lt;tt&gt;Клавіші&lt;/tt&gt;. Ця панель дозволить Вам обрати силу та розмір збільшувальної лінзи.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="809"/>
+        <location filename="qdjviewprefs.cpp" line="814"/>
         <source>&lt;html&gt;&lt;b&gt;Caches.&lt;/b&gt;&lt;br&gt;The &lt;i&gt;pixel cache&lt;/i&gt; stores image data located outside the visible area. This cache makes panning smoother. The &lt;i&gt;decoded page cache&lt;/i&gt; contains partially decoded pages. It provides faster response times when navigating a multipage document or when returning to a previously viewed page. Clearing this cache might be useful to reflect a change in the page data without restarting the DjVu viewer.&lt;p&gt;&lt;b&gt;Miscellaneous.&lt;/b&gt;&lt;br&gt;Forcing a manual color correction can be useful when using ancient printers. The advanced features check box enables a small number of additional menu entries useful for authoring DjVu files.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Кеші.&lt;/b&gt;&lt;br&gt; &lt;i&gt;Кеш пікселів&lt;/i&gt; зберігає дані картинок розташованих поза видимою областю. Цей кеш робить пересування документом плавнішим. &lt;i&gt;Кеш розкодованих сторінок&lt;/i&gt; мстить частково розкодовані сторінки. Він забезпечує швидшу реакцію переглядача під час пересування багатосторінковим документом або під час повернення для раніше переглянутої сторінки. Очищення цього кешу може бути корисним для відображення змін у даних сторінки без перезапуску переглядача DjVu.&lt;p&gt;&lt;b&gt;Різне.&lt;/b&gt;&lt;br&gt;Примусова корекція кольорів вручну може бути корисною, якщо ви користуєтеся застарілим принтером. Поле позначки додаткових можливостей надає вам змогу увімкнути невелику кількість додаткових пунктів меню, корисних для авторської роботи над файлами DjVu.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="828"/>
+        <location filename="qdjviewprefs.cpp" line="833"/>
         <source>&lt;html&gt;&lt;b&gt;Network proxy settings.&lt;/b&gt;&lt;br&gt;These proxy settings are used when the standalone djview viewer accesses a djvu document through a http url. The djview plugin always uses the proxy settings of the web browser.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Налаштування проксі сервера.&lt;/b&gt;&lt;br&gt;Ці налаштування проксі сервера буде використано коли самодостатній переглядач djview намагатиметься отримати доступ до документу djvu через адресу http. Додаток djview завжди використовуватиме налаштування проксі сервера, які використовує переглядач сторінок інтернету.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="771"/>
+        <location filename="qdjviewprefs.cpp" line="776"/>
         <source>&lt;html&gt;&lt;b&gt;Screen gamma correction.&lt;/b&gt;&lt;br&gt;The best color rendition is achieved by adjusting the gamma correction slider and choosing the position that makes the gray square as uniform as possible.&lt;p&gt;&lt;b&gt;Screen resolution.&lt;/b&gt;&lt;br&gt;This option forces a particular resolution instead of using the unreliable resolution advertised by the operating system. Forcing the resolution to 100 dpi matches the behavior of the djvulibre command line tools.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Коригування гамми кольорів екрана.&lt;/b&gt;&lt;br&gt;Найкращого відтворення кольорів можна досягти за допомогою коригування гами, яке можна виконати повзунком коригування гами, обравши таке його розташування, за якого сірий квадратик стає якомога більш однорідним.&lt;p&gt;&lt;b&gt;Роздільна здатність.&lt;/b&gt;&lt;br&gt;Цей параметр призначено для визначення роздільної здатності, яка не залежатиме від параметрів, заданих операційною системою. Визначення роздільної здатності у 100 т/д відповідає типовій поведінці інструментів командного рядка з djvulibre.&lt;/html&gt;</translation>
     </message>
@@ -2908,8 +2912,8 @@ Do you want to replace it?</source>
         <translation>&amp;Гаразд</translation>
     </message>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="1740"/>
         <location filename="qdjviewprintdialog.ui" line="280"/>
+        <location filename="qdjviewdialogs.cpp" line="1740"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Скасувати</translation>
     </message>
@@ -2987,28 +2991,28 @@ Do you want to replace it?</source>
 <context>
     <name>QDjViewPrnExporter</name>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1978"/>
+        <location filename="qdjviewexporters.cpp" line="1991"/>
         <source>Printer data</source>
         <translation>Дані друкарки</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1979"/>
+        <location filename="qdjviewexporters.cpp" line="1992"/>
         <source>PRN Files (*.prn)</source>
         <translation>Файли PRN (*.prn)</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1999"/>
+        <location filename="qdjviewexporters.cpp" line="2012"/>
         <source>Printing Options</source>
         <comment>tab caption</comment>
         <translation>Параметри друку</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="2001"/>
+        <location filename="qdjviewexporters.cpp" line="2014"/>
         <source>&lt;html&gt;&lt;b&gt;Printing options.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Color&lt;/tt&gt; enables color printing. Document pages can be decorated with a frame. Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accomodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Параметри друку.&lt;/b&gt;&lt;br&gt;Параметр &lt;tt&gt;Колір&lt;/tt&gt; дозволяє кольоровий друк. Сторінки документа можна вкласти до рамок. Параметр &lt;tt&gt;Підігнати до&lt;/tt&gt; пристосовує сторінки до розміру паперу, що використовує Ваша друкарка. Множник масштабування &lt;tt&gt;100%&lt;/tt&gt; відтворює початковий розмір документа. Розташування &lt;tt&gt;Автоматичне&lt;/tt&gt; обирає книжкове чи альбомне розташування з міркувань відображення однієї сторінки на одному листі.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="2253"/>
+        <location filename="qdjviewexporters.cpp" line="2266"/>
         <source>Cannot render page %1.</source>
         <translation>Відображення сторінки неможливе «%1».</translation>
     </message>
@@ -3061,8 +3065,8 @@ Do you want to replace it?</source>
         <translation>&amp;Гаразд</translation>
     </message>
     <message>
-        <location filename="qdjviewdialogs.cpp" line="986"/>
         <location filename="qdjviewsavedialog.ui" line="222"/>
+        <location filename="qdjviewdialogs.cpp" line="986"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Скасувати</translation>
     </message>
@@ -3189,42 +3193,42 @@ Do you want to replace it?</source>
 <context>
     <name>QDjViewTiffExporter</name>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1329"/>
+        <location filename="qdjviewexporters.cpp" line="1338"/>
         <source>TIFF Document</source>
         <translation>Документ TIFF</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1330"/>
+        <location filename="qdjviewexporters.cpp" line="1339"/>
         <source>TIFF Files (*.tiff *.tif)</source>
         <translation>Файли TIFF (*.tiff *.tif)</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1504"/>
+        <location filename="qdjviewexporters.cpp" line="1516"/>
         <source>Cannot open output file.</source>
         <translation>Неможливо відкрити файл виведення.</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1616"/>
+        <location filename="qdjviewexporters.cpp" line="1628"/>
         <source>Out of memory.</source>
         <translation>Переповнення пам&apos;яті.</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1618"/>
+        <location filename="qdjviewexporters.cpp" line="1630"/>
         <source>Internal error.</source>
         <translation>Внутрішня помилка.</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1630"/>
+        <location filename="qdjviewexporters.cpp" line="1642"/>
         <source>TIFF export has not been compiled.</source>
         <translation>Експорт до TIFF не було скомпільовано.</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1351"/>
+        <location filename="qdjviewexporters.cpp" line="1360"/>
         <source>&lt;html&gt;&lt;b&gt;TIFF options.&lt;/b&gt;&lt;br&gt;The resolution box specifies an upper limit for the resolution of the TIFF images. Forcing bitonal G4 compression encodes all pages in black and white using the CCITT Group 4 compression. Allowing JPEG compression uses lossy JPEG for all non bitonal or subsampled images. Otherwise, allowing deflate compression produces more compact (but less portable) files than the default packbits compression.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Параметри TIFF.&lt;/b&gt;&lt;br&gt;Поле \&quot;роздільна здатність\&quot; визначає верхню межу роздільної здатності зображень у форматі TIFF. Примусове двотональне стиснення G4 кодує всі сторінки у чорно-білому форматі за допомогою методу стиснення CCITT Group 4. Використання стиснення JPEG дозволяє стискати з втратами не чорно-білі зображення або зображення з підмножинами у формат JPEG. Або ж дозвіл на стиснення призводить до отримання менших (але і менш сумісних) файлів ніж звичайне побітове стиснення.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewexporters.cpp" line="1349"/>
+        <location filename="qdjviewexporters.cpp" line="1358"/>
         <source>TIFF Options</source>
         <comment>tab caption</comment>
         <translation>Параметри TIFF</translation>
