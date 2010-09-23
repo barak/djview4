@@ -1,0 +1,8 @@
+/*.moc
+/*.o
+/*.qm
+/Makefile
+/djview
+/moc_*.cpp
+/qrc_*.cpp
+/ui_*.h
