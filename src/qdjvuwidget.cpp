@@ -1711,14 +1711,17 @@ QDjVuPrivate::updatePosition(const QPoint &point, bool click, bool links)
     return;
   // emit pointerposition signal
   PageInfo info;
-  Page *p = pageMap[pos.pageNo];
-  info.pageno = pos.pageNo;
-  info.width = p->width;
-  info.height = p->height;
-  info.dpi = p->dpi;
-  info.segment = widget->getSegmentForRect(selectedRect, info.pageno);
-  info.selected = selectedRect;
-  emit widget->pointerPosition(pos, info);
+  Page *p = pageMap.value(pos.pageNo,0);
+  if (p != 0)
+    {
+      info.pageno = pos.pageNo;
+      info.width = p->width;
+      info.height = p->height;
+      info.dpi = p->dpi;
+      info.segment = widget->getSegmentForRect(selectedRect, info.pageno);
+      info.selected = selectedRect;
+      emit widget->pointerPosition(pos, info);
+    }
   // check mapareas
   if (links)
     checkCurrentMapArea();
@@ -5255,16 +5258,16 @@ QDjVuWidget::nextPage(void)
   int pageNo = page();
   const QRect &dr = priv->deskRect;
   const QRect &vr = priv->visibleRect;
-  const QRect &cr = priv->pageMap[pageNo]->rect;
+  const Page *pg = priv->pageMap.value(pageNo,0);
   while (pageNo < priv->numPages - 1)
     {
       pageNo += 1;
-      if (priv->layoutChange || !priv->pageMap.contains(pageNo))
+      if (priv->layoutChange || !priv->pageMap.contains(pageNo) || !pg)
         break;
       // Skip pages until we get a meaningful change.
       const QRect &pr = priv->pageMap[pageNo]->rect;
       if (! vr.contains(pr))
-        if (pr.top() != cr.top() || vr.width() < dr.width())
+        if (pr.top() != pg->rect.top() || vr.width() < dr.width())
           break;
     }
   setPage(pageNo);
@@ -5277,16 +5280,16 @@ QDjVuWidget::prevPage(void)
   int pageNo = page();
   const QRect &dr = priv->deskRect;
   const QRect &vr = priv->visibleRect;
-  const QRect &cr = priv->pageMap[pageNo]->rect;
+  const Page *pg = priv->pageMap.value(pageNo,0);
   while (pageNo > 0)
     {
       pageNo -= 1;
-      if (priv->layoutChange || !priv->pageMap.contains(pageNo))
+      if (priv->layoutChange || !priv->pageMap.contains(pageNo) || !pg)
         break;
       // Skip pages until we get a meaningful change.
       const QRect &pr = priv->pageMap[pageNo]->rect;
       if (! vr.contains(pr))
-        if (pr.top() != cr.top() || vr.width() < dr.width())
+        if (pr.top() != pg->rect.top() || vr.width() < dr.width())
           break;
     }
   setPage(pageNo);
