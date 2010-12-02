@@ -24,6 +24,6 @@ override_dh_auto_install:
 	cp desktopfiles/hi64-djview4.png $(iconbasedir)/64x64/apps/$(icon).png
 
 build clean install binary-arch binary-indep binary:
-	dh $@
+	dh $@ --with autotools_dev
 
 .PHONY: build clean binary-indep binary-arch binary install

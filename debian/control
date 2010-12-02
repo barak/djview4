@@ -2,7 +2,9 @@ Source: djview4
 Section: web
 Priority: optional
 Maintainer: Barak A. Pearlmutter <bap@debian.org>
-Build-Depends: debhelper (>= 7.2.5), autotools-dev, pkg-config,
+Build-Depends: debhelper (>= 7.2.5),
+    autotools-dev (>= 20100122.1~),
+    pkg-config,
     libdjvulibre-dev (>= 3.5.20),
     x11proto-core-dev, libx11-dev, libxext-dev, libxt-dev,
     libqt4-dev (>= 4.2),
