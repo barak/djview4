@@ -25,3 +25,19 @@ Recommends: djvulibre-desktop
 Suggests: djvulibre-bin, djvulibre-plugin
 Description: Viewer for the DjVu image format
  DjVu viewer djview.
+
+Package: djvulibre-plugin
+Section: web
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, djview4 | djview3
+Enhances: chromium-browser,
+	  mozilla-browser, mozilla, firefox, iceweasel, iceape-browser,
+	  konqueror,
+	  galeon
+Recommends: chromium-browser
+	    | mozilla-browser | mozilla | firefox | iceweasel | iceape-browser
+	    | konqueror | galeon
+Suggests: mime-support
+Conflicts: djvulibre-bin (<< 3.5.19)
+Description: Browser plugin for the DjVu image format
+ DjVu browser plugin.
