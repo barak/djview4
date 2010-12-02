@@ -1,12 +1,13 @@
 djview4 (4.6-2) UNRELEASED; urgency=low
 
   * move some debian maintenance to git (debian/README.Debian)
+    - point to debian collab-maint repo (debian/control)
   * use dh autotools-dev stuff to update config.* files
   * enable nsdjvu plugin; generate package djvulibre-plugin
   * bump to debhelper 8
   * dh --parallel
 
- -- Barak A. Pearlmutter <bap@debian.org>  Thu, 02 Dec 2010 13:06:19 +0000
+ -- Barak A. Pearlmutter <bap@debian.org>  Thu, 02 Dec 2010 13:45:14 +0000
 
 djview4 (4.6-1) unstable; urgency=low
 
