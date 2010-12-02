@@ -40,11 +40,6 @@ make
 rm -rf %{buildroot}
 make DESTDIR=%{buildroot} install
 
-# This spec files does not install the plugin nsdejavu.so.
-# Instead it relies on the (identical) version provided by djvulibre.
-rm %{buildroot}%{_libdir}/netscape/plugins/nsdejavu.so
-rm %{buildroot}%{_mandir}/man1/nsdejavu.1
-
 # Remove symlinks to djview when there are alternatives
 if test -x /usr/sbin/update-alternatives ; then
   test -h %{buildroot}%{_bindir}/djview \
@@ -70,11 +65,26 @@ fi
 # MENU
 test -x %{_datadir}/djvu/djview4/desktop/register-djview-menu &&
   %{_datadir}/djvu/djview4/desktop/register-djview-menu install 2>/dev/null
+# HACK: Create links to nsdejavu.so in mozilla dirs
+( for n in %{_prefix}/lib/mozilla*  ; do \
+  if [ -d $n ] ; then \
+   test -d $n/plugins || mkdir $n/plugins ; \
+   test -h $n/plugins/nsdjvu.so && rm $n/plugins/nsdjvu.so ; \
+   test -h $n/plugins/nsdejavu.so && rm $n/plugins/nsdejavu.so ; \
+   ln -s ../../netscape/plugins/nsdejavu.so $n/plugins/nsdejavu.so ; \
+ fi ; done ) 2>/dev/null || true
 exit 0
 
 
 %preun
 if test "$1" = 0 ; then 
+ # HACK: Remove links to nsdejavu.so in all mozilla dirs
+ ( if [ ! -r %{_prefix}/lib/netscape/plugins/nsdejavu.so ] ; then \
+    for n in %{_prefix}/lib/mozilla* ; do \
+     if [ -h $n/plugins/nsdejavu.so ] ; then \
+      rm $n/plugins/nsdejavu.so ; \
+      rmdir $n/plugins ; \
+   fi ; done ; fi ) 2>/dev/null || true
  # MENU
  test -x %{_datadir}/djvu/djview4/desktop/register-djview-menu &&
    %{_datadir}/djvu/djview4/desktop/register-djview-menu uninstall 2>/dev/null
