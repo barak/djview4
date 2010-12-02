@@ -9,4 +9,13 @@ The Debian CVS repository is shared with upstream.
 This makes the appropriate build command something like
  cvs-buildpackage -U release_4_6 -M djview -F
 
- -- Barak A. Pearlmutter <bap@debian.org>, Tue, 17 Aug 2010 16:33:31 +0200
+Some work is done in a git repo which holds a converted version of the
+CVS repo,
+
+ git clone git://git.debian.org/git/collab-maint/djview4.git
+
+Upstream CVS activity can be pulled into git and tracked with
+
+ git cvsimport -v -i -k -u -a djview -d :ext:bpearlmutter@djvu.cvs.sourceforge.net:/cvsroot/djvu
+
+ -- Barak A. Pearlmutter <bap@debian.org>, Wed, 22 Sep 2010 22:34:38 +0100
