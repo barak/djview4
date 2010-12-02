@@ -1,5 +1,5 @@
 usr/bin/djview4
-usr/share/man
+usr/share/man/*/djview.*
 usr/share/djvu
 usr/share/icons
 debian/djvulibre-djview4.xpm usr/share/icons/hicolor/32x32/apps/
