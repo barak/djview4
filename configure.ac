@@ -21,8 +21,8 @@
 # Initialization
 # ----------------------------------------
 
-AC_PREREQ(2.50)
-AC_INIT(djview, 4.6)
+AC_PREREQ([2.67])
+AC_INIT([djview],[4.6])
 AC_REVISION($Id$)
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_SRCDIR(README)
@@ -32,8 +32,7 @@ AC_CANONICAL_HOST
 
 # Additional libraries
 AC_ARG_WITH(extra-includes,
-            AC_HELP_STRING([--with-extra-includes=DIR],
-                       [Define an additional directory for include files]),
+            AS_HELP_STRING([--with-extra-includes=DIR],[Define an additional directory for include files]),
         [ if test -d "$withval" ; then
             CFLAGS="$CFLAGS -I$withval" 
             CXXFLAGS="$CXXFLAGS -I$withval" 
@@ -42,8 +41,7 @@ AC_ARG_WITH(extra-includes,
           fi ] )
 
 AC_ARG_WITH(extra-libraries,
-            AC_HELP_STRING([--with-extra-libraries=DIR],
-                       [Define an additional directory for library files]),
+            AS_HELP_STRING([--with-extra-libraries=DIR],[Define an additional directory for library files]),
         [ if test -d "$withval" ; then
            LDFLAGS="$LDFLAGS -L$withval"
           else
@@ -104,7 +102,7 @@ AC_CXX_OPTIMIZE
 # break when libtool is in a conditional path.
 RM="$RM -f"
 AC_DISABLE_STATIC
-AC_PROG_LIBTOOL
+LT_INIT
 
 
 # ----------------------------------------
@@ -154,8 +152,7 @@ AC_PATH_TIFF([],[
 
 ac_nsdejavu=yes
 AC_ARG_ENABLE(nsdejavu,
-    AC_HELP_STRING([--disable-nsdejavu],
-        [Do not compile the nsdejavu browser plugin.]),
+    AS_HELP_STRING([--disable-nsdejavu],[Do not compile the nsdejavu browser plugin.]),
     [ac_nsdejavu=$enableval])
 
 if test "$ac_nsdejavu" != no ; then
@@ -226,8 +223,7 @@ AC_SUBST(NSDEJAVU_NO)
 
 ac_npdjvu=no
 AC_ARG_ENABLE(npdjvu,
-    AC_HELP_STRING([--enable-npdjvu],
-        [Compile the npdjvu browser plugin.]),
+    AS_HELP_STRING([--enable-npdjvu],[Compile the npdjvu browser plugin.]),
     [ac_npdjvu=$enableval])
 
 if test "$ac_npdjvu" != no ; then
@@ -247,8 +243,7 @@ AC_SUBST(NPDJVU_NO)
 
 ac_desktopfiles=yes
 AC_ARG_ENABLE(desktopfiles,
-    AC_HELP_STRING([--disable-desktopfiles],
-        [Do not install scripts to register icons and menus.]),
+    AS_HELP_STRING([--disable-desktopfiles],[Do not install scripts to register icons and menus.]),
     [ac_desktopfiles=$enableval])
 
 # Check for xdg tools
