@@ -10,8 +10,8 @@ Build-Depends: debhelper (>= 8),
     libqt4-dev (>= 4.2),
     libtiff4-dev | libtiff3g-dev | libtiff-dev,
     librsvg2-bin | imagemagick
-Vcs-Cvs: :ext:@djvu.cvs.sourceforge.net:/cvsroot/djvu
-VCS-Browser: http://djvu.cvs.sourceforge.net/djvu/djview/
+Vcs-Git: git://git.debian.org/git/collab-maint/djview4.git
+Vcs-Browser: http://git.debian.org/?p=collab-maint/djview4.git
 Homepage: http://djvu.sourceforge.net/
 Standards-Version: 3.9.1
 
