@@ -183,6 +183,9 @@ There are two options under Mac OS X.
   application bundle, you must fix that with command install_name_tool.
   See the Qt documentation about the deployment of Mac applications.
 
+  Note3: Do not use command "make install".  
+  Simply copy the application bundle where you want it.
+
 
 3.2 WINDOWS
 -----------
