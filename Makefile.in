@@ -79,6 +79,8 @@ install: install-djview
 install-djview: install-djview-bin install-djview-man install-djview-qm
 
 install-djview-bin: FORCE
+	@if [ -d src/djview.app -a ! -x src/djview ] ; then \
+           echo 1>&2 "Make install does not work on Macs" && false ; fi
 	${INSTALL} -d ${DESTDIR}${bindir}
 	${INSTALL_PROGRAM} src/djview ${DESTDIR}${bindir}/djview4
 	cd ${DESTDIR}${bindir} ; ${LN_S} djview4 djview || true
