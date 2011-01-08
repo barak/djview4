@@ -392,20 +392,22 @@ flatten_hiddentext(miniexp_t p)
   for the DjVu page annotations). 
 
   Variable \a posView usually indicates the position 
-  relative to the top-left corner of the page rectangle.
+  relative to, in general, the top-left corner of the page rectangle.
   In fact variables \a hAnchor and \a vAnchor indicate
   the coordinates of the reference point as a percentages
   of the width and height relative to the top left corner.
   These are always zero when the position is returned
-  with QDjVuWidget::position. Finally flag \a valid indicates 
-  that \a pageNo is indeed the closest page. */
+  by QDjVuWidget::position. Finally flag \a doPage 
+  makes sure that \a pageNo is indeed the closest page. 
+  This is always false when the position is returned
+  by QDjVuWidget::position. */
 
 Position::Position()
   : pageNo(0), 
     posPage(0,0), 
     posView(0,0),
     inPage(false), 
-    valid(false),
+    doPage(false),
     hAnchor(0),
     vAnchor(0)
 {
@@ -1325,7 +1327,7 @@ QDjVuPrivate::makeLayout()
                 if (movePos.inPage || movePos.vAnchor || movePos.hAnchor)
                   futureLayoutChange = CHANGE_VIEW;
               // special case: not the closest page
-              if (movePos.valid)
+              if (movePos.doPage)
                 if (movePos.pageNo != findClosestPage(dp, pageLayout, 0, 0))
                   dp = sdp;
               // perform move
@@ -1681,7 +1683,6 @@ QDjVuPrivate::findPosition(const QPoint &point, bool closestAnchor)
           int y = h * pos.vAnchor / 100 - 1;
           pos.posView = pos.posView - QPoint(x,y);
         }
-      pos.valid = true;
     }
   return pos;
 }
@@ -1733,7 +1734,7 @@ void
 QDjVuPrivate::updateCurrentPoint(const Position &pos)
 {
   QPoint point;
-  bool changePos = !pos.valid;
+  bool changePos = !pos.doPage;
   if (pageMap.contains(pos.pageNo))
     {
       Page *p = pageMap[pos.pageNo];
@@ -2107,7 +2108,7 @@ QDjVuWidget::setPage(int n)
     {
       Position pos;
       pos.pageNo = n;
-      pos.valid = true;
+      pos.doPage = true;
       pos.inPage = false;
       QPoint tlr(priv->borderSize, priv->borderSize);
       if (priv->pageMap.contains(currentPageNo))
@@ -5388,7 +5389,7 @@ QDjVuWidget::readNext(void)
         break;
     }
   pos.inPage = false;
-  pos.valid = true;
+  pos.doPage = true;
   setPosition(pos, point);
 }
 
@@ -5430,7 +5431,7 @@ QDjVuWidget::readPrev(void)
         break;
     }
   pos.inPage = false;
-  pos.valid = true;
+  pos.doPage = true;
   setPosition(pos, point);
 }
 

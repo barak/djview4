@@ -140,7 +140,7 @@ public:
     QPoint posPage;
     QPoint posView;
     bool   inPage;
-    bool   valid;
+    bool   doPage;
     char   hAnchor;
     char   vAnchor;
     Position();
