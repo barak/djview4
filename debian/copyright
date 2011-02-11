@@ -2,7 +2,7 @@ This package was debianized by Barak Pearlmutter <bap@debian.org> on
 Tue, 16 Jan 2007 20:01:58 -0500.
 
 It was downloaded from http://djvu.sourceforge.net/
- cvs -d :ext:bpearlmutter@cvs.sourceforge.net:/cvsroot/djvu co djview
+ git://djvu.git.sourceforge.net/gitroot/djvu/djview.git
 
 Upstream Authors:
 
