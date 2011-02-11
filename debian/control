@@ -48,4 +48,4 @@ Section: graphics
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, djview-plugin
 Description: Transition package, djvulibre-plugin to djview-plugin
- Ease transition from djvulibre-plugin to djview-plugin.
+ Dummy package to ease transition from djvulibre-plugin to djview-plugin.
