@@ -1,8 +1,0 @@
-*.debhelper
-*.log
-*.substvars
-djview4
-djvulibre-djview4.xpm
-djvulibre-djview4.xpm.png
-files
-tmp
