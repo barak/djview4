@@ -1,3 +1,9 @@
+djview4 (4.6-3) UNRELEASED; urgency=low
+
+  * fiddle with sections (debian/control)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Sun, 13 Feb 2011 14:17:13 +0000
+
 djview4 (4.6-2) unstable; urgency=low
 
   * move some debian maintenance to git (debian/README.Debian)
