@@ -1,5 +1,5 @@
 Source: djview4
-Section: web
+Section: graphics
 Priority: optional
 Maintainer: Barak A. Pearlmutter <bap@debian.org>
 Build-Depends: debhelper (>= 8),
@@ -44,7 +44,7 @@ Description: Browser plugin for the DjVu image format
  DjVu browser plugin.
 
 Package: djvulibre-plugin
-Section: graphics
+Section: web
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, djview-plugin
 Description: Transition package, djvulibre-plugin to djview-plugin
