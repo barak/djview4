@@ -15,8 +15,6 @@
 //C- GNU General Public License for more details.
 //C-  ------------------------------------------------------------------
 
-// $Id$
-
 // Replacement for trolltech's main file
 
 #include <QtGlobal>

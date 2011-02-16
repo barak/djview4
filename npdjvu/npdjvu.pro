@@ -13,8 +13,6 @@
 #C- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #C- GNU General Public License for more details.
 #C-  ------------------------------------------------------------------
-#C-
-#C- $Id$
 
 TARGET = npdjvu
 TEMPLATE = lib

@@ -15,8 +15,6 @@
 //C- GNU General Public License for more details.
 //C-  ------------------------------------------------------------------
 
-// $Id$
-
 #include "config.h"
 #include <locale.h>
 #include <stdio.h>

@@ -15,8 +15,6 @@
 //C- GNU General Public License for more details.
 //C-  ------------------------------------------------------------------
 
-// $Id$
-
 #ifndef QDJVIEWSIDEBAR_H
 #define QDJVIEWSIDEBAR_H
 

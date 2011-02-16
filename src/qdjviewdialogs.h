@@ -15,8 +15,6 @@
 //C- GNU General Public License for more details.
 //C-  ------------------------------------------------------------------
 
-// $Id$
-
 #ifndef QDJVIEWDIALOGS_H
 #define QDJVIEWDIALOGS_H
 

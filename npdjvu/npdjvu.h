@@ -15,8 +15,6 @@
 //C- GNU General Public License for more details.
 //C-  ------------------------------------------------------------------
 
-// $Id$
-
 #include "qtnpapi.h"
 
 extern "C" NPError NPP_New(NPMIMEType pluginType, NPP instance,

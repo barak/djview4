@@ -14,8 +14,6 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
-# $Id$
 #
 # ----------------------------------------
 # Initialization
@@ -23,7 +21,6 @@
 
 AC_PREREQ([2.67])
 AC_INIT([djview],[4.6])
-AC_REVISION($Id$)
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_SRCDIR(README)
 AC_CONFIG_HEADER(config.h:config/config.h.in)
