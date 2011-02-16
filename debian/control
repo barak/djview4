@@ -39,7 +39,7 @@ Recommends: chromium-browser
 	    | mozilla-browser | mozilla | firefox | iceweasel | iceape-browser
 	    | konqueror | galeon
 Suggests: mime-support
-Conflicts: djvulibre-bin (<< 3.5.19)
+Conflicts: djvulibre-bin (<< 3.5.19), djvulibre-plugin (<= 3.5.23-4)
 Description: Browser plugin for the DjVu image format
  DjVu browser plugin.
 
