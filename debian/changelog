@@ -1,8 +1,12 @@
-djview4 (4.6-3) UNRELEASED; urgency=low
+djview4 (4.6-3) unstable; urgency=low
 
-  * fiddle with sections (debian/control)
+  * changes to debian/control
+    - fiddle with sections
+    - have djview-plugin conflict with old versions of djvulibre-plugin
+      which contain the same plugin library (closes: #613352, #613374)
+  * arch patch for Renesas SH from Nobuhiro Iwamatsu (closes: #613310)
 
- -- Barak A. Pearlmutter <bap@debian.org>  Sun, 13 Feb 2011 14:17:13 +0000
+ -- Barak A. Pearlmutter <bap@debian.org>  Wed, 16 Feb 2011 17:24:16 +0000
 
 djview4 (4.6-2) unstable; urgency=low
 
