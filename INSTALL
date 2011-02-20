@@ -193,23 +193,7 @@ There are two options under Mac OS X.
 There are also two ways to compile djview under Windows.
 Both versions
 
-* Using the MINGW compiler is easier because the 
-  binary version of Qt/Windows is compiled for MINGW.
-
-  - Install the binary version of Qt4.
-  - Install the mingw version of zlib, libtiff, libjpeg.
-  - Compile djvulibre using the configure method.
-  - Go to directory djview4/src.
-  - Type command 
-       $ qmake DEFINES+=HAVE_TIFF \
-          LIBS+="-L$HOME/djvulibre-3.5/libdjvu/.libs -ldjvulibre -ltiff" \
-	  QMAKE_CXXFLAGS+="-I$HOME/djvulibre-3.5"
-    where you replace the paths by the actual djvulibre paths.
-  - Then compile using 
-       $ mingw32-make SHELL=cmd.exe
-
-
-* Using Visual C++.
+* Using Visual C++ 2010
 
   - First you need to compile Qt4 using Visual C++.
     This used to be require patching the Qt source
@@ -226,9 +210,25 @@ Both versions
     One good way to do so is to open the file "djvulibre.sln"
     that comes with the cvs version of djvulibre. Then add the
     project "djview.vcproj" and insert the property sheets
-    "dirs.vsprops", "warnings.vsprops" and "tools.vsprops".
+    "dirs", "warnings", "libtiff" and "tools" found in the 
+    djvulibre-3.5/win32/djvulibre directory. You also need
+    to add the references to libdjvulibre and libtiff.
     This works well despite requiring a lot of clicks.
+    You still need to add rthe 
 
+* Using the MINGW compiler (not recommended)
+
+  - Install the binary version of Qt4.
+  - Install the mingw version of zlib, libtiff, libjpeg.
+  - Compile djvulibre using the configure method.
+  - Go to directory djview4/src.
+  - Type command 
+       $ qmake DEFINES+=HAVE_TIFF \
+          LIBS+="-L$HOME/djvulibre-3.5/libdjvu/.libs -ldjvulibre -ltiff" \
+	  QMAKE_CXXFLAGS+="-I$HOME/djvulibre-3.5"
+    where you replace the paths by the actual djvulibre paths.
+  - Then compile using 
+       $ mingw32-make SHELL=cmd.exe
     
 
 
