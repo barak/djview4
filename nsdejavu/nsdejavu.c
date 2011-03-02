@@ -1097,15 +1097,19 @@ SaveStatic(void)
 {
   SavedStatic *storage = 0;
   char *value = getenv(ENV_DJVU_STORAGE_PTR);
+  int pid = -1;
   if (value) 
-    sscanf(value, "%p", &storage);
+    sscanf(value, "%p-%d", &storage, &pid);
+  if (pid != getpid())
+    storage = 0;
   if (! storage)
     {
       char *buffer = malloc(128);
       if (buffer) {
         storage = malloc(sizeof(SavedStatic));
         if (storage) {
-          sprintf(buffer, ENV_DJVU_STORAGE_PTR "=%p", (void*)storage);
+          sprintf(buffer, ENV_DJVU_STORAGE_PTR "=%p-%d", 
+                  (void*)storage, getpid());
           putenv(buffer);
         }
       }
@@ -1130,9 +1134,12 @@ LoadStatic(void)
         nsdejavu.so */
 {
   SavedStatic *storage = 0;
+  int pid = -1;
   char *value = getenv(ENV_DJVU_STORAGE_PTR);
   if (value) 
-    sscanf(value, "%p", &storage);
+    sscanf(value, "%p-%d", &storage, &pid);
+  if (pid != getpid())
+    storage = 0;
   if (storage)
     {
       pipe_read = storage->pipe_read;
