@@ -1877,10 +1877,8 @@ StartProgram(void)
   char *ptr, *p, *q;
   struct stat st;
   int s;
-  
   if (IsConnectionOK(TRUE)) 
     return 0;
-  
   path = GetViewerPath();
   if (!path || !path[0])
     return -1;
@@ -1897,7 +1895,6 @@ StartProgram(void)
     return -1;
   rev_pipe = fd[0];
   _rev_pipe = fd[1];
-
   /* We want to wait for this child. */
   sigsave = (void*)signal(SIGCHLD,SIG_DFL);
   pid  = vfork();
@@ -1927,13 +1924,11 @@ StartProgram(void)
          we will inherit some from Netscape if we don't close them. */
       for(s=8;s<1024;s++) 
         close(s);
-      
       /* This is needed for RedHat's version of Netscape. */
       UnsetVariable("LD_PRELOAD");
       UnsetVariable("XNLSPATH");
       /* This is needed to disable session management in Qt */
       UnsetVariable("SESSION_MANAGER");      
-      
       /* Old autoinstaller fails to set the "executable" flag. */
       if (stat(path, &st)>=0)
         {
@@ -1948,12 +1943,10 @@ StartProgram(void)
       fflush(stderr);
       _exit(1);
     }
-  
   /* Parent */
   close(_pipe_write);
   close(_pipe_read);
   close(_rev_pipe);
-  
   /* Wait for the primary child */
   waitpid(pid, &s, 0);
   signal(SIGCHLD, sigsave);
@@ -1962,6 +1955,7 @@ StartProgram(void)
       CloseConnection();
       return -1;
     }
+  /* Determine scriptability */
   scriptable = 0;
   xembedable = 0;
   for (p=ptr; *p; p++)
@@ -1981,6 +1975,14 @@ StartProgram(void)
       p = q;
     }
   free(ptr);
+  /* Obtain scriptability atoms */
+  if (scriptable && !npid_version)
+    {
+      npid_getdjvuopt = NPN_GetStringIdentifier("getdjvuopt");
+      npid_setdjvuopt = NPN_GetStringIdentifier("setdjvuopt");
+      npid_onchange = NPN_GetStringIdentifier("onchange");
+      npid_version = NPN_GetStringIdentifier("version");
+    }
   return 1;
 }
 
@@ -2252,19 +2254,6 @@ NPP_Initialize(void)
   LoadStatic();
   if (pipe(delay_pipe) < 0)
     return NPERR_GENERIC_ERROR;
-  if (!IsConnectionOK(TRUE))
-    {
-      CloseConnection();
-      if (StartProgram() < 0)
-        return NPERR_GENERIC_ERROR;
-    }
-  if (scriptable)
-    {
-      npid_getdjvuopt = NPN_GetStringIdentifier("getdjvuopt");
-      npid_setdjvuopt = NPN_GetStringIdentifier("setdjvuopt");
-      npid_onchange = NPN_GetStringIdentifier("onchange");
-      npid_version = NPN_GetStringIdentifier("version");
-    }
   return NPERR_NO_ERROR;
 }
 
