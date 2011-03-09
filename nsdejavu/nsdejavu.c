@@ -2296,7 +2296,6 @@ NPP_New(NPMIMEType mime, NPP np_inst, uint16 np_mode, int16 argc,
   int i;
   if (!IsConnectionOK(TRUE))
     {
-      fprintf(stderr, "nsdejavu: restarting djview (reload the page.)\n");
       CloseConnection();
       StartProgram();
     }
