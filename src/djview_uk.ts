@@ -2388,7 +2388,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="618"/>
-        <source>&lt;html&gt;&lt;b&gt;Position and scaling.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accomodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;b&gt;Position and scaling.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accommodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Розміщення та масштаб.&lt;/b&gt;&lt;br&gt;Параметр &lt;tt&gt;Масшатабувати для відповідності&lt;/tt&gt; пристосовує документ до того розміру паперу, який використовує Ваша друкарка. Множник масштабу &lt;tt&gt;100%&lt;/tt&gt; відтворює початковий розмір сторінок документа. &lt;tt&gt;Автоматична&lt;/tt&gt; орієнтація дозволяє програмі обрати книжкову чи альбомну орієнтацію паперу на основі припущення одна сторінка - один листок.&lt;/html&gt;</translation>
     </message>
     <message>
@@ -3008,7 +3008,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="2014"/>
-        <source>&lt;html&gt;&lt;b&gt;Printing options.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Color&lt;/tt&gt; enables color printing. Document pages can be decorated with a frame. Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accomodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;b&gt;Printing options.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Color&lt;/tt&gt; enables color printing. Document pages can be decorated with a frame. Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accommodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Параметри друку.&lt;/b&gt;&lt;br&gt;Параметр &lt;tt&gt;Колір&lt;/tt&gt; дозволяє кольоровий друк. Сторінки документа можна вкласти до рамок. Параметр &lt;tt&gt;Підігнати до&lt;/tt&gt; пристосовує сторінки до розміру паперу, що використовує Ваша друкарка. Множник масштабування &lt;tt&gt;100%&lt;/tt&gt; відтворює початковий розмір документа. Розташування &lt;tt&gt;Автоматичне&lt;/tt&gt; обирає книжкове чи альбомне розташування з міркувань відображення однієї сторінки на одному листі.&lt;/html&gt;</translation>
     </message>
     <message>

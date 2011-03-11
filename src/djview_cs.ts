@@ -2441,7 +2441,7 @@ Chcete jej nahradit?</translation>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="618"/>
-        <source>&lt;html&gt;&lt;b&gt;Position and scaling.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accomodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;b&gt;Position and scaling.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accommodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Umístění a zvětšení.&lt;/b&gt;&lt;br/&gt;Volba &lt;tt&gt;Roztáhnout na celou stránku&lt;/tt&gt; se přizpůsobí jakékoliv velikosti papíru, který vaše tiskárna používá. Míra zvětšení &lt;tt&gt;100 %&lt;/tt&gt; reprodukuje dokument ve své původní velikosti. Orientace &lt;tt&gt;Automatická&lt;/tt&gt; vybírá orientaci (na výšku nebo na šířku) každé stránky samostatně.&lt;/html&gt;</translation>
     </message>
     <message>
@@ -3055,7 +3055,7 @@ Chcete jej nahradit?</translation>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="2014"/>
-        <source>&lt;html&gt;&lt;b&gt;Printing options.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Color&lt;/tt&gt; enables color printing. Document pages can be decorated with a frame. Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accomodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;b&gt;Printing options.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Color&lt;/tt&gt; enables color printing. Document pages can be decorated with a frame. Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accommodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Nastavení tisku.&lt;/b&gt;&lt;br&gt;Volba &lt;tt&gt;Barevně&lt;/tt&gt; umožňuje barevný tisk. Stránky dokumentu mohou být vybaveny orámováním. &lt;tt&gt;Roztáhnout na celou stránku&lt;/tt&gt; se přizpůsobí jakékoliv velikosti papíru, který vaše tiskárna používá. Míra zvětšení &lt;tt&gt;100 %&lt;/tt&gt; reprodukuje dokument ve své původní velikosti. Orientace &lt;tt&gt;Automatická&lt;/tt&gt; vybírá orientaci (na výšku nebo na šířku) každé stránky samostatně.&lt;/html&gt;</translation>
     </message>
     <message>

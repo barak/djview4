@@ -2394,7 +2394,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="618"/>
-        <source>&lt;html&gt;&lt;b&gt;Position and scaling.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accomodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;b&gt;Position and scaling.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accommodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Положение и масштаб.&lt;/b&gt;&lt;br&gt;Опция &lt;tt&gt;Масштабировать по размеру страницы&lt;/tt&gt; приспосабливает документ к размерам листов бумаги, используемой вашим принтером. Масштаб &lt;tt&gt;100%&lt;/tt&gt; воспроизводит исходный размер документа. Опция ориентации &lt;tt&gt;Автоматически&lt;/tt&gt; выбирает книжную или альбомну ориентацию по размерам каждой страницы.&lt;/html&gt;</translation>
     </message>
     <message>
@@ -2997,7 +2997,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="2014"/>
-        <source>&lt;html&gt;&lt;b&gt;Printing options.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Color&lt;/tt&gt; enables color printing. Document pages can be decorated with a frame. Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accomodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;b&gt;Printing options.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Color&lt;/tt&gt; enables color printing. Document pages can be decorated with a frame. Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accommodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Настройки печати.&lt;/b&gt;&lt;br&gt;Опция &lt;tt&gt;Цвет&lt;/tt&gt; включает цветную печать. К страницам документа может быть добавлена рамка. Опция &lt;tt&gt;Масштабировать по размеру страницы&lt;/tt&gt; приспосабливает документ к размерам листов бумаги, используемой вашим принтером. Масштаб &lt;tt&gt;100%&lt;/tt&gt; воспроизводит исходный размер документа. Опция ориентации &lt;tt&gt;Автоматически&lt;/tt&gt; выбирает книжную или альбомну ориентацию по размерам каждой страницы.&lt;/html&gt;</translation>
     </message>
     <message>

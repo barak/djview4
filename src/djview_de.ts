@@ -2415,7 +2415,7 @@ Soll die Datei überschrieben werden?</translation>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="618"/>
-        <source>&lt;html&gt;&lt;b&gt;Position and scaling.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accomodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;b&gt;Position and scaling.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accommodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Positionierung und Skalierung.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;an Papierformat anpassen&lt;/tt&gt; paßt Dokument an das vom Drucker genutzte Papierformat an. Zoomfaktor &lt;tt&gt;100%&lt;/tt&gt; entspricht der Originalgröße des Dokumentes. Orientatierung &lt;tt&gt;Automatisch&lt;/tt&gt; wählt zwischen Hoch- und Querformat für die jeweilige Seite aus.&lt;/html&gt;</translation>
     </message>
     <message>
@@ -3001,7 +3001,7 @@ Soll die Datei überschrieben werden?</translation>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="2014"/>
-        <source>&lt;html&gt;&lt;b&gt;Printing options.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Color&lt;/tt&gt; enables color printing. Document pages can be decorated with a frame. Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accomodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;b&gt;Printing options.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Color&lt;/tt&gt; enables color printing. Document pages can be decorated with a frame. Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accommodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Druckeinstellungen.&lt;/b&gt;&lt;br&gt;Die Option &lt;tt&gt;Farbe&lt;/tt&gt; schaltet den Farbdruck ein. Die Seiten eines Dokumentes können von einem Rahmen umfasst werden. Zoomfaktor &lt;tt&gt;100%&lt;/tt&gt; entspricht der Originalgröße des Dokumentes. Orientatierung &lt;tt&gt;Automatisch&lt;/tt&gt; wählt zwischen Hoch- und Querformat für die jeweilige Seite aus.&lt;/html&gt;</translation>
     </message>
     <message>

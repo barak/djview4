@@ -614,7 +614,7 @@ QDjViewPSExporter::QDjViewPSExporter(QDialog *parent, QDjView *djview,
                          "printers. Level 3 print color document faster "
                          "on recent printers.</html>") );
   page2->setWhatsThis(tr("<html><b>Position and scaling.</b><br>"
-                         "Option <tt>Scale to fit</tt> accomodates "
+                         "Option <tt>Scale to fit</tt> accommodates "
                          "whatever paper size your printer uses. "
                          "Zoom factor <tt>100%</tt> reproduces the initial "
                          "document size. Orientation <tt>Automatic</tt> "
@@ -2012,7 +2012,7 @@ QDjViewPrnExporter::QDjViewPrnExporter(QDialog *parent, QDjView *djview,
   page->setWhatsThis(tr("<html><b>Printing options.</b><br>"
                         "Option <tt>Color</tt> enables color printing. "
                         "Document pages can be decorated with a frame. "
-                        "Option <tt>Scale to fit</tt> accomodates "
+                        "Option <tt>Scale to fit</tt> accommodates "
                         "whatever paper size your printer uses. "
                         "Zoom factor <tt>100%</tt> reproduces the initial "
                         "document size. Orientation <tt>Automatic</tt> "
