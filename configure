@@ -2298,6 +2298,52 @@ $as_echo "$ac_res" >&6; }
   eval $as_lineno_stack; test "x$as_lineno_stack" = x && { as_lineno=; unset as_lineno;}
 
 } # ac_fn_cxx_check_func
+
+# ac_fn_cxx_check_decl LINENO SYMBOL VAR INCLUDES
+# -----------------------------------------------
+# Tests whether SYMBOL is declared in INCLUDES, setting cache variable VAR
+# accordingly.
+ac_fn_cxx_check_decl ()
+{
+  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
+  as_decl_name=`echo $2|sed 's/ *(.*//'`
+  as_decl_use=`echo $2|sed -e 's/(/((/' -e 's/)/) 0&/' -e 's/,/) 0& (/g'`
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $as_decl_name is declared" >&5
+$as_echo_n "checking whether $as_decl_name is declared... " >&6; }
+if eval "test \"\${$3+set}\"" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+$4
+int
+main ()
+{
+#ifndef $as_decl_name
+#ifdef __cplusplus
+  (void) $as_decl_use;
+#else
+  (void) $as_decl_name;
+#endif
+#endif
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  eval "$3=yes"
+else
+  eval "$3=no"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+eval ac_res=\$$3
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+  eval $as_lineno_stack; test "x$as_lineno_stack" = x && { as_lineno=; unset as_lineno;}
+
+} # ac_fn_cxx_check_decl
 cat >config.log <<_ACEOF
 This file contains any messages produced by compilers while
 running configure, to aid debugging if configure makes a mistake.
@@ -2795,10 +2841,12 @@ case "$host" in
      if test -d /opt/local ; then
        CFLAGS="$CFLAGS -I/opt/local/include"
        CXXFLAGS="$CXXFLAGS -I/opt/local/include"
+       CPPFLAGS="$CPPFLAGS -I/opt/local/include"
        LDFLAGS="$LDFLAGS -L/opt/local/lib"
      elif test -d /sw ; then
        CFLAGS="$CFLAGS -I/sw/include"
        CXXFLAGS="$CXXFLAGS -I/sw/include"
+       CPPFLAGS="$CPPFLAGS -I/sw/include"
        LDFLAGS="$LDFLAGS -L/sw/lib"
      fi
   ;;
@@ -4933,13 +4981,13 @@ if test "${lt_cv_nm_interface+set}" = set; then :
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:4936: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:4984: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:4939: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:4987: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:4942: output\"" >&5)
+  (eval echo "\"\$as_me:4990: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -6134,7 +6182,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 6137 "configure"' > conftest.$ac_ext
+  echo '#line 6185 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -8033,11 +8081,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8036: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8084: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8040: \$? = $ac_status" >&5
+   echo "$as_me:8088: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8372,11 +8420,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8375: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8423: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8379: \$? = $ac_status" >&5
+   echo "$as_me:8427: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8477,11 +8525,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8480: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8528: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8484: \$? = $ac_status" >&5
+   echo "$as_me:8532: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -8532,11 +8580,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8535: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8583: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8539: \$? = $ac_status" >&5
+   echo "$as_me:8587: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -10915,7 +10963,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 10918 "configure"
+#line 10966 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11011,7 +11059,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11014 "configure"
+#line 11062 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12967,11 +13015,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12970: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13018: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:12974: \$? = $ac_status" >&5
+   echo "$as_me:13022: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -13066,11 +13114,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13069: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13117: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:13073: \$? = $ac_status" >&5
+   echo "$as_me:13121: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -13118,11 +13166,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13121: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13169: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:13125: \$? = $ac_status" >&5
+   echo "$as_me:13173: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15517,6 +15565,7 @@ message(QMAKE_MOC="$$QMAKE_MOC")
 message(QT_VERSION="$$[QT_VERSION]")
 message(QT_INSTALL_PREFIX="$$[QT_INSTALL_PREFIX]")
 message(QT_INSTALL_DATA="$$[QT_INSTALL_DATA]")
+message(QT_INSTALL_HEADERS="$$[QT_INSTALL_HEADERS]")
 message(QT_INSTALL_BINS="$$[QT_INSTALL_BINS]")
 EOF
   if ( cd conftest.d && $QMAKE > conftest.out 2>&1 ) ; then
@@ -16629,11 +16678,10 @@ fi
 fi
 
     if test "$no_x" = yes; then
-        ac_nsdejavu = no
+        ac_nsdejavu=no
         { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Disabling plugin compilation (missing X11 include files)." >&5
 $as_echo "$as_me: WARNING: Disabling plugin compilation (missing X11 include files)." >&2;}
     fi
-
     ac_xt=yes
     ac_glib=yes
 
@@ -16701,9 +16749,44 @@ $as_echo "$as_me: WARNING: GLib not found. Compiling plugin without XEmbed." >&2
         { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Xt not found. Compiling plugin with XEmbed only." >&5
 $as_echo "$as_me: WARNING: Xt not found. Compiling plugin with XEmbed only." >&2;}
         if test "$ac_glib" = no ; then
+            ac_nsdejavu=no
             { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Disabling plugin compilation (need Xt and/or Glib2.)" >&5
 $as_echo "$as_me: WARNING: Disabling plugin compilation (need Xt and/or Glib2.)" >&2;}
         fi
+    fi
+fi
+
+if test "$ac_nsdejavu" != no ; then
+    ac_qt_x11=no
+    ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+    saved_CXXFLAGS=$CXXFLAGS
+    CXXFLAGS="$CXXFLAGS -I$QT_INSTALL_HEADERS -I$QT_INSTALL_HEADERS/QtCore"
+    ac_fn_cxx_check_decl "$LINENO" "Q_WS_X11" "ac_cv_have_decl_Q_WS_X11" "#include <QtGlobal>
+"
+if test "x$ac_cv_have_decl_Q_WS_X11" = x""yes; then :
+  ac_qt_x11=yes
+fi
+
+    CXXFLAGS=$saved_CXXFLAGS
+    ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+    if test "$ac_qt_x11" != yes ; then
+        ac_nsdejavu=no
+        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Disabling plugin compilation (need X11-based version of Qt.)" >&5
+$as_echo "$as_me: WARNING: Disabling plugin compilation (need X11-based version of Qt.)" >&2;}
+        { $as_echo "$as_me:${as_lineno-$LINENO}: If you have an X11-supporting Qt, try:" >&5
+$as_echo "$as_me: If you have an X11-supporting Qt, try:" >&6;}
+        { $as_echo "$as_me:${as_lineno-$LINENO}:   CPPFLAGS=-D__USE_WS_X11__ ./configure ..." >&5
+$as_echo "$as_me:   CPPFLAGS=-D__USE_WS_X11__ ./configure ..." >&6;}
     fi
 fi
 
@@ -16754,6 +16837,8 @@ fi
 if test "$ac_npdjvu" != no ; then
     NPDJVU_YES=''
     NPDJVU_NO='#'
+    { $as_echo "$as_me:${as_lineno-$LINENO}: Enabling compilation of the **experimental** plugin npdjvu," >&5
+$as_echo "$as_me: Enabling compilation of the **experimental** plugin npdjvu," >&6;}
 else
     NPDJVU_YES='#'
     NPDJVU_NO=''
@@ -17048,6 +17133,7 @@ QARG="$QARG LIBS+="'"'"$AUTO_LIBS"'"'
 QARG="$QARG QMAKE_LFLAGS+="'"'"$LDFLAGS"'"'
 QARG="$QARG QMAKE_CFLAGS+="'"'"$CFLAGS $AUTO_FLAGS"'"'
 QARG="$QARG QMAKE_CXXFLAGS+="'"'"$CXXFLAGS $AUTO_FLAGS"'"'
+QARG="$QARG QMAKE_CPPFLAGS+="'"'"$CPPFLAGS $AUTO_FLAGS"'"'
 
 # qmake environment variables
 if test -n "$QMAKESPEC" ; then

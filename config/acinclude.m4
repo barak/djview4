@@ -335,6 +335,7 @@ message(QMAKE_MOC="$$QMAKE_MOC")
 message(QT_VERSION="$$[QT_VERSION]")
 message(QT_INSTALL_PREFIX="$$[QT_INSTALL_PREFIX]")
 message(QT_INSTALL_DATA="$$[QT_INSTALL_DATA]")
+message(QT_INSTALL_HEADERS="$$[QT_INSTALL_HEADERS]")
 message(QT_INSTALL_BINS="$$[QT_INSTALL_BINS]")
 changequote([, ])dnl
 EOF

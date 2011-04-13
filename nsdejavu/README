@@ -1,6 +1,8 @@
-This is the main directory for UNIX-based DjVu netscape plugin. It's not
-enough to compile this module to obtain a fully functioning plugin. You also
-need to compile djview (standalone DjVu viewer)
 
+This is the main directory for X11/UNIX DjVu browser plugin. It is not enough
+to compile this module to obtain a fully functioning plugin.  You also need to
+compile the standalone DjVu viewer 'djview' using the X11 version of Qt4. This
+does not work on the Mac unless you use a X11-based browser.  The stock Safari
+and all downloadable builds of popular browsers for OS X are Cocoa-based.
 
-
+TODO: Write a Cocoa-based browser plugin (see directory npdjvu.)

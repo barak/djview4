@@ -61,10 +61,12 @@ case "$host" in
      if test -d /opt/local ; then
        CFLAGS="$CFLAGS -I/opt/local/include"
        CXXFLAGS="$CXXFLAGS -I/opt/local/include"
+       CPPFLAGS="$CPPFLAGS -I/opt/local/include"
        LDFLAGS="$LDFLAGS -L/opt/local/lib"
      elif test -d /sw ; then
        CFLAGS="$CFLAGS -I/sw/include"
        CXXFLAGS="$CXXFLAGS -I/sw/include"
+       CPPFLAGS="$CPPFLAGS -I/sw/include"
        LDFLAGS="$LDFLAGS -L/sw/lib"
      fi
   ;;
@@ -156,10 +158,9 @@ if test "$ac_nsdejavu" != no ; then
     AC_PATH_X
     AC_PATH_XTRA
     if test "$no_x" = yes; then
-        ac_nsdejavu = no
+        ac_nsdejavu=no
         AC_MSG_WARN([Disabling plugin compilation (missing X11 include files).])
     fi
-    
     ac_xt=yes
     ac_glib=yes
     AC_PATH_GLIB([],[ac_glib=no])
@@ -176,9 +177,26 @@ if test "$ac_nsdejavu" != no ; then
     else
         AC_MSG_WARN([Xt not found. Compiling plugin with XEmbed only.])
         if test "$ac_glib" = no ; then
+            ac_nsdejavu=no
             AC_MSG_WARN([Disabling plugin compilation (need Xt and/or Glib2.)])
         fi
     fi
+fi
+
+if test "$ac_nsdejavu" != no ; then
+    ac_qt_x11=no
+    AC_LANG_PUSH(C++)
+    saved_CXXFLAGS=$CXXFLAGS
+    CXXFLAGS="$CXXFLAGS -I$QT_INSTALL_HEADERS -I$QT_INSTALL_HEADERS/QtCore"
+    AC_CHECK_DECL(Q_WS_X11, ac_qt_x11=yes, , [#include <QtGlobal>])
+    CXXFLAGS=$saved_CXXFLAGS
+    AC_LANG_POP(C++)
+    if test "$ac_qt_x11" != yes ; then
+        ac_nsdejavu=no
+        AC_MSG_WARN([Disabling plugin compilation (need X11-based version of Qt.)])
+        AC_MSG_NOTICE([If you have an X11-supporting Qt, try:])
+        AC_MSG_NOTICE([  CPPFLAGS=-D__USE_WS_X11__ ./configure ...])
+    fi 
 fi
 
 if test "$ac_nsdejavu" != no ; then
@@ -226,6 +244,7 @@ AC_ARG_ENABLE(npdjvu,
 if test "$ac_npdjvu" != no ; then
     NPDJVU_YES=''
     NPDJVU_NO='#'
+    AC_MSG_NOTICE([Enabling compilation of the **experimental** plugin npdjvu,])
 else
     NPDJVU_YES='#'
     NPDJVU_NO=''
@@ -329,6 +348,7 @@ QARG="$QARG LIBS+="'"'"$AUTO_LIBS"'"'
 QARG="$QARG QMAKE_LFLAGS+="'"'"$LDFLAGS"'"'
 QARG="$QARG QMAKE_CFLAGS+="'"'"$CFLAGS $AUTO_FLAGS"'"'
 QARG="$QARG QMAKE_CXXFLAGS+="'"'"$CXXFLAGS $AUTO_FLAGS"'"'
+QARG="$QARG QMAKE_CPPFLAGS+="'"'"$CPPFLAGS $AUTO_FLAGS"'"'
 
 # qmake environment variables
 if test -n "$QMAKESPEC" ; then
