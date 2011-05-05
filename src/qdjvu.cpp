@@ -19,6 +19,7 @@
 # include "config.h"
 #endif
 
+#include <stddef.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <libdjvu/miniexp.h>
