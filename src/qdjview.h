@@ -219,6 +219,7 @@ protected slots:
   void performSelect(bool);
   void performViewFullScreen(bool);
   void performEscape();
+  void performGoPage();
   void performFind();
   void addRecent(QUrl);
   void fillRecent();
@@ -344,6 +345,7 @@ protected:
   QAction *actionLayoutCoverPage;
   QAction *actionLayoutRightToLeft;
   QShortcut *shortcutEscape;
+  QShortcut *shortcutGoPage;
   QAction *actionCopyUrl;
   QAction *actionCopyOutline;
   QAction *actionCopyAnnotation;

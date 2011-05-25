@@ -1071,7 +1071,8 @@ QDjView::createWhatsThis()
             >> modeCombo );
 
   HELP(tr("<html><b>Navigating the document.</b><br/> "
-          "The page selector lets you jump to any page by name. "
+          "The page selector lets you jump to any page by name "
+          "and can be activated at any time by pressing Ctrl+G. "
           "The navigation buttons jump to the first page, the previous "
           "page, the next page, or the last page. </html>"),
        >> actionNavFirst >> actionNavPrev 
@@ -2375,6 +2376,10 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   // Create escape shortcut for sidebar
   shortcutEscape = new QShortcut(QKeySequence("Esc"), this);
   connect(shortcutEscape, SIGNAL(activated()), this, SLOT(performEscape()));
+
+  // Create escape shortcut for activating page dialog
+  shortcutGoPage = new QShortcut(QKeySequence("Ctrl+G"), this);
+  connect(shortcutGoPage, SIGNAL(activated()), this, SLOT(performGoPage()));
 
   // Create undoTimer.
   undoTimer = new QTimer(this);
@@ -4209,6 +4214,21 @@ QDjView::performEscape()
     actionViewSideBar->activate(QAction::Trigger);
   else if (actionViewFullScreen->isChecked())
     actionViewFullScreen->activate(QAction::Trigger);
+}
+
+
+
+void 
+QDjView::performGoPage()
+{
+  if (pageCombo && pageCombo->lineEdit())
+    {
+      QLineEdit *le = pageCombo->lineEdit();
+      toolBar->show();
+      le->setFocus();
+      updateActionsLater();
+      QTimer::singleShot(0, le, SLOT(selectAll()));
+    }
 }
 
 
