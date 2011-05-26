@@ -91,7 +91,11 @@
 #include "qdjvuwidget.h"
 #include "qdjvu.h"
 
-
+#ifdef WIN32
+# define wdup(fh) _dup(fh)
+#else
+# define wdup(fh) (fh)
+#endif
 
 // ----------------------------------------
 // FACTORY
@@ -346,25 +350,21 @@ QDjViewDjVuExporter::QDjViewDjVuExporter(QDialog *parent, QDjView *djview,
 
 QDjViewDjVuExporter::~QDjViewDjVuExporter()
 {
-  switch(status())
-    {
-    case DDJVU_JOB_STARTED:
-      if (job)
-        ddjvu_job_stop(*job);
-    case DDJVU_JOB_FAILED:
-    case DDJVU_JOB_STOPPED:
-      if (file.openMode() & (QIODevice::WriteOnly|QIODevice::Append))
-        file.remove();
-    default:
-      break;
-    }
+  QIODevice::OpenMode mode = file.openMode();
+  ddjvu_status_t st = status();
+  if (st == DDJVU_JOB_STARTED)
+	if (job)
+      ddjvu_job_stop(*job);
   if (output)
     ::fclose(output);
+  output = 0;
   if (file.openMode())
     file.close();
+  if (st != DDJVU_JOB_OK)
+      if (mode & (QIODevice::WriteOnly|QIODevice::Append))
+        file.remove();
   if (djview)
     ddjvu_cache_clear(djview->getDjVuContext());
-  output = 0;
 }
 
 
@@ -410,7 +410,7 @@ QDjViewDjVuExporter::save(QString fname)
   file.setFileName(fname);
   file.remove();
   if (file.open(QIODevice::WriteOnly))
-    output = ::fdopen(file.handle(), "wb");
+    output = ::fdopen(wdup(file.handle()), "wb");
   if (! output)
     {
       failed = true;
@@ -553,19 +553,15 @@ QDjViewPSExporter::setup()
 QDjViewPSExporter::~QDjViewPSExporter()
 {
   // cleanup output
-  switch(status())
-    {
-    case DDJVU_JOB_STARTED:
+  QIODevice::OpenMode mode = file.openMode();
+  ddjvu_status_t st = status();
+  if (st == DDJVU_JOB_STARTED)
       if (job)
         ddjvu_job_stop(*job);
-    case DDJVU_JOB_FAILED:
-    case DDJVU_JOB_STOPPED:
-      if (file.openMode() & (QIODevice::WriteOnly|QIODevice::Append))
-        file.remove();
-    default:
-      break;
-    }
   closeFile();
+  if (st != DDJVU_JOB_OK)
+	if (mode & (QIODevice::WriteOnly|QIODevice::Append))
+        file.remove();
   // delete property pages
   delete page1;
   delete page2;
@@ -783,7 +779,7 @@ QDjViewPSExporter::openFile()
     {
       file.remove();
       if (file.open(QIODevice::WriteOnly))
-        output = ::fdopen(file.handle(), "wb");
+        output = ::fdopen(wdup(file.handle()), "wb");
     }
   else if (printer)
     {
@@ -1479,8 +1475,10 @@ QDjViewTiffExporter::closeFile()
     TIFFClose(tiff);
 #endif
   tiff = 0;
+  QIODevice::OpenMode mode = file.openMode();
+  file.close();
   if (curStatus > DDJVU_JOB_OK)
-    if (file.openMode() & (QIODevice::WriteOnly|QIODevice::Append))
+    if (mode & (QIODevice::WriteOnly|QIODevice::Append))
       file.remove();
 }
 
@@ -1510,7 +1508,7 @@ QDjViewTiffExporter::doPage()
   if (tiff)
     TIFFWriteDirectory(tiff);
   else if (file.open(QIODevice::ReadWrite))
-    tiff = TIFFFdOpen(file.handle(), file.fileName().toLocal8Bit().data(),"w");
+    tiff = TIFFFdOpen(wdup(file.handle()), file.fileName().toLocal8Bit().data(),"w");
   if (!tiff)
     message = tr("Cannot open output file.");
   else
@@ -1733,9 +1731,9 @@ QDjViewPdfExporter::doFinal()
   QByteArray onameArray = pdfFile.fileName().toLocal8Bit();
   file.close();
   if (file.open(QIODevice::ReadOnly))
-    input = TIFFFdOpen(file.handle(), inameArray.data(), "r");
+    input = TIFFFdOpen(wdup(file.handle()), inameArray.data(), "r");
   if (pdfFile.open(QIODevice::WriteOnly))
-    output = fdopen(pdfFile.handle(),"wb");
+    output = ::fdopen(wdup(pdfFile.handle()),"wb");
   if (input && output)
     {
       const char *argv[3];
@@ -1762,6 +1760,8 @@ QDjViewPdfExporter::doFinal()
     file.close();
   if (pdfFile.openMode())
     pdfFile.close();
+  if (tempFile.openMode())
+    tempFile.close();
   if (tempFile.exists())
     tempFile.remove();
 #else
