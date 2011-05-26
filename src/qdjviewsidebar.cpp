@@ -1799,7 +1799,7 @@ void
 QDjViewFind::findNext()
 {
   if (text().isEmpty())
-    djview->showSideBar("find");
+    djview->showFind();
   model->nextHit(false);
 }
 
@@ -1808,7 +1808,7 @@ void
 QDjViewFind::findPrev()
 {
   if (text().isEmpty())
-    djview->showSideBar("find");
+    djview->showFind();
   model->nextHit(true);
 }
 

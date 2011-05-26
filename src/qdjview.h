@@ -139,8 +139,8 @@ public slots:
   void  statusMessage(QString s = QString());
   bool  showSideBar(Qt::DockWidgetAreas areas, int tabs);
   bool  showSideBar(QString args, QStringList &errors);
-  bool  showSideBar(QString args);
   bool  showSideBar(bool);
+  void  showFind(void);
   void  print(void);
   void  saveAs(void);
   void  exportAs(void);
@@ -220,7 +220,6 @@ protected slots:
   void performViewFullScreen(bool);
   void performEscape();
   void performGoPage();
-  void performFind();
   void addRecent(QUrl);
   void fillRecent();
   void openRecent();

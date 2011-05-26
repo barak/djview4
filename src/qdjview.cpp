@@ -413,7 +413,8 @@ QDjView::createActions()
     << QKeySequence(tr("Ctrl+F", "Edit|Find"))
     << QIcon(":/images/icon_find.png")
     << tr("Find text in the document.")
-    << Trigger(this, SLOT(performFind()));
+    << Trigger(this, SLOT(showFind()))
+    << Trigger(findWidget, SLOT(findNext()));
 
   actionFindNext = makeAction(tr("Find &Next", "Edit|"))
     << QKeySequence(tr("Ctrl+F3", "Edit|Find Next"))
@@ -1214,7 +1215,7 @@ QDjView::applyOptions(bool remember)
   widget->enableHyperlink(options & QDjViewPrefs::HANDLE_LINKS);
   enableContextMenu(options & QDjViewPrefs::HANDLE_CONTEXTMENU);
   if (!remember)
-    showSideBar((bool)(options & QDjViewPrefs::SHOW_SIDEBAR));
+    showSideBar(options & QDjViewPrefs::SHOW_SIDEBAR);
 }
 
 
@@ -1882,12 +1883,14 @@ QDjView::parseArgument(QString key, QString value)
     }
   else if (key == "thumbnails")
     {
-      if (! showSideBar(value+",thumbnails"))
+      QStringList junk;
+      if (! showSideBar(value+",thumbnails", junk))
         illegal_value(key, value, errors);
     }
   else if (key == "outline")
     {
-      if (! showSideBar(value+",outline"))
+      QStringList junk;
+      if (! showSideBar(value+",outline", junk))
         illegal_value(key, value, errors);
     }
   else if (key == "find") // new for djview4
@@ -2839,16 +2842,6 @@ QDjView::showSideBar(QString args, QStringList &errors)
 }
 
 
-/* Overloaded version of \a showSideBar for convenience. */
-
-bool
-QDjView::showSideBar(QString args)
-{
-  QStringList errors;
-  return showSideBar(args, errors);
-}
-
-
 /*! Overloaded version of \a showSideBar for convenience. 
   This version makes great efforts to show docks with
   the exact layout they had before being hidden. */
@@ -2868,12 +2861,26 @@ QDjView::showSideBar(bool show)
       toolBar->setObjectName(QString::null);
       restoreState(savedDockState);
       toolBar->setObjectName(savedToolBarName);
+      savedDockState.clear();
     }
   // set visibility
   thumbnailDock->setVisible(show);
   outlineDock->setVisible(show);
   findDock->setVisible(show);
   return true;
+}
+
+
+/*! Pops up find sidebar */
+void 
+QDjView::showFind()
+{
+  if (! actionViewSideBar->isChecked())
+    actionViewSideBar->activate(QAction::Trigger);
+  findDock->show();
+  findDock->raise();
+  findWidget->selectAll();
+  findWidget->takeFocus(Qt::ShortcutFocusReason);
 }
 
 
@@ -4197,17 +4204,6 @@ QDjView::performViewFullScreen(bool checked)
 
 
 void 
-QDjView::performFind()
-{
-  findDock->show();
-  findDock->raise();
-  findWidget->takeFocus(Qt::ShortcutFocusReason);
-  findWidget->findNext();
-  findWidget->selectAll();
-}
-
-
-void 
 QDjView::performEscape()
 {
   if (actionViewSideBar->isChecked())
@@ -4215,8 +4211,6 @@ QDjView::performEscape()
   else if (actionViewFullScreen->isChecked())
     actionViewFullScreen->activate(QAction::Trigger);
 }
-
-
 
 void 
 QDjView::performGoPage()
