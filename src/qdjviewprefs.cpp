@@ -142,6 +142,7 @@ QDjViewPrefs::QDjViewPrefs(void)
     lensPower(3),
     advancedFeatures(false),
     showTextLabel(false),
+    invertLuminance(false),
     modifiersForLens(Qt::ControlModifier|Qt::ShiftModifier),
     modifiersForSelect(Qt::ControlModifier),
     modifiersForLinks(Qt::ShiftModifier),
@@ -344,6 +345,8 @@ QDjViewPrefs::load()
     advancedFeatures = s.value("advancedFeatures").toBool();
   if (s.contains("showTextLabel"))
     showTextLabel = s.value("showTextLabel").toBool();
+  if (s.contains("invertLuminance"))
+    invertLuminance = s.value("invertLuminance").toBool();
   if (s.contains("modifiersForLens"))
     modifiersForLens 
       = stringToModifiers(s.value("modifiersForLens").toString());
@@ -431,6 +434,7 @@ QDjViewPrefs::save(void)
   s.setValue("proxyUrl", proxyUrl.toString());
   s.setValue("advancedFeatures", advancedFeatures);
   s.setValue("showTextLabel", showTextLabel);
+  s.setValue("invertLuminance", invertLuminance);
   s.setValue("modifiersForLens", modifiersToString(modifiersForLens));
   s.setValue("modifiersForSelect", modifiersToString(modifiersForSelect));
   s.setValue("modifiersForLinks", modifiersToString(modifiersForLinks));
@@ -916,6 +920,7 @@ QDjViewPrefsDialog::load(QDjView *djview)
   d->ui.printerGammaSpinBox->setValue((pgamma > 0) ? pgamma : 2.2);
   d->ui.advancedCheckBox->setChecked(prefs->advancedFeatures);
   d->ui.textLabelCheckBox->setChecked(prefs->showTextLabel);
+  d->ui.invertLuminanceCheckBox->setChecked(prefs->invertLuminance);
   // no longer modified
   setWindowModified(false);
   d->ui.applyButton->setEnabled(false);
@@ -965,6 +970,7 @@ QDjViewPrefsDialog::apply()
     prefs->printerGamma = d->ui.printerGammaSpinBox->value();
   prefs->advancedFeatures = d->ui.advancedCheckBox->isChecked();
   prefs->showTextLabel = d->ui.textLabelCheckBox->isChecked();
+  prefs->invertLuminance = d->ui.invertLuminanceCheckBox->isChecked();
   // broadcast change
   setWindowModified(false);
   d->ui.applyButton->setEnabled(false);

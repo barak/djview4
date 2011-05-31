@@ -623,6 +623,12 @@ QDjView::createActions()
     << Trigger(widget, SLOT(displayModeText()))
     << Trigger(this, SLOT(updateActionsLater()))
     << *modeActionGroup;
+
+  actionInvertLuminance
+    = makeAction(tr("I&nvert Luminance", "View|"), true)
+    << tr("Invert image luminance while preserving hue.")
+    << Trigger(widget, SLOT(setInvertLuminance(bool)))
+    << Trigger(this, SLOT(updateActionsLater()));
   
   actionPreferences = makeAction(tr("Prefere&nces...", "Settings|")) 
     << QIcon(":/images/icon_prefs.png")
@@ -778,6 +784,8 @@ QDjView::createMenus()
   viewMenu->addAction(actionLayoutCoverPage);
   viewMenu->addAction(actionLayoutRightToLeft);
   viewMenu->addSeparator();
+  viewMenu->addAction(actionInvertLuminance);
+  viewMenu->addSeparator();
   viewMenu->addAction(actionInformation);
   viewMenu->addAction(actionMetadata);
   if (viewerMode == STANDALONE)
@@ -930,6 +938,9 @@ QDjView::updateActions()
   actionDisplayHiddenText->setChecked(mode == QDjVuWidget::DISPLAY_TEXT);
   modeCombo->setCurrentIndex(modeCombo->findData(QVariant(mode)));
   modeCombo->setEnabled(!!document);
+
+  // Image inversion
+  actionInvertLuminance->setChecked(widget->invertLuminance());
 
   // Rotations
   int rotation = widget->rotation();
@@ -1323,6 +1334,7 @@ QDjView::applyPreferences(void)
   widget->setScreenDpi(prefs->resolution ? prefs->resolution : physicalDpiY());
   widget->setLensSize(prefs->lensSize);
   widget->setLensPower(prefs->lensPower);
+  widget->setInvertLuminance(prefs->invertLuminance);
 
   // Thumbnail preferences
   thumbnailWidget->setSize(prefs->thumbnailSize);

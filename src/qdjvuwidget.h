@@ -45,6 +45,8 @@ class QDjVuWidget : public QAbstractScrollArea
              READ zoom WRITE setZoom)
   Q_PROPERTY(double gamma 
              READ gamma WRITE setGamma)
+  Q_PROPERTY(double bool 
+             READ invertLuminance WRITE setInvertLuminance)
   Q_PROPERTY(QColor white
              READ white WRITE setWhite)
   Q_PROPERTY(int screenDpi 
@@ -168,6 +170,7 @@ public:
   int zoom(void) const;
   int zoomFactor(void) const;
   double gamma(void) const;
+  bool invertLuminance(void) const;
   QColor white(void) const;
   int screenDpi(void) const;
   DisplayMode displayMode(void) const;
@@ -201,6 +204,7 @@ public slots:
   void setRotation(int);
   void setZoom(int);
   void setGamma(double);
+  void setInvertLuminance(bool);
   void setWhite(QColor);
   void setScreenDpi(int);
   void setDisplayMode(DisplayMode m);

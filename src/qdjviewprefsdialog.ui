@@ -1,121 +1,114 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QDjViewPrefsDialog</class>
- <widget class="QDialog" name="QDjViewPrefsDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QDjViewPrefsDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>505</width>
-    <height>357</height>
+    <width>507</width>
+    <height>367</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout">
    <item>
-    <widget class="QTabWidget" name="tabWidget" >
-     <property name="currentIndex" >
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
       <number>0</number>
      </property>
-     <property name="elideMode" >
+     <property name="elideMode">
       <enum>Qt::ElideNone</enum>
      </property>
-     <widget class="QWidget" name="screenTab" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>483</width>
-        <height>265</height>
-       </rect>
-      </property>
-      <attribute name="title" >
+     <widget class="QWidget" name="screenTab">
+      <attribute name="title">
        <string>&amp;Screen</string>
       </attribute>
-      <layout class="QVBoxLayout" >
+      <layout class="QVBoxLayout">
        <item>
-        <widget class="QGroupBox" name="gammaGroupBox" >
-         <property name="title" >
+        <widget class="QGroupBox" name="gammaGroupBox">
+         <property name="title">
           <string>Gamma</string>
          </property>
-         <layout class="QHBoxLayout" >
+         <layout class="QHBoxLayout">
           <item>
-           <layout class="QVBoxLayout" >
-            <property name="spacing" >
+           <layout class="QVBoxLayout">
+            <property name="spacing">
              <number>6</number>
             </property>
-            <property name="margin" >
+            <property name="margin">
              <number>0</number>
             </property>
             <item>
-             <widget class="QLabel" name="label11" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Minimum" hsizetype="MinimumExpanding" >
+             <widget class="QLabel" name="label11">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="text" >
-               <string>&lt;html>Screen color correction.&lt;br>Adjust slider until gray shades look similar.&lt;/html></string>
+              <property name="text">
+               <string>&lt;html&gt;Screen color correction.&lt;br&gt;Adjust slider until gray shades look similar.&lt;/html&gt;</string>
               </property>
-              <property name="textFormat" >
+              <property name="textFormat">
                <enum>Qt::RichText</enum>
               </property>
-              <property name="alignment" >
+              <property name="alignment">
                <set>Qt::AlignCenter</set>
               </property>
-              <property name="wordWrap" >
+              <property name="wordWrap">
                <bool>true</bool>
               </property>
-              <property name="buddy" >
+              <property name="buddy">
                <cstring>gammaSlider</cstring>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QSlider" name="gammaSlider" >
-              <property name="minimum" >
+             <widget class="QSlider" name="gammaSlider">
+              <property name="minimum">
                <number>5</number>
               </property>
-              <property name="maximum" >
+              <property name="maximum">
                <number>50</number>
               </property>
-              <property name="value" >
+              <property name="value">
                <number>22</number>
               </property>
-              <property name="orientation" >
+              <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="tickPosition" >
+              <property name="tickPosition">
                <enum>QSlider::TicksBelow</enum>
               </property>
-              <property name="tickInterval" >
+              <property name="tickInterval">
                <number>5</number>
               </property>
              </widget>
             </item>
             <item>
-             <layout class="QHBoxLayout" >
-              <property name="spacing" >
+             <layout class="QHBoxLayout">
+              <property name="spacing">
                <number>6</number>
               </property>
-              <property name="margin" >
+              <property name="margin">
                <number>0</number>
               </property>
               <item>
-               <widget class="QLabel" name="label14" >
-                <property name="text" >
+               <widget class="QLabel" name="label14">
+                <property name="text">
                  <string>Darker</string>
                 </property>
                </widget>
               </item>
               <item>
                <spacer>
-                <property name="orientation" >
+                <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
-                <property name="sizeHint" stdset="0" >
+                <property name="sizeHint" stdset="0">
                  <size>
                   <width>40</width>
                   <height>20</height>
@@ -124,8 +117,8 @@
                </spacer>
               </item>
               <item>
-               <widget class="QLabel" name="label15" >
-                <property name="text" >
+               <widget class="QLabel" name="label15">
+                <property name="text">
                  <string>Lighter</string>
                 </property>
                </widget>
@@ -135,13 +128,13 @@
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" >
+           <layout class="QHBoxLayout">
             <item>
              <spacer>
-              <property name="orientation" >
+              <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>5</width>
                 <height>20</height>
@@ -150,33 +143,33 @@
              </spacer>
             </item>
             <item>
-             <widget class="QDjViewGammaWidget" name="gammaWidget" >
-              <property name="minimumSize" >
+             <widget class="QDjViewGammaWidget" name="gammaWidget">
+              <property name="minimumSize">
                <size>
                 <width>119</width>
                 <height>119</height>
                </size>
               </property>
-              <property name="maximumSize" >
+              <property name="maximumSize">
                <size>
                 <width>119</width>
                 <height>119</height>
                </size>
               </property>
-              <property name="frameShape" >
+              <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
-              <property name="frameShadow" >
+              <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
              </widget>
             </item>
             <item>
              <spacer>
-              <property name="orientation" >
+              <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>5</width>
                 <height>20</height>
@@ -190,33 +183,33 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="resolutionGroupBox" >
-         <property name="enabled" >
+        <widget class="QGroupBox" name="resolutionGroupBox">
+         <property name="enabled">
           <bool>true</bool>
          </property>
-         <property name="title" >
+         <property name="title">
           <string>Resolution</string>
          </property>
-         <layout class="QHBoxLayout" >
+         <layout class="QHBoxLayout">
           <item>
-           <widget class="QCheckBox" name="forceResolutionCheckBox" >
-            <property name="text" >
+           <widget class="QCheckBox" name="forceResolutionCheckBox">
+            <property name="text">
              <string>Force screen &amp;resolution</string>
             </property>
-            <property name="checked" >
+            <property name="checked">
              <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
            <spacer>
-            <property name="orientation" >
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeType" >
+            <property name="sizeType">
              <enum>QSizePolicy::Maximum</enum>
             </property>
-            <property name="sizeHint" stdset="0" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>40</width>
               <height>20</height>
@@ -225,20 +218,20 @@
            </spacer>
           </item>
           <item>
-           <widget class="QSpinBox" name="resolutionSpinBox" >
-            <property name="alignment" >
+           <widget class="QSpinBox" name="resolutionSpinBox">
+            <property name="alignment">
              <set>Qt::AlignCenter</set>
             </property>
-            <property name="suffix" >
+            <property name="suffix">
              <string> dpi</string>
             </property>
-            <property name="minimum" >
+            <property name="minimum">
              <number>25</number>
             </property>
-            <property name="maximum" >
+            <property name="maximum">
              <number>600</number>
             </property>
-            <property name="value" >
+            <property name="value">
              <number>100</number>
             </property>
            </widget>
@@ -248,56 +241,48 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="interfaceTab" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>483</width>
-        <height>265</height>
-       </rect>
-      </property>
-      <attribute name="title" >
+     <widget class="QWidget" name="interfaceTab">
+      <attribute name="title">
        <string>&amp;Interface</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_5" >
+      <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
-        <layout class="QHBoxLayout" >
-         <property name="spacing" >
+        <layout class="QHBoxLayout">
+         <property name="spacing">
           <number>6</number>
          </property>
-         <property name="margin" >
+         <property name="margin">
           <number>0</number>
          </property>
          <item>
-          <widget class="QLabel" name="label21" >
-           <property name="text" >
+          <widget class="QLabel" name="label21">
+           <property name="text">
             <string>Options for</string>
            </property>
-           <property name="buddy" >
+           <property name="buddy">
             <cstring>modeComboBox</cstring>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="modeComboBox" >
+          <widget class="QComboBox" name="modeComboBox">
            <item>
-            <property name="text" >
+            <property name="text">
              <string>Standalone Viewer</string>
             </property>
            </item>
            <item>
-            <property name="text" >
+            <property name="text">
              <string>Full Screen Standalone Viewer</string>
             </property>
            </item>
            <item>
-            <property name="text" >
+            <property name="text">
              <string>Full Page Plugin</string>
             </property>
            </item>
            <item>
-            <property name="text" >
+            <property name="text">
              <string>Embedded Plugin</string>
             </property>
            </item>
@@ -305,10 +290,10 @@
          </item>
          <item>
           <spacer>
-           <property name="orientation" >
+           <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" stdset="0" >
+           <property name="sizeHint" stdset="0">
             <size>
              <width>40</width>
              <height>20</height>
@@ -319,51 +304,51 @@
         </layout>
        </item>
        <item>
-        <widget class="QCheckBox" name="rememberCheckBox" >
-         <property name="text" >
+        <widget class="QCheckBox" name="rememberCheckBox">
+         <property name="text">
           <string>&amp;Remember initial state from last invocation</string>
          </property>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3" >
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QGroupBox" name="showGroupBox" >
-           <property name="title" >
+          <widget class="QGroupBox" name="showGroupBox">
+           <property name="title">
             <string>Show</string>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout" >
+           <layout class="QVBoxLayout" name="verticalLayout">
             <item>
-             <widget class="QCheckBox" name="menuBarCheckBox" >
-              <property name="text" >
+             <widget class="QCheckBox" name="menuBarCheckBox">
+              <property name="text">
                <string>&amp;Menu bar</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="toolBarCheckBox" >
-              <property name="text" >
+             <widget class="QCheckBox" name="toolBarCheckBox">
+              <property name="text">
                <string>&amp;Tool bar</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="scrollBarsCheckBox" >
-              <property name="text" >
+             <widget class="QCheckBox" name="scrollBarsCheckBox">
+              <property name="text">
                <string>Sc&amp;rollbars</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="statusBarCheckBox" >
-              <property name="text" >
+             <widget class="QCheckBox" name="statusBarCheckBox">
+              <property name="text">
                <string>Stat&amp;us bar</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="sideBarCheckBox" >
-              <property name="text" >
+             <widget class="QCheckBox" name="sideBarCheckBox">
+              <property name="text">
                <string>&amp;Side bar</string>
               </property>
              </widget>
@@ -372,29 +357,29 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="modeGroupBox" >
-           <property name="title" >
+          <widget class="QGroupBox" name="modeGroupBox">
+           <property name="title">
             <string>Display</string>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_2" >
+           <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout" >
+             <layout class="QHBoxLayout" name="horizontalLayout">
               <item>
-               <widget class="QLabel" name="label22" >
-                <property name="text" >
+               <widget class="QLabel" name="label22">
+                <property name="text">
                  <string>&amp;Zoom: </string>
                 </property>
-                <property name="alignment" >
+                <property name="alignment">
                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
-                <property name="buddy" >
+                <property name="buddy">
                  <cstring>zoomCombo</cstring>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="zoomCombo" >
-                <property name="editable" >
+               <widget class="QComboBox" name="zoomCombo">
+                <property name="editable">
                  <bool>true</bool>
                 </property>
                </widget>
@@ -402,11 +387,11 @@
              </layout>
             </item>
             <item>
-             <spacer name="verticalSpacer_5" >
-              <property name="orientation" >
+             <spacer name="verticalSpacer_5">
+              <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
                 <height>40</height>
@@ -415,30 +400,30 @@
              </spacer>
             </item>
             <item>
-             <widget class="QFrame" name="frame" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+             <widget class="QFrame" name="frame">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="frameShape" >
+              <property name="frameShape">
                <enum>QFrame::HLine</enum>
               </property>
-              <property name="frameShadow" >
+              <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
-              <property name="lineWidth" >
+              <property name="lineWidth">
                <number>3</number>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="verticalSpacer_2" >
-              <property name="orientation" >
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
                 <height>40</height>
@@ -447,25 +432,25 @@
              </spacer>
             </item>
             <item>
-             <widget class="QCheckBox" name="frameCheckBox" >
-              <property name="text" >
+             <widget class="QCheckBox" name="frameCheckBox">
+              <property name="text">
                <string>Display page &amp;frames</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="mapAreasCheckBox" >
-              <property name="text" >
+             <widget class="QCheckBox" name="mapAreasCheckBox">
+              <property name="text">
                <string>Display &amp;annotations</string>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="verticalSpacer_6" >
-              <property name="orientation" >
+             <spacer name="verticalSpacer_6">
+              <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
                 <height>40</height>
@@ -474,11 +459,11 @@
              </spacer>
             </item>
             <item>
-             <spacer name="verticalSpacer" >
-              <property name="orientation" >
+             <spacer name="verticalSpacer">
+              <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
                 <height>5</height>
@@ -490,24 +475,24 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="layoutGroupBox" >
-           <property name="title" >
+          <widget class="QGroupBox" name="layoutGroupBox">
+           <property name="title">
             <string>Layout</string>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_4" >
+           <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
-             <widget class="QCheckBox" name="continuousCheckBox" >
-              <property name="text" >
+             <widget class="QCheckBox" name="continuousCheckBox">
+              <property name="text">
                <string>Continuous</string>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="verticalSpacer_7" >
-              <property name="orientation" >
+             <spacer name="verticalSpacer_7">
+              <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
                 <height>20</height>
@@ -516,30 +501,30 @@
              </spacer>
             </item>
             <item>
-             <widget class="QFrame" name="frame_2" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+             <widget class="QFrame" name="frame_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="frameShape" >
+              <property name="frameShape">
                <enum>QFrame::HLine</enum>
               </property>
-              <property name="frameShadow" >
+              <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
-              <property name="lineWidth" >
+              <property name="lineWidth">
                <number>3</number>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="verticalSpacer_4" >
-              <property name="orientation" >
+             <spacer name="verticalSpacer_4">
+              <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
                 <height>40</height>
@@ -548,26 +533,26 @@
              </spacer>
             </item>
             <item>
-             <widget class="QCheckBox" name="sideBySideCheckBox" >
-              <property name="text" >
+             <widget class="QCheckBox" name="sideBySideCheckBox">
+              <property name="text">
                <string>Side-by-side</string>
               </property>
-              <property name="checked" >
+              <property name="checked">
                <bool>true</bool>
               </property>
              </widget>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_2" >
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
               <item>
-               <spacer name="horizontalSpacer" >
-                <property name="orientation" >
+               <spacer name="horizontalSpacer">
+                <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
-                <property name="sizeType" >
+                <property name="sizeType">
                  <enum>QSizePolicy::MinimumExpanding</enum>
                 </property>
-                <property name="sizeHint" stdset="0" >
+                <property name="sizeHint" stdset="0">
                  <size>
                   <width>16</width>
                   <height>20</height>
@@ -576,17 +561,17 @@
                </spacer>
               </item>
               <item>
-               <layout class="QVBoxLayout" name="verticalLayout_3" >
+               <layout class="QVBoxLayout" name="verticalLayout_3">
                 <item>
-                 <widget class="QCheckBox" name="coverPageCheckBox" >
-                  <property name="text" >
+                 <widget class="QCheckBox" name="coverPageCheckBox">
+                  <property name="text">
                    <string>Cover Page</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QCheckBox" name="rtolCheckBox" >
-                  <property name="text" >
+                 <widget class="QCheckBox" name="rtolCheckBox">
+                  <property name="text">
                    <string>Right-to-Left</string>
                   </property>
                  </widget>
@@ -596,11 +581,11 @@
              </layout>
             </item>
             <item>
-             <spacer name="verticalSpacer_3" >
-              <property name="orientation" >
+             <spacer name="verticalSpacer_3">
+              <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
                 <height>40</height>
@@ -615,84 +600,76 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="keysTab" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>483</width>
-        <height>265</height>
-       </rect>
-      </property>
-      <attribute name="title" >
+     <widget class="QWidget" name="keysTab">
+      <attribute name="title">
        <string>&amp;Keys</string>
       </attribute>
-      <layout class="QVBoxLayout" >
-       <property name="spacing" >
+      <layout class="QVBoxLayout">
+       <property name="spacing">
         <number>6</number>
        </property>
-       <property name="margin" >
+       <property name="margin">
         <number>9</number>
        </property>
        <item>
-        <widget class="QGroupBox" name="keysGroupBox" >
-         <property name="title" >
+        <widget class="QGroupBox" name="keysGroupBox">
+         <property name="title">
           <string>Keys</string>
          </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
+         <layout class="QGridLayout">
+          <property name="margin">
            <number>9</number>
           </property>
-          <property name="spacing" >
+          <property name="spacing">
            <number>9</number>
           </property>
-          <item row="2" column="0" >
-           <widget class="QLabel" name="label33" >
-            <property name="text" >
+          <item row="2" column="0">
+           <widget class="QLabel" name="label33">
+            <property name="text">
              <string>For displaying hyper&amp;links: </string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>keysForLinksCombo</cstring>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="label32" >
-            <property name="text" >
+          <item row="1" column="0">
+           <widget class="QLabel" name="label32">
+            <property name="text">
              <string>For &amp;selecting text or images: </string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>keysForSelectCombo</cstring>
             </property>
            </widget>
           </item>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="label31" >
-            <property name="text" >
+          <item row="0" column="0">
+           <widget class="QLabel" name="label31">
+            <property name="text">
              <string>For displaying the &amp;lens: </string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>keysForLensCombo</cstring>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
-           <widget class="QDjViewModifiersComboBox" name="keysForLensCombo" >
-            <property name="editable" >
+          <item row="0" column="1">
+           <widget class="QDjViewModifiersComboBox" name="keysForLensCombo">
+            <property name="editable">
              <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item row="1" column="1" >
-           <widget class="QDjViewModifiersComboBox" name="keysForSelectCombo" >
-            <property name="editable" >
+          <item row="1" column="1">
+           <widget class="QDjViewModifiersComboBox" name="keysForSelectCombo">
+            <property name="editable">
              <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item row="2" column="1" >
-           <widget class="QDjViewModifiersComboBox" name="keysForLinksCombo" >
-            <property name="editable" >
+          <item row="2" column="1">
+           <widget class="QDjViewModifiersComboBox" name="keysForLinksCombo">
+            <property name="editable">
              <bool>true</bool>
             </property>
            </widget>
@@ -702,10 +679,10 @@
        </item>
        <item>
         <spacer>
-         <property name="orientation" >
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>5</height>
@@ -715,98 +692,90 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="lensTab" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>483</width>
-        <height>265</height>
-       </rect>
-      </property>
-      <attribute name="title" >
+     <widget class="QWidget" name="lensTab">
+      <attribute name="title">
        <string>&amp;Lens</string>
       </attribute>
-      <layout class="QVBoxLayout" >
-       <property name="spacing" >
+      <layout class="QVBoxLayout">
+       <property name="spacing">
         <number>6</number>
        </property>
-       <property name="margin" >
+       <property name="margin">
         <number>9</number>
        </property>
        <item>
-        <widget class="QCheckBox" name="lensEnableCheckBox" >
-         <property name="text" >
+        <widget class="QCheckBox" name="lensEnableCheckBox">
+         <property name="text">
           <string>Enable magnifying &amp;lens</string>
          </property>
-         <property name="checked" >
+         <property name="checked">
           <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="lensGroupBox" >
-         <property name="title" >
+        <widget class="QGroupBox" name="lensGroupBox">
+         <property name="title">
           <string>Lens options</string>
          </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
+         <layout class="QGridLayout">
+          <property name="margin">
            <number>9</number>
           </property>
-          <property name="spacing" >
+          <property name="spacing">
            <number>6</number>
           </property>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="label42" >
-            <property name="text" >
+          <item row="1" column="0">
+           <widget class="QLabel" name="label42">
+            <property name="text">
              <string>Lens &amp;size: </string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>lensSizeSpinBox</cstring>
             </property>
            </widget>
           </item>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="label41" >
-            <property name="text" >
+          <item row="0" column="0">
+           <widget class="QLabel" name="label41">
+            <property name="text">
              <string>Magnifying &amp;power: </string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>lensPowerSpinBox</cstring>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
-           <widget class="QSpinBox" name="lensPowerSpinBox" >
-            <property name="suffix" >
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="lensPowerSpinBox">
+            <property name="suffix">
              <string>x</string>
             </property>
-            <property name="minimum" >
+            <property name="minimum">
              <number>1</number>
             </property>
-            <property name="maximum" >
+            <property name="maximum">
              <number>10</number>
             </property>
-            <property name="value" >
+            <property name="value">
              <number>3</number>
             </property>
            </widget>
           </item>
-          <item row="1" column="1" >
-           <widget class="QSpinBox" name="lensSizeSpinBox" >
-            <property name="suffix" >
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="lensSizeSpinBox">
+            <property name="suffix">
              <string> pixels</string>
             </property>
-            <property name="minimum" >
+            <property name="minimum">
              <number>50</number>
             </property>
-            <property name="maximum" >
+            <property name="maximum">
              <number>500</number>
             </property>
-            <property name="singleStep" >
+            <property name="singleStep">
              <number>50</number>
             </property>
-            <property name="value" >
+            <property name="value">
              <number>300</number>
             </property>
            </widget>
@@ -816,10 +785,10 @@
        </item>
        <item>
         <spacer>
-         <property name="orientation" >
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>5</height>
@@ -829,119 +798,111 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="networkTab" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>483</width>
-        <height>265</height>
-       </rect>
-      </property>
-      <attribute name="title" >
+     <widget class="QWidget" name="networkTab">
+      <attribute name="title">
        <string>&amp;Network</string>
       </attribute>
-      <layout class="QVBoxLayout" >
-       <property name="spacing" >
+      <layout class="QVBoxLayout">
+       <property name="spacing">
         <number>6</number>
        </property>
-       <property name="margin" >
+       <property name="margin">
         <number>9</number>
        </property>
        <item>
-        <widget class="QCheckBox" name="proxyCheckBox" >
-         <property name="text" >
+        <widget class="QCheckBox" name="proxyCheckBox">
+         <property name="text">
           <string>Use pro&amp;xy to access the network</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="proxyGroupBox" >
-         <property name="enabled" >
+        <widget class="QGroupBox" name="proxyGroupBox">
+         <property name="enabled">
           <bool>false</bool>
          </property>
-         <property name="title" >
+         <property name="title">
           <string>Proxy settings</string>
          </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
+         <layout class="QGridLayout">
+          <property name="margin">
            <number>9</number>
           </property>
-          <property name="spacing" >
+          <property name="spacing">
            <number>6</number>
           </property>
-          <item row="3" column="0" >
-           <widget class="QLabel" name="label64" >
-            <property name="text" >
+          <item row="3" column="0">
+           <widget class="QLabel" name="label64">
+            <property name="text">
              <string>Pass&amp;word: </string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>proxyPasswordLineEdit</cstring>
             </property>
            </widget>
           </item>
-          <item row="2" column="0" >
-           <widget class="QLabel" name="label63" >
-            <property name="text" >
+          <item row="2" column="0">
+           <widget class="QLabel" name="label63">
+            <property name="text">
              <string>&amp;User: </string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>proxyUserLineEdit</cstring>
             </property>
            </widget>
           </item>
-          <item row="3" column="1" >
-           <widget class="QLineEdit" name="proxyPasswordLineEdit" >
-            <property name="echoMode" >
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="proxyPasswordLineEdit">
+            <property name="echoMode">
              <enum>QLineEdit::Password</enum>
             </property>
            </widget>
           </item>
-          <item row="2" column="1" >
-           <widget class="QLineEdit" name="proxyUserLineEdit" />
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="proxyUserLineEdit"/>
           </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="label62" >
-            <property name="text" >
+          <item row="1" column="0">
+           <widget class="QLabel" name="label62">
+            <property name="text">
              <string>&amp;Port: </string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>proxyPortSpinBox</cstring>
             </property>
            </widget>
           </item>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="label61" >
-            <property name="text" >
+          <item row="0" column="0">
+           <widget class="QLabel" name="label61">
+            <property name="text">
              <string>&amp;Host: </string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>proxyHostLineEdit</cstring>
             </property>
            </widget>
           </item>
-          <item row="1" column="1" >
-           <widget class="QSpinBox" name="proxyPortSpinBox" >
-            <property name="maximum" >
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="proxyPortSpinBox">
+            <property name="maximum">
              <number>65535</number>
             </property>
-            <property name="value" >
+            <property name="value">
              <number>8080</number>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
-           <widget class="QLineEdit" name="proxyHostLineEdit" />
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="proxyHostLineEdit"/>
           </item>
          </layout>
         </widget>
        </item>
        <item>
         <spacer>
-         <property name="orientation" >
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>5</height>
@@ -951,86 +912,78 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="advancedTab" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>483</width>
-        <height>265</height>
-       </rect>
-      </property>
-      <attribute name="title" >
+     <widget class="QWidget" name="advancedTab">
+      <attribute name="title">
        <string>&amp;Advanced</string>
       </attribute>
-      <layout class="QVBoxLayout" >
+      <layout class="QVBoxLayout">
        <item>
-        <widget class="QGroupBox" name="cacheGroupBox" >
-         <property name="title" >
+        <widget class="QGroupBox" name="cacheGroupBox">
+         <property name="title">
           <string>Cache</string>
          </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
+         <layout class="QGridLayout">
+          <property name="margin">
            <number>9</number>
           </property>
-          <property name="spacing" >
+          <property name="spacing">
            <number>6</number>
           </property>
-          <item row="1" column="2" >
-           <widget class="QPushButton" name="cacheClearButton" >
-            <property name="text" >
+          <item row="1" column="2">
+           <widget class="QPushButton" name="cacheClearButton">
+            <property name="text">
              <string>&amp;Clear</string>
             </property>
-            <property name="autoDefault" >
+            <property name="autoDefault">
              <bool>false</bool>
             </property>
            </widget>
           </item>
-          <item row="1" column="1" >
-           <widget class="QSpinBox" name="pageCacheSpinBox" >
-            <property name="suffix" >
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="pageCacheSpinBox">
+            <property name="suffix">
              <string> MB</string>
             </property>
-            <property name="maximum" >
+            <property name="maximum">
              <number>32</number>
             </property>
-            <property name="value" >
+            <property name="value">
              <number>10</number>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
-           <widget class="QSpinBox" name="pixelCacheSpinBox" >
-            <property name="suffix" >
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="pixelCacheSpinBox">
+            <property name="suffix">
              <string> MB</string>
             </property>
-            <property name="maximum" >
+            <property name="maximum">
              <number>6</number>
             </property>
-            <property name="singleStep" >
+            <property name="singleStep">
              <number>1</number>
             </property>
-            <property name="value" >
+            <property name="value">
              <number>1</number>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="label52" >
-            <property name="text" >
+          <item row="1" column="0">
+           <widget class="QLabel" name="label52">
+            <property name="text">
              <string>&amp;Decoded page cache: </string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>pageCacheSpinBox</cstring>
             </property>
            </widget>
           </item>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="label51" >
-            <property name="text" >
+          <item row="0" column="0">
+           <widget class="QLabel" name="label51">
+            <property name="text">
              <string>&amp;Pixel cache: </string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>pixelCacheSpinBox</cstring>
             </property>
            </widget>
@@ -1039,54 +992,61 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="miscGroupBox" >
-         <property name="title" >
+        <widget class="QGroupBox" name="miscGroupBox">
+         <property name="title">
           <string>Miscellaneous</string>
          </property>
-         <layout class="QVBoxLayout" >
+         <layout class="QVBoxLayout">
           <item>
-           <layout class="QHBoxLayout" >
+           <widget class="QCheckBox" name="invertLuminanceCheckBox">
+            <property name="text">
+             <string>Default to inverted luminance (white on black.)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout">
             <item>
-             <widget class="QCheckBox" name="printerManualCheckBox" >
-              <property name="text" >
+             <widget class="QCheckBox" name="printerManualCheckBox">
+              <property name="text">
                <string>Manual printer color correction</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="printerGammaSpinBox" >
-              <property name="enabled" >
+             <widget class="QDoubleSpinBox" name="printerGammaSpinBox">
+              <property name="enabled">
                <bool>false</bool>
               </property>
-              <property name="alignment" >
+              <property name="alignment">
                <set>Qt::AlignCenter</set>
               </property>
-              <property name="prefix" >
+              <property name="prefix">
                <string>gamma=</string>
               </property>
-              <property name="decimals" >
+              <property name="decimals">
                <number>1</number>
               </property>
-              <property name="minimum" >
+              <property name="minimum">
                <double>0.500000000000000</double>
               </property>
-              <property name="maximum" >
+              <property name="maximum">
                <double>5.000000000000000</double>
               </property>
-              <property name="singleStep" >
+              <property name="singleStep">
                <double>0.100000000000000</double>
               </property>
-              <property name="value" >
+              <property name="value">
                <double>2.200000000000000</double>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_2" >
-              <property name="orientation" >
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>5</width>
                 <height>20</height>
@@ -1097,15 +1057,15 @@
            </layout>
           </item>
           <item>
-           <widget class="QCheckBox" name="advancedCheckBox" >
-            <property name="text" >
+           <widget class="QCheckBox" name="advancedCheckBox">
+            <property name="text">
              <string>Enable advanced features in menus</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="textLabelCheckBox" >
-            <property name="text" >
+           <widget class="QCheckBox" name="textLabelCheckBox">
+            <property name="text">
              <string>Show hidden text in status bar</string>
             </property>
            </widget>
@@ -1115,10 +1075,10 @@
        </item>
        <item>
         <spacer>
-         <property name="orientation" >
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>5</height>
@@ -1131,29 +1091,29 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" >
-     <property name="spacing" >
+    <layout class="QHBoxLayout">
+     <property name="spacing">
       <number>6</number>
      </property>
-     <property name="margin" >
+     <property name="margin">
       <number>0</number>
      </property>
      <item>
-      <widget class="QPushButton" name="resetButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="resetButton">
+       <property name="text">
         <string>&amp;Defaults</string>
        </property>
-       <property name="autoDefault" >
+       <property name="autoDefault">
         <bool>false</bool>
        </property>
       </widget>
      </item>
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>32</width>
          <height>32</height>
@@ -1162,25 +1122,25 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="applyButton" >
-       <property name="enabled" >
+      <widget class="QPushButton" name="applyButton">
+       <property name="enabled">
         <bool>false</bool>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>&amp;Apply</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="okButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="okButton">
+       <property name="text">
         <string>&amp;Ok</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="cancelButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="cancelButton">
+       <property name="text">
         <string>Cancel</string>
        </property>
       </widget>
@@ -1219,8 +1179,8 @@
   <tabstop>mapAreasCheckBox</tabstop>
   <tabstop>continuousCheckBox</tabstop>
   <tabstop>sideBySideCheckBox</tabstop>
-  <tabstop>coverPageCheckBox</tabstop>
   <tabstop>rtolCheckBox</tabstop>
+  <tabstop>coverPageCheckBox</tabstop>
   <tabstop>keysForLensCombo</tabstop>
   <tabstop>keysForSelectCombo</tabstop>
   <tabstop>keysForLinksCombo</tabstop>
@@ -1235,10 +1195,11 @@
   <tabstop>pixelCacheSpinBox</tabstop>
   <tabstop>pageCacheSpinBox</tabstop>
   <tabstop>cacheClearButton</tabstop>
+  <tabstop>invertLuminanceCheckBox</tabstop>
   <tabstop>printerManualCheckBox</tabstop>
+  <tabstop>printerGammaSpinBox</tabstop>
   <tabstop>advancedCheckBox</tabstop>
   <tabstop>textLabelCheckBox</tabstop>
-  <tabstop>printerGammaSpinBox</tabstop>
   <tabstop>resetButton</tabstop>
   <tabstop>applyButton</tabstop>
   <tabstop>okButton</tabstop>
@@ -1252,11 +1213,11 @@
    <receiver>QDjViewPrefsDialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>397</x>
      <y>342</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>96</x>
      <y>254</y>
     </hint>
@@ -1268,11 +1229,11 @@
    <receiver>QDjViewPrefsDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>478</x>
      <y>342</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>179</x>
      <y>282</y>
     </hint>
@@ -1284,11 +1245,11 @@
    <receiver>proxyGroupBox</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>110</x>
      <y>66</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>130</x>
      <y>141</y>
     </hint>
@@ -1300,11 +1261,11 @@
    <receiver>lensGroupBox</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>80</x>
      <y>63</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>101</x>
      <y>104</y>
     </hint>
@@ -1316,11 +1277,11 @@
    <receiver>printerGammaSpinBox</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>190</x>
      <y>200</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>308</x>
      <y>202</y>
     </hint>
@@ -1332,11 +1293,11 @@
    <receiver>resolutionSpinBox</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>200</x>
      <y>272</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>457</x>
      <y>273</y>
     </hint>
@@ -1348,11 +1309,11 @@
    <receiver>showGroupBox</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>107</x>
      <y>98</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>117</x>
      <y>169</y>
     </hint>
@@ -1364,11 +1325,11 @@
    <receiver>coverPageCheckBox</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>386</x>
      <y>196</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>409</x>
      <y>218</y>
     </hint>
@@ -1380,11 +1341,11 @@
    <receiver>rtolCheckBox</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>366</x>
      <y>192</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>383</x>
      <y>248</y>
     </hint>
@@ -1396,11 +1357,11 @@
    <receiver>modeGroupBox</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>162</x>
      <y>85</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>180</x>
      <y>123</y>
     </hint>
@@ -1412,11 +1373,11 @@
    <receiver>layoutGroupBox</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>249</x>
      <y>86</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>351</x>
      <y>118</y>
     </hint>

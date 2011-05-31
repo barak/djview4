@@ -374,6 +374,36 @@ flatten_hiddentext(miniexp_t p)
   return d;
 }
 
+void
+invert_luminance(QImage &img)
+{
+  if (img.format() == QImage::Format_RGB32 ||
+      img.format() == QImage::Format_ARGB32 )
+    {
+      int w = img.width();
+      int h = img.height();
+      for (int y=0; y<h; y++)
+        {
+          qint32 *words = (qint32*)img.scanLine(y);
+          for (int x=0; x<w; x++)
+            {
+              qint32 word = *words;
+              qint32 r = (word >> 16) & 0xff;
+              qint32 g = (word >> 8) & 0xff;
+              qint32 b = (word >> 0) & 0xff;
+              word &= 0xff000000;
+              qint32 s = 255 - qMax(r,qMax(g,b)) - qMin(r,qMin(g,b));
+              word |= ((r+s)<<16) | ((b+s)<<8) | (g+s);
+              *words++ = word;
+            }
+        }
+    }
+  else
+    {
+      // revert to standard inversion.
+      img.invertPixels();
+    }
+}
 
 // ----------------------------------------
 // Position
@@ -767,9 +797,10 @@ public:
   // painting
   int         pixelCacheSize;   // size of pixel cache
   QRect       selectedRect;     // selection rectangle (viewport coord)
-  double          gamma;        // display gamma
-  QColor          white;        // display white point
-  int             sdpi;         // screen dpi
+  double      gamma;            // display gamma
+  bool        invertLuminance;  // invert images
+  QColor      white;            // display white point
+  int         sdpi;             // screen dpi
   ddjvu_format_t *renderFormat; // ddjvu format
   QList<Cache>    pixelCache;   // pixel cache
   // gui
@@ -921,6 +952,7 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   pageRequestTimer->setSingleShot(true);
   // render format
   gamma = 2.2;
+  invertLuminance = false;
   white = QColor(Qt::white);
   sdpi = 100;
 #if DDJVUAPI_VERSION < 18
@@ -2291,6 +2323,25 @@ QDjVuWidget::setGamma(double gamma)
 {
   priv->gamma = gamma;
   ddjvu_format_set_gamma(priv->renderFormat, gamma);
+  priv->pixelCache.clear();
+  priv->changeLayout(UPDATE_ALL);
+}
+
+
+/*! \property QDjVuWidget::gamma
+  Gamma factor of the display. 
+  Default 2.2. */
+
+bool
+QDjVuWidget::invertLuminance(void) const
+{
+  return priv->invertLuminance;
+}
+
+void
+QDjVuWidget::setInvertLuminance(bool b)
+{
+  priv->invertLuminance = b;
   priv->pixelCache.clear();
   priv->changeLayout(UPDATE_ALL);
 }
@@ -4225,6 +4276,8 @@ QDjVuPrivate::paintPage(QPainter &paint, Page *p, const QRegion &region)
                               img.bytesPerLine(), (char*)img.bits() ))
         return false;
       paintHiddenText(img, p, r);
+      if (invertLuminance)
+        invert_luminance(img);
       paintMapAreas(img, p, r, true);
       addToPixelCache(r, img);
       paintMapAreas(img, p, r, false);

@@ -334,6 +334,7 @@ protected:
   QAction *actionDisplayForeground;
   QAction *actionDisplayBackground;
   QAction *actionDisplayHiddenText;
+  QAction *actionInvertLuminance;
   QAction *actionPreferences;
   QAction *actionViewToolBar;
   QAction *actionViewSideBar;
