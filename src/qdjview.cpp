@@ -3775,14 +3775,7 @@ QDjView::goToLink(QString link, QString target, int fromPage)
           return;
         }
       // Construct url
-      QPair<QString,QString> pair;
-      QList<QPair<QString, QString> > query;
-      foreach(pair, url.queryItems())
-        if (pair.first.toLower() != "djvuopts")
-          query << pair;
-        else
-          break;
-      url.setQueryItems(query);
+      url = removeDjVuCgiArguments(url);
       url.addQueryItem("djvuopts", "");
       int pageno = pageNumber(name, fromPage);
       if (pageno>=0 && pageno<=documentPages.size())
@@ -3791,9 +3784,27 @@ QDjView::goToLink(QString link, QString target, int fromPage)
   else if (link.startsWith("?"))
     {
       if (inPlace)
-        foreach(QString opt, link.mid(1).split("&"))
-          parseArgument(opt);
-      return;
+        {
+          foreach(QString opt, link.mid(1).split("&"))
+            parseArgument(opt);
+          return;
+        }
+      if (viewerMode == STANDALONE)
+        {
+          QDjView *other = copyWindow();
+          foreach(QString opt, link.mid(1).split("&"))
+            other->parseArgument(opt);
+          other->show();
+          return;
+        }
+      // Construct url
+      QUrl linkUrl;
+      linkUrl.setEncodedUrl("file://d/d" + link.toUtf8());
+      url = removeDjVuCgiArguments(url);
+      url.addQueryItem("djvuopts", "");
+      QPair<QString,QString> pair;
+      foreach(pair, linkUrl.queryItems())
+        url.addQueryItem(pair.first, pair.second);
     }
   else
     {
