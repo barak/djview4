@@ -807,6 +807,7 @@ public:
   bool        keyboardEnabled;  // obey keyboard commands
   bool        mouseEnabled;     // obey mouse commands
   bool        hyperlinkEnabled; // follow hyperlinks
+  bool        animationEnabled; // animate position changes
   bool        changingSBars;    // set while changing scrollbars
   DragMode    dragMode;         // dragging mode
   QPoint      dragStart;        // starting point for dragging
@@ -820,6 +821,10 @@ public:
   Qt::KeyboardModifiers modifiersForLinks;  // keys to show hyperlink
   Qt::KeyboardModifiers modifiersForLens;   // keys to show lens
   Qt::KeyboardModifiers modifiersForSelect; // keys to select
+  QList<Position> animationPosition; // list of positions to hit
+  QPoint animationPoint;             // reference point
+  QTimer *animationTimer;            // animation timer
+
   // prioritized settings
   Prioritized<int>         qBorderSize;
   Prioritized<int>         qZoom;
@@ -885,6 +890,7 @@ public slots:
   void error(QString msg, QString filename, int lineno);
   void info(QString msg);
   void makeToolTip();
+  void animate();
 };
 
 QDjVuPrivate::~QDjVuPrivate()
@@ -934,6 +940,7 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   keyboardEnabled = true;
   hyperlinkEnabled = true;
   mouseEnabled = true;
+  animationEnabled = true;
   lineStep = 12;
   buttons = (Qt::MouseButtons)(-1);
   modifiers = (Qt::KeyboardModifiers)(-1);
@@ -945,6 +952,10 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   lens = 0;
   lensMag = 3;
   lensSize = 300;
+  animationTimer = new QTimer(this);
+  animationTimer->setInterval(50);
+  animationTimer->setSingleShot(false);
+  connect(animationTimer, SIGNAL(timeout()), this, SLOT(animate()));
   // scheduled changes
   layoutChange = 0;
   pageRequestDelay = 250;
@@ -2191,10 +2202,13 @@ QDjVuWidget::setPosition(const Position &pos)
 }
 
 void 
-QDjVuWidget::setPosition(const Position &pos, const QPoint &point)
+QDjVuWidget::setPosition(const Position &pos, const QPoint &p, bool animate)
 {
+  if (animate && priv->animationEnabled)
+    {
+    }
   int oldPage = priv->currentPos.pageNo;
-  priv->movePoint = priv->currentPoint = point;
+  priv->movePoint = priv->currentPoint = p;
   priv->movePos = priv->currentPos = pos;
   if (priv->pageMap.contains(pos.pageNo))
     priv->changeLayout(CHANGE_VIEW|CHANGE_SCROLLBARS);
@@ -2772,6 +2786,25 @@ QDjVuWidget::enableHyperlink(bool b)
       priv->hyperlinkEnabled = b;
       priv->checkCurrentMapArea();
     }
+}
+
+
+/*! \property QDjVuWidget::animationEnabled
+  Enables animation on position changes.
+  This property indicates whether certain position changes
+  are performed using a display animation.
+  Default: \a true. */
+
+bool 
+QDjVuWidget::animationEnabled(void) const
+{
+  return priv->animationEnabled;
+}
+
+void 
+QDjVuWidget::enableAnimation(bool b)
+{
+  priv->animationEnabled = b;
 }
 
 
@@ -5037,6 +5070,14 @@ QDjVuPrivate::makeToolTip(void)
 }
 
 
+void
+QDjVuPrivate::animate(void)
+{
+  if (!animationPosition.isEmpty())
+    widget->setPosition(animationPosition.takeFirst(), animationPoint, false);
+  if (animationPosition.isEmpty())
+    animationTimer->stop();
+}
 
 // ----------------------------------------
 // QDJVULENS
