@@ -5622,7 +5622,7 @@ QDjVuWidget::readNext(void)
     {
       Page *p = priv->pageMap[pos.pageNo];
       QRect nv = priv->visibleRect.adjusted(bs,bs,-bs,-bs);
-      QRect v = nv.intersect(p->rect);
+      QRect v = priv->visibleRect.intersect(p->rect);
       if (v.bottom() < p->rect.bottom())
         {
           // scroll in page
@@ -5665,7 +5665,7 @@ QDjVuWidget::readPrev(void)
     {
       Page *p = priv->pageMap[pos.pageNo];
       QRect nv = priv->visibleRect.adjusted(bs,bs,-bs,-bs);
-      QRect v = nv.intersect(p->rect);
+      QRect v = priv->visibleRect.intersect(p->rect);
       if (v.top() > p->rect.top())
         {
           // scroll in page
