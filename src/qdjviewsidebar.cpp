@@ -749,7 +749,7 @@ QDjViewThumbnails::updateActions(void)
 void 
 QDjViewThumbnails::pageChanged(int pageno)
 {
-  if (pageno>=0 && pageno<djview->pageNum())
+  if (pageno >= 0 && pageno < djview->pageNum())
     {
       QModelIndex mi = model->index(pageno);
       if (! selection->isSelected(mi))
@@ -1404,6 +1404,7 @@ QDjViewFind::Model::animTimeout()
 void 
 QDjViewFind::Model::nextHit(bool backwards)
 {
+  djview->getDjVuWidget()->terminateAnimation();
   if (working && backwards != searchBackwards)
     {
       pending = false;
@@ -1473,6 +1474,9 @@ QDjViewFind::Model::makeSelectionVisible()
 void 
 QDjViewFind::Model::pageChanged(int pageno)
 {
+  QDjVuWidget *djvu = djview->getDjVuWidget();
+  if (djvu && djvu->animationInProgress())
+    return;
   if (pageno != curPage)
     {
       curHit = -1;
@@ -1520,8 +1524,13 @@ QDjViewFind::Model::itemActivated(const QModelIndex &mi)
   if (mi.isValid())
     {
       int row = mi.row();
-      if (row>=0 && row<pages.size())
-        djview->goToPage(pages[row].pageno);
+      if (row >= 0 && row < pages.size() && pages[row].hits > 0)
+        {
+          curPage = pages[row].pageno;
+          curHit = -1;
+          pending = true;
+          doPending();
+        }
     }
 }
 
@@ -1826,7 +1835,7 @@ QDjViewFind::findAgain()
 void 
 QDjViewFind::pageChanged(int pageno)
 {
-  if (pageno>=0 && pageno<djview->pageNum())
+  if (pageno >= 0 && pageno < djview->pageNum())
     {
       model->pageChanged(pageno);
       if (model->modelSelect(pageno))

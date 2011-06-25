@@ -3186,7 +3186,10 @@ QDjView::copyWindow(bool openDocument)
       other->documentFileName = documentFileName;
       other->documentUrl = documentUrl;
       // copy position
+      bool saved = otherWidget->animationEnabled();
+      otherWidget->enableAnimation(false);
       otherWidget->setPosition( widget->position() );
+      otherWidget->enableAnimation(saved);
     }
   return other;
 }
@@ -3576,15 +3579,21 @@ QDjView::performPending()
     {
       if (! pendingPosition.isEmpty())
         {
+          bool saved = widget->animationEnabled();
+          widget->enableAnimation(false);
           if (pendingPosition.size() == 2)
             goToPosition(pendingPage, pendingPosition[0], pendingPosition[1]);
           pendingPosition.clear();
           pendingPage.clear();
+          widget->enableAnimation(saved);
         }
       if (! pendingPage.isNull())
         {
+          bool saved = widget->animationEnabled();
+          widget->enableAnimation(false);
           goToPage(pendingPage);
           pendingPage.clear();
+          widget->enableAnimation(saved);
         }
       if (pendingHilite.size() > 0)
         {

@@ -258,6 +258,21 @@ cover_region(QRegion region, const QRect &brect)
   return ret;
 }
 
+static qreal max_stay_in_rect(QPointF s, QRectF r, QPointF v)
+{
+  qreal m = 1e10;
+  if (v.x() > 0)
+    m = qMin(m, (r.right() - s.x()) / v.x());
+  if (v.x() < 0)
+    m = qMin(m, (r.left() - s.x()) / v.x());
+  if (v.y() > 0)
+    m = qMin(m, (r.bottom() - s.y()) / v.y());
+  if (v.y() < 0)
+    m = qMin(m, (r.top() - s.y()) / v.y());
+  return m;
+}
+
+
 static bool
 miniexp_get_int(miniexp_t &r, int &x)
 {
@@ -873,6 +888,8 @@ public:
   bool pointerScroll(const QPoint &p);
   void changeSelectedRectangle(const QRect &rect);
   bool eventFilter(QObject*, QEvent*);
+  void clearAnimation(void);
+  bool computeAnimation(const Position&, const QPoint&);
   void changeBorderSize(void);
   void changeZoom(void);
   void changeBorderBrush(void);
@@ -953,7 +970,6 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   lensMag = 3;
   lensSize = 300;
   animationTimer = new QTimer(this);
-  animationTimer->setInterval(50);
   animationTimer->setSingleShot(false);
   connect(animationTimer, SIGNAL(timeout()), this, SLOT(animate()));
   // scheduled changes
@@ -1356,9 +1372,9 @@ QDjVuPrivate::makeLayout()
               Page *p = pageMap[movePos.pageNo];
               QPoint dp = p->rect.topLeft();
               if (movePos.hAnchor > 0 && movePos.hAnchor <= 100)
-                dp.rx() += p->rect.width() * movePos.hAnchor / 100 - 1;
+                dp.rx() += (p->rect.width() - 1) * movePos.hAnchor / 100;
               if (movePos.vAnchor > 0 && movePos.vAnchor <= 100)
-                dp.ry() += p->rect.height() * movePos.vAnchor / 100 - 1;
+                dp.ry() += (p->rect.height() - 1) * movePos.vAnchor / 100;
               QPoint sdp = dp;
               if (movePos.inPage && p->dpi)
                 dp =  p->mapper.mapped(movePos.posPage);
@@ -1422,9 +1438,10 @@ QDjVuPrivate::makeLayout()
             pageRequestTimer->start(pageRequestDelay);
           else
             pageRequestTimer->start(0);
-          // setup mapper and finish
+          // synchronize currentpoint and cursorpos
+          updateCurrentPoint(movePos);
           updatePosition(cursorPoint, false, false);
-          updateCurrentPoint(currentPos);
+          // continue
           layoutChange |= UPDATE_PAGES;
           layoutChange &= ~CHANGE_VISIBLE;
         }
@@ -1717,12 +1734,12 @@ QDjVuPrivate::findPosition(const QPoint &point, bool closestAnchor)
       pos.inPage = (bestDistance == 0 && bestPage->dpi > 0);
       if (closestAnchor)
         {
-          int w = bestPage->rect.width();
-          int h = bestPage->rect.height();
+          int w = bestPage->rect.width() - 1;
+          int h = bestPage->rect.height() - 1;
           pos.hAnchor = 100 * qBound(0, pos.posView.x(), w) / w;
           pos.vAnchor = 100 * qBound(0, pos.posView.y(), h) / h;
-          int x = w * pos.hAnchor / 100 - 1;
-          int y = h * pos.vAnchor / 100 - 1;
+          int x = w * pos.hAnchor / 100;
+          int y = h * pos.vAnchor / 100;
           pos.posView = pos.posView - QPoint(x,y);
         }
     }
@@ -1780,16 +1797,15 @@ QDjVuPrivate::updateCurrentPoint(const Position &pos)
   if (pageMap.contains(pos.pageNo))
     {
       Page *p = pageMap[pos.pageNo];
-      if (pos.inPage)
+      point = p->rect.topLeft();
+      if (pos.hAnchor > 0 && pos.hAnchor <= 100)
+        point.rx() += (p->rect.width() - 1) * pos.hAnchor / 100;
+      if (pos.vAnchor > 0 && pos.vAnchor <= 100)
+        point.ry() += (p->rect.height() - 1) * pos.vAnchor / 100;
+      if (pos.inPage && p->dpi > 0)
         point = p->mapper.mapped(pos.posPage);
-      else
-        {
-          point = p->rect.topLeft() + pos.posView;
-          if (pos.hAnchor > 0 && pos.hAnchor <= 100)
-            point.rx() += p->rect.width() * pos.hAnchor / 100 - 1;
-          if (pos.vAnchor > 0 && pos.vAnchor <= 100)
-            point.ry() += p->rect.height() * pos.vAnchor / 100 - 1;
-        }
+      else if (!pos.inPage)
+        point += pos.posView;
     }
   else 
     {
@@ -2148,14 +2164,11 @@ QDjVuWidget::setPage(int n)
   int currentPageNo = page();
   if (n != currentPageNo && n>=0 && n<priv->numPages)
     {
-      Position pos;
+      Position pos = priv->findPosition(priv->currentPoint);
       pos.pageNo = n;
       pos.doPage = true;
       pos.inPage = false;
-      QPoint tlr(priv->borderSize, priv->borderSize);
-      if (priv->pageMap.contains(currentPageNo))
-        pos.posView = tlr - priv->pageMap[currentPageNo]->viewRect.topLeft();
-      setPosition(pos, tlr);
+      setPosition(pos, priv->currentPoint);
     }
 }
 
@@ -2204,18 +2217,18 @@ QDjVuWidget::setPosition(const Position &pos)
 void 
 QDjVuWidget::setPosition(const Position &pos, const QPoint &p, bool animate)
 {
+  // animation
+  priv->clearAnimation();
   if (animate && priv->animationEnabled)
-    {
-    }
-  int oldPage = priv->currentPos.pageNo;
-  priv->movePoint = priv->currentPoint = p;
-  priv->movePos = priv->currentPos = pos;
+    if (priv->computeAnimation(pos, p))
+      return;
+  // standard procedure
+  priv->movePoint = p;
+  priv->movePos = pos;
   if (priv->pageMap.contains(pos.pageNo))
     priv->changeLayout(CHANGE_VIEW|CHANGE_SCROLLBARS);
   else
     priv->changeLayout(CHANGE_PAGES|CHANGE_VIEW|CHANGE_SCROLLBARS);
-  if (oldPage != priv->currentPos.pageNo)
-    emit pageChanged(priv->currentPos.pageNo);
 }
 
 
@@ -2801,10 +2814,24 @@ QDjVuWidget::animationEnabled(void) const
   return priv->animationEnabled;
 }
 
-void 
+void
 QDjVuWidget::enableAnimation(bool b)
 {
+  priv->clearAnimation();
   priv->animationEnabled = b;
+}
+
+
+/*! \property QDjVuWidget::animationInProgress
+  Read-only property that tells whether an animation is in progress. */
+
+bool 
+QDjVuWidget::animationInProgress(void) const
+{
+  if (priv->animationEnabled)
+    if (! priv->animationPosition.isEmpty())
+      return true;
+  return false;
 }
 
 
@@ -4431,6 +4458,7 @@ QDjVuWidget::scrollContentsBy(int, int)
       priv->movePoint = priv->currentPoint;
       priv->movePos = priv->findPosition(np + priv->movePoint);
       priv->changeLayout(CHANGE_VIEW);
+      priv->clearAnimation();
     }
 }
 
@@ -4797,6 +4825,7 @@ QDjVuPrivate::pointerScroll(const QPoint &p)
   movePos = cursorPos;
   movePoint = cursorPoint - QPoint(dx,dy);
   changeLayout(CHANGE_VIEW|CHANGE_SCROLLBARS);
+  clearAnimation();
   return true;
 }
 
@@ -4823,6 +4852,7 @@ QDjVuWidget::mouseMoveEvent(QMouseEvent *event)
       priv->movePoint = priv->cursorPoint;
       priv->movePos = priv->cursorPos;
       priv->changeLayout(CHANGE_VIEW|CHANGE_SCROLLBARS);
+      priv->clearAnimation();
       break;
     case DRAG_SELECTING:
       priv->updatePosition(p);
@@ -4954,6 +4984,142 @@ QDjVuWidget::wheelEvent (QWheelEvent *event)
 }
 
 
+bool
+QDjVuPrivate::computeAnimation(const Position &pos, const QPoint &p)
+{
+  // no animation unless layout is finalized.
+  if (layoutChange)
+    return false;
+  if (0 > pos.pageNo || pos.pageNo >= numPages)
+    return false;
+  Position currentPos = findPosition(p);
+  Position targetPos = pos;
+  Page *currentPage = pageMap.value(currentPos.pageNo, 0);
+  Page *targetPage = pageMap.value(targetPos.pageNo, 0);
+  // Standardize target position
+  if (targetPos.inPage && targetPage && targetPage->dpi > 0)
+    {
+      QPoint dp = targetPage->mapper.mapped(targetPos.posPage);
+      targetPos.hAnchor = targetPos.vAnchor = 0;
+      targetPos.posView = dp - targetPage->rect.topLeft();
+      targetPos.inPage = false;
+    }
+  if (targetPos.inPage)
+    return false;
+  // Both position on the same page
+  if (currentPos.pageNo == targetPos.pageNo)
+    {
+      char dHAnchor = targetPos.hAnchor - currentPos.hAnchor;
+      char dVAnchor = targetPos.vAnchor - currentPos.vAnchor;
+      QPoint dPosView = targetPos.posView - currentPos.posView;
+      const double profile[] = { 0.05, 0.3, 0.5, 0.7, 0.95 };
+      const int profileSize = (int)(sizeof(profile)/sizeof(double));
+      for (int i=0; i<profileSize; i++)
+        {
+          double s = profile[i];
+          Position ipos = currentPos;
+          ipos.hAnchor += (char)(dHAnchor * s);
+          ipos.vAnchor += (char)(dVAnchor * s);
+          ipos.posView.rx() += (int)(dPosView.x() * s);
+          ipos.posView.ry() += (int)(dPosView.y() * s);
+          ipos.inPage = false;
+          ipos.doPage = false;
+          animationPosition << ipos;
+        }
+      animationPoint = p;
+      animationPosition << pos;
+      animationTimer->start(10);
+      return true;
+    }
+  // Both position in the same view
+  if (currentPage && targetPage)
+    {
+      // compute desk positions.
+      QPointF currentPoint = currentPage->rect.topLeft() + currentPos.posView;
+      if (currentPos.hAnchor > 0 && currentPos.hAnchor <= 100)
+        currentPoint.rx() += currentPage->rect.width() * currentPos.hAnchor / 100.0;
+      if (currentPos.vAnchor > 0 && currentPos.vAnchor <= 100)
+        currentPoint.ry() += currentPage->rect.height() * currentPos.vAnchor / 100.0;
+      QPointF targetPoint = targetPage->rect.topLeft() + targetPos.posView;
+      if (targetPos.hAnchor > 0 && targetPos.hAnchor <= 100)
+        targetPoint.rx() += targetPage->rect.width() * targetPos.hAnchor / 100.0;
+      if (targetPos.vAnchor > 0 && targetPos.vAnchor <= 100)
+        targetPoint.ry() += targetPage->rect.height() * targetPos.vAnchor / 100.0;
+      // compute delta
+      QPointF v = targetPoint - currentPoint;
+      qreal cs = max_stay_in_rect(currentPoint, currentPage->rect, v);
+      qreal ts = max_stay_in_rect(targetPoint, targetPage->rect, -v);
+      const double profile[] = { 0.05, 0.3, 0.5, 0.75, 1 };
+      const int profileSize = (int)(sizeof(profile)/sizeof(double));
+      for (int i=0; i<profileSize; i++)
+        {
+          QPointF ipoint = currentPoint + cs * profile[i] * v;
+          Position ipos;
+          ipos.pageNo = currentPos.pageNo;
+          ipos.hAnchor = ipos.vAnchor = 0;
+          ipos.inPage = ipos.doPage = false;
+          ipos.posView = ipoint.toPoint() - currentPage->rect.topLeft();
+          animationPosition << ipos;
+        }
+      for (int i=profileSize-1; i>=0; i--)
+        {
+          QPointF ipoint = targetPoint - ts * profile[i] * v;
+          Position ipos;
+          ipos.pageNo = targetPos.pageNo;
+          ipos.hAnchor = ipos.vAnchor = 0;
+          ipos.inPage = ipos.doPage = false;
+          ipos.posView = ipoint.toPoint() - targetPage->rect.topLeft();
+          animationPosition << ipos;
+        }
+      animationPoint = p;
+      animationPosition << pos;
+      animationTimer->start(10);
+      return true;
+    }
+  // Too complex
+  return false;
+}
+
+
+void
+QDjVuPrivate::clearAnimation(void)
+{
+  animationTimer->stop();
+  animationPosition.clear();
+}
+
+void
+QDjVuPrivate::animate(void)
+{
+  if (! animationPosition.isEmpty())
+    {
+      movePoint = animationPoint;
+      movePos = animationPosition.takeFirst();
+      if (! pageMap.contains(movePos.pageNo))
+        changeLayout(CHANGE_VIEW|CHANGE_SCROLLBARS);
+      else
+        changeLayout(CHANGE_PAGES|CHANGE_VIEW|CHANGE_SCROLLBARS);        
+    }
+  if (animationPosition.isEmpty())
+    animationTimer->stop();
+}
+
+
+/*!
+  Terminates all animations in progress and 
+  make sure the page layout is fully updated.
+*/
+void
+QDjVuWidget::terminateAnimation(void)
+{
+  while (priv->animationPosition.size() > 1)
+    priv->animationPosition.removeFirst();
+  priv->animate();
+  if (priv->layoutChange)
+    priv->makeLayout();
+}
+
+
 // ----------------------------------------
 // VIRTUALS
 
@@ -5070,15 +5236,6 @@ QDjVuPrivate::makeToolTip(void)
 }
 
 
-void
-QDjVuPrivate::animate(void)
-{
-  if (!animationPosition.isEmpty())
-    widget->setPosition(animationPosition.takeFirst(), animationPoint, false);
-  if (animationPosition.isEmpty())
-    animationTimer->stop();
-}
-
 // ----------------------------------------
 // QDJVULENS
 
@@ -5184,6 +5341,7 @@ QDjVuLens::redisplay(void)
 void 
 QDjVuLens::paintEvent(QPaintEvent *event)
 {
+  qWarning("paintEvent");
   // Copied from main painting code but simpler
   // TODO: maybe hyperlinks.
   QPainter paint(this);
@@ -5350,6 +5508,7 @@ QDjVuWidget::displayModeText(void)
 void 
 QDjVuWidget::nextPage(void)
 {
+  terminateAnimation();
   int pageNo = page();
   const QRect &dr = priv->deskRect;
   const QRect &vr = priv->visibleRect;
@@ -5372,6 +5531,7 @@ QDjVuWidget::nextPage(void)
 void 
 QDjVuWidget::prevPage(void)
 {
+  terminateAnimation();
   int pageNo = page();
   const QRect &dr = priv->deskRect;
   const QRect &vr = priv->visibleRect;
@@ -5394,6 +5554,7 @@ QDjVuWidget::prevPage(void)
 void 
 QDjVuWidget::firstPage(void)
 {
+  terminateAnimation();
   Position pos;
   pos.pageNo = 0;
   pos.inPage = false;
@@ -5405,6 +5566,7 @@ QDjVuWidget::firstPage(void)
 void 
 QDjVuWidget::lastPage(void)
 {
+  terminateAnimation();
   Position pos;
   pos.pageNo = priv->numPages - 1;
   pos.inPage = false;
@@ -5421,6 +5583,7 @@ QDjVuWidget::lastPage(void)
 void 
 QDjVuWidget::moveToPageTop(void)
 {
+  terminateAnimation();
   Position pos = priv->currentPos;
   pos.inPage = false;
   pos.posView = pos.posPage = QPoint(0,0);
@@ -5434,6 +5597,7 @@ QDjVuWidget::moveToPageTop(void)
 void 
 QDjVuWidget::moveToPageBottom(void)
 {
+  terminateAnimation();
   Position pos = priv->currentPos;
   pos.inPage = false;
   pos.posView = pos.posPage = QPoint(0,0);
@@ -5450,6 +5614,7 @@ QDjVuWidget::moveToPageBottom(void)
 void 
 QDjVuWidget::readNext(void)
 {
+  terminateAnimation();
   QPoint point = priv->currentPoint;
   Position pos = priv->currentPos;
   int bs = priv->borderSize;
@@ -5492,6 +5657,7 @@ QDjVuWidget::readNext(void)
 void 
 QDjVuWidget::readPrev(void)
 {
+  terminateAnimation();
   QPoint point = priv->currentPoint;
   Position pos = priv->currentPos;
   int bs = priv->borderSize;

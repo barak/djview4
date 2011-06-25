@@ -85,6 +85,8 @@ class QDjVuWidget : public QAbstractScrollArea
              READ mouseEnabled WRITE enableMouse)
   Q_PROPERTY(bool animationEnabled
              READ animationEnabled WRITE enableAnimation)
+  Q_PROPERTY(bool animationInProgress
+             READ animationInProgress)
   Q_PROPERTY(int lensPower 
              READ lensPower WRITE setLensPower)
   Q_PROPERTY(int lensSize 
@@ -193,6 +195,7 @@ public:
   bool mouseEnabled(void) const;
   bool hyperlinkEnabled(void) const;
   bool animationEnabled(void) const;
+  bool animationInProgress(void) const;
   int lensPower(void) const;
   int lensSize(void) const;
   Qt::KeyboardModifiers modifiersForLens() const;
@@ -228,6 +231,7 @@ public slots:
   void enableMouse(bool);
   void enableHyperlink(bool);
   void enableAnimation(bool);
+  void terminateAnimation(void);
   void setLensPower(int);
   void setLensSize(int);
   void setModifiersForLens(Qt::KeyboardModifiers);
