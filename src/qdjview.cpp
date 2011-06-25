@@ -1643,11 +1643,13 @@ QDjView::parseArgument(QString key, QString value)
     }
   else if (key == "page")
     {
-      goToPage(value);
+      pendingPage = value;
+      performPendingLater();
     }
   else if (key == "pageno")
     {
-      goToPage(value.toInt()-1);
+      pendingPage = QString("$%1").arg(value.toInt());
+      performPendingLater();
     }
   else if (key == "cache")
     {
@@ -2555,7 +2557,7 @@ QDjView::goToPage(int pageno)
   int pagenum = documentPages.size();
   if (!pagenum || !document)
     {
-      pendingPage = QString("#%1").arg(pageno+1);
+      pendingPage = QString("$%1").arg(pageno+1);
     }
   else
     {
@@ -3093,13 +3095,14 @@ QDjView::pageName(int pageno, bool titleonly)
 
 
 /*! Return a page number for the page named \a name.
-  Names of the form the "#+n", "#-n" express
-  relative displacement from the current page
-  or the page specified by argument \a from.
-  Names of the form "#$n" or "$n" express an absolute 
-  page number starting from 1.  Other names
-  are matched against page titles, page numbers,
-  page names, and page ids. */
+  It first searches a page whose ID matches X.
+  Otherwise, if X has the form +N or -N where N is a number,
+  this indicates a displacement relative to the current page.
+  Otherwise, it searches a page with TITLE X starting
+  from the current page and wrapping around.
+  Otherwise, if X is numerical and in range, this is the page number.
+  Otherwise, it searches a page whose NAME matches X.
+*/
 
 int
 QDjView::pageNumber(QString name, int from)
@@ -3117,8 +3120,7 @@ QDjView::pageNumber(QString name, int from)
   // Also recognizes $n as an ordinal page number (obsolete)
   if (from < 0)
     from = widget->page();
-  if (from < pagenum && 
-      name.contains(QRegExp("^[-+$]\\d+$")) )
+  if (from < pagenum && name.contains(QRegExp("^[-+$]\\d+$")) )
     {
       int num = name.mid(1).toInt();
       if (name[0]=='+')
@@ -3557,7 +3559,10 @@ QDjView::docinfoExtra()
 {
   if (document && documentPages.size()>0)
     {
+      bool saved = widget->animationEnabled();
+      widget->enableAnimation(false);
       performPending();
+      widget->enableAnimation(saved);
       updateActionsLater();
       emit documentReady(document);
     }
@@ -3579,21 +3584,15 @@ QDjView::performPending()
     {
       if (! pendingPosition.isEmpty())
         {
-          bool saved = widget->animationEnabled();
-          widget->enableAnimation(false);
           if (pendingPosition.size() == 2)
             goToPosition(pendingPage, pendingPosition[0], pendingPosition[1]);
           pendingPosition.clear();
           pendingPage.clear();
-          widget->enableAnimation(saved);
         }
       if (! pendingPage.isNull())
         {
-          bool saved = widget->animationEnabled();
-          widget->enableAnimation(false);
           goToPage(pendingPage);
           pendingPage.clear();
-          widget->enableAnimation(saved);
         }
       if (pendingHilite.size() > 0)
         {
