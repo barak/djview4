@@ -69,6 +69,7 @@ private:
   QDjView *djview;
   QTreeWidget *tree;
   bool loaded;
+  int pageNumber(const char *link);
   void fillItems(QTreeWidgetItem *item, miniexp_t expr);
   void searchItem(QTreeWidgetItem *item, int pageno, 
                   QTreeWidgetItem *&fi, int &fp);

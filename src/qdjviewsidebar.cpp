@@ -148,13 +148,11 @@ QDjViewOutline::refresh()
           tree->clear();
           QTreeWidgetItem *root = new QTreeWidgetItem();
           fillItems(root, miniexp_cdr(outline));
-          QTreeWidgetItem *item = root;
-          while (item->childCount()==1 &&
-                 item->data(0,Qt::UserRole).toInt() >= 0)
-            item = item->child(0);
-          while (item->childCount() > 0)
+          while (root->childCount() > 0)
             tree->insertTopLevelItem(tree->topLevelItemCount(),
-                                     item->takeChild(0) );
+                                     root->takeChild(0) );
+          if (tree->topLevelItemCount() == 1)
+            tree->topLevelItem(0)->setExpanded(true);
           delete root;
         }
       else
@@ -181,6 +179,22 @@ QDjViewOutline::refresh()
 }
 
 
+int 
+QDjViewOutline::pageNumber(const char *link)
+{
+  if (link && link[0] == '#')
+    return djview->pageNumber(QString::fromUtf8(link+1));
+  if (link == 0 || link[0] != '?')
+    return -1;
+  QUrl url = QUrl::fromEncoded(QByteArray("http://f/f") + link);
+  if (url.hasQueryItem("page"))
+    return djview->pageNumber(url.queryItemValue("page"));
+  else if (url.hasQueryItem("pageno"))
+    return djview->pageNumber("$" + url.queryItemValue("pageno"));
+  return -1;
+}
+
+
 void 
 QDjViewOutline::fillItems(QTreeWidgetItem *root, miniexp_t expr)
 {
@@ -196,28 +210,25 @@ QDjViewOutline::fillItems(QTreeWidgetItem *root, miniexp_t expr)
           // fill item
           const char *name = miniexp_to_str(miniexp_car(s));
           const char *link = miniexp_to_str(miniexp_cadr(s));
-          int pageno = -1;
-          if (link && link[0]=='#')
-            pageno = djview->pageNumber(QString::fromUtf8(link+1));
+          int pageno = pageNumber(link);
+          QString pagename = (pageno>=0)?djview->pageName(pageno):QString();
           QTreeWidgetItem *item = new QTreeWidgetItem(root);
           if (name && name[0])
             item->setText(0, QString::fromUtf8(name));
-          else if (pageno >= 0)
-            item->setText(0, tr("Page %1").arg(djview->pageName(pageno)));
+          else if (! pagename.isEmpty())
+            item->setText(0, tr("Page %1").arg(pagename));
           item->setFlags(0);
           item->setWhatsThis(0, whatsThis());
-          if (link && link[0]=='#' && pageno>=0)
+          if (link && link[0])
             {
-              item->setData(0, Qt::UserRole, pageno);
+              QString slink = QString::fromUtf8(link);
+              item->setData(0, Qt::UserRole+1, slink);
               item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
-              QString pagename = djview->pageName(pageno);
-              item->setToolTip(0, tr("Go to page %1").arg(pagename));
-            } 
-          else if (link && link[0])
-            {
-              item->setData(0, Qt::UserRole, QString::fromUtf8(link));
-              item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
-              item->setToolTip(0, QString::fromUtf8(link));
+              item->setToolTip(0, tr("Go to: %1").arg(slink));
+              if (pageno >= 0)
+                item->setData(0, Qt::UserRole, pageno);
+              if (! pagename.isEmpty())
+                item->setToolTip(0, tr("Go to page %1").arg(pagename));
             }
           // recurse
           fillItems(item, miniexp_cddr(s));
@@ -276,14 +287,8 @@ QDjViewOutline::searchItem(QTreeWidgetItem *item, int pageno,
 void 
 QDjViewOutline::itemActivated(QTreeWidgetItem *item)
 {
-  QVariant data = item->data(0, Qt::UserRole);
-  if (data.type() == QVariant::Int)
-    {
-      int page = data.toInt();
-      if (page >= 0 && page < djview->pageNum())
-        djview->goToPage(page);
-    }
-  else if (data.type() == QVariant::String)
+  QVariant data = item->data(0, Qt::UserRole+1);
+  if (data.type() == QVariant::String)
     {
       QString link = data.toString();
       if (link.size() > 0)
