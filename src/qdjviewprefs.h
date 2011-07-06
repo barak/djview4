@@ -151,6 +151,7 @@ public:
   bool       advancedFeatures;  //!< Advanced features.
   bool       showTextLabel;     //!< Show text label.
   bool       invertLuminance;   //!< Invert luminance by default.
+  bool       mouseWheelZoom;    //!< Mouse wheel zooms instead of scroll.
   Qt::KeyboardModifiers modifiersForLens;   //!< Keys for the lens. 
   Qt::KeyboardModifiers modifiersForSelect; //!< Keys for selecting.
   Qt::KeyboardModifiers modifiersForLinks;  //!< Keys for showing the links.

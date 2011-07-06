@@ -169,7 +169,7 @@ QDjViewOutline::refresh()
               item->setText(0, tr("Page %1").arg(name));
               item->setData(0, Qt::UserRole, pageno);
               item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
-              item->setToolTip(0, tr("Go to page %1").arg(name));
+              item->setToolTip(0, tr("Go: page %1.").arg(name));
               item->setWhatsThis(0, whatsThis());
             }
           tree->setItemExpanded(root, true);
@@ -224,11 +224,11 @@ QDjViewOutline::fillItems(QTreeWidgetItem *root, miniexp_t expr)
               QString slink = QString::fromUtf8(link);
               item->setData(0, Qt::UserRole+1, slink);
               item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
-              item->setToolTip(0, tr("Go to: %1").arg(slink));
+              item->setToolTip(0, tr("Go: %1").arg(slink));
               if (pageno >= 0)
                 item->setData(0, Qt::UserRole, pageno);
               if (! pagename.isEmpty())
-                item->setToolTip(0, tr("Go to page %1").arg(pagename));
+                item->setToolTip(0, tr("Go: page %1.").arg(pagename));
             }
           // recurse
           fillItems(item, miniexp_cddr(s));

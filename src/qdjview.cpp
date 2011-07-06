@@ -1335,6 +1335,7 @@ QDjView::applyPreferences(void)
   widget->setLensSize(prefs->lensSize);
   widget->setLensPower(prefs->lensPower);
   widget->setInvertLuminance(prefs->invertLuminance);
+  widget->setMouseWheelZoom(prefs->mouseWheelZoom);
 
   // Thumbnail preferences
   thumbnailWidget->setSize(prefs->thumbnailSize);
@@ -3739,7 +3740,7 @@ QDjView::pointerEnter(const Position&, miniexp_t)
   else if (link.startsWith("#"))
     message = tr("Go: page %1.").arg(link.mid(1));
   else
-    message = tr("Link: %1").arg(link);
+    message = tr("Go: %1").arg(link);
   if (!target.isEmpty())
     message = message + tr(" (in other window.)");
   

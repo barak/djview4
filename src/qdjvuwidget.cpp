@@ -824,6 +824,7 @@ public:
   bool        hyperlinkEnabled; // follow hyperlinks
   bool        animationEnabled; // animate position changes
   bool        changingSBars;    // set while changing scrollbars
+  bool        mouseWheelZoom;   // mouse wheel function
   DragMode    dragMode;         // dragging mode
   QPoint      dragStart;        // starting point for dragging
   QMenu*      contextMenu;      // popup menu
@@ -1467,12 +1468,12 @@ QDjVuPrivate::makeLayout()
           vBar->setMinimum(rd.top());
           vBar->setMaximum(rd.top()+rd.height()-vStep+vcorr);
           vBar->setPageStep(vStep);
-          vBar->setSingleStep(lineStep);
+          vBar->setSingleStep(lineStep * 2);
           vBar->setValue(rv.top());
           hBar->setMinimum(rd.left());
           hBar->setMaximum(rd.left()+rd.width()-hStep);
           hBar->setPageStep(hStep);
-          hBar->setSingleStep(lineStep);
+          hBar->setSingleStep(lineStep * 2);
           hBar->setValue(rv.left());
           changingSBars = false;
           layoutChange &= ~CHANGE_SCROLLBARS;
@@ -2355,9 +2356,10 @@ QDjVuWidget::setGamma(double gamma)
 }
 
 
-/*! \property QDjVuWidget::gamma
-  Gamma factor of the display. 
-  Default 2.2. */
+/*! \property QDjVuWidget::invertLuminance
+  Display image with inverted luminance.
+*/
+
 
 bool
 QDjVuWidget::invertLuminance(void) const
@@ -2372,6 +2374,23 @@ QDjVuWidget::setInvertLuminance(bool b)
   priv->pixelCache.clear();
   priv->changeLayout(UPDATE_ALL);
 }
+
+/*! \property QDjVuWidget::invertLuminance
+  Specify whether mouse wheel zooms the image or scrolls the page.
+*/
+
+bool
+QDjVuWidget::mouseWheelZoom(void) const
+{
+  return priv->mouseWheelZoom;
+}
+
+void
+QDjVuWidget::setMouseWheelZoom(bool b)
+{
+  priv->mouseWheelZoom = b;
+}
+
 
 /*! \property QDjVuWidget::white
   White point of the display. 
@@ -4765,8 +4784,7 @@ QDjVuWidget::modifierEvent(Qt::KeyboardModifiers modifiers,
             startSelecting(point);
         }
       else if (priv->currentMapArea && 
-               priv->currentMapArea->isClickable(priv->hyperlinkEnabled 
-                                                 && priv->mouseEnabled ) )
+               priv->currentMapArea->isClickable(priv->hyperlinkEnabled) )
         {
           viewport()->setCursor(Qt::ArrowCursor);
           if (buttons != Qt::NoButton)
@@ -4945,9 +4963,17 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Left:
         case Qt::Key_Right:
         case Qt::Key_Up:
-        case Qt::Key_Down:
-          QAbstractScrollArea::keyPressEvent(event);           
-          return;
+        case Qt::Key_Down: 
+          {
+            int svstep = verticalScrollBar()->singleStep();
+            int shstep = horizontalScrollBar()->singleStep();
+            verticalScrollBar()->setSingleStep(priv->lineStep);
+            horizontalScrollBar()->setSingleStep(priv->lineStep);
+            QAbstractScrollArea::keyPressEvent(event);           
+            verticalScrollBar()->setSingleStep(svstep);
+            horizontalScrollBar()->setSingleStep(shstep);
+            return; 
+          }
         default:
           event->ignore();
           return;
@@ -4971,16 +4997,31 @@ QDjVuWidget::contextMenuEvent (QContextMenuEvent *event)
 void 
 QDjVuWidget::wheelEvent (QWheelEvent *event)
 {
-  if (event->modifiers() == Qt::ControlModifier)
+  if (priv->mouseEnabled)
     {
-      priv->updateCurrentPoint(priv->cursorPos);
-      if (event->delta() > 0)
-        zoomIn();
+      bool zoom = priv->mouseWheelZoom;
+      if (event->modifiers() == Qt::ControlModifier)
+        zoom = ! zoom;
+      if (zoom)
+        {
+          priv->updateCurrentPoint(priv->cursorPos);
+          if (event->delta() > 0)
+            zoomIn();
+          else
+            zoomOut();
+        }
+      else if (!priv->continuous && !verticalScrollBar()->isVisible())
+        {
+          if (event->delta() > 0)
+            prevPage();
+          else
+            nextPage();
+        }
       else
-        zoomOut();
+        {
+          QAbstractScrollArea::wheelEvent(event);
+        }
     }
-  else
-    QAbstractScrollArea::wheelEvent(event);
 }
 
 
@@ -5035,25 +5076,25 @@ QDjVuPrivate::computeAnimation(const Position &pos, const QPoint &p)
   if (currentPage && targetPage)
     {
       // compute desk positions.
-      QPointF currentPoint = currentPage->rect.topLeft() + currentPos.posView;
+      QPointF cPoint = currentPage->rect.topLeft() + currentPos.posView;
       if (currentPos.hAnchor > 0 && currentPos.hAnchor <= 100)
-        currentPoint.rx() += currentPage->rect.width() * currentPos.hAnchor / 100.0;
+        cPoint.rx() += currentPage->rect.width() * currentPos.hAnchor / 100.0;
       if (currentPos.vAnchor > 0 && currentPos.vAnchor <= 100)
-        currentPoint.ry() += currentPage->rect.height() * currentPos.vAnchor / 100.0;
-      QPointF targetPoint = targetPage->rect.topLeft() + targetPos.posView;
+        cPoint.ry() += currentPage->rect.height() * currentPos.vAnchor / 100.0;
+      QPointF tPoint = targetPage->rect.topLeft() + targetPos.posView;
       if (targetPos.hAnchor > 0 && targetPos.hAnchor <= 100)
-        targetPoint.rx() += targetPage->rect.width() * targetPos.hAnchor / 100.0;
+        tPoint.rx() += targetPage->rect.width() * targetPos.hAnchor / 100.0;
       if (targetPos.vAnchor > 0 && targetPos.vAnchor <= 100)
-        targetPoint.ry() += targetPage->rect.height() * targetPos.vAnchor / 100.0;
+        tPoint.ry() += targetPage->rect.height() * targetPos.vAnchor / 100.0;
       // compute delta
-      QPointF v = targetPoint - currentPoint;
-      qreal cs = max_stay_in_rect(currentPoint, currentPage->rect, v);
-      qreal ts = max_stay_in_rect(targetPoint, targetPage->rect, -v);
+      QPointF v = tPoint - cPoint;
+      qreal cs = max_stay_in_rect(cPoint, currentPage->rect, v);
+      qreal ts = max_stay_in_rect(tPoint, targetPage->rect, -v);
       const double profile[] = { 0.05, 0.3, 0.5, 0.75, 1 };
       const int profileSize = (int)(sizeof(profile)/sizeof(double));
       for (int i=0; i<profileSize; i++)
         {
-          QPointF ipoint = currentPoint + cs * profile[i] * v;
+          QPointF ipoint = cPoint + cs * profile[i] * v;
           Position ipos;
           ipos.pageNo = currentPos.pageNo;
           ipos.hAnchor = ipos.vAnchor = 0;
@@ -5063,7 +5104,7 @@ QDjVuPrivate::computeAnimation(const Position &pos, const QPoint &p)
         }
       for (int i=profileSize-1; i>=0; i--)
         {
-          QPointF ipoint = targetPoint - ts * profile[i] * v;
+          QPointF ipoint = tPoint - ts * profile[i] * v;
           Position ipos;
           ipos.pageNo = targetPos.pageNo;
           ipos.hAnchor = ipos.vAnchor = 0;

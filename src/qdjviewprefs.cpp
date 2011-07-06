@@ -143,6 +143,7 @@ QDjViewPrefs::QDjViewPrefs(void)
     advancedFeatures(false),
     showTextLabel(false),
     invertLuminance(false),
+    mouseWheelZoom(false),
     modifiersForLens(Qt::ControlModifier|Qt::ShiftModifier),
     modifiersForSelect(Qt::ControlModifier),
     modifiersForLinks(Qt::ShiftModifier),
@@ -347,6 +348,8 @@ QDjViewPrefs::load()
     showTextLabel = s.value("showTextLabel").toBool();
   if (s.contains("invertLuminance"))
     invertLuminance = s.value("invertLuminance").toBool();
+  if (s.contains("mouseWheelZoom"))
+    invertLuminance = s.value("mouseWheelZoom").toBool();
   if (s.contains("modifiersForLens"))
     modifiersForLens 
       = stringToModifiers(s.value("modifiersForLens").toString());
@@ -435,6 +438,7 @@ QDjViewPrefs::save(void)
   s.setValue("advancedFeatures", advancedFeatures);
   s.setValue("showTextLabel", showTextLabel);
   s.setValue("invertLuminance", invertLuminance);
+  s.setValue("mouseWheelZoom", mouseWheelZoom);
   s.setValue("modifiersForLens", modifiersToString(modifiersForLens));
   s.setValue("modifiersForSelect", modifiersToString(modifiersForSelect));
   s.setValue("modifiersForLinks", modifiersToString(modifiersForLinks));
@@ -871,6 +875,7 @@ QDjViewPrefsDialog::load(QDjView *djview)
   int res = prefs->resolution;
   d->ui.forceResolutionCheckBox->setChecked(res > 0);
   d->ui.resolutionSpinBox->setValue((res>0) ? res : logicalDpiY());
+  d->ui.invertLuminanceCheckBox->setChecked(prefs->invertLuminance);
   // 2- interface tab
   d->saved[0] = prefs->forStandalone;
   d->saved[1] = prefs->forFullScreen;
@@ -890,6 +895,8 @@ QDjViewPrefsDialog::load(QDjView *djview)
   d->ui.keysForLensCombo->setValue(prefs->modifiersForLens);
   d->ui.keysForSelectCombo->setValue(prefs->modifiersForSelect);
   d->ui.keysForLinksCombo->setValue(prefs->modifiersForLinks);
+  d->ui.wheelScrollButton->setChecked(! prefs->mouseWheelZoom);
+  d->ui.wheelZoomButton->setChecked(prefs->mouseWheelZoom);
   // 4- lens tab
   bool lens = (prefs->lensPower > 0) && (prefs->lensSize > 0);
   d->ui.lensEnableCheckBox->setChecked(lens);
@@ -920,7 +927,6 @@ QDjViewPrefsDialog::load(QDjView *djview)
   d->ui.printerGammaSpinBox->setValue((pgamma > 0) ? pgamma : 2.2);
   d->ui.advancedCheckBox->setChecked(prefs->advancedFeatures);
   d->ui.textLabelCheckBox->setChecked(prefs->showTextLabel);
-  d->ui.invertLuminanceCheckBox->setChecked(prefs->invertLuminance);
   // no longer modified
   setWindowModified(false);
   d->ui.applyButton->setEnabled(false);
@@ -937,6 +943,7 @@ QDjViewPrefsDialog::apply()
   prefs->resolution = 0;
   if (d->ui.forceResolutionCheckBox->isChecked())
     prefs->resolution = d->ui.resolutionSpinBox->value();
+  prefs->invertLuminance = d->ui.invertLuminanceCheckBox->isChecked();
   // 2- interface tab
   int n = d->ui.modeComboBox->currentIndex();
   modeComboChanged(n);
@@ -948,6 +955,7 @@ QDjViewPrefsDialog::apply()
   prefs->modifiersForLens = d->ui.keysForLensCombo->value();
   prefs->modifiersForSelect = d->ui.keysForSelectCombo->value();
   prefs->modifiersForLinks = d->ui.keysForLinksCombo->value();
+  prefs->mouseWheelZoom = d->ui.wheelZoomButton->isChecked();
   // 4- lens tab
   bool lens = d->ui.lensEnableCheckBox->isChecked();
   prefs->lensPower = (lens) ? d->ui.lensPowerSpinBox->value() : 0;
@@ -970,7 +978,6 @@ QDjViewPrefsDialog::apply()
     prefs->printerGamma = d->ui.printerGammaSpinBox->value();
   prefs->advancedFeatures = d->ui.advancedCheckBox->isChecked();
   prefs->showTextLabel = d->ui.textLabelCheckBox->isChecked();
-  prefs->invertLuminance = d->ui.invertLuminanceCheckBox->isChecked();
   // broadcast change
   setWindowModified(false);
   d->ui.applyButton->setEnabled(false);
