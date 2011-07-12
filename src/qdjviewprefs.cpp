@@ -140,6 +140,7 @@ QDjViewPrefs::QDjViewPrefs(void)
     pixelCacheSize(256*1024),
     lensSize(300),
     lensPower(3),
+    enableAnimations(true),
     advancedFeatures(false),
     showTextLabel(false),
     invertLuminance(false),
@@ -342,6 +343,8 @@ QDjViewPrefs::load()
     browserProgram = s.value("browserProgram").toString();
   if (s.contains("proxyUrl"))
     proxyUrl = s.value("proxyUrl").toString();
+  if (s.contains("enableAnimations"))
+    advancedFeatures = s.value("enableAnimations").toBool();
   if (s.contains("advancedFeatures"))
     advancedFeatures = s.value("advancedFeatures").toBool();
   if (s.contains("showTextLabel"))
@@ -435,6 +438,7 @@ QDjViewPrefs::save(void)
   s.setValue("lensPower", lensPower);
   s.setValue("browserProgram", browserProgram);
   s.setValue("proxyUrl", proxyUrl.toString());
+  s.setValue("enableAnimations", enableAnimations);
   s.setValue("advancedFeatures", advancedFeatures);
   s.setValue("showTextLabel", showTextLabel);
   s.setValue("invertLuminance", invertLuminance);
@@ -925,6 +929,7 @@ QDjViewPrefsDialog::load(QDjView *djview)
   double pgamma = prefs->printerGamma;
   d->ui.printerManualCheckBox->setChecked(pgamma > 0);
   d->ui.printerGammaSpinBox->setValue((pgamma > 0) ? pgamma : 2.2);
+  d->ui.animationCheckBox->setChecked(prefs->enableAnimations);
   d->ui.advancedCheckBox->setChecked(prefs->advancedFeatures);
   d->ui.textLabelCheckBox->setChecked(prefs->showTextLabel);
   // no longer modified
@@ -976,6 +981,7 @@ QDjViewPrefsDialog::apply()
   prefs->printerGamma = 0;
   if (d->ui.printerManualCheckBox->isChecked())
     prefs->printerGamma = d->ui.printerGammaSpinBox->value();
+  prefs->enableAnimations = d->ui.animationCheckBox->isChecked();
   prefs->advancedFeatures = d->ui.advancedCheckBox->isChecked();
   prefs->showTextLabel = d->ui.textLabelCheckBox->isChecked();
   // broadcast change

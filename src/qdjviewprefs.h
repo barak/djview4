@@ -148,6 +148,7 @@ public:
   int        lensPower;         //!< Power of the magnification lens.
   QString    browserProgram;    //!< Preferred web browser.
   QUrl       proxyUrl;          //!< Proxy information.
+  bool       enableAnimations;  //!< Animated page movements.
   bool       advancedFeatures;  //!< Advanced features.
   bool       showTextLabel;     //!< Show text label.
   bool       invertLuminance;   //!< Invert luminance by default.

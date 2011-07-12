@@ -1334,6 +1334,7 @@ QDjView::applyPreferences(void)
   widget->setScreenDpi(prefs->resolution ? prefs->resolution : physicalDpiY());
   widget->setLensSize(prefs->lensSize);
   widget->setLensPower(prefs->lensPower);
+  widget->enableAnimation(prefs->enableAnimations);
   widget->setInvertLuminance(prefs->invertLuminance);
   widget->setMouseWheelZoom(prefs->mouseWheelZoom);
 
