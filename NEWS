@@ -71,4 +71,5 @@ NEW IN VERSION 4.?
 - Added option to invert luminance.
 - Added shortcut ctrl+g to go to the page combo.
 - Fixed export issues under win32.
+- Mouse wheel can be configured to control the zoom.
 - Animated page movements.
