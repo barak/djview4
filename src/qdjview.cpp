@@ -3992,10 +3992,9 @@ void
 QDjView::zoomComboActivated(int index)
 {
   int zoom = zoomCombo->itemData(index).toInt();
-  int oldzoom = widget->zoom();
   widget->setZoom(zoom);
-  if (zoom != oldzoom)
-    widget->setFocus();
+  updateActionsLater();
+  widget->setFocus();
 }
 
 
@@ -4005,11 +4004,10 @@ QDjView::zoomComboEdited(void)
   bool okay;
   QString text = zoomCombo->lineEdit()->text();
   int zoom = text.replace(QRegExp("\\s*%?$"),"").trimmed().toInt(&okay);
-  int oldzoom = widget->zoom();
   if (okay && zoom>0)
     widget->setZoom(zoom);
   updateActionsLater();
-  if (zoom != oldzoom)
+  if (okay)
     widget->setFocus();
 }
 
@@ -4017,18 +4015,15 @@ QDjView::zoomComboEdited(void)
 void 
 QDjView::pageComboActivated(int index)
 {
-  int oldpage = widget->page();
   goToPage(pageCombo->itemData(index).toInt());
   updateActionsLater();
-  if (oldpage != widget->page())
-    widget->setFocus();
+  widget->setFocus();
 }
 
 
 void 
 QDjView::pageComboEdited(void)
 {
-  int oldpage = widget->page();
   QString data = pageCombo->lineEdit()->text().trimmed();
   int pagenum = documentPages.size();
   QRegExp pattern = QRegExp(QString("\\s*(\\d+)\\s*/\\s*%1\\s*").arg(pagenum));
@@ -4037,8 +4032,7 @@ QDjView::pageComboEdited(void)
   else
     goToPage(data);
   updateActionsLater();
-  if (oldpage != widget->page())
-    widget->setFocus();
+  widget->setFocus();
 }
 
 
