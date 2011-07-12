@@ -3985,6 +3985,7 @@ QDjView::modeComboActivated(int index)
 {
   int mode = modeCombo->itemData(index).toInt();
   widget->setDisplayMode((QDjVuWidget::DisplayMode)mode);
+  widget->setFocus();
 }
 
 
