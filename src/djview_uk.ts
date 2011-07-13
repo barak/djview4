@@ -186,7 +186,7 @@
     <message>
         <location filename="qdjview.cpp" line="460"/>
         <source>Set full resolution magnification.</source>
-        <translation>Встановити відображення у натуральному розмірі.</translation>
+        <translation>Встановити показ у натуральному розмірі.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="466"/>
@@ -351,7 +351,7 @@
     <message>
         <location filename="qdjview.cpp" line="676"/>
         <source>Toggle side-by-side layout mode.</source>
-        <translation>Перемикач режиму відображення сторінок поруч.</translation>
+        <translation>Перемикач режиму показу сторінок поруч.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="1041"/>
@@ -381,7 +381,7 @@
     <message>
         <location filename="qdjview.cpp" line="1077"/>
         <source>&lt;html&gt;&lt;b&gt;Display mode.&lt;/b&gt;&lt;br/&gt; DjVu images compose a background layer and a foreground layer using a stencil. The display mode specifies with layers should be displayed.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Режим відображення.&lt;/b&gt;&lt;br/&gt; Картинки DjVu складаються з шару тла та шару переднього плану за допомогою шаблону. Режим відображення визначає шари, що буде відображено.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Режим показу.&lt;/b&gt;&lt;br/&gt; Картинки DjVu складаються з шару тла та шару переднього плану за допомогою шаблону. Режим показу визначає шари, які буде показано.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="1094"/>
@@ -406,7 +406,7 @@
     <message>
         <location filename="qdjview.cpp" line="1116"/>
         <source>&lt;html&gt;&lt;b&gt;Page information.&lt;/b&gt;&lt;br/&gt; Display information about the page located under the cursor: the sequential page number, the page size in pixels, and the page resolution in dots per inch. &lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Інформація про сторінку.&lt;/b&gt;&lt;br/&gt; Показує інформацію про сторінку розташовану під вказівником: номер сторінки по порядку, розмір сторінки у точках та роздільну здатність сторінки у точках на дюйм. &lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Інформація про сторінку.&lt;/b&gt;&lt;br/&gt; Показує інформацію про сторінку розташовану під вказівником: номер сторінки, розмір сторінки у точках та роздільну здатність сторінки у точках на дюйм. &lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="1122"/>
@@ -416,7 +416,7 @@
     <message>
         <location filename="qdjview.cpp" line="1127"/>
         <source>&lt;html&gt;&lt;b&gt;Document viewing area.&lt;/b&gt;&lt;br/&gt; This is the main display area for the DjVu document. &lt;ul&gt;&lt;li&gt;Arrows and page keys to navigate the document.&lt;/li&gt;&lt;li&gt;Space and BackSpace to read the document.&lt;/li&gt;&lt;li&gt;Keys &lt;tt&gt;+&lt;/tt&gt; &lt;tt&gt;-&lt;/tt&gt; &lt;tt&gt;[&lt;/tt&gt; &lt;tt&gt;]&lt;/tt&gt; to zoom or rotate the document.&lt;/li&gt;&lt;li&gt;Left Mouse Button for panning and selecting links.&lt;/li&gt;&lt;li&gt;%3 for displaying the contextual menu.&lt;/li&gt;&lt;li&gt;%1 Left Mouse Button for selecting text or images.&lt;/li&gt;&lt;li&gt;%2 for popping the magnification lens.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Область перегляду документа.&lt;/b&gt;&lt;br/&gt; Це головна область відображення документа DjVu. &lt;ul&gt;&lt;li&gt;Стрілки та клавіші переміщення сторінки може бути використано для навігації документом.&lt;/li&gt;&lt;li&gt;Пробіл та BackSpace - для читання документа.&lt;/li&gt;&lt;li&gt;Клавіші &lt;tt&gt;+&lt;/tt&gt; &lt;tt&gt;-&lt;/tt&gt; &lt;tt&gt;[&lt;/tt&gt; &lt;tt&gt;]&lt;/tt&gt; - для масштабування та повороту документа.&lt;/li&gt;&lt;li&gt;Ліва кнопка миші - для панорамування та вибору посилань.&lt;/li&gt;&lt;li&gt;%3 - для відображення контекстного меню.&lt;/li&gt;&lt;li&gt;%1 ліва кнопка миші - для вибору тексту або картинок.&lt;/li&gt;&lt;li&gt;%2 - для виклику збільшувальної лінзи.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Область перегляду документа.&lt;/b&gt;&lt;br/&gt; Це головна область показу документа DjVu. &lt;ul&gt;&lt;li&gt;Стрілки та клавіші переміщення сторінки може бути використано для навігації документом.&lt;/li&gt;&lt;li&gt;Пробіл та BackSpace - для читання документа.&lt;/li&gt;&lt;li&gt;Клавіші &lt;tt&gt;+&lt;/tt&gt; &lt;tt&gt;-&lt;/tt&gt; &lt;tt&gt;[&lt;/tt&gt; &lt;tt&gt;]&lt;/tt&gt; - для масштабування та повороту документа.&lt;/li&gt;&lt;li&gt;Ліва кнопка миші - для панорамування та вибору посилань.&lt;/li&gt;&lt;li&gt;%3 - для відкриття контекстного меню.&lt;/li&gt;&lt;li&gt;%1 ліва кнопка миші - для вибору тексту або картинок.&lt;/li&gt;&lt;li&gt;%2 - для виклику збільшувальної лінзи.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="1140"/>
@@ -573,7 +573,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="3744"/>
         <source>Go: %1</source>
         <oldsource>Link: %1</oldsource>
-        <translation type="unfinished">Перехід: %1</translation>
+        <translation>Перехід: %1</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3746"/>
@@ -950,12 +950,12 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="628"/>
         <source>I&amp;nvert Luminance</source>
         <comment>View|</comment>
-        <translation type="unfinished"></translation>
+        <translation>І&amp;нвертувати освітленість</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="629"/>
         <source>Invert image luminance while preserving hue.</source>
-        <translation type="unfinished"></translation>
+        <translation>Інвертувати освітленість зображення без зміни відтінку.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="633"/>
@@ -1021,13 +1021,13 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="743"/>
         <source>&amp;Edit</source>
         <comment>Edit|</comment>
-        <translation>&amp;Редагування</translation>
+        <translation>З&amp;міни</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="752"/>
         <source>&amp;View</source>
         <comment>View|</comment>
-        <translation>&amp;Перегляд</translation>
+        <translation>П&amp;ерегляд</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="753"/>
@@ -1061,7 +1061,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="803"/>
         <source>&amp;Settings</source>
         <comment>Settings|</comment>
-        <translation>Пара&amp;метри</translation>
+        <translation>&amp;Параметри</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="809"/>
@@ -1072,12 +1072,12 @@ Filename &apos;%1&apos; has no suffix.</source>
     <message>
         <location filename="qdjview.cpp" line="1085"/>
         <source>&lt;html&gt;&lt;b&gt;Navigating the document.&lt;/b&gt;&lt;br/&gt; The page selector lets you jump to any page by name and can be activated at any time by pressing Ctrl+G. The navigation buttons jump to the first page, the previous page, the next page, or the last page. &lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;b&gt;Навігація документом.&lt;/b&gt;&lt;br/&gt; Вибір сторінки дозволить Вам перейти до будь-якої сторінки за назвою. Кнопки навігації дозволять перейти до першої, попередньої, наступної, останньої сторінки. &lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Навігація документом.&lt;/b&gt;&lt;br/&gt; Вибір сторінки надасть вам змогу перейти до будь-якої сторінки за назвою. Вікно вибору сторінки можна відкрити натисканням комбінації клавіш Ctrl+G. За допомогою кнопок навігації можна перейти до першої, попередньої, наступної, останньої сторінки. &lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2376"/>
         <source>Thumbnails</source>
-        <translation>Піктограми</translation>
+        <translation>Мініатюри</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2383"/>
@@ -1137,7 +1137,7 @@ Filename &apos;%1&apos; has no suffix.</source>
     <message>
         <location filename="qdjview.cpp" line="3650"/>
         <source> P%1/%2 %3x%4 %5dpi </source>
-        <translation> P%1/%2 %3x%4 %5dpi </translation>
+        <translation> С%1 з %2 %3x%4 %5т/д </translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="4121"/>
@@ -1164,7 +1164,7 @@ Filename &apos;%1&apos; has no suffix.</source>
     <message>
         <location filename="qdjview.cpp" line="4296"/>
         <source>&amp;Clear History</source>
-        <translation>&amp;Очистити журнал</translation>
+        <translation>Сп&amp;орожнити журнал</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="377"/>
@@ -1447,13 +1447,13 @@ Common options include:
 </source>
         <translation>Використання: djview [параметри] [назва-файла-або адреса]
 Звичайні параметри такі:
--help~~~Надрукувати це повідомлення
--verbose~~~Друкувати всі попереджувальні повідомлення.
+-help~~~Показати це повідомлення
+-verbose~~~Показувати всі попереджувальні повідомлення.
 -display &lt;xdpy&gt;~~~Обрати дисплей X11 &lt;xdpy&gt;.
 -geometry &lt;xgeom&gt;~~~Обрати початкову геометрію вікна.
 -font &lt;xlfd&gt;~~~Обрати назву основного шрифту X11.
--style &lt;qt-стиль&gt;~~~Обрати стиль відображення QT.
--fullscreen, -fs~~~Виконати djview у повноекранному режимі.
+-style &lt;qt-стиль&gt;~~~Обрати стиль показу Qt.
+-fullscreen, -fs~~~Запустити djview у повноекранному режимі.
 -page=&lt;сторінка&gt;~~~Перейти до сторінки &lt;сторінка&gt;.
 -zoom=&lt;масштаб&gt;~~~Встановити масштаб.
 -continuous=&lt;yn&gt;~~~Встановити режим неперервного перегляду.
@@ -1959,7 +1959,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewexporttiff.ui" line="95"/>
         <source>Allow &amp;lossy JPEG compression.</source>
-        <translation>Використовувати JPEG стиснення з &amp;втратами.</translation>
+        <translation>Використовувати JPEG-стиснення з &amp;втратами.</translation>
     </message>
     <message>
         <location filename="qdjviewexporttiff.ui" line="129"/>
@@ -2017,7 +2017,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1665"/>
         <source>Specify whether search hits must begin on a word boundary.</source>
-        <translation>Визначіть, чи має шуканий рядок бути розташованим на межі слова.</translation>
+        <translation>Визначте, чи має шуканий рядок починатися на межі слова.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1667"/>
@@ -2032,7 +2032,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1671"/>
         <source>&lt;html&gt;&lt;b&gt;Regular Expression Quick Guide&lt;/b&gt;&lt;ul&gt;&lt;li&gt;The dot &lt;tt&gt;.&lt;/tt&gt; matches any character.&lt;/li&gt;&lt;li&gt;Most characters match themselves.&lt;/li&gt;&lt;li&gt;Prepend a backslash &lt;tt&gt;\&lt;/tt&gt; to match special    characters &lt;tt&gt;()[]{}|*+.?!^$\&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\b&lt;/tt&gt; matches a word boundary.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\w&lt;/tt&gt; matches a word character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\d&lt;/tt&gt; matches a digit character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\s&lt;/tt&gt; matches a blank character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\n&lt;/tt&gt; matches a newline character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; matches characters in range    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[^&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; matches characters outside range    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;|&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt; matches either regular expression    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt; or regular expression &lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{&lt;i&gt;n&lt;/i&gt;,&lt;i&gt;m&lt;/i&gt;}&lt;/tt&gt; matches regular expression    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt; repeated &lt;tt&gt;&lt;i&gt;n&lt;/i&gt;&lt;/tt&gt; to &lt;tt&gt;&lt;i&gt;m&lt;/i&gt;&lt;/tt&gt;    times.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;?&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;*&lt;/tt&gt;, and &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;+&lt;/tt&gt;    are shorthands for &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,1}&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,}&lt;/tt&gt;,     and &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{1,}&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;Use parentheses &lt;tt&gt;()&lt;/tt&gt; to group regular expressions     before &lt;tt&gt;?+*{&lt;/tt&gt;.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Коротка інструкція з формальних виразів&lt;/b&gt;&lt;ul&gt;&lt;li&gt;Крапка &lt;tt&gt;.&lt;/tt&gt; відповідає довільному символу.&lt;/li&gt;&lt;li&gt;Більшість символів відповідаються самим собі.&lt;/li&gt;&lt;li&gt;До спеціальних символів, &lt;tt&gt;()[]{}|*+.?!^$\&lt;/tt&gt;, слід додавати префікс &lt;tt&gt;\&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\b&lt;/tt&gt; відповідає межі слова.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\w&lt;/tt&gt; відповідає літері.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\d&lt;/tt&gt; відповідає числовому символу.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\s&lt;/tt&gt; відповідає пробілу.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\n&lt;/tt&gt; відповідає символу нового рядка.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; відповідає діапазону символів    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[^&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; відповідає символам поза діапазоном    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;|&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt; відповідає або формальному виразу    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;, або формальному виразу &lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{&lt;i&gt;n&lt;/i&gt;,&lt;i&gt;m&lt;/i&gt;}&lt;/tt&gt; відповідає формальному виразу    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;, повтореному від &lt;tt&gt;&lt;i&gt;n&lt;/i&gt;&lt;/tt&gt; до &lt;tt&gt;&lt;i&gt;m&lt;/i&gt;&lt;/tt&gt;    разів.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;?&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;*&lt;/tt&gt; і &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;+&lt;/tt&gt;  — скорочення шаблонів &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,1}&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,}&lt;/tt&gt;     і &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{1,}&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;Для групування формальних виразів додайте &lt;tt&gt;()&lt;/tt&gt; перед &lt;tt&gt;?+*{&lt;/tt&gt;.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Коротка інструкція з формальних виразів&lt;/b&gt;&lt;ul&gt;&lt;li&gt;Крапка &lt;tt&gt;.&lt;/tt&gt; відповідає довільному символу.&lt;/li&gt;&lt;li&gt;Більшість символів відповідають самим собі.&lt;/li&gt;&lt;li&gt;До спеціальних символів, &lt;tt&gt;()[]{}|*+.?!^$\&lt;/tt&gt;, слід додавати префікс &lt;tt&gt;\&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\b&lt;/tt&gt; відповідає межі слова.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\w&lt;/tt&gt; відповідає літері.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\d&lt;/tt&gt; відповідає числовому символу.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\s&lt;/tt&gt; відповідає пробілу.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\n&lt;/tt&gt; відповідає символу нового рядка.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; відповідає діапазону символів    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[^&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; відповідає символам поза діапазоном    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;|&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt; відповідає або формальному виразу    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;, або формальному виразу &lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{&lt;i&gt;n&lt;/i&gt;,&lt;i&gt;m&lt;/i&gt;}&lt;/tt&gt; відповідає формальному виразу    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;, повтореному від &lt;tt&gt;&lt;i&gt;n&lt;/i&gt;&lt;/tt&gt; до &lt;tt&gt;&lt;i&gt;m&lt;/i&gt;&lt;/tt&gt;    разів.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;?&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;*&lt;/tt&gt; і &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;+&lt;/tt&gt;  — скорочення шаблонів &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,1}&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,}&lt;/tt&gt;     і &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{1,}&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;Для групування формальних виразів додайте &lt;tt&gt;()&lt;/tt&gt; перед &lt;tt&gt;?+*{&lt;/tt&gt;.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -2096,7 +2096,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewexporters.cpp" line="1913"/>
         <source>Cannot render page.</source>
-        <translation>Відображення сторінки неможливе.</translation>
+        <translation>Не вдалося обробити сторінку.</translation>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="1923"/>
@@ -2206,7 +2206,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewdialogs.cpp" line="442"/>
         <source>Thumbnails</source>
-        <translation>Піктограми</translation>
+        <translation>Мініатюри</translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="444"/>
@@ -2343,12 +2343,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewdialogs.cpp" line="632"/>
         <source>&lt;html&gt;&lt;b&gt;Document metadata&lt;/b&gt;&lt;br&gt;This panel displays metadata pertaining to the document, such as author, title, references, etc. This information can be saved into the document with program &lt;tt&gt;djvused&lt;/tt&gt;: use the commands &lt;tt&gt;create-shared-ant&lt;/tt&gt; and &lt;tt&gt;set-meta&lt;/tt&gt;.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Метадані документа&lt;/b&gt;&lt;br&gt;Ця панель відображає метадані, що стосуються документа, такі як автор, назва, посилання та інші. Цю інформацію може бути збережено у документі за допомогою програми &lt;tt&gt;djvused&lt;/tt&gt;: використовуйте команди &lt;tt&gt;create-shared-ant&lt;/tt&gt; та &lt;tt&gt;set-meta&lt;/tt&gt;.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Метадані документа&lt;/b&gt;&lt;br&gt;На цій панелі показано метадані, що стосуються документа, зокрема дані щодо автора, назви, посилань та інші. Цю інформацію може бути збережено у документі за допомогою програми &lt;tt&gt;djvused&lt;/tt&gt;: використовуйте команди &lt;tt&gt;create-shared-ant&lt;/tt&gt; та &lt;tt&gt;set-meta&lt;/tt&gt;.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="641"/>
         <source>&lt;html&gt;&lt;b&gt;Page metadata&lt;/b&gt;&lt;br&gt;This panel displays metadata pertaining to a specific page. Page specific metadata override document metadata. This information can be saved into the document with program &lt;tt&gt;djvused&lt;/tt&gt;: use command &lt;tt&gt;select&lt;/tt&gt; to select the page and command &lt;tt&gt;set-meta&lt;/tt&gt; to specify the metadata entries.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Метадані сторінки&lt;/b&gt;&lt;br&gt;Ця панель відображає метадані, що стосуються обраної сторінки. Особливі метадані сторінки заміщують метадані документа. Цю інформацію може бути додано до документа за допомогою програми &lt;tt&gt;djvused&lt;/tt&gt;: використовуйте команду &lt;tt&gt;select&lt;/tt&gt; для вибору сторінки та команду &lt;tt&gt;set-meta&lt;/tt&gt; для визначення пунктів метаданих.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Метадані сторінки&lt;/b&gt;&lt;br&gt;На цій панелі показано метадані, що стосуються позначеної сторінки. Особливі метадані сторінки заміщують метадані документа. Цю інформацію може бути додано до документа за допомогою програми &lt;tt&gt;djvused&lt;/tt&gt;: використовуйте команду &lt;tt&gt;select&lt;/tt&gt; для вибору сторінки та команду &lt;tt&gt;set-meta&lt;/tt&gt; для визначення пунктів метаданих.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="593"/>
@@ -2385,13 +2385,13 @@ Do you want to replace it?</source>
         <location filename="qdjviewsidebar.cpp" line="231"/>
         <source>Go: page %1.</source>
         <oldsource>Go: page %1</oldsource>
-        <translation type="unfinished">Перехід до сторінки %1.</translation>
+        <translation>Перехід: сторінка %1.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="227"/>
         <source>Go: %1</source>
         <oldsource>Go: %1.</oldsource>
-        <translation type="unfinished">Перехід %1</translation>
+        <translation>Перехід: %1</translation>
     </message>
 </context>
 <context>
@@ -2399,17 +2399,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewexporters.cpp" line="605"/>
         <source>&lt;html&gt;&lt;b&gt;PostScript options.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Color&lt;/tt&gt; enables color printing. Document pages can be decorated with frame and crop marks. PostScript language level 1 is only useful with very old printers. Level 2 works with most printers. Level 3 print color document faster on recent printers.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Параметри PostScript.&lt;/b&gt;&lt;br&gt;Параметр &lt;tt&gt;Колір&lt;/tt&gt; дозволяє друк у кольорі. Сторінки документа можна прикрасити рамкою та обмежувальними мітками. Рівень мови PostScript 1 корисний лише для дуже старих друкарок. Рівень 2 працює для більшості друкарок. Рівень 3 дозволяє пришвидшити друк на сучасних друкаркам.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Параметри PostScript.&lt;/b&gt;&lt;br&gt;Параметр &lt;tt&gt;Колір&lt;/tt&gt; дозволяє друк у кольорі. Сторінки документа можна прикрасити рамкою та обмежувальними мітками. Рівень мови PostScript 1 корисний лише для дуже старих друкарок. Рівень 2 працює для більшості друкарок. Рівень 3 дозволяє пришвидшити друк на сучасних принтерах.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="613"/>
         <source>&lt;html&gt;&lt;b&gt;Position and scaling.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accommodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Розміщення та масштаб.&lt;/b&gt;&lt;br&gt;Параметр &lt;tt&gt;Масшатабувати для відповідності&lt;/tt&gt; пристосовує документ до того розміру паперу, який використовує Ваша друкарка. Множник масштабу &lt;tt&gt;100%&lt;/tt&gt; відтворює початковий розмір сторінок документа. &lt;tt&gt;Автоматична&lt;/tt&gt; орієнтація дозволяє програмі обрати книжкову чи альбомну орієнтацію паперу на основі припущення одна сторінка - один листок.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Розміщення та масштаб.&lt;/b&gt;&lt;br&gt;Параметр &lt;tt&gt;Масштабувати для відповідності&lt;/tt&gt; пристосовує документ до того розміру паперу, який використовує ваш принтер. Множник масштабу &lt;tt&gt;100%&lt;/tt&gt; відтворює початковий розмір сторінок документа. &lt;tt&gt;Автоматична&lt;/tt&gt; орієнтація дозволяє програмі обрати книжкову чи альбомну орієнтацію паперу на основі припущення одна сторінка - один аркуш.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="620"/>
         <source>&lt;html&gt;&lt;b&gt;Producing booklets.&lt;/b&gt;&lt;br&gt;The booklet mode prints the selected pages as sheets suitable for folding one or several booklets. Several booklets might be produced when a maximum number of sheets per booklet is specified. You can either use a duplex printer or print rectos and versos separately.&lt;p&gt; Shifting rectos and versos is useful with poorly aligned duplex printers. The center margins determine how much space is left between the pages to fold the sheets. This space slowly increases from the inner sheet to the outer sheet.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Виготовлення буклетів.&lt;/b&gt;&lt;br&gt;Режим буклету дозволяє друк обраних сторінок у вигляді листів придатних для виготовлення одного чи декількох буклетів. Декілька буклетів буде виготовлено, якщо зазначена максимальна кількість листів у буклеті. Ви можете використовувати двобічну друкарку або друкувати верхні та нижні боки сторінки окремо.&lt;p&gt; Зсув верхніх та нижніх боків може бути корисний для двобічних друкарок з неякісним вирівнюванням. Центральне поле визначає як багато місця буде залишено між сторінками для наступного згортання у буклет. Ця відстань повільно зростає від внутрішніх листів до зовнішніх.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Виготовлення буклетів.&lt;/b&gt;&lt;br&gt;Режим буклета надає змогу надрукувати вказані сторінки у форматі листів, придатних для виготовлення одного чи декількох буклетів. Декілька буклетів буде виготовлено, якщо зазначено максимальна кількість листів у буклеті. Ви можете використовувати двобічний принтер або друкувати верхні та нижні боки сторінки окремо.&lt;p&gt; Зсув верхніх та нижніх боків може бути корисний для двобічних принтерів з неякісним вирівнюванням. Центральне поле визначає, як багато місця буде залишено між сторінками для наступного згортання у буклет. Ця відстань повільно зростає від внутрішніх листів до зовнішніх.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="1111"/>
@@ -2472,7 +2472,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewexporters.cpp" line="1700"/>
         <source>&lt;html&gt;&lt;b&gt;PDF options.&lt;/b&gt;&lt;br&gt;These options control the characteristics of the images embedded in the exported PDF files. The resolution box limits their maximal resolution. Forcing bitonal G4 compression encodes all pages in black and white using the CCITT Group 4 compression. Allowing JPEG compression uses lossy JPEG for all non bitonal or subsampled images. Otherwise, allowing deflate compression produces more compact files. &lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Параметри PDF.&lt;/b&gt;&lt;br&gt;Ці параметри впливають на характеристики зображень, вбудованих до файлів PDF, що експортуються. Поле \&quot;роздільна здатність\&quot; обмежує максимальну роздільну здатність. Примусове двотональне стиснення G4 кодує всі сторінки у чорно-білому вигляді за допомогою методу стиснення CCITT Group 4. Використання стиснення JPEG дозволяє стискати за допомогою стиснення з втратами JPEG всі не чорно-білі зображення або зображення з підвибірками. Або ж дозвіл на стиснення призводить до отримання компактніших файлів. &lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Параметри PDF.&lt;/b&gt;&lt;br&gt;Ці параметри впливають на характеристики зображень, вбудованих до файлів PDF, що експортуються. Поле \&quot;роздільна здатність\&quot; обмежує максимальну роздільну здатність. Примусове двотональне стиснення G4 кодує всі сторінки у чорно-білому вигляді за допомогою методу стиснення CCITT Group 4. Використання стиснення JPEG надає змогу стискати дані за допомогою стиснення з втратами JPEG всі не чорно-білі зображення або зображення з підвибірками. Крім того, вмикання стиснення призводить до отримання компактніших файлів. &lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="1744"/>
@@ -2564,12 +2564,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="314"/>
         <source>Full Page Plugin</source>
-        <translation>Додатку повної сторінки</translation>
+        <translation>Додатка повної сторінки</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="319"/>
         <source>Embedded Plugin</source>
-        <translation>Вбудованого додатку</translation>
+        <translation>Вбудованого додатка</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="342"/>
@@ -2615,7 +2615,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="268"/>
         <source>Force inverted luminance.</source>
-        <translation type="unfinished"></translation>
+        <translation>Примусово інвертувати освітленість.</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="403"/>
@@ -2655,22 +2655,22 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="676"/>
         <source>For displaying the &amp;lens: </source>
-        <translation>Для відо&amp;браження лінзи: </translation>
+        <translation>Для по&amp;казу лінзи: </translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="710"/>
         <source>Mouse wheel</source>
-        <translation type="unfinished"></translation>
+        <translation>Коліщатко миші</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="716"/>
         <source>Mouse wheel scrolls the page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Коліщатком миші можна гортати вміст сторінки.</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="726"/>
         <source>Mouse wheel changes the zoom factor.</source>
-        <translation type="unfinished"></translation>
+        <translation>Коліщатком миші можна змінювати масштаб.</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="750"/>
@@ -2680,7 +2680,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="762"/>
         <source>Enable magnifying &amp;lens</source>
-        <translation>Дозволити з&amp;більшувальну лінзу</translation>
+        <translation>Увімкнути з&amp;більшувальну лінзу</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="772"/>
@@ -2715,7 +2715,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="988"/>
         <source>&amp;Clear</source>
-        <translation>&amp;Очистити</translation>
+        <translation>Сп&amp;орожнити</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1027"/>
@@ -2766,7 +2766,7 @@ Do you want to replace it?</source>
         <location filename="qdjviewprefsdialog.ui" line="1108"/>
         <source>Enable page animations</source>
         <oldsource>Enable animations</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Увімкнути анімацію дій зі сторінками</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1160"/>
@@ -2796,12 +2796,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefs.cpp" line="800"/>
         <source>&lt;html&gt;&lt;b&gt;Initial interface setup.&lt;/b&gt;&lt;br&gt;DjView can run as a standalone viewer, as a full screen viewer, as a full page browser plugin, or as a plugin embedded inside a html page. For each case, check the &lt;tt&gt;Remember&lt;/tt&gt; box to automatically save and restore the interface setup. Otherwise, specify an initial configuration.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Початкове налаштування відображення.&lt;/b&gt;&lt;br&gt;DjView може працювати як самодостатній переглядач, як повноекранний переглядач, як додаток переглядача на повну сторінку, як додаток вбудований до сторінки html. У будь-якому випадку, позначте &lt;tt&gt;Запам&apos;ятати&lt;/tt&gt;, щоб автоматично зберігати та відновлювати налаштування відображення. У протилежному випадку зазначте початкову конфігурацію.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Початкове налаштування показу.&lt;/b&gt;&lt;br&gt;DjView може працювати як самодостатній переглядач, як повноекранний переглядач, як додаток переглядача на повну сторінку, як додаток, вбудований до сторінки html. У будь-якому випадку, позначте &lt;tt&gt;Запам&apos;ятати&lt;/tt&gt;, щоб автоматично зберігати та відновлювати налаштування показу. Якщо ви цього не хочете робити, зазначте початкову конфігурацію.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="810"/>
         <source>&lt;html&gt;&lt;b&gt;Modifiers keys.&lt;/b&gt;&lt;br&gt;Define which combination of modifier keys will show the manifying lens, temporarily enable the selection mode, or highlight the hyperlinks.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Клавіші-модифікатори.&lt;/b&gt;&lt;br&gt;Визначте яка комбінація клавіш-модифікаторів показуватиме збільшувальну лінзу, тимчасово вмикатиме режим вибору або підсвічуватиме гіперпосилання.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Клавіші-модифікатори.&lt;/b&gt;&lt;br&gt;Визначте, яка комбінація клавіш-модифікаторів показуватиме збільшувальну лінзу, тимчасово вмикатиме режим вибору або підсвічуватиме гіперпосилання.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="817"/>
@@ -2811,7 +2811,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefs.cpp" line="825"/>
         <source>&lt;html&gt;&lt;b&gt;Caches.&lt;/b&gt;&lt;br&gt;The &lt;i&gt;pixel cache&lt;/i&gt; stores image data located outside the visible area. This cache makes panning smoother. The &lt;i&gt;decoded page cache&lt;/i&gt; contains partially decoded pages. It provides faster response times when navigating a multipage document or when returning to a previously viewed page. Clearing this cache might be useful to reflect a change in the page data without restarting the DjVu viewer.&lt;p&gt;&lt;b&gt;Miscellaneous.&lt;/b&gt;&lt;br&gt;Forcing a manual color correction can be useful when using ancient printers. The advanced features check box enables a small number of additional menu entries useful for authoring DjVu files.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Кеші.&lt;/b&gt;&lt;br&gt; &lt;i&gt;Кеш пікселів&lt;/i&gt; зберігає дані картинок розташованих поза видимою областю. Цей кеш робить пересування документом плавнішим. &lt;i&gt;Кеш розкодованих сторінок&lt;/i&gt; мстить частково розкодовані сторінки. Він забезпечує швидшу реакцію переглядача під час пересування багатосторінковим документом або під час повернення для раніше переглянутої сторінки. Очищення цього кешу може бути корисним для відображення змін у даних сторінки без перезапуску переглядача DjVu.&lt;p&gt;&lt;b&gt;Різне.&lt;/b&gt;&lt;br&gt;Примусова корекція кольорів вручну може бути корисною, якщо ви користуєтеся застарілим принтером. Поле позначки додаткових можливостей надає вам змогу увімкнути невелику кількість додаткових пунктів меню, корисних для авторської роботи над файлами DjVu.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Кеші.&lt;/b&gt;&lt;br&gt; &lt;i&gt;Кеш пікселів&lt;/i&gt; зберігає дані картинок розташованих поза видимою областю. Цей кеш робить пересування документом плавнішим. &lt;i&gt;Кеш розкодованих сторінок&lt;/i&gt; мстить частково розкодовані сторінки. Він забезпечує швидшу реакцію переглядача під час пересування багатосторінковим документом або під час повернення для раніше переглянутої сторінки. Очищення цього кешу може бути корисним для показу змін у даних сторінки без перезапуску переглядача DjVu.&lt;p&gt;&lt;b&gt;Різне.&lt;/b&gt;&lt;br&gt;Примусова корекція кольорів вручну може бути корисною, якщо ви користуєтеся застарілим принтером. Поле позначки додаткових можливостей надає вам змогу увімкнути невелику кількість додаткових пунктів меню, корисних для авторської роботи над файлами DjVu.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="844"/>
@@ -2867,7 +2867,7 @@ Do you want to replace it?</source>
         <location filename="qdjviewprefsdialog.ui" line="998"/>
         <location filename="qdjviewprefsdialog.ui" line="1011"/>
         <source> MB</source>
-        <translation> MB</translation>
+        <translation> МБ</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1125"/>
@@ -2962,7 +2962,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewdialogs.cpp" line="1524"/>
         <source>&lt;html&gt;&lt;b&gt;Printing.&lt;/b&gt;&lt;br/&gt; You can print the whole document or a page range. Use the &lt;tt&gt;Choose&lt;/tt&gt; button to select a print destination and specify printer options. Additional dialog tabs might appear to specify conversion options.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Друк.&lt;/b&gt;&lt;br/&gt; Ви можете надрукувати весь документ або проміжок сторінок. Використовуйте кнопку &lt;tt&gt;Обрати&lt;/tt&gt; щоб обрати призначення та задати параметри друкарки. Додаткові сторінки діалогу з&apos;являються для того, щоб задати параметри перетворення.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Друк.&lt;/b&gt;&lt;br/&gt; Ви можете надрукувати весь документ або проміжок сторінок. Використовуйте кнопку &lt;tt&gt;Обрати&lt;/tt&gt; щоб обрати призначення та задати параметри принтера. Додаткові сторінки діалогового вікна буде показано, якщо потрібно вказати параметри перетворення.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="1778"/>
@@ -3030,7 +3030,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewexporters.cpp" line="1990"/>
         <source>Printer data</source>
-        <translation>Дані друкарки</translation>
+        <translation>Дані принтера</translation>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="1991"/>
@@ -3046,12 +3046,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewexporters.cpp" line="2013"/>
         <source>&lt;html&gt;&lt;b&gt;Printing options.&lt;/b&gt;&lt;br&gt;Option &lt;tt&gt;Color&lt;/tt&gt; enables color printing. Document pages can be decorated with a frame. Option &lt;tt&gt;Scale to fit&lt;/tt&gt; accommodates whatever paper size your printer uses. Zoom factor &lt;tt&gt;100%&lt;/tt&gt; reproduces the initial document size. Orientation &lt;tt&gt;Automatic&lt;/tt&gt; chooses portrait or landscape on a page per page basis.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Параметри друку.&lt;/b&gt;&lt;br&gt;Параметр &lt;tt&gt;Колір&lt;/tt&gt; дозволяє кольоровий друк. Сторінки документа можна вкласти до рамок. Параметр &lt;tt&gt;Підігнати до&lt;/tt&gt; пристосовує сторінки до розміру паперу, що використовує Ваша друкарка. Множник масштабування &lt;tt&gt;100%&lt;/tt&gt; відтворює початковий розмір документа. Розташування &lt;tt&gt;Автоматичне&lt;/tt&gt; обирає книжкове чи альбомне розташування з міркувань відображення однієї сторінки на одному листі.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Параметри друку.&lt;/b&gt;&lt;br&gt;Параметр &lt;tt&gt;Колір&lt;/tt&gt; дозволяє кольоровий друк. Сторінки документа можна вкласти до рамок. Параметр &lt;tt&gt;Підігнати до&lt;/tt&gt; пристосовує сторінки до розміру паперу, що використовує ваш принтер. Множник масштабування &lt;tt&gt;100%&lt;/tt&gt; відтворює початковий розмір документа. Розташування &lt;tt&gt;Автоматичне&lt;/tt&gt; обирає книжкове чи альбомне розташування з міркувань відтворення однієї сторінки на одному листі.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="2265"/>
         <source>Cannot render page %1.</source>
-        <translation>Відображення сторінки неможливе «%1».</translation>
+        <translation>Не вдалося обробити сторінку «%1».</translation>
     </message>
 </context>
 <context>
@@ -3194,7 +3194,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewsidebar.cpp" line="727"/>
         <source>&lt;html&gt;&lt;b&gt;Document thumbnails.&lt;/b&gt;&lt;br/&gt; This panel display thumbnails for the document pages. Double click a thumbnail to jump to the selected page. %1 to change the thumbnail size or the refresh mode. The smart refresh mode only computes thumbnails when the page data is present (displayed or cached.)&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Мініатюри документа.&lt;/b&gt;&lt;br/&gt; Ця панель показує мініатюри сторінок документа. Подвійне клацання на мініатюрі відкриє у вікні перегляду обрану сторінку. %1 дозволить змінити розмір мініатюр або оновить їх. Режим розумного оновлення відтворюватиме мініатюри тільки у разі наявності даних сторінки (відображених або кешованих.)&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Мініатюри документа.&lt;/b&gt;&lt;br/&gt; На цій панелі показано мініатюри сторінок документа. Подвійне клацання на мініатюрі відкриє у вікні перегляду відповідну сторінку. %1 надасть змогу змінити розмір мініатюр або оновить їх. У режимі розумного оновлення програма створюватиме мініатюри тільки у разі доступності даних сторінки (відображених або кешованих.)&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="695"/>
