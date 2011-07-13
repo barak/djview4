@@ -4057,8 +4057,7 @@ QDjView::performAbout(void)
        "<h2>DjVuLibre DjView %1</h2>%2"
        "<p>"
        "Viewer for DjVu documents<br>"
-       "<a href=http://djvulibre.djvuzone.org>"
-       "http://djvulibre.djvuzone.org</a><br>"
+       "<a href=%3>%3</a><br>"
        "Copyright \251 2006-- L\351on Bottou."
        "</p>"
        "<p align=justify><small>"
@@ -4071,7 +4070,8 @@ QDjView::performAbout(void)
        "</small></p>"
        "</html>")
     .arg(QDjViewPrefs::versionString())
-    .arg(vstr);
+    .arg(vstr)
+    .arg("http://djvu.sourceforge.net");
 
   QMessageBox::about(this, tr("About DjView"), html);
 }
