@@ -650,12 +650,12 @@
         <location filename="qdjview.cpp" line="628"/>
         <source>I&amp;nvert Luminance</source>
         <comment>View|</comment>
-        <translation type="unfinished"></translation>
+        <translation>Helligkeit i&amp;nvertieren</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="629"/>
         <source>Invert image luminance while preserving hue.</source>
-        <translation type="unfinished"></translation>
+        <translation>Invertiert die Bildhelligkeit unter Erhaltung der Farbnuancierung .</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="633"/>
@@ -1132,7 +1132,7 @@ Dateiname &apos;%1&apos; hat keine Endung.</translation>
         <location filename="qdjview.cpp" line="3744"/>
         <source>Go: %1</source>
         <oldsource>Link: %1</oldsource>
-        <translation type="unfinished">Gehe zu %1</translation>
+        <translation>Gehe zu %1</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3746"/>
@@ -1271,7 +1271,7 @@ Dateiname &apos;%1&apos; hat keine Endung.</translation>
     <message>
         <location filename="qdjview.cpp" line="1085"/>
         <source>&lt;html&gt;&lt;b&gt;Navigating the document.&lt;/b&gt;&lt;br/&gt; The page selector lets you jump to any page by name and can be activated at any time by pressing Ctrl+G. The navigation buttons jump to the first page, the previous page, the next page, or the last page. &lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;b&gt;Im Dokument navigieren.&lt;/b&gt;&lt;br/&gt; Mit Hilfe der Seitenauswahl kann man zu jeder Seite des Dokumentes springen. Die Navigationsbuttons springen zur ersten, vorheriegen, nächsten oder letzten Seite. &lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Im Dokument navigieren.&lt;/b&gt;&lt;br/&gt; Mit Hilfe der Seitenauswahl kann man zu jeder Seite des Dokumentes springen. Das Drücken der Navigationsknöpfe springt zur ersten, vorheriegen, nächsten oder letzten Seite. &lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2376"/>
@@ -2382,13 +2382,13 @@ Soll die Datei überschrieben werden?</translation>
         <location filename="qdjviewsidebar.cpp" line="231"/>
         <source>Go: page %1.</source>
         <oldsource>Go: page %1</oldsource>
-        <translation type="unfinished">Gehe zu Seite %1.</translation>
+        <translation>Gehe zu Seite %1.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="227"/>
         <source>Go: %1</source>
         <oldsource>Go: %1.</oldsource>
-        <translation type="unfinished">Gehe zu %1</translation>
+        <translation>Gehe zu %1</translation>
     </message>
 </context>
 <context>
@@ -2612,7 +2612,7 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="268"/>
         <source>Force inverted luminance.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzwinge eine Invertierung der Helligkeit.</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="403"/>
@@ -2657,17 +2657,17 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="710"/>
         <source>Mouse wheel</source>
-        <translation type="unfinished"></translation>
+        <translation>Mausrad</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="716"/>
         <source>Mouse wheel scrolls the page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mausrad wechselt zur nächsten Seite.</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="726"/>
         <source>Mouse wheel changes the zoom factor.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mausrad ändert den Zoomfaktor.</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="750"/>
@@ -2763,7 +2763,7 @@ Soll die Datei überschrieben werden?</translation>
         <location filename="qdjviewprefsdialog.ui" line="1108"/>
         <source>Enable page animations</source>
         <oldsource>Enable animations</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Aktiviere Seitenanimation</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1160"/>
