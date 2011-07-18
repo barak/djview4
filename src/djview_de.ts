@@ -1106,6 +1106,11 @@ Dateiname &apos;%1&apos; hat keine Endung.</translation>
         <source> x=%1 y=%2 </source>
         <translation> x=%1 y=%2 </translation>
     </message>
+    <message>
+        <location filename="qdjview.cpp" line="3661"/>
+        <source> %3x%4+%1+%2 </source>
+        <translation> %3x%4+%1+%2 </translation>
+    </message>
     <message numerus="yes">
         <location filename="qdjview.cpp" line="3734"/>
         <source>Go: %n pages forward.</source>
@@ -1173,10 +1178,6 @@ Dateiname &apos;%1&apos; hat keine Endung.</translation>
         <location filename="qdjview.cpp" line="3894"/>
         <source>Zoom to rectangle</source>
         <translation>Zoom das Recheck</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;%2&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;%2&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="4076"/>
@@ -2611,8 +2612,9 @@ Soll die Datei überschrieben werden?</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="268"/>
-        <source>Force inverted luminance.</source>
-        <translation>Erzwinge eine Invertierung der Helligkeit.</translation>
+        <source>Force inverted luminance</source>
+        <oldsource>Force inverted luminance.</oldsource>
+        <translation>Erzwinge eine Invertierung der Helligkeit</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="403"/>

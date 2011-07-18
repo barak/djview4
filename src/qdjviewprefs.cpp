@@ -344,7 +344,7 @@ QDjViewPrefs::load()
   if (s.contains("proxyUrl"))
     proxyUrl = s.value("proxyUrl").toString();
   if (s.contains("enableAnimations"))
-    advancedFeatures = s.value("enableAnimations").toBool();
+    enableAnimations = s.value("enableAnimations").toBool();
   if (s.contains("advancedFeatures"))
     advancedFeatures = s.value("advancedFeatures").toBool();
   if (s.contains("showTextLabel"))
@@ -352,7 +352,7 @@ QDjViewPrefs::load()
   if (s.contains("invertLuminance"))
     invertLuminance = s.value("invertLuminance").toBool();
   if (s.contains("mouseWheelZoom"))
-    invertLuminance = s.value("mouseWheelZoom").toBool();
+    mouseWheelZoom = s.value("mouseWheelZoom").toBool();
   if (s.contains("modifiersForLens"))
     modifiersForLens 
       = stringToModifiers(s.value("modifiersForLens").toString());

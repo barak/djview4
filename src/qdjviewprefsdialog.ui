@@ -265,7 +265,7 @@
           <item>
            <widget class="QCheckBox" name="invertLuminanceCheckBox">
             <property name="text">
-             <string>Force inverted luminance.</string>
+             <string>Force inverted luminance</string>
             </property>
            </widget>
           </item>

@@ -632,12 +632,12 @@
         <location filename="qdjview.cpp" line="628"/>
         <source>I&amp;nvert Luminance</source>
         <comment>View|</comment>
-        <translation type="unfinished"></translation>
+        <translation>Převrátit &amp;jas</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="629"/>
         <source>Invert image luminance while preserving hue.</source>
-        <translation type="unfinished"></translation>
+        <translation>Převrátí jas obrazu při zachování odstínu.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="633"/>
@@ -1037,7 +1037,12 @@ Soubor „%1“ nemá žádnou příponu.</translation>
     <message>
         <location filename="qdjview.cpp" line="3657"/>
         <source> x=%1 y=%2 </source>
-        <translation> x=%1 y=%2 </translation>
+        <translation type="unfinished"> x=%1 y=%2 </translation>
+    </message>
+    <message>
+        <location filename="qdjview.cpp" line="3661"/>
+        <source> %3x%4+%1+%2 </source>
+        <translation type="unfinished"> %3x%4+%1+%2 </translation>
     </message>
     <message numerus="yes">
         <location filename="qdjview.cpp" line="3734"/>
@@ -1067,7 +1072,7 @@ Soubor „%1“ nemá žádnou příponu.</translation>
         <location filename="qdjview.cpp" line="3744"/>
         <source>Go: %1</source>
         <oldsource>Link: %1</oldsource>
-        <translation type="unfinished">Přejít na %1</translation>
+        <translation>Přejít: %1</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3746"/>
@@ -1108,10 +1113,6 @@ Soubor „%1“ nemá žádnou příponu.</translation>
         <location filename="qdjview.cpp" line="3894"/>
         <source>Zoom to rectangle</source>
         <translation>Zvětšit na obdélník</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;%2&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;%2&lt;p&gt;Prohlížeč dokumentů DjVu&lt;br/&gt;&lt;a href=http://djvulibre.djvuzone.org&gt;http://djvulibre.djvuzone.org&lt;/a&gt;&lt;br/&gt;Copyright © 2006 – Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;Tento program je svobodné programové vybavení. Můžete jej šířit nebo upravovat podle pravidel Obecné veřejné licence GNU (GNU GPL) vydané nadací Free Software Foundation. Tento program je šířen &lt;i&gt;bez jakékoliv záruky&lt;/i&gt;. Pro podrobnosti nahlédněte do Obecné veřejné licence GNU (GNU General Public License)&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="4076"/>
@@ -1219,7 +1220,7 @@ Soubor „%1“ nemá žádnou příponu.</translation>
     <message>
         <location filename="qdjview.cpp" line="1085"/>
         <source>&lt;html&gt;&lt;b&gt;Navigating the document.&lt;/b&gt;&lt;br/&gt; The page selector lets you jump to any page by name and can be activated at any time by pressing Ctrl+G. The navigation buttons jump to the first page, the previous page, the next page, or the last page. &lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;b&gt;Navigace po dokumentu.&lt;/b&gt;&lt;br/&gt;Tanto výběr stránky vám dovolí přejít na libovolnou stránku podle jejího jména. Tlačítka navigace směřují na stránku první, předcházející, následující nebo poslední.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Navigace po dokumentu.&lt;/b&gt;&lt;br/&gt;Tento výběr stránky vám dovolí přejít na libovolnou stránku podle jejího jména a lze jej kdykoliv vyvolat stiskem Ctrl+G. Tlačítka navigace směřují na stránku první, předcházející, následující nebo poslední.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2376"/>
@@ -1245,7 +1246,7 @@ Soubor „%1“ nemá žádnou příponu.</translation>
     <message>
         <location filename="qdjview.cpp" line="3650"/>
         <source> P%1/%2 %3x%4 %5dpi </source>
-        <translation> P%1/%2 %3x%4 %5dpi </translation>
+        <translation type="unfinished"> P%1/%2 %3x%4 %5dpi </translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="4056"/>
@@ -1370,7 +1371,7 @@ Soubor „%1“ nemá žádnou příponu.</translation>
     <message>
         <location filename="qdjview.cpp" line="710"/>
         <source>Save the djvused code for the page annotations into the clipboard.</source>
-        <translation>Uloží do schránky dvjused kód s poznámkami na této stánce.</translation>
+        <translation>Uloží do schránky dvjused kód s poznámkami na této stránce.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="680"/>
@@ -2042,7 +2043,7 @@ Chcete jej nahradit?</translation>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1667"/>
         <source>Specify whether searches are case sensitive.</source>
-        <translation>Určute, zda hledání rozlišuje velikost písmen.</translation>
+        <translation>Určuje, zda hledání rozlišuje velikost písmen.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1669"/>
@@ -2408,13 +2409,13 @@ Chcete jej nahradit?</translation>
         <location filename="qdjviewsidebar.cpp" line="231"/>
         <source>Go: page %1.</source>
         <oldsource>Go: page %1</oldsource>
-        <translation type="unfinished">Přejít na stranu %1.</translation>
+        <translation>Přejít na: stranu %1.</translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="227"/>
         <source>Go: %1</source>
         <oldsource>Go: %1.</oldsource>
-        <translation type="unfinished">Přejít na %1</translation>
+        <translation>Přejít na: %1</translation>
     </message>
 </context>
 <context>
@@ -2688,8 +2689,9 @@ Chcete jej nahradit?</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="268"/>
-        <source>Force inverted luminance.</source>
-        <translation type="unfinished"></translation>
+        <source>Force inverted luminance</source>
+        <oldsource>Force inverted luminance.</oldsource>
+        <translation>Vnutit převrácení jasu</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="403"/>
@@ -2734,17 +2736,17 @@ Chcete jej nahradit?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="710"/>
         <source>Mouse wheel</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolečko myši</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="716"/>
         <source>Mouse wheel scrolls the page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolečko myši posunuje stránkou.</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="726"/>
         <source>Mouse wheel changes the zoom factor.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolečko myši mění míru zvětšení.</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="750"/>
@@ -2840,7 +2842,7 @@ Chcete jej nahradit?</translation>
         <location filename="qdjviewprefsdialog.ui" line="1108"/>
         <source>Enable page animations</source>
         <oldsource>Enable animations</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Zapnout animace stránky</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1160"/>

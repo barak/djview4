@@ -3658,7 +3658,7 @@ QDjView::pointerPosition(const Position &pos, const PageInfo &info)
           .arg(pos.posPage.x())
           .arg(pos.posPage.y());
       else
-        m = QString(" %3x%4+%1+%2 ")
+        m = tr(" %3x%4+%1+%2 ")
           .arg(info.segment.left())
           .arg(info.segment.top())
           .arg(info.segment.width())
