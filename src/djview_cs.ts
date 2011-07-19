@@ -804,7 +804,7 @@
     <message>
         <location filename="qdjview.cpp" line="1058"/>
         <source>&lt;html&gt;&lt;b&gt;Zooming.&lt;/b&gt;&lt;br/&gt; Choose a zoom level for viewing the document. Zoom level 100% displays the document for a 100 dpi screen. Zoom levels &lt;tt&gt;Fit Page&lt;/tt&gt; and &lt;tt&gt;Fit Width&lt;/tt&gt; ensure that the full page or the page width fit in the window. &lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Zvětšení.&lt;/b&gt;&lt;br/&gt;Vybere míru zvětšení při prohlížení dokumentu. Hodnota 100 % zobrazí dokument pro 100dpi obrazovku. Hodnoty &lt;tt&gt;Celá stránka&lt;/tt&gt; a &lt;tt&gt;Na šířku&lt;/tt&gt; zajistí, že celá stránka nebo celá šířka stránky se vměstná do okna.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Zvětšení.&lt;/b&gt;&lt;br/&gt;Vybere míru zvětšení při prohlížení dokumentu. Hodnota 100 % zobrazí dokument pro 100DPI obrazovku. Hodnoty &lt;tt&gt;Celá stránka&lt;/tt&gt; a &lt;tt&gt;Na šířku&lt;/tt&gt; zajistí, že celá stránka nebo celá šířka stránky se vměstná do okna.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="1070"/>
@@ -1037,12 +1037,12 @@ Soubor „%1“ nemá žádnou příponu.</translation>
     <message>
         <location filename="qdjview.cpp" line="3657"/>
         <source> x=%1 y=%2 </source>
-        <translation type="unfinished"> x=%1 y=%2 </translation>
+        <translation> x=%1 y=%2 </translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3661"/>
         <source> %3x%4+%1+%2 </source>
-        <translation type="unfinished"> %3x%4+%1+%2 </translation>
+        <translation> %3×%4+%1+%2 </translation>
     </message>
     <message numerus="yes">
         <location filename="qdjview.cpp" line="3734"/>
@@ -1246,7 +1246,7 @@ Soubor „%1“ nemá žádnou příponu.</translation>
     <message>
         <location filename="qdjview.cpp" line="3650"/>
         <source> P%1/%2 %3x%4 %5dpi </source>
-        <translation type="unfinished"> P%1/%2 %3x%4 %5dpi </translation>
+        <translation> S%1/%2 %3×%4 %5 DPI </translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="4056"/>
@@ -1960,7 +1960,7 @@ Chcete jej nahradit?</translation>
     <message>
         <location filename="qdjviewexporttiff.ui" line="44"/>
         <source> dpi</source>
-        <translation> dpi</translation>
+        <translation> DPI</translation>
     </message>
     <message>
         <location filename="qdjviewexporttiff.ui" line="76"/>
@@ -2873,7 +2873,7 @@ Chcete jej nahradit?</translation>
             co nejpodobnější.&lt;p&gt;&lt;b&gt;Rozlišení
             obrazovky&lt;/b&gt;&lt;br&gt;Tato volba vnutí dané rozlišení místo
         nespolehlivé hodnoty, kterou hlásí operační systém.
-        Nastavení rozlišení na 100 dpi je shodné s hodnotami, které používají
+        Nastavení rozlišení na 100 DPI je shodné s hodnotami, které používají
         nástroje pro příkazovou řádku z balíku djvulibre.&lt;/html&gt;</translation>
     </message>
     <message>
@@ -2889,7 +2889,7 @@ Chcete jej nahradit?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="234"/>
         <source> dpi</source>
-        <translation> dpi</translation>
+        <translation> DPI</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="970"/>

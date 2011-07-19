@@ -5427,6 +5427,8 @@ QDjVuLens::paintEvent(QPaintEvent *event)
                   //   the above line paints the hidden text in the lens.
                   //   But the opposite behavior is more convenient 
                   //   for proofreading.
+                  if (priv->invertLuminance)
+                    invert_luminance(img);
                   priv->paintMapAreas(img, p, r, true, &prect);
                   paint.drawImage(r.topLeft(), img, img.rect(),
                                   Qt::ThresholdDither);
@@ -5442,7 +5444,7 @@ QDjVuLens::paintEvent(QPaintEvent *event)
       QRect prect = mapper.mapped(p->viewRect);
       widget->paintFrame(paint, prect, priv->shadowSize);
     }
-  paint.setPen(Qt::black);
+  paint.setPen(Qt::gray);
   paint.setBrush(Qt::NoBrush);
   paint.drawRect(rect().adjusted(0,0,-1,-1));
 }
