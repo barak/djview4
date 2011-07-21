@@ -2665,13 +2665,15 @@ Voulez-vous le remplacer?</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="716"/>
-        <source>Mouse wheel scrolls the page.</source>
-        <translation>La molette de la souris fait défiler l&apos;écran.</translation>
+        <source>Mouse wheel scrolls the page</source>
+        <oldsource>Mouse wheel scrolls the page.</oldsource>
+        <translation>La molette de la souris fait défiler l&apos;écran</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="726"/>
-        <source>Mouse wheel changes the zoom factor.</source>
-        <translation>La molette de la souris change le grossissement.</translation>
+        <source>Mouse wheel changes the zoom factor</source>
+        <oldsource>Mouse wheel changes the zoom factor.</oldsource>
+        <translation>La molette de la souris change le grossissement</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="750"/>

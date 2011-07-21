@@ -713,7 +713,7 @@
           <item>
            <widget class="QRadioButton" name="wheelScrollButton">
             <property name="text">
-             <string>Mouse wheel scrolls the page.</string>
+             <string>Mouse wheel scrolls the page</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -723,7 +723,7 @@
           <item>
            <widget class="QRadioButton" name="wheelZoomButton">
             <property name="text">
-             <string>Mouse wheel changes the zoom factor.</string>
+             <string>Mouse wheel changes the zoom factor</string>
             </property>
            </widget>
           </item>

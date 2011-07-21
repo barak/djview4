@@ -2670,13 +2670,15 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="716"/>
-        <source>Mouse wheel scrolls the page.</source>
-        <translation>Коліщатком миші можна гортати вміст сторінки.</translation>
+        <source>Mouse wheel scrolls the page</source>
+        <oldsource>Mouse wheel scrolls the page.</oldsource>
+        <translation>Коліщатком миші можна гортати вміст сторінки</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="726"/>
-        <source>Mouse wheel changes the zoom factor.</source>
-        <translation>Коліщатком миші можна змінювати масштаб.</translation>
+        <source>Mouse wheel changes the zoom factor</source>
+        <oldsource>Mouse wheel changes the zoom factor.</oldsource>
+        <translation>Коліщатком миші можна змінювати масштаб</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="750"/>

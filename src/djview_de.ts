@@ -2663,13 +2663,15 @@ Soll die Datei überschrieben werden?</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="716"/>
-        <source>Mouse wheel scrolls the page.</source>
-        <translation>Mausrad wechselt zur nächsten Seite.</translation>
+        <source>Mouse wheel scrolls the page</source>
+        <oldsource>Mouse wheel scrolls the page.</oldsource>
+        <translation>Mausrad wechselt zur nächsten Seite</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="726"/>
-        <source>Mouse wheel changes the zoom factor.</source>
-        <translation>Mausrad ändert den Zoomfaktor.</translation>
+        <source>Mouse wheel changes the zoom factor</source>
+        <oldsource>Mouse wheel changes the zoom factor.</oldsource>
+        <translation>Mausrad ändert den Zoomfaktor</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="750"/>

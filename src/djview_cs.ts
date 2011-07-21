@@ -2740,13 +2740,15 @@ Chcete jej nahradit?</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="716"/>
-        <source>Mouse wheel scrolls the page.</source>
-        <translation>Kolečko myši posunuje stránkou.</translation>
+        <source>Mouse wheel scrolls the page</source>
+        <oldsource>Mouse wheel scrolls the page.</oldsource>
+        <translation>Kolečko myši posunuje stránkou</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="726"/>
-        <source>Mouse wheel changes the zoom factor.</source>
-        <translation>Kolečko myši mění míru zvětšení.</translation>
+        <source>Mouse wheel changes the zoom factor</source>
+        <oldsource>Mouse wheel changes the zoom factor.</oldsource>
+        <translation>Kolečko myši mění míru zvětšení</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="750"/>
