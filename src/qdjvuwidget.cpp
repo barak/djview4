@@ -4954,11 +4954,17 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
           nextPage(); 
           return;
         case Qt::Key_Space:
-          readNext();
+          if (event->modifiers()==Qt::ShiftModifier)
+            readPrev();
+          else
+            readNext();
           return;
         case Qt::Key_B:
         case Qt::Key_Backspace:
-          readPrev();
+          if (event->modifiers()==Qt::ShiftModifier)
+            readNext();
+          else
+            readPrev();
           return;
         case Qt::Key_Left:
         case Qt::Key_Right:
