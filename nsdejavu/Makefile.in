@@ -78,7 +78,7 @@ nsdejavu.1: nsdejavu.1.in nsdejavu.x
 
 install: install-bin install-man
 
-install-bin: nsdejavu.la FORCE
+install-bin: nsdejavu.la nsdejavu.x FORCE
 	${INSTALL} -d ${DESTDIR}${plugindir}	
 	eval "nsdejavu=`cat nsdejavu.x`" && \
 	  eval `grep '^dlname=' nsdejavu.la` && \
