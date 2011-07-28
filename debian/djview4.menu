@@ -2,4 +2,4 @@
     section="Applications/Viewers" \
     title="DjView4" command="/usr/bin/djview4" \
     icon="/usr/share/icons/hicolor/32x32/apps/djvulibre-djview4.xpm" \
-    icon32x32="/usr/share/icons/hicolor/32x32/apps/djvulibre-djview4.png"
+    icon32x32="/usr/share/icons/hicolor/32x32/apps/djvulibre-djview4.xpm"
