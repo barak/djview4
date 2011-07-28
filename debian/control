@@ -45,7 +45,7 @@ Description: Browser plugin for the DjVu image format
 
 Package: djvulibre-plugin
 Section: web
-Architecture: any
+Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, djview-plugin
 Description: Transition package, djvulibre-plugin to djview-plugin
- Dummy package to ease transition from djvulibre-plugin to djview-plugin.
+ Dummy dependency package to transition from djvulibre-plugin to djview-plugin.
