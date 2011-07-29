@@ -8,8 +8,9 @@ djview4 (4.8-1) unstable; urgency=low
     - convert djvulibre-djview4.xpm from PNG to XPM
     - switch empty binary package djvulibre-plugin to arch independent
     - generate and install not PNG but XPM icon files
+  * work around rejection-inducing lintian bug
 
- -- Barak A. Pearlmutter <bap@debian.org>  Thu, 28 Jul 2011 17:00:44 +0100
+ -- Barak A. Pearlmutter <bap@debian.org>  Fri, 29 Jul 2011 14:05:56 +0100
 
 djview4 (4.7-1) unstable; urgency=low
 
