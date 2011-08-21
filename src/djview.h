@@ -28,26 +28,34 @@
 #include <QEvent>
 #include <QPointer>
 #include <QString>
+#include <QStringList>
 
 #include "qdjvu.h"
 
 class QDjView;
+class QTranslator;
 
 class QDjViewApplication : public QApplication
 {
   Q_OBJECT
   QDjVuContext context;
   QPointer<QDjView> lastWindow;
+  QStringList translationLangs;
+  QStringList translationDirs;
  public:
   QDjViewApplication(int &argc, char **argv);
   QDjVuContext *djvuContext() { return &context; }
   QDjView *newWindow();
- protected:
+  bool loadTranslator(QTranslator *trans, QString name, QStringList langs);
+protected:
   bool event(QEvent *ev);
 #ifdef Q_WS_X11
   void commitData(QSessionManager &sm);
   void saveState(QSessionManager &sm);
 #endif
+private:
+  QStringList getTranslationLangs();
+  QStringList getTranslationDirs();
 };
 
 

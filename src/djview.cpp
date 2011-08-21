@@ -96,16 +96,6 @@ message(QStringList sl)
     message(s);
 }
 
-
-static void
-addDirectory(QStringList &dirs, QString path)
-{
-  QString dirname = QDir::cleanPath(path);
-  if (! dirs.contains(dirname))
-    dirs << dirname;
-}
-
-
 QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   : QApplication(argc, argv), 
     context(argv[0])
@@ -129,81 +119,13 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   qt_mac_set_native_menubar(false);
 #endif
   
-  // Translators
+  // Install translators
+  QStringList langs = getTranslationLangs();
   QTranslator *qtTrans = new QTranslator(this);
-  QTranslator *djviewTrans = new QTranslator(this);
-  // - determine preferred languages
-  QStringList langs; 
-  QString langOverride = QSettings().value("language").toString();
-  if (! langOverride.isEmpty())
-    langs += langOverride;
-  QString varLanguage = ::getenv("LANGUAGE");
-  if (varLanguage.size())
-    langs += varLanguage.toLower().split(":", QString::SkipEmptyParts);
-#ifdef LC_MESSAGES
-  QString varLcMessages = ::setlocale(LC_MESSAGES, 0);
-  if (varLcMessages.size())
-    langs += varLcMessages.toLower();
-#else
-# ifdef LC_ALL
-  QString varLcMessages = ::setlocale(LC_ALL, 0);
-  if (varLcMessages.size())
-    langs += varLcMessages.toLower();
-# endif
-#endif
-#ifdef Q_WS_MAC
-  langs += QSettings(".", "globalPreferences")
-    .value("AppleLanguages").toStringList();
-#endif
-  QString qtLocale =  QLocale::system().name();
-  if (qtLocale.size())
-    langs += qtLocale.toLower();
-
-  // - determine potential directories
-  QStringList dirs;
-  QDir dir = applicationDirPath();
-  QString dirPath = dir.canonicalPath();
-  addDirectory(dirs, dirPath);
-#ifdef DIR_DATADIR
-  QString datadir = DIR_DATADIR;
-  addDirectory(dirs, datadir + "/djvu/djview4");
-  addDirectory(dirs, datadir + "/djview4");
-#endif
-#ifdef Q_WS_MAC
-  addDirectory(dirs, dirPath + "/Resources/$LANG.lproj");
-  addDirectory(dirs, dirPath + "/../Resources/$LANG.lproj");
-  addDirectory(dirs, dirPath + "/../../Resources/$LANG.lproj");
-#endif
-  addDirectory(dirs, dirPath + "/share/djvu/djview4");
-  addDirectory(dirs, dirPath + "/share/djview4");
-  addDirectory(dirs, dirPath + "/../share/djvu/djview4");
-  addDirectory(dirs, dirPath + "/../share/djview4");
-  addDirectory(dirs, dirPath + "/../../share/djvu/djview4");
-  addDirectory(dirs, dirPath + "/../../share/djview4");
-  addDirectory(dirs, "/usr/share/djvu/djview4");
-  addDirectory(dirs, "/usr/share/djview4");
-  addDirectory(dirs, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-  // - load translators
-  bool qtTransValid = false;
-  bool djviewTransValid = false;
-  foreach (QString lang, langs)
-    {
-      foreach (QString dir, dirs)
-        {
-          dir = dir.replace(QRegExp("\\$LANG(?!\\w)"),lang);
-          QDir qdir(dir);
-          if (! qtTransValid && qdir.exists())
-            qtTransValid = qtTrans->load("qt_" + lang, dir, "_.-");
-          if (! djviewTransValid && qdir.exists())
-            djviewTransValid= djviewTrans->load("djview_" + lang, dir, "_.-");
-        }
-      if (lang == "en" || lang.startsWith("en_") || lang == "c")
-        break;
-    }
-  // - install tranlators
-  if (qtTransValid)
+  if (loadTranslator(qtTrans, "qt", langs))
     installTranslator(qtTrans);
-  if (djviewTransValid)
+  QTranslator *djviewTrans = new QTranslator(this);
+  if (loadTranslator(djviewTrans, "djview", langs))
     installTranslator(djviewTrans);
 }
 
@@ -217,6 +139,106 @@ QDjViewApplication::newWindow()
   main->setAttribute(Qt::WA_DeleteOnClose);
   lastWindow = main;
   return main;
+}
+
+
+static void
+addDirectory(QStringList &dirs, QString path)
+{
+  QString dirname = QDir::cleanPath(path);
+  if (! dirs.contains(dirname))
+    dirs << dirname;
+}
+
+
+QStringList 
+QDjViewApplication::getTranslationDirs()
+{
+  if (translationDirs.isEmpty())
+    {
+      QStringList dirs;
+      QDir dir = applicationDirPath();
+      QString dirPath = dir.canonicalPath();
+      addDirectory(dirs, dirPath);
+#ifdef DIR_DATADIR
+      QString datadir = DIR_DATADIR;
+      addDirectory(dirs, datadir + "/djvu/djview4");
+      addDirectory(dirs, datadir + "/djview4");
+#endif
+#ifdef Q_WS_MAC
+      addDirectory(dirs, dirPath + "/Resources/$LANG.lproj");
+      addDirectory(dirs, dirPath + "/../Resources/$LANG.lproj");
+      addDirectory(dirs, dirPath + "/../../Resources/$LANG.lproj");
+#endif
+      addDirectory(dirs, dirPath + "/share/djvu/djview4");
+      addDirectory(dirs, dirPath + "/share/djview4");
+      addDirectory(dirs, dirPath + "/../share/djvu/djview4");
+      addDirectory(dirs, dirPath + "/../share/djview4");
+      addDirectory(dirs, dirPath + "/../../share/djvu/djview4");
+      addDirectory(dirs, dirPath + "/../../share/djview4");
+      addDirectory(dirs, "/usr/share/djvu/djview4");
+      addDirectory(dirs, "/usr/share/djview4");
+      addDirectory(dirs, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+      translationDirs = dirs;
+    }
+  return translationDirs;
+}
+
+
+QStringList 
+QDjViewApplication::getTranslationLangs()
+{
+  if (translationLangs.isEmpty())
+    {
+      QStringList langs; 
+      QString langOverride = QSettings().value("language").toString();
+      if (! langOverride.isEmpty())
+        langs += langOverride;
+      QString varLanguage = ::getenv("LANGUAGE");
+      if (varLanguage.size())
+        langs += varLanguage.toLower().split(":", QString::SkipEmptyParts);
+#ifdef LC_MESSAGES
+      QString varLcMessages = ::setlocale(LC_MESSAGES, 0);
+      if (varLcMessages.size())
+        langs += varLcMessages.toLower();
+#else
+# ifdef LC_ALL
+      QString varLcMessages = ::setlocale(LC_ALL, 0);
+      if (varLcMessages.size())
+        langs += varLcMessages.toLower();
+# endif
+#endif
+#ifdef Q_WS_MAC
+      QSettings globalSettings(".", "globalPreferences");
+      langs += globalSettings.value("AppleLanguages").toStringList();
+#endif
+      QString qtLocale =  QLocale::system().name();
+      if (qtLocale.size())
+        langs += qtLocale.toLower();
+      translationLangs = langs;
+    }
+  return translationLangs;
+}
+
+
+bool
+QDjViewApplication::loadTranslator(QTranslator *trans, 
+                                   QString name, QStringList langs)
+{
+  foreach (QString lang, langs)
+    {
+      foreach (QString dir, getTranslationDirs())
+        {
+          dir = dir.replace(QRegExp("\\$LANG(?!\\w)"), lang);
+          QDir qdir(dir);
+          if (qdir.exists())
+            if (trans->load(name + "_" + lang, dir, "_.-"))
+              return true;
+          if (lang.startsWith("en_") || lang == "en" || lang == "c")
+            break;
+        }
+    }
+  return false;
 }
 
 
