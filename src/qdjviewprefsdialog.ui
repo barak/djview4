@@ -1055,7 +1055,7 @@
             <item>
              <widget class="QCheckBox" name="languageCheckBox">
               <property name="text">
-               <string>Override language at next restart</string>
+               <string>Override system language at next restart</string>
               </property>
              </widget>
             </item>
@@ -1278,9 +1278,11 @@
   <tabstop>pixelCacheSpinBox</tabstop>
   <tabstop>pageCacheSpinBox</tabstop>
   <tabstop>cacheClearButton</tabstop>
+  <tabstop>languageCheckBox</tabstop>
+  <tabstop>languageComboBox</tabstop>
   <tabstop>printerManualCheckBox</tabstop>
-  <tabstop>animationCheckBox</tabstop>
   <tabstop>printerGammaSpinBox</tabstop>
+  <tabstop>animationCheckBox</tabstop>
   <tabstop>advancedCheckBox</tabstop>
   <tabstop>applyButton</tabstop>
   <tabstop>okButton</tabstop>

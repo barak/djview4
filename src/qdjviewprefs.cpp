@@ -40,12 +40,14 @@
 #include <QRegExpValidator>
 #include <QSettings>
 #include <QStringList>
+#include <QTranslator>
 #include <QVariant>
 #include <QWhatsThis>
 
 #include "qdjviewprefs.h"
 #include "qdjview.h"
 #include "qdjvu.h"
+#include "djview.h"
 
 
 
@@ -942,22 +944,37 @@ QDjViewPrefsDialog::load(QDjView *djview)
 void
 QDjViewPrefsDialog::loadLanguageComboBox(QString lang)
 {
-  d->ui.languageCheckBox->setChecked(lang.size() > 0);
+  // supported languages
+  static const char *languages[] = { 
+    "cs","de","en","fr", "it", "ja","ru","uk", "zh", 0 } ;
+  // get application
   QComboBox *cb = d->ui.languageComboBox;
+  QCheckBox *db = d->ui.languageCheckBox;
+  QDjViewApplication *app = qobject_cast<QDjViewApplication*>(qApp);
+  db->setEnabled(app != 0);
   cb->clear();
-  cb->addItem("cs","cs");
-  cb->addItem("de","de");
-  cb->addItem("en","en");
-  cb->addItem("fr","fr");
-  cb->addItem("ru","ru");
-  cb->addItem("uk","uk");
-  int index = 0;
-  for (; index < cb->count(); index++)
-    if (cb->itemData(index) == lang)
-      break;
-  if (index >= cb->count())
-    cb->addItem(lang, lang);
-  cb->setCurrentIndex(index);
+  // prepare combobox
+  static struct { const char *src; const char *com; } thisLang[] = {
+    QT_TRANSLATE_NOOP3("Generic", "thisLanguage", "Name of THIS language") };
+  int index = -1;
+  if (app) 
+    for (int i=0; languages[i]; i++)
+      {
+        QString nlang = languages[i];
+        QString xlang = QString::null;
+        QTranslator *trans = new QTranslator();
+        if (app->loadTranslator(trans, "djview", QStringList(nlang)))
+          xlang = trans->translate("Generic", thisLang[0].src);
+        else if (nlang == "en" || nlang.startsWith("en"))
+          xlang = "English";
+        if (xlang.size() && lang == nlang)
+          index = cb->count();
+        if (xlang.size())
+          cb->addItem(xlang, nlang);
+        delete trans;
+      }
+  db->setChecked(index >= 0 && lang.size() > 0);
+  cb->setCurrentIndex(index); qDebug() << index;
 }
 
 void
