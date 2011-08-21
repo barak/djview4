@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>507</width>
-    <height>373</height>
+    <height>374</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1049,7 +1049,38 @@
          <property name="title">
           <string>Miscellaneous</string>
          </property>
-         <layout class="QVBoxLayout">
+         <layout class="QVBoxLayout" name="verticalLayout_9">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QCheckBox" name="languageCheckBox">
+              <property name="text">
+               <string>Override language at next restart</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="languageComboBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
           <item>
            <layout class="QHBoxLayout">
             <item>
@@ -1297,8 +1328,8 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>110</x>
-     <y>66</y>
+     <x>121</x>
+     <y>64</y>
     </hint>
     <hint type="destinationlabel">
      <x>130</x>
@@ -1329,12 +1360,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>190</x>
-     <y>200</y>
+     <x>213</x>
+     <y>230</y>
     </hint>
     <hint type="destinationlabel">
-     <x>308</x>
-     <y>202</y>
+     <x>364</x>
+     <y>231</y>
     </hint>
    </hints>
   </connection>
@@ -1345,12 +1376,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>200</x>
-     <y>272</y>
+     <x>204</x>
+     <y>266</y>
     </hint>
     <hint type="destinationlabel">
-     <x>457</x>
-     <y>273</y>
+     <x>388</x>
+     <y>266</y>
     </hint>
    </hints>
   </connection>
@@ -1361,8 +1392,8 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>107</x>
-     <y>98</y>
+     <x>118</x>
+     <y>95</y>
     </hint>
     <hint type="destinationlabel">
      <x>117</x>
@@ -1381,8 +1412,8 @@
      <y>196</y>
     </hint>
     <hint type="destinationlabel">
-     <x>409</x>
-     <y>218</y>
+     <x>472</x>
+     <y>247</y>
     </hint>
    </hints>
   </connection>
@@ -1393,12 +1424,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>366</x>
-     <y>192</y>
+     <x>474</x>
+     <y>217</y>
     </hint>
     <hint type="destinationlabel">
-     <x>383</x>
-     <y>248</y>
+     <x>472</x>
+     <y>271</y>
     </hint>
    </hints>
   </connection>
@@ -1431,6 +1462,22 @@
     <hint type="destinationlabel">
      <x>351</x>
      <y>118</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>languageCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>languageComboBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>137</x>
+     <y>187</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>292</x>
+     <y>192</y>
     </hint>
    </hints>
   </connection>

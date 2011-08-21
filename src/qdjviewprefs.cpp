@@ -350,6 +350,8 @@ QDjViewPrefs::load()
     invertLuminance = s.value("invertLuminance").toBool();
   if (s.contains("mouseWheelZoom"))
     mouseWheelZoom = s.value("mouseWheelZoom").toBool();
+  if (s.contains("language"))
+    languageOverride = s.value("language").toString();
   if (s.contains("modifiersForLens"))
     modifiersForLens 
       = stringToModifiers(s.value("modifiersForLens").toString());
@@ -359,7 +361,7 @@ QDjViewPrefs::load()
   if (s.contains("modifiersForLinks"))
     modifiersForLinks 
       = stringToModifiers(s.value("modifiersForLinks").toString());
-
+  
   if (s.contains("thumbnailSize"))
     thumbnailSize = s.value("thumbnailSize").toInt();
   if (s.contains("thumbnailSmart"))
@@ -442,6 +444,7 @@ QDjViewPrefs::save(void)
   s.setValue("modifiersForLens", modifiersToString(modifiersForLens));
   s.setValue("modifiersForSelect", modifiersToString(modifiersForSelect));
   s.setValue("modifiersForLinks", modifiersToString(modifiersForLinks));
+  s.setValue("language", languageOverride);
 
   s.setValue("thumbnailSize", thumbnailSize);
   s.setValue("thumbnailSmart", thumbnailSmart);
@@ -852,11 +855,13 @@ QDjViewPrefsDialog::connectModified(QWidget *w)
 {
   if (w->inherits("QComboBox"))
     connect(w, SIGNAL(editTextChanged(QString)), this, SLOT(setModified()));
-  else if (w->inherits("QSpinBox"))
+  if (w->inherits("QComboBox"))
+    connect(w, SIGNAL(currentIndexChanged(int)), this, SLOT(setModified()));
+  if (w->inherits("QSpinBox"))
     connect(w, SIGNAL(valueChanged(int)), this, SLOT(setModified()));
-  else if (w->inherits("QAbstractButton"))
+  if (w->inherits("QAbstractButton"))
     connect(w, SIGNAL(toggled(bool)), this, SLOT(setModified()));
-  else if (w->inherits("QAbstractSlider"))
+  if (w->inherits("QAbstractSlider"))
     connect(w, SIGNAL(valueChanged(int)), this, SLOT(setModified()));
   QObject *child;
   foreach(child, w->children())
@@ -923,6 +928,7 @@ QDjViewPrefsDialog::load(QDjView *djview)
   d->ui.pixelCacheSpinBox->setValue(qRound(prefs->pixelCacheSize / k256));
   d->ui.pageCacheSpinBox->setValue(qRound(prefs->cacheSize / k1024));
   double pgamma = prefs->printerGamma;
+  loadLanguageComboBox(prefs->languageOverride);
   d->ui.printerManualCheckBox->setChecked(pgamma > 0);
   d->ui.printerGammaSpinBox->setValue((pgamma > 0) ? pgamma : 2.2);
   d->ui.animationCheckBox->setChecked(prefs->enableAnimations);
@@ -932,6 +938,27 @@ QDjViewPrefsDialog::load(QDjView *djview)
   d->ui.applyButton->setEnabled(false);
 }
 
+
+void
+QDjViewPrefsDialog::loadLanguageComboBox(QString lang)
+{
+  d->ui.languageCheckBox->setChecked(lang.size() > 0);
+  QComboBox *cb = d->ui.languageComboBox;
+  cb->clear();
+  cb->addItem("cs","cs");
+  cb->addItem("de","de");
+  cb->addItem("en","en");
+  cb->addItem("fr","fr");
+  cb->addItem("ru","ru");
+  cb->addItem("uk","uk");
+  int index = 0;
+  for (; index < cb->count(); index++)
+    if (cb->itemData(index) == lang)
+      break;
+  if (index >= cb->count())
+    cb->addItem(lang, lang);
+  cb->setCurrentIndex(index);
+}
 
 void
 QDjViewPrefsDialog::apply()
@@ -973,6 +1000,12 @@ QDjViewPrefsDialog::apply()
   // 6- advanced tab
   prefs->pixelCacheSize = d->ui.pixelCacheSpinBox->value() * 256 * 1024;
   prefs->cacheSize = d->ui.pageCacheSpinBox->value() * 1024 * 1024;
+  prefs->languageOverride = QString::null;
+  if (d->ui.languageCheckBox->isChecked()) 
+    {
+      int n = d->ui.languageComboBox->currentIndex();
+      prefs->languageOverride = d->ui.languageComboBox->itemData(n).toString();
+    }
   prefs->printerGamma = 0;
   if (d->ui.printerManualCheckBox->isChecked())
     prefs->printerGamma = d->ui.printerGammaSpinBox->value();
@@ -1023,6 +1056,7 @@ QDjViewPrefsDialog::reset()
   // 6- advanced tab
   d->ui.pixelCacheSpinBox->setValue(1);
   d->ui.pageCacheSpinBox->setValue(10);
+  d->ui.languageCheckBox->setChecked(false);
   d->ui.printerManualCheckBox->setChecked(false);
   d->ui.printerGammaSpinBox->setValue(2.2);
   d->ui.advancedCheckBox->setChecked(false);

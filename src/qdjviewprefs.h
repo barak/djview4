@@ -152,6 +152,7 @@ public:
   bool       advancedFeatures;  //!< Advanced features.
   bool       invertLuminance;   //!< Invert luminance by default.
   bool       mouseWheelZoom;    //!< Mouse wheel zooms instead of scroll.
+  QString    languageOverride;  //!< Language settings
   Qt::KeyboardModifiers modifiersForLens;   //!< Keys for the lens. 
   Qt::KeyboardModifiers modifiersForSelect; //!< Keys for selecting.
   Qt::KeyboardModifiers modifiersForLinks;  //!< Keys for showing the links.
@@ -226,6 +227,7 @@ protected slots:
 private:
   QDjViewPrefsDialog();
   void connectModified(QWidget *w);
+  void loadLanguageComboBox(QString lang);
   struct Private;
   Private *d;
 };
