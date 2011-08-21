@@ -1119,13 +1119,6 @@
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QCheckBox" name="textLabelCheckBox">
-            <property name="text">
-             <string>Show hidden text in status bar</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
@@ -1258,7 +1251,6 @@
   <tabstop>animationCheckBox</tabstop>
   <tabstop>printerGammaSpinBox</tabstop>
   <tabstop>advancedCheckBox</tabstop>
-  <tabstop>textLabelCheckBox</tabstop>
   <tabstop>applyButton</tabstop>
   <tabstop>okButton</tabstop>
   <tabstop>cancelButton</tabstop>

@@ -142,7 +142,6 @@ QDjViewPrefs::QDjViewPrefs(void)
     lensPower(3),
     enableAnimations(true),
     advancedFeatures(false),
-    showTextLabel(false),
     invertLuminance(false),
     mouseWheelZoom(false),
     modifiersForLens(Qt::ControlModifier|Qt::ShiftModifier),
@@ -347,8 +346,6 @@ QDjViewPrefs::load()
     enableAnimations = s.value("enableAnimations").toBool();
   if (s.contains("advancedFeatures"))
     advancedFeatures = s.value("advancedFeatures").toBool();
-  if (s.contains("showTextLabel"))
-    showTextLabel = s.value("showTextLabel").toBool();
   if (s.contains("invertLuminance"))
     invertLuminance = s.value("invertLuminance").toBool();
   if (s.contains("mouseWheelZoom"))
@@ -440,7 +437,6 @@ QDjViewPrefs::save(void)
   s.setValue("proxyUrl", proxyUrl.toString());
   s.setValue("enableAnimations", enableAnimations);
   s.setValue("advancedFeatures", advancedFeatures);
-  s.setValue("showTextLabel", showTextLabel);
   s.setValue("invertLuminance", invertLuminance);
   s.setValue("mouseWheelZoom", mouseWheelZoom);
   s.setValue("modifiersForLens", modifiersToString(modifiersForLens));
@@ -931,7 +927,6 @@ QDjViewPrefsDialog::load(QDjView *djview)
   d->ui.printerGammaSpinBox->setValue((pgamma > 0) ? pgamma : 2.2);
   d->ui.animationCheckBox->setChecked(prefs->enableAnimations);
   d->ui.advancedCheckBox->setChecked(prefs->advancedFeatures);
-  d->ui.textLabelCheckBox->setChecked(prefs->showTextLabel);
   // no longer modified
   setWindowModified(false);
   d->ui.applyButton->setEnabled(false);
@@ -983,7 +978,6 @@ QDjViewPrefsDialog::apply()
     prefs->printerGamma = d->ui.printerGammaSpinBox->value();
   prefs->enableAnimations = d->ui.animationCheckBox->isChecked();
   prefs->advancedFeatures = d->ui.advancedCheckBox->isChecked();
-  prefs->showTextLabel = d->ui.textLabelCheckBox->isChecked();
   // broadcast change
   setWindowModified(false);
   d->ui.applyButton->setEnabled(false);
@@ -1032,7 +1026,6 @@ QDjViewPrefsDialog::reset()
   d->ui.printerManualCheckBox->setChecked(false);
   d->ui.printerGammaSpinBox->setValue(2.2);
   d->ui.advancedCheckBox->setChecked(false);
-  d->ui.textLabelCheckBox->setChecked(false);
 }
 
 
