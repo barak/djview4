@@ -956,6 +956,9 @@ QDjViewPrefsDialog::loadLanguageComboBox(QString lang)
   // prepare combobox
   static struct { const char *src; const char *com; } thisLang[] = {
     QT_TRANSLATE_NOOP3("Generic", "thisLanguage", "Name of THIS language") };
+  QString myLanguage = QApplication::translate("Generic", thisLang[0].src);
+  if (myLanguage == thisLang[0].src)
+    myLanguage = "English";
   int index = -1;
   if (app) 
     for (int i=0; languages[i]; i++)
@@ -967,14 +970,16 @@ QDjViewPrefsDialog::loadLanguageComboBox(QString lang)
           xlang = trans->translate("Generic", thisLang[0].src);
         else if (nlang == "en" || nlang.startsWith("en"))
           xlang = "English";
-        if (xlang.size() && lang == nlang)
+        if (lang == nlang && xlang.size() > 0)
           index = cb->count();
-        if (xlang.size())
+        if (index < 0 && xlang == myLanguage)
+          index = cb->count();
+        if (xlang.size() > 0)
           cb->addItem(xlang, nlang);
         delete trans;
       }
   db->setChecked(index >= 0 && lang.size() > 0);
-  cb->setCurrentIndex(index); qDebug() << index;
+  cb->setCurrentIndex(index);
 }
 
 void
