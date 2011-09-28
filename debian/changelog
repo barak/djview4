@@ -1,3 +1,9 @@
+djview4 (4.8-2) unstable; urgency=low
+
+  * single debian patch source option (closes: #643093)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Wed, 28 Sep 2011 13:05:43 +0100
+
 djview4 (4.8-1) unstable; urgency=low
 
   * new upstream release
