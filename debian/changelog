@@ -1,8 +1,11 @@
 djview4 (4.8-2) unstable; urgency=low
 
   * single debian patch source option (closes: #643093)
+  * ensure rsvg in build dependencies
+  * silence lintian regarding duplicate sections
+  * silence lintian regarding unneeded encoding in desktop file
 
- -- Barak A. Pearlmutter <bap@debian.org>  Wed, 28 Sep 2011 13:05:43 +0100
+ -- Barak A. Pearlmutter <bap@debian.org>  Fri, 07 Oct 2011 20:28:47 +0100
 
 djview4 (4.8-1) unstable; urgency=low
 
