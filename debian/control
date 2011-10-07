@@ -17,7 +17,6 @@ Homepage: http://djvu.sourceforge.net/
 Standards-Version: 3.9.2
 
 Package: djview4
-Section: graphics
 Architecture: any
 Provides: djvu-viewer
 Conflicts: djview (<= 3.5.20-5)
