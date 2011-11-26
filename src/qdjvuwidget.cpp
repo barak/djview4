@@ -4161,8 +4161,8 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
               // heuristically choose orientation
               int w = rect.width();
               int h = rect.height();
-              const char *str = miniexp_to_str(s);
-              if (str && str[0] && str[1])
+              QString text = miniexp_to_qstring(s).trimmed();
+              if (text.size() >= 2)
                 if (((orientation & 1) && (w > 2*h)) ||
                     (!(orientation & 1) && (h > 2*w)) )
                   orientation ^= 1;
@@ -4186,7 +4186,6 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
               QFont font = paint.font();
               font.setPixelSize(128);
               QFontMetrics metrics(font);
-              QString text = miniexp_to_qstring(s).trimmed();
 #if QT_VERSION >= 0x40300 && ! defined(Q_WS_WIN)
               QRect brect = metrics.tightBoundingRect(text);
 #else
