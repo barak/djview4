@@ -1,3 +1,9 @@
+djview4 (4.8-3) unstable; urgency=low
+
+  * upstream change giving user ability to allow print/save in plugin
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Sat, 26 Nov 2011 23:11:19 +0000
+
 djview4 (4.8-2) unstable; urgency=low
 
   * single debian patch source option (closes: #643093)
