@@ -178,6 +178,8 @@ protected:
   void     updateSaved(Saved *saved);
   void     applyPreferences(void);
   void     parseToolBarOption(QString option, QStringList &errors);
+  bool     warnAboutPrintingRestrictions();
+  bool     warnAboutSavingRestrictions();
 
   virtual bool eventFilter(QObject *watched, QEvent *event);
   virtual void closeEvent(QCloseEvent *event);

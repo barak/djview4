@@ -892,9 +892,9 @@ QDjView::updateActions()
       action->setEnabled(true);
 
   // Some actions are explicitly disabled
-  actionSave->setEnabled(savingAllowed);
-  actionExport->setEnabled(savingAllowed);
-  actionPrint->setEnabled(printingAllowed);
+  actionSave->setEnabled(savingAllowed || prefs->restrictOverride);
+  actionExport->setEnabled(savingAllowed || prefs->restrictOverride);
+  actionPrint->setEnabled(printingAllowed || prefs->restrictOverride);
   
   // Some actions are only available in standalone mode
   actionNew->setVisible(viewerMode == STANDALONE);
@@ -2887,6 +2887,38 @@ QDjView::showFind()
 }
 
 
+bool
+QDjView::warnAboutPrintingRestrictions()
+{
+  if (prefs->restrictOverride && !printingAllowed)
+    if (QMessageBox::warning(this, 
+                             tr("Print - DjView", "dialog caption"),
+                             tr("<html> This file was served with "
+                                "printing restrictions." 
+                                "Do you want to print it anyway?</html>"),
+                             QMessageBox::Yes | QMessageBox::Cancel,
+                             QMessageBox::Cancel) != QMessageBox::Yes )
+      return false;
+  return true;
+}
+
+
+bool
+QDjView::warnAboutSavingRestrictions()
+{
+  if (prefs->restrictOverride && !savingAllowed)
+    if (QMessageBox::warning(this, 
+                             tr("Save - DjView", "dialog caption"),
+                             tr("<html> This file was served with "
+                                "saving restrictions." 
+                                "Do you want to save it anyway?</html>"),
+                             QMessageBox::Yes | QMessageBox::Cancel,
+                             QMessageBox::Cancel) != QMessageBox::Yes )
+      return false;
+  return true;
+}
+
+
 /*! Pops up a print dialog */
 void
 QDjView::print()
@@ -2898,8 +2930,11 @@ QDjView::print()
       pd->setAttribute(Qt::WA_DeleteOnClose);
       pd->setWindowTitle(tr("Print - DjView", "dialog caption"));
     }
-  pd->show();
-  pd->raise();
+  if (warnAboutPrintingRestrictions())
+    {
+      pd->show();
+      pd->raise();
+    }
 }
 
 
@@ -2915,8 +2950,11 @@ QDjView::saveAs()
       sd->setAttribute(Qt::WA_DeleteOnClose);
       sd->setWindowTitle(tr("Save - DjView", "dialog caption"));
     }
-  sd->show();
-  sd->raise();
+  if (warnAboutSavingRestrictions())
+    {
+      sd->show();
+      sd->raise();
+    }
 }
 
 
@@ -2931,8 +2969,11 @@ QDjView::exportAs()
       sd->setAttribute(Qt::WA_DeleteOnClose);
       sd->setWindowTitle(tr("Export - DjView", "dialog caption"));
     }
-  sd->show();
-  sd->raise();
+  if (warnAboutSavingRestrictions())
+    {
+      sd->show();
+      sd->raise();
+    }
 }
 
 

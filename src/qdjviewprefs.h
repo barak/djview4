@@ -153,6 +153,7 @@ public:
   bool       invertLuminance;   //!< Invert luminance by default.
   bool       mouseWheelZoom;    //!< Mouse wheel zooms instead of scroll.
   QString    languageOverride;  //!< Language settings
+  bool       restrictOverride;  //!< Override noprint/nosave
   Qt::KeyboardModifiers modifiersForLens;   //!< Keys for the lens. 
   Qt::KeyboardModifiers modifiersForSelect; //!< Keys for selecting.
   Qt::KeyboardModifiers modifiersForLinks;  //!< Keys for showing the links.

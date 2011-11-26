@@ -146,6 +146,7 @@ QDjViewPrefs::QDjViewPrefs(void)
     advancedFeatures(false),
     invertLuminance(false),
     mouseWheelZoom(false),
+    restrictOverride(false),
     modifiersForLens(Qt::ControlModifier|Qt::ShiftModifier),
     modifiersForSelect(Qt::ControlModifier),
     modifiersForLinks(Qt::ShiftModifier),
@@ -354,6 +355,8 @@ QDjViewPrefs::load()
     mouseWheelZoom = s.value("mouseWheelZoom").toBool();
   if (s.contains("language"))
     languageOverride = s.value("language").toString();
+  if (s.contains("restrictOverride"))
+    restrictOverride = s.value("restrictOverride").toBool();
   if (s.contains("modifiersForLens"))
     modifiersForLens 
       = stringToModifiers(s.value("modifiersForLens").toString());
@@ -447,6 +450,7 @@ QDjViewPrefs::save(void)
   s.setValue("modifiersForSelect", modifiersToString(modifiersForSelect));
   s.setValue("modifiersForLinks", modifiersToString(modifiersForLinks));
   s.setValue("language", languageOverride);
+  s.setValue("restrictOverride", restrictOverride);
 
   s.setValue("thumbnailSize", thumbnailSize);
   s.setValue("thumbnailSmart", thumbnailSmart);
@@ -823,22 +827,13 @@ QDjViewPrefsDialog::QDjViewPrefsDialog()
              "</html>") );
   
   setHelp(d->ui.advancedTab,
-          tr("<html><b>Caches.</b>"
-             "<br>The <i>pixel cache</i> stores image data"
-             " located outside the visible area."
-             " This cache makes panning smoother."
-             " The <i>decoded page cache</i> contains partially"
-             " decoded pages. It provides faster response times"
-             " when navigating a multipage document or when returning"
-             " to a previously viewed page. Clearing this cache"
-             " might be useful to reflect a change in the page"
-             " data without restarting the DjVu viewer."
-
-             "<p><b>Miscellaneous.</b>"
-             "<br>Forcing a manual color correction can be useful"
-             " when using ancient printers."
-             " The advanced features check box enables a small number"
-             " of additional menu entries useful for authoring DjVu files."
+          tr("<html><b>Advanced.</b>"
+             "<br>You can override the default interface language, "
+             "disable the page animations, or enable additional "
+             "menu entries that are useful for authoring DjVu files."
+             "You can also disable the printing or saving restrictions "
+             "dictated by certain web sites. The manual color "
+             "correction can be useful with old printers."
              "</html>"));
 
   setHelp(d->ui.networkTab,
@@ -848,6 +843,16 @@ QDjViewPrefsDialog::QDjViewPrefsDialog()
              " a djvu document through a http url."
              " The djview plugin always uses the proxy"
              " settings of the web browser."
+             "<p><b>Cache settings.</b>"
+             "<br>The <i>pixel cache</i> stores image data"
+             " located outside the visible area."
+             " This cache makes panning smoother."
+             " The <i>decoded page cache</i> contains partially"
+             " decoded pages. It provides faster response times"
+             " when navigating a multipage document or when returning"
+             " to a previously viewed page. Clearing this cache"
+             " might be useful to reflect a change in the page"
+             " data without restarting the DjVu viewer."""
              "</html>") );
 }
 
@@ -924,17 +929,18 @@ QDjViewPrefsDialog::load(QDjView *djview)
       d->ui.proxyPasswordLineEdit->setText(url.password());
     }
   d->ui.proxyCheckBox->setChecked(proxy);
-  // 6- advanced tab
   qreal k256 = 256 * 1024;
   qreal k1024 = 1024 * 1024;
   d->ui.pixelCacheSpinBox->setValue(qRound(prefs->pixelCacheSize / k256));
   d->ui.pageCacheSpinBox->setValue(qRound(prefs->cacheSize / k1024));
+  // 6- advanced tab
   double pgamma = prefs->printerGamma;
   loadLanguageComboBox(prefs->languageOverride);
+  d->ui.advancedCheckBox->setChecked(prefs->advancedFeatures);
+  d->ui.animationCheckBox->setChecked(prefs->enableAnimations);
+  d->ui.restrictOverrideCheckBox->setChecked(prefs->restrictOverride);
   d->ui.printerManualCheckBox->setChecked(pgamma > 0);
   d->ui.printerGammaSpinBox->setValue((pgamma > 0) ? pgamma : 2.2);
-  d->ui.animationCheckBox->setChecked(prefs->enableAnimations);
-  d->ui.advancedCheckBox->setChecked(prefs->advancedFeatures);
   // no longer modified
   setWindowModified(false);
   d->ui.applyButton->setEnabled(false);
@@ -1019,20 +1025,21 @@ QDjViewPrefsDialog::apply()
       prefs->proxyUrl.setUserName(d->ui.proxyUserLineEdit->text());
       prefs->proxyUrl.setPassword(d->ui.proxyPasswordLineEdit->text());
     }
-  // 6- advanced tab
   prefs->pixelCacheSize = d->ui.pixelCacheSpinBox->value() * 256 * 1024;
   prefs->cacheSize = d->ui.pageCacheSpinBox->value() * 1024 * 1024;
+  // 6- advanced tab
   prefs->languageOverride = QString::null;
   if (d->ui.languageCheckBox->isChecked()) 
     {
       int n = d->ui.languageComboBox->currentIndex();
       prefs->languageOverride = d->ui.languageComboBox->itemData(n).toString();
     }
+  prefs->enableAnimations = d->ui.animationCheckBox->isChecked();
+  prefs->advancedFeatures = d->ui.advancedCheckBox->isChecked();
+  prefs->restrictOverride = d->ui.restrictOverrideCheckBox->isChecked();
   prefs->printerGamma = 0;
   if (d->ui.printerManualCheckBox->isChecked())
     prefs->printerGamma = d->ui.printerGammaSpinBox->value();
-  prefs->enableAnimations = d->ui.animationCheckBox->isChecked();
-  prefs->advancedFeatures = d->ui.advancedCheckBox->isChecked();
   // broadcast change
   setWindowModified(false);
   d->ui.applyButton->setEnabled(false);
