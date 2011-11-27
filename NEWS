@@ -60,11 +60,13 @@ NEW IN VERSION 4.6
 - Subtle changes to PgUp/PgDn/Home/End/Space/Backspace view changes.
 - Fixed suffix management in export/save/print dialogs.
 
+
 NEW IN VERSION 4.7
 --------------------
 - Fix for crash on quick PgUp PgDn sequences.
 - Fix scrollbars in continuous mode.
 - Fix plugin for some webkit based browsers.
+
 
 NEW IN VERSION 4.8
 --------------------
@@ -73,3 +75,10 @@ NEW IN VERSION 4.8
 - Fixed export issues under win32.
 - Mouse wheel can be configured to control the zoom.
 - Animated page movements.
+
+
+NEW SINCE VERSION 4.8
+--------------------
+- Added language selection in preference.
+- Added option to override printing and saving restrictions.
+- 
