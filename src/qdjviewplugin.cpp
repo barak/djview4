@@ -76,8 +76,6 @@
 # define HAVE_QX11EMBED 1
 #endif
 
-// declared in djview.cpp
-extern void setupApplication(void);
 
 
 // ========================================
