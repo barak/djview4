@@ -191,7 +191,6 @@ There are two options under Mac OS X.
 -----------
 
 There are also two ways to compile djview under Windows.
-Both versions
 
 * Using Visual C++ 2010
 
@@ -214,7 +213,6 @@ Both versions
     djvulibre-3.5/win32/djvulibre directory. You also need
     to add the references to libdjvulibre and libtiff.
     This works well despite requiring a lot of clicks.
-    You still need to add rthe 
 
 * Using the MINGW compiler (not recommended)
 
