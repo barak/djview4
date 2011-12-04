@@ -33,6 +33,7 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 RSVG = @RSVG@
 CONVERT = @CONVERT@
+INKSCAPE = @INKSCAPE@
 XDG_MIME = @XDG_MIME@
 XDG_ICON_RESOURCE = @XDG_ICON_RESOURCE@
 XDG_DESKTOP_MENU = @XDG_DESKTOP_MENU@
@@ -51,6 +52,7 @@ hi32-djview4.png hi64-djview4.png: djview.svg
 	s=`echo $@ | sed -e 's/[a-z]*\([0-9]*\).*/\1/'`; \
 	  ${RSVG} -w $${s} -h $${s} $< $@ \
 	  || ${CONVERT} -geometry $${s}x$${s} -depth 8 -background none $< $@ \
+	  || ${INKSCAPE} --without-gui --export-width=$${s} --export-height=$${s} --export-png=$@ $< \
 	  || cp ${srcdir}/prebuilt-$@ $@
 
 hi-djview4.svgz: djview.svg
