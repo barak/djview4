@@ -151,6 +151,19 @@ addDirectory(QStringList &dirs, QString path)
 }
 
 
+static void
+addLang(QStringList &langs, QString s)
+{
+  if (s.size() <= 0)
+    return;
+  if (! langs.contains(s))
+    langs << s;
+  QString sl = s.toLower();
+  if (sl != s && ! langs.contains(sl))
+    langs << sl;
+}
+
+
 QStringList 
 QDjViewApplication::getTranslationDirs()
 {
@@ -193,28 +206,23 @@ QDjViewApplication::getTranslationLangs()
       QStringList langs; 
       QString langOverride = QSettings().value("language").toString();
       if (! langOverride.isEmpty())
-        langs += langOverride;
+        addLang(langs, langOverride);
       QString varLanguage = ::getenv("LANGUAGE");
       if (varLanguage.size())
-        langs += varLanguage.toLower().split(":", QString::SkipEmptyParts);
+        foreach(QString lang, varLanguage.split(":", QString::SkipEmptyParts))
+          addLang(langs, lang);
 #ifdef LC_MESSAGES
-      QString varLcMessages = ::setlocale(LC_MESSAGES, 0);
-      if (varLcMessages.size())
-        langs += varLcMessages.toLower();
-#else
-# ifdef LC_ALL
-      QString varLcMessages = ::setlocale(LC_ALL, 0);
-      if (varLcMessages.size())
-        langs += varLcMessages.toLower();
-# endif
+      addLang(langs, QString(::setlocale(LC_MESSAGES, 0)));
+#endif
+#ifdef LC_ALL
+      addLang(langs, QString(::setlocale(LC_ALL, 0)));
 #endif
 #ifdef Q_WS_MAC
-      QSettings globalSettings(".", "globalPreferences");
-      langs += globalSettings.value("AppleLanguages").toStringList();
+      QSettings g(".", "globalPreferences");
+      foreach (QString lang, g.value("AppleLanguages").toStringList())
+        addLang(langs, lang);
 #endif
-      QString qtLocale =  QLocale::system().name();
-      if (qtLocale.size())
-        langs += qtLocale.toLower();
+      addLang(langs, QLocale::system().name());
       translationLangs = langs;
     }
   return translationLangs;
