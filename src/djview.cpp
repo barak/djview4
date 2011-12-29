@@ -204,18 +204,15 @@ QDjViewApplication::getTranslationLangs()
   if (translationLangs.isEmpty())
     {
       QStringList langs; 
-      QString langOverride = QSettings().value("language").toString();
-      if (! langOverride.isEmpty())
-        addLang(langs, langOverride);
-      QString varLanguage = ::getenv("LANGUAGE");
-      if (varLanguage.size())
-        foreach(QString lang, varLanguage.split(":", QString::SkipEmptyParts))
-          addLang(langs, lang);
+      addLang(langs, QSettings().value("language").toString());
+      QString varLanguage = QString::fromLocal8Bit(::getenv("LANGUAGE"));
+      foreach(QString lang, varLanguage.split(":", QString::SkipEmptyParts))
+        addLang(langs, lang);
 #ifdef LC_MESSAGES
-      addLang(langs, QString(::setlocale(LC_MESSAGES, 0)));
+      addLang(langs, QString::fromLocal8Bit(::setlocale(LC_MESSAGES, 0)));
 #endif
 #ifdef LC_ALL
-      addLang(langs, QString(::setlocale(LC_ALL, 0)));
+      addLang(langs, QString::fromLocal8Bit(::setlocale(LC_ALL, 0)));
 #endif
 #ifdef Q_WS_MAC
       QSettings g(".", "globalPreferences");
