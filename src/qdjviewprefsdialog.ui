@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>507</width>
+    <width>509</width>
     <height>374</height>
    </rect>
   </property>
@@ -1066,7 +1066,7 @@
             <item>
              <widget class="QCheckBox" name="languageCheckBox">
               <property name="text">
-               <string>Override system language at next restart</string>
+               <string>Force language (next time djview runs)</string>
               </property>
              </widget>
             </item>

@@ -13,7 +13,7 @@
 <context>
     <name>QApplication</name>
     <message>
-        <location filename="djview.cpp" line="435"/>
+        <location filename="djview.cpp" line="440"/>
         <source>Option &apos;-fix&apos; is deprecated.</source>
         <translation>选项&apos;-fix&apos;已过时。</translation>
     </message>
@@ -21,7 +21,7 @@
 <context>
     <name>QDjView</name>
     <message>
-        <location filename="djview.cpp" line="455"/>
+        <location filename="djview.cpp" line="460"/>
         <source>cannot open &apos;%1&apos;.</source>
         <translation>未能打开 &apos;%1&apos;。</translation>
     </message>
@@ -1449,12 +1449,12 @@ Filename &apos;%1&apos; has no suffix.</source>
 <context>
     <name>QDjViewApplication</name>
     <message>
-        <location filename="djview.cpp" line="258"/>
+        <location filename="djview.cpp" line="263"/>
         <source>cannot open &apos;%1&apos;.</source>
         <translation>未能打开 &apos;%1&apos;。</translation>
     </message>
     <message>
-        <location filename="djview.cpp" line="324"/>
+        <location filename="djview.cpp" line="329"/>
         <source>Usage: djview [options] [filename-or-url]
 Common options include:
 -help~~~Prints this message.
@@ -2831,7 +2831,8 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1069"/>
-        <source>Override system language at next restart</source>
+        <source>Force language (next time djview runs)</source>
+        <oldsource>Force language (when djview is restarted.)</oldsource>
         <translation>下次启动时覆盖系统语言设定</translation>
     </message>
     <message>

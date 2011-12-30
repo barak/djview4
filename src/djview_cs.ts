@@ -13,7 +13,7 @@
 <context>
     <name>QApplication</name>
     <message>
-        <location filename="djview.cpp" line="435"/>
+        <location filename="djview.cpp" line="440"/>
         <source>Option &apos;-fix&apos; is deprecated.</source>
         <translation>Přepínač „-fix“ není doporučeno používat.</translation>
     </message>
@@ -21,7 +21,7 @@
 <context>
     <name>QDjView</name>
     <message>
-        <location filename="djview.cpp" line="455"/>
+        <location filename="djview.cpp" line="460"/>
         <source>cannot open &apos;%1&apos;.</source>
         <translation>„%1“ nelze otevřít.</translation>
     </message>
@@ -1466,7 +1466,7 @@ Soubor „%1“ nemá žádnou příponu.</translation>
 <context>
     <name>QDjViewApplication</name>
     <message>
-        <location filename="djview.cpp" line="324"/>
+        <location filename="djview.cpp" line="329"/>
         <source>Usage: djview [options] [filename-or-url]
 Common options include:
 -help~~~Prints this message.
@@ -1497,7 +1497,7 @@ Mezi obecné přepínače patří:
 </translation>
     </message>
     <message>
-        <location filename="djview.cpp" line="258"/>
+        <location filename="djview.cpp" line="263"/>
         <source>cannot open &apos;%1&apos;.</source>
         <translation>„%1“ nelze otevřít.</translation>
     </message>
@@ -2855,8 +2855,8 @@ Chcete jej nahradit?</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1069"/>
-        <source>Override system language at next restart</source>
-        <oldsource>Override language at next restart</oldsource>
+        <source>Force language (next time djview runs)</source>
+        <oldsource>Force language (when djview is restarted.)</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
