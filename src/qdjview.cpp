@@ -2435,6 +2435,7 @@ QDjView::closeDocument()
   documentFileName.clear();
   hasNumericalPageTitle = true;
   documentUrl.clear();
+  documentModified = QDateTime();
   document = 0;
   if (doc)
     {
@@ -2497,6 +2498,7 @@ QDjView::open(QString filename)
   QUrl url = QUrl::fromLocalFile(fileinfo.absoluteFilePath());
   open(doc, url);
   documentFileName = filename;
+  documentModified = QFileInfo(filename).lastModified();
   addRecent(url);
   return true;
 }
@@ -2559,6 +2561,19 @@ QDjView::reloadDocument()
         }
       // Opening the url could do it all in fact.
       open(url);
+    }
+}
+
+
+void
+QDjView::maybeReloadDocument()
+{
+  QDjVuDocument *doc = document;
+  if (doc && !documentModified.isNull() && !documentFileName.isNull())
+    {
+      QFileInfo info(documentFileName);
+      if (info.exists() && info.lastModified() > documentModified)
+        QTimer::singleShot(0, this, SLOT(reloadDocument()));
     }
 }
 
@@ -3519,6 +3534,11 @@ QDjView::eventFilter(QObject *watched, QEvent *event)
           statusMessage();
           return false;
         }
+      break;
+    case QEvent::Enter:
+      if ((watched == widget->viewport()) ||
+          (qobject_cast<QDockWidget*>(watched)) )
+        maybeReloadDocument();
       break;
     case QEvent::StatusTip:
       if (qobject_cast<QMenu*>(watched))

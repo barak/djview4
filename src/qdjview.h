@@ -23,6 +23,7 @@
 #endif
 
 #include <Qt>
+#include <QDateTime>
 #include <QObject>
 #include <QMainWindow>
 #include <QMessageBox>
@@ -54,6 +55,7 @@ class QDragEnterEvent;
 class QDragMoveEvent;
 class QDropEvent;
 class QFileDialog;
+class QFileSystemWatcher;
 class QLabel;
 class QMenu;
 class QMenuBar;
@@ -232,6 +234,7 @@ protected slots:
   void performCopyUrl();
   void performCopyOutline();
   void performCopyAnnotation();
+  void maybeReloadDocument();
 
 protected:
   // mode
@@ -274,6 +277,7 @@ protected:
   QString                 documentFileName;
   QUrl                    documentUrl;
   QList<ddjvu_fileinfo_t> documentPages;
+  QDateTime               documentModified;
   bool                    hasNumericalPageTitle;
   // delayed settings
   typedef QPair<QString,QString> StringPair;
