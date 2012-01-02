@@ -127,6 +127,7 @@ public slots:
   bool  open(QUrl url);
   void  open(QDjVuDocument *document, QUrl url = QUrl());
   void  closeDocument();
+  void  reloadDocument();
   void  goToPage(int pageno);
   void  goToPage(QString name, int from=-1);
   void  goToPosition(QString pagename, double px, double py);

@@ -2538,6 +2538,31 @@ QDjView::open(QUrl url)
 }
 
 
+/*! Reload the document afresh. */
+
+void
+QDjView::reloadDocument()
+{
+  QDjVuDocument *doc = document;
+  QUrl url = getDecoratedUrl();
+  if (doc && viewerMode==STANDALONE && url.isValid())
+    {
+      closeDocument();
+      ddjvu_cache_clear(djvuContext);
+      // Opening files more efficiently
+      QFileInfo file = url.toLocalFile();
+      if (file.exists())
+        {
+          open(file.absoluteFilePath());
+          parseDjVuCgiArguments(url);
+          return;
+        }
+      // Opening the url could do it all in fact.
+      open(url);
+    }
+}
+
+
 /*! Jump to the page numbered \a pageno. */
 
 void 
