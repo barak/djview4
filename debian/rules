@@ -36,6 +36,6 @@ override_dh_makeshlibs:
 targets=build clean install binary-arch binary-indep binary build-arch build-indep
 
 $(targets) %:
-	dh $@ --with autotools_dev --parallel
+	dh $@ --with autoreconf --parallel
 
 .PHONY: $(targets)
