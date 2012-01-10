@@ -3097,8 +3097,12 @@ QDjView::getDecoratedUrl()
     {
       url.addQueryItem("djvuopts", QString::null);
       QList<ddjvu_fileinfo_t> &dp = documentPages;
-      if (pageNo>=0 && pageNo<documentPages.size())
-        url.addQueryItem("page", QString::fromUtf8(dp[pageNo].id));
+      QString pagestr = QString("%1").arg(pageNo+1);
+      if (hasNumericalPageTitle && pageNo<documentPages.size())
+        // Only use page ids when confusions are possible.
+        // Always using page ids triggers bugs in the celartem plugin :-(
+        pagestr = QString::fromUtf8(dp[pageNo].id);
+      url.addQueryItem("page", pagestr);
       int rotation = widget->rotation();
       if (rotation)
         url.addQueryItem("rotate", QString::number(90 * rotation));
