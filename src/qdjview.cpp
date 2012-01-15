@@ -2308,6 +2308,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   QFontMetrics metric(font);
   pageLabel = new QLabel(statusBar);
   pageLabel->setFont(font);
+  pageLabel->setTextFormat(Qt::PlainText);
   pageLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
   pageLabel->setFrameStyle(QFrame::Panel);
   pageLabel->setFrameShadow(QFrame::Sunken);
@@ -2315,6 +2316,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   statusBar->addPermanentWidget(pageLabel);
   mouseLabel = new QLabel(statusBar);
   mouseLabel->setFont(font);
+  mouseLabel->setTextFormat(Qt::PlainText);
   mouseLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
   mouseLabel->setFrameStyle(QFrame::Panel);
   mouseLabel->setFrameShadow(QFrame::Sunken);

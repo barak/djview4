@@ -142,6 +142,7 @@ QDjViewErrorDialog::error(QString msg, QString, int)
   // Remove [1-nnnnn] prefix from djvulibre-3.5
   if (msg.startsWith("["))
     msg = msg.replace(QRegExp("^\\[\\d*-?\\d*\\]\\s*") , "");
+  msg = Qt::escape(msg);
   // Ignore empty and duplicate messages
   if (msg.isEmpty()) return;
   if (!d->messages.isEmpty() && msg == d->messages[0]) return;
