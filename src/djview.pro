@@ -114,3 +114,4 @@ TRANSLATIONS += djview_de.ts
 TRANSLATIONS += djview_cs.ts
 TRANSLATIONS += djview_ru.ts
 TRANSLATIONS += djview_zh_cn.ts
+TRANSLATIONS += djview_zh_tw.ts
