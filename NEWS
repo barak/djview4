@@ -81,4 +81,5 @@ NEW SINCE VERSION 4.8
 --------------------
 - Added language selection in preference.
 - Added option to override printing and saving restrictions.
-- 
+- Automatic reloading of djvu documents when the file is changed.
+- New chinese translations.
