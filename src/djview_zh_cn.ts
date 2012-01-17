@@ -2706,7 +2706,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="676"/>
         <source>For displaying the &amp;lens: </source>
-        <translation>显示放大镜*&amp;L):</translation>
+        <translation>显示放大镜(&amp;L):</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="710"/>
@@ -2833,7 +2833,7 @@ Do you want to replace it?</source>
         <location filename="qdjviewprefsdialog.ui" line="1069"/>
         <source>Force language (next time djview runs)</source>
         <oldsource>Force language (when djview is restarted.)</oldsource>
-        <translation>下次启动时覆盖系统语言设定</translation>
+        <translation>强制界面语言(下次启动时)</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1098"/>
@@ -2894,32 +2894,32 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefs.cpp" line="792"/>
         <source>&lt;html&gt;&lt;b&gt;Screen gamma correction.&lt;/b&gt;&lt;br&gt;The best color rendition is achieved by adjusting the gamma correction slider and choosing the position that makes the gray square as uniform as possible.&lt;p&gt;&lt;b&gt;Screen resolution.&lt;/b&gt;&lt;br&gt;This option forces a particular resolution instead of using the unreliable resolution advertised by the operating system. Forcing the resolution to 100 dpi matches the behavior of the djvulibre command line tools.&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;b&gt;屏幕颜色Gamma校正。&lt;/b&gt;&lt;br&gt;用滑块调整Gamma值使灰色方块区域尽量一致以获得最佳色彩表现。&lt;p&gt;&lt;b&gt;屏幕分辨率。&lt;/b&gt;&lt;br&gt;此选项强制使用指定的分辨率值取代由操作系统提供的不可靠的分辨率值。 强制分辨率为 100 dpi 时与 djvulibre 命令行工具一致。&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="805"/>
         <source>&lt;html&gt;&lt;b&gt;Initial interface setup.&lt;/b&gt;&lt;br&gt;DjView can run as a standalone viewer, as a full screen viewer, as a full page browser plugin, or as a plugin embedded inside a html page. For each case, check the &lt;tt&gt;Remember&lt;/tt&gt; box to automatically save and restore the interface setup. Otherwise, specify an initial configuration.&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;b&gt;初始界面设置。&lt;/b&gt;&lt;br&gt;DjView 可按以下方式运行： 单独显示， 全屏显示， 全页面浏览器插件， 或 嵌入html页面中。 对于每种方式， 可选中 &lt;tt&gt;记住上次&lt;/tt&gt; 框以便自动保存及重用界面设置； 或者,不选中而指定一个固定的初始设置。&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="815"/>
         <source>&lt;html&gt;&lt;b&gt;Modifiers keys.&lt;/b&gt;&lt;br&gt;Define which combination of modifier keys will show the manifying lens, temporarily enable the selection mode, or highlight the hyperlinks.&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;b&gt;按键。&lt;/b&gt;&lt;br&gt;定义一些组合键， 如 显示放大镜， 临时启用选择模式， 或高亮显示链接。&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="822"/>
         <source>&lt;html&gt;&lt;b&gt;Magnifying lens.&lt;/b&gt;&lt;br&gt;The magnifying lens appears when you depress the modifier keys specified in tab &lt;tt&gt;Keys&lt;/tt&gt;. This panel lets you choose the power and the size of the magnifying lens.&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;b&gt;放大镜。&lt;/b&gt;&lt;br&gt;用 &lt;tt&gt;按键&lt;/tt&gt; 页中定义的按键可调出放大镜。 在本面板可选择放大倍数和放大镜的尺寸。&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="830"/>
         <source>&lt;html&gt;&lt;b&gt;Advanced.&lt;/b&gt;&lt;br&gt;You can override the default interface language, disable the page animations, or enable additional menu entries that are useful for authoring DjVu files.You can also disable the printing or saving restrictions dictated by certain web sites. The manual color correction can be useful with old printers.&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;b&gt;高级。&lt;/b&gt;&lt;br&gt;你可选择默认界面语言， 禁用页面动画， 或 启用更多编辑 DjVu 文件的菜单项。亦可禁用某些网站的打印或保存限制。 对于旧式打印机可用手动颜色校正。&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="840"/>
         <source>&lt;html&gt;&lt;b&gt;Network proxy settings.&lt;/b&gt;&lt;br&gt;These proxy settings are used when the standalone djview viewer accesses a djvu document through a http url. The djview plugin always uses the proxy settings of the web browser.&lt;p&gt;&lt;b&gt;Cache settings.&lt;/b&gt;&lt;br&gt;The &lt;i&gt;pixel cache&lt;/i&gt; stores image data located outside the visible area. This cache makes panning smoother. The &lt;i&gt;decoded page cache&lt;/i&gt; contains partially decoded pages. It provides faster response times when navigating a multipage document or when returning to a previously viewed page. Clearing this cache might be useful to reflect a change in the page data without restarting the DjVu viewer.&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;b&gt;网络代理设置。&lt;/b&gt;&lt;br&gt;本代理设置用于以单独显示方式从http URL地址访问djvu文档。 以插件方式时经通常用浏览器的代理设置。&lt;p&gt;&lt;b&gt;缓存设置。&lt;/b&gt;&lt;br&gt; &lt;i&gt;像素缓存&lt;/i&gt; 保存可见区之外的图像数据， 使平移更平滑。 &lt;i&gt;解码页面缓存&lt;/i&gt; 包含有部分解码的页面， 使得浏览多页文档或返回前面看过的页面时反应迅速； 页面数据改变时可清除此缓存而不必重启程序。&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
