@@ -15910,7 +15910,14 @@ done
 
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ddjvuapi" >&5
 $as_echo_n "checking for ddjvuapi... " >&6; }
-  if test -x "$PKG_CONFIG" ; then
+  if test -n "$DDJVUAPI_LIBS" ; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"user provided\"" >&5
+$as_echo "\"user provided\"" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: using DDJVUAPI_LIBS=$DDJVUAPI_LIBS" >&5
+$as_echo "using DDJVUAPI_LIBS=$DDJVUAPI_LIBS" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: using DDJVUAPI_CFLAGS=$DDJVUAPI_CFLAGS" >&5
+$as_echo "using DDJVUAPI_CFLAGS=$DDJVUAPI_CFLAGS" >&6; }
+  elif test -x "$PKG_CONFIG" ; then
     if $PKG_CONFIG ddjvuapi ; then
        ac_ddjvuapi=yes
        { $as_echo "$as_me:${as_lineno-$LINENO}: result: found" >&5

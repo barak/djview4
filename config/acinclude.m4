@@ -217,7 +217,7 @@ AC_DEFUN([AC_PROG_PKG_CONFIG],
 
 
 dnl ------------------------------------------------------------------
-dnl @synopsis AC_PATH_DDJVUAPI([action-if-found],[action-if-notfound])
+dnl @synopsis AC_PATH_DDJVUUAPI([action-if-found],[action-if-notfound])
 dnl Search for ddjvuapi.  Defines HAVE_DDJVUAPI.
 dnl Sets output variables DDJVUAPI_CFLAGS and DDJVUAPI_LIBS
 dnl ------------------------------------------------------------------
@@ -228,7 +228,11 @@ AC_DEFUN([AC_PATH_DDJVUAPI],
   AC_ARG_VAR(DDJVUAPI_LIBS, [Libraries for ddjvuapi])
   AC_ARG_VAR(DDJVUAPI_CFLAGS, [Compilation flags for ddjvuapi])
   AC_MSG_CHECKING([for ddjvuapi])
-  if test -x "$PKG_CONFIG" ; then
+  if test -n "$DDJVUAPI_LIBS" ; then
+    AC_MSG_RESULT([user defined])
+    AC_MSG_RESULT([using DDJVUAPI_LIBS=$DDJVUAPI_LIBS])
+    AC_MSG_RESULT([using DDJVUAPI_CFLAGS=$DDJVUAPI_CFLAGS])
+  elif test -x "$PKG_CONFIG" ; then
     if $PKG_CONFIG ddjvuapi ; then
        ac_ddjvuapi=yes
        AC_MSG_RESULT([found])

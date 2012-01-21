@@ -106,7 +106,7 @@ QDjVuContext::callback(ddjvu_context_t *, void *closure)
     {
       qcontext->flag = true;
       QEvent *qevent = new QEvent(QEvent::User);
-	  QCoreApplication::postEvent(qcontext, qevent);
+      QCoreApplication::postEvent(qcontext, qevent);
     }
 }
 
