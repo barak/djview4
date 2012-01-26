@@ -4511,12 +4511,13 @@ qstring_puts(miniexp_io_t *io, const char *s)
 static QString
 miniexp_to_string(miniexp_t expr, int width=40, bool octal=false)
 {
+  static int one = 1;
   QByteArray buffer;
   miniexp_io_t io;
   miniexp_io_init(&io);
   io.fputs = qstring_puts;
   io.data[1] = (void*)&buffer;
-  io.print_7bits = (octal) ? 1 : 0;
+  io.p_print7bits = (octal ? &one : 0);
   miniexp_pprint_r(&io, expr, width);
   return QString::fromUtf8(buffer.data());
 }
