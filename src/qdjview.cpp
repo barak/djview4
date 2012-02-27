@@ -96,7 +96,7 @@
 
 
 #include "qdjvu.h"
-#include "qdjvuhttp.h"
+#include "qdjvunet.h"
 #include "qdjvuwidget.h"
 #include "qdjview.h"
 #include "qdjviewprefs.h"
@@ -1323,6 +1323,7 @@ QDjView::applyPreferences(void)
   applySaved(getSavedPrefs());
   
   // Other preferences
+  QDjVuNetDocument::setProxy(prefs->proxyUrl);
   djvuContext.setCacheSize(prefs->cacheSize);
   widget->setPixelCacheSize(prefs->pixelCacheSize);
   widget->setModifiersForLens(prefs->modifiersForLens);
@@ -2513,20 +2514,9 @@ bool
 QDjView::open(QUrl url)
 {
   closeDocument();
-  QDjVuHttpDocument *doc = new QDjVuHttpDocument(true);
+  QDjVuNetDocument *doc = new QDjVuNetDocument(true);
   connect(doc, SIGNAL(error(QString,QString,int)),
           errorDialog, SLOT(error(QString,QString,int)));
-  if (prefs->proxyUrl.isValid() && prefs->proxyUrl.scheme() == "http")
-    {
-      QUrl proxyUrl = prefs->proxyUrl;
-      QString host =  proxyUrl.host();
-      int port = proxyUrl.port(8080);
-      QString user = proxyUrl.userName();
-      QString pass = proxyUrl.password();
-      if (!host.isEmpty() && proxyUrl.path().isEmpty() && port >=0 )
-        doc->setProxy(host, port, user, pass);
-    }
-  
   QUrl docurl = removeDjVuCgiArguments(url);
   doc->setUrl(&djvuContext, docurl);
   if (!doc->isValid())
