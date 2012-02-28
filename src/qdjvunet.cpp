@@ -102,6 +102,8 @@ QDjVuNetDocument::Private::readyRead()
 void 
 QDjVuNetDocument::Private::readyRead(QNetworkReply *reply)
 {
+  qDebug() << "*** readyRead " << reply;
+
   QByteArray b = reply->readAll();
   int streamid = reqid.value(reply, -1);
   if (streamid >= 0 && b.size() > 0)
@@ -168,6 +170,7 @@ QDjVuNetDocument::Private::error(QNetworkReply::NetworkError code)
 void 
 QDjVuNetDocument::Private::error(QNetworkReply *reply, QNetworkReply::NetworkError)
 {
+  qDebug() << "*** error " << reply << " " << reply->errorString();
   int streamid = reqid.value(reply, -1);
   if (streamid >= 0)
     {
@@ -184,6 +187,7 @@ QDjVuNetDocument::Private::error(QNetworkReply *reply, QNetworkReply::NetworkErr
 void 
 QDjVuNetDocument::Private::finished(QNetworkReply *reply)
 {
+  qDebug() << "*** finished " << reply;
   int streamid = reqid.value(reply, -1);
   if (streamid >= 0)
     {
@@ -203,7 +207,7 @@ QDjVuNetDocument::Private::finished(QNetworkReply *reply)
 void 
 QDjVuNetDocument::Private::sslErrors(QNetworkReply *reply, const QList<QSslError>& )
 {
-  qDebug() << "sslerrors ";
+  qDebug() << "*** sslerrors " << reply;
   /// TODO: keep a list of trusted hosts.
   reply->ignoreSslErrors();
 }
@@ -212,6 +216,7 @@ QDjVuNetDocument::Private::sslErrors(QNetworkReply *reply, const QList<QSslError
 void
 QDjVuNetDocument::Private::authenticationRequired(QNetworkReply *reply, QAuthenticator *auth)
 {
+  qDebug() << "*** authenticationRequired" << reply << auth;
   reply->abort();
 }
 
