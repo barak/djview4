@@ -19,21 +19,25 @@
 # include "config.h"
 #endif
 
-#include <QAuthenticator>
-#include <QCoreApplication>
-#include <QList>
-#include <QMap>
-#include <QNetworkAccessManager>
-#include <QNetworkProxy>
-#include <QNetworkReply>
-#include <QNetworkRequest>
-#include <QPointer>
-#include <QSslError>
-
 #include "qdjvunet.h"
 #include "qdjviewprefs.h"
 #include <libdjvu/ddjvuapi.h>
 
+#include <QCoreApplication>
+#include <QDebug>
+#include <QList>
+#include <QMap>
+#include <QPointer>
+
+#if QT_VERSION >= 0x40400
+
+#include <QAuthenticator>
+#include <QNetworkAccessManager>
+#include <QNetworkProxy>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QSslError>
+#include <QSslSocket>
 
 class QDjVuNetDocument::Private : public QObject
 {
@@ -52,10 +56,13 @@ public:
 
 public slots:
   void readyRead();
+  void error(QNetworkReply::NetworkError code);
   void readyRead(QNetworkReply *reply);
+  void error(QNetworkReply *reply, QNetworkReply::NetworkError code);
   void finished(QNetworkReply *reply);
   void sslErrors(QNetworkReply *reply, const QList<QSslError>&);
-
+  void authenticationRequired (QNetworkReply *reply, QAuthenticator *auth);
+  
 };
 
 
@@ -150,6 +157,31 @@ QDjVuNetDocument::Private::readyRead(QNetworkReply *reply)
 
 
 void 
+QDjVuNetDocument::Private::error(QNetworkReply::NetworkError code)
+{
+  QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
+  if (reply) 
+    error(reply, code);
+}
+
+
+void 
+QDjVuNetDocument::Private::error(QNetworkReply *reply, QNetworkReply::NetworkError)
+{
+  int streamid = reqid.value(reply, -1);
+  if (streamid >= 0)
+    {
+      QString msg = tr("%1 while retrieving '%2'.")
+        .arg(reply->errorString())
+        .arg(reply->url().toString());
+      emit q->error(msg , __FILE__, __LINE__);
+      ddjvu_stream_close(*q, streamid, false);
+      reqid[reply] = -1;
+    }
+}
+
+
+void 
 QDjVuNetDocument::Private::finished(QNetworkReply *reply)
 {
   int streamid = reqid.value(reply, -1);
@@ -157,14 +189,10 @@ QDjVuNetDocument::Private::finished(QNetworkReply *reply)
     {
       if (reply->bytesAvailable() > 0)
         readyRead(reply);
-      if (reply->error() != QNetworkReply::NoError)
-        {
-          QString msg = tr("%1 while retrieving '%2'.")
-            .arg(reply->errorString())
-            .arg(url.toString());
-          emit q->error(msg , __FILE__, __LINE__);
-        }
-      ddjvu_stream_close(*q, streamid, false);
+      if (reply->error() == QNetworkReply::NoError)
+        ddjvu_stream_close(*q, streamid, false);
+      else
+        error(reply, reply->error());
     }
   reqid.remove(reply);
   reqok.remove(reply);
@@ -173,11 +201,18 @@ QDjVuNetDocument::Private::finished(QNetworkReply *reply)
 
 
 void 
-QDjVuNetDocument::Private::sslErrors(QNetworkReply *reply, 
-                                     const QList<QSslError>& )
+QDjVuNetDocument::Private::sslErrors(QNetworkReply *reply, const QList<QSslError>& )
 {
+  qDebug() << "sslerrors ";
   /// TODO: keep a list of trusted hosts.
   reply->ignoreSslErrors();
+}
+
+
+void
+QDjVuNetDocument::Private::authenticationRequired(QNetworkReply *reply, QAuthenticator *auth)
+{
+  reply->abort();
 }
 
 
@@ -187,10 +222,8 @@ QDjVuNetDocument::Private::sslErrors(QNetworkReply *reply,
   documents available throught network requests. */
 
 
-/*! Construct a \a QDjVuNetDocument object that can perform
-    up to \a nConnections simultaneous HTTP connections. 
-    See \a QDjVuDocument::QDjVuDocument for the explanation
-    of the other two arguments. */
+/*! Construct a \a QDjVuNetDocument object.
+    See \a QDjVuDocument::QDjVuDocument for the other two arguments. */
 
 QDjVuNetDocument::QDjVuNetDocument(bool autoDelete, QObject *parent)
   : QDjVuDocument(autoDelete, parent), 
@@ -215,7 +248,8 @@ QDjVuNetDocument::QDjVuNetDocument(QObject *parent)
           p, SLOT(finished(QNetworkReply*)) );
   connect(mgr, SIGNAL(sslErrors(QNetworkReply*, const QList<QSslErrors>&)),
           p, SLOT(sslErrors(QNetworkReply*, const QList<QSslErrors>&)) );
-  
+  connect(mgr, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
+          p, SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)) );
 }
 
 QNetworkAccessManager* 
@@ -292,7 +326,10 @@ QDjVuNetDocument::newstream(int streamid, QString, QUrl url)
   QString agent = "Djview/" + QDjViewPrefs::versionString();
   request.setRawHeader("User-Agent", agent.toAscii());
   QNetworkReply *reply = manager()->get(request);
-  connect(reply, SIGNAL(readyRead()), p, SLOT(readyRead()));
+  connect(reply, SIGNAL(readyRead()), 
+          p, SLOT(readyRead()) );
+  connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), 
+          p, SLOT(error(QNetworkReply::NetworkError)) );
   emit info(tr("Requesting '%1'").arg(url.toString()));
   p->reqid[reply] = streamid;
   p->reqok[reply] = false;
@@ -303,6 +340,54 @@ QDjVuNetDocument::newstream(int streamid, QString, QUrl url)
 // MOC
 
 #include "qdjvunet.moc"
+
+
+#else // QT_VERSION < 0x40400
+
+// ----------------------------------------
+// STUBS QT < 4.4.0
+
+
+class QDjVuNetDocument::Private : public QObject
+{
+  Q_OBJECT
+public:
+  Private() : QObject() { }
+};
+
+QDjVuNetDocument::~QDjVuNetDocument() 
+{ }
+
+QDjVuNetDocument::QDjVuNetDocument(bool autoDelete, QObject *parent)
+  : QDjVuDocument(autoDelete, parent) 
+{ }
+
+QDjVuNetDocument::QDjVuNetDocument(QObject *parent)
+  : QDjVuDocument(parent) 
+{ }
+
+bool 
+QDjVuNetDocument::setUrl(QDjVuContext *ctx, QUrl url, bool cache)
+{
+  if (url.isValid() && url.scheme() == "file" && url.host().isEmpty())
+    return setFileName(ctx, url.toLocalFile(), cache);
+  return false;
+}
+
+QNetworkAccessManager* 
+QDjVuNetDocument::manager()
+{ return 0; }
+
+void 
+QDjVuNetDocument::setProxy(QUrl)
+{ }
+
+void 
+QDjVuNetDocument::newstream(int, QString, QUrl)
+{ }
+
+#endif
+
 
 
 

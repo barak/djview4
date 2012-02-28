@@ -1049,399 +1049,399 @@
         <translation>&lt;html&gt;&lt;b&gt;文件檢視區域。&lt;/b&gt;&lt;br/&gt; 這是DjVu文件的主要察看區域。 不過得要先開啟DjVu文件哦。&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1451"/>
+        <location filename="qdjview.cpp" line="1452"/>
         <source>Option &apos;%1&apos; requires boolean argument.</source>
         <translation>選項 &apos;%1&apos; 需要布林型參數。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1458"/>
+        <location filename="qdjview.cpp" line="1459"/>
         <source>Illegal value &apos;%2&apos; for option &apos;%1&apos;.</source>
         <translation>取值 &apos;%2&apos; 對選項 &apos;%1&apos; 無效。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1576"/>
+        <location filename="qdjview.cpp" line="1577"/>
         <source>Toolbar option &apos;%1&apos; is not implemented.</source>
         <translation>工具軸選項 &apos;%1&apos; 尚未實現。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1589"/>
+        <location filename="qdjview.cpp" line="1590"/>
         <source>Toolbar option &apos;%1&apos; is not recognized.</source>
         <translation>工具軸選項 &apos;%1&apos; 未識別。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1635"/>
+        <location filename="qdjview.cpp" line="1636"/>
         <source>Option &apos;%1&apos; requires a standalone viewer.</source>
         <translation>選項 &apos;%1&apos; 需要單獨的檢視器。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1890"/>
+        <location filename="qdjview.cpp" line="1891"/>
         <source>Deprecated option &apos;%1&apos;</source>
         <translation>過期選項 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1938"/>
+        <location filename="qdjview.cpp" line="1939"/>
         <source>Option &apos;%1&apos; is not implemented.</source>
         <translation>選項 &apos;%1&apos; 尚未實現。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1943"/>
+        <location filename="qdjview.cpp" line="1944"/>
         <source>Option &apos;%1&apos; is not recognized.</source>
         <translation>選項 &apos;%1&apos; 未識別。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2213"/>
-        <location filename="qdjview.cpp" line="2475"/>
+        <location filename="qdjview.cpp" line="2214"/>
+        <location filename="qdjview.cpp" line="2476"/>
         <source>DjView</source>
         <translation>DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2366"/>
+        <location filename="qdjview.cpp" line="2367"/>
         <source>Thumbnails</source>
         <translation>縮略圖</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2373"/>
+        <location filename="qdjview.cpp" line="2374"/>
         <source>Outline</source>
         <translation>書籤</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2380"/>
+        <location filename="qdjview.cpp" line="2381"/>
         <source>Find</source>
         <translation>尋找</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2495"/>
+        <location filename="qdjview.cpp" line="2496"/>
         <source>Cannot open file &apos;%1&apos;.</source>
         <translation>未能開啟檔案 &apos;%1&apos;。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2496"/>
+        <location filename="qdjview.cpp" line="2497"/>
         <source>Opening DjVu file</source>
         <translation>開啟DjVu檔案</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2535"/>
+        <location filename="qdjview.cpp" line="2525"/>
         <source>Cannot open URL &apos;%1&apos;.</source>
         <translation>未能開啟URL &apos;%1&apos;。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2536"/>
+        <location filename="qdjview.cpp" line="2526"/>
         <source>Opening DjVu document</source>
         <translation>開啟DjVu文件</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2601"/>
+        <location filename="qdjview.cpp" line="2591"/>
         <source>Cannot find page numbered: %1</source>
         <translation>未能找到此編號的頁: %1</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2633"/>
-        <location filename="qdjview.cpp" line="2663"/>
+        <location filename="qdjview.cpp" line="2623"/>
+        <location filename="qdjview.cpp" line="2653"/>
         <source>Cannot find page named: %1</source>
         <translation>未能找到此名稱的頁: %1</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2876"/>
+        <location filename="qdjview.cpp" line="2866"/>
         <source>Unrecognized sidebar options &apos;%1&apos;.</source>
         <translation>未識別的側欄選項 &apos;%1&apos;。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2937"/>
-        <location filename="qdjview.cpp" line="2973"/>
+        <location filename="qdjview.cpp" line="2927"/>
+        <location filename="qdjview.cpp" line="2963"/>
         <source>Print - DjView</source>
         <comment>dialog caption</comment>
         <translation>列印 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2938"/>
+        <location filename="qdjview.cpp" line="2928"/>
         <source>&lt;html&gt; This file was served with printing restrictions.Do you want to print it anyway?&lt;/html&gt;</source>
         <translation>&lt;html&gt; 本檔案有列印限制。是否仍然列印？&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2953"/>
-        <location filename="qdjview.cpp" line="2993"/>
+        <location filename="qdjview.cpp" line="2943"/>
+        <location filename="qdjview.cpp" line="2983"/>
         <source>Save - DjView</source>
         <comment>dialog caption</comment>
         <translation>儲存 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2954"/>
+        <location filename="qdjview.cpp" line="2944"/>
         <source>&lt;html&gt; This file was served with saving restrictions.Do you want to save it anyway?&lt;/html&gt;</source>
         <translation>&lt;html&gt; 本檔案有儲存限制。是否仍然儲存？&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3012"/>
+        <location filename="qdjview.cpp" line="3002"/>
         <source>Export - DjView</source>
         <comment>dialog caption</comment>
         <translation>導出 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3287"/>
+        <location filename="qdjview.cpp" line="3277"/>
         <source>Text files</source>
         <comment>save filter</comment>
         <translation>字檔檔案</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3288"/>
-        <location filename="qdjview.cpp" line="3335"/>
+        <location filename="qdjview.cpp" line="3278"/>
+        <location filename="qdjview.cpp" line="3325"/>
         <source>All files</source>
         <comment>save filter</comment>
         <translation>所有檔案</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3289"/>
+        <location filename="qdjview.cpp" line="3279"/>
         <source>Save Text - DjView</source>
         <comment>dialog caption</comment>
         <translation>儲存字檔 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3305"/>
-        <location filename="qdjview.cpp" line="3350"/>
-        <location filename="qdjview.cpp" line="3370"/>
+        <location filename="qdjview.cpp" line="3295"/>
+        <location filename="qdjview.cpp" line="3340"/>
+        <location filename="qdjview.cpp" line="3360"/>
         <source>Error - DjView</source>
         <comment>dialog caption</comment>
         <translation>錯誤 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3306"/>
-        <location filename="qdjview.cpp" line="3371"/>
+        <location filename="qdjview.cpp" line="3296"/>
+        <location filename="qdjview.cpp" line="3361"/>
         <source>Cannot write file &apos;%1&apos;.
 %2.</source>
         <translation>未能寫入檔案 &apos;%1&apos;.
 %2.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3332"/>
+        <location filename="qdjview.cpp" line="3322"/>
         <source>%1 files (*.%2);;</source>
         <comment>save image filter</comment>
         <translation>%1 檔案 (*.%2);;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3336"/>
+        <location filename="qdjview.cpp" line="3326"/>
         <source>Save Image - DjView</source>
         <comment>dialog caption</comment>
         <translation>儲存影像 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3351"/>
+        <location filename="qdjview.cpp" line="3341"/>
         <source>Cannot determine file format.
 Filename &apos;%1&apos; has no suffix.</source>
         <translation>無法確定檔案格式。
 檔名 &apos;%1&apos; 未包含副檔名。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3364"/>
+        <location filename="qdjview.cpp" line="3354"/>
         <source>Image format %1 not supported.</source>
         <translation>影像格式 %1 未支援。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3591"/>
+        <location filename="qdjview.cpp" line="3581"/>
         <source>Cannot decode page %1.</source>
         <translation>未能解碼頁面 %1。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3593"/>
+        <location filename="qdjview.cpp" line="3583"/>
         <source>Cannot decode document.</source>
         <translation>未能解碼文件。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3595"/>
+        <location filename="qdjview.cpp" line="3585"/>
         <source>Decoding DjVu document</source>
         <translation>解碼DjVu文件</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3728"/>
+        <location filename="qdjview.cpp" line="3718"/>
         <source> P%1/%2 %3x%4 %5dpi </source>
         <translation> P%1/%2 %3x%4 %5dpi </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3735"/>
+        <location filename="qdjview.cpp" line="3725"/>
         <source> x=%1 y=%2 </source>
         <translation> x=%1 y=%2 </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3739"/>
+        <location filename="qdjview.cpp" line="3729"/>
         <source> %3x%4+%1+%2 </source>
         <translation> %3x%4+%1+%2 </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3766"/>
+        <location filename="qdjview.cpp" line="3756"/>
         <source>Go: 1 page forward.</source>
         <translation>轉到：向前一頁。</translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3767"/>
+        <location filename="qdjview.cpp" line="3757"/>
         <source>Go: %n pages forward.</source>
         <translation>
             <numerusform>轉到：向前 %n 頁。</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3769"/>
+        <location filename="qdjview.cpp" line="3759"/>
         <source>Go: 1 page backward.</source>
         <translation>轉到：向后一頁。</translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3770"/>
+        <location filename="qdjview.cpp" line="3760"/>
         <source>Go: %n pages backward.</source>
         <translation>
             <numerusform>轉到：向后 %n 頁。</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3773"/>
-        <location filename="qdjview.cpp" line="3775"/>
+        <location filename="qdjview.cpp" line="3763"/>
+        <location filename="qdjview.cpp" line="3765"/>
         <source>Go: page %1.</source>
         <translation>轉到：第 %1 頁。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3777"/>
+        <location filename="qdjview.cpp" line="3767"/>
         <source>Go: %1</source>
         <translation>轉到：%1</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3779"/>
+        <location filename="qdjview.cpp" line="3769"/>
         <source> (in other window.)</source>
         <translation> (在其他視窗)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3866"/>
+        <location filename="qdjview.cpp" line="3856"/>
         <source>Cannot resolve link &apos;%1&apos;</source>
         <translation>未能解析鏈結 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3894"/>
+        <location filename="qdjview.cpp" line="3884"/>
         <source>Cannot spawn a browser for url &apos;%1&apos;</source>
         <translation>未能用瀏覽器開啟URL &apos;%1&apos;</translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3908"/>
+        <location filename="qdjview.cpp" line="3898"/>
         <source>%n characters</source>
         <translation>
             <numerusform>%n 字元</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3914"/>
+        <location filename="qdjview.cpp" line="3904"/>
         <source>Copy text (%1)</source>
         <translation>複製字檔 (%1)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3915"/>
+        <location filename="qdjview.cpp" line="3905"/>
         <source>Save text as...</source>
         <translation>另存字檔為...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3918"/>
+        <location filename="qdjview.cpp" line="3908"/>
         <source>Copy text into the clipboard.</source>
         <translation>複製字檔到剪貼簿。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3919"/>
+        <location filename="qdjview.cpp" line="3909"/>
         <source>Save text into a file.</source>
         <translation>儲存字檔到檔案。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3921"/>
+        <location filename="qdjview.cpp" line="3911"/>
         <source>Copy image (%1x%2 pixels)</source>
         <translation>複製影像(%1x%2像素)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3923"/>
+        <location filename="qdjview.cpp" line="3913"/>
         <source>Save image as...</source>
         <translation>另存影像為...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3924"/>
+        <location filename="qdjview.cpp" line="3914"/>
         <source>Copy image into the clipboard.</source>
         <translation>複製影像到剪貼簿。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3925"/>
+        <location filename="qdjview.cpp" line="3915"/>
         <source>Save image into a file.</source>
         <translation>儲存影像到檔案。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3927"/>
+        <location filename="qdjview.cpp" line="3917"/>
         <source>Zoom to rectangle</source>
         <translation>縮放到矩形區域</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3928"/>
+        <location filename="qdjview.cpp" line="3918"/>
         <source>Zoom the selection to fit the window.</source>
         <translation>縮放選中區域適應視窗。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3934"/>
+        <location filename="qdjview.cpp" line="3924"/>
         <source>Copy URL</source>
         <translation>複製URL</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3935"/>
+        <location filename="qdjview.cpp" line="3925"/>
         <source>Save into the clipboard an URL that highlights the selection.</source>
         <translation>複製選中物件的URL到剪貼簿。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3937"/>
+        <location filename="qdjview.cpp" line="3927"/>
         <source>Copy Maparea</source>
         <translation>複製對映區域</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3938"/>
+        <location filename="qdjview.cpp" line="3928"/>
         <source>Save into the clipboard a maparea annotation expression for program djvused.</source>
         <translation>複製對映區域註釋對應的djvu程式碼到剪貼簿。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4089"/>
+        <location filename="qdjview.cpp" line="4079"/>
         <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;%2&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=%3&gt;%3&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;%2&lt;p&gt;DjVu文件檢視工具&lt;br&gt;&lt;a href=%3&gt;%3&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;本程式是自由軟體。你可依據自由軟體基金會發布的GNU GPL的條款重新發布或修改本程式。 本程式之發布&lt;i&gt;無任何擔保&lt;/i&gt;。 詳細請參見 GNU GPL。&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4109"/>
+        <location filename="qdjview.cpp" line="4099"/>
         <source>About DjView</source>
         <translation>關於DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4129"/>
+        <location filename="qdjview.cpp" line="4119"/>
         <source>DjVu files</source>
         <translation>DjVu檔案</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4130"/>
+        <location filename="qdjview.cpp" line="4120"/>
         <source>All files</source>
         <translation>所有檔案</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4131"/>
+        <location filename="qdjview.cpp" line="4121"/>
         <source>Open - DjView</source>
         <comment>dialog caption</comment>
         <translation>開啟 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4148"/>
+        <location filename="qdjview.cpp" line="4138"/>
         <source>Open Location - DjView</source>
         <comment>dialog caption</comment>
         <translation>開啟位置 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4149"/>
+        <location filename="qdjview.cpp" line="4139"/>
         <source>Enter the URL of a DjVu document:</source>
         <translation>匯入DjVu文件的URL：</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4166"/>
+        <location filename="qdjview.cpp" line="4156"/>
         <source>Information - DjView</source>
         <comment>dialog caption</comment>
         <translation>資訊 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4181"/>
+        <location filename="qdjview.cpp" line="4171"/>
         <source>Metadata - DjView</source>
         <comment>dialog caption</comment>
         <translation>元資料 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4324"/>
+        <location filename="qdjview.cpp" line="4314"/>
         <source>&amp;Clear History</source>
         <translation>清除曆史(&amp;C)</translation>
     </message>
@@ -3296,31 +3296,54 @@ Do you want to replace it?</source>
 <context>
     <name>QDjVuHttpDocument</name>
     <message>
-        <location filename="qdjvuhttp.cpp" line="138"/>
         <source>Unsupported url scheme &apos;%1:&apos;.</source>
-        <translation>不支援的url格式 &apos;%1:&apos;.</translation>
+        <translation type="obsolete">不支援的url格式 &apos;%1:&apos;.</translation>
     </message>
     <message>
-        <location filename="qdjvuhttp.cpp" line="194"/>
         <source>Requesting &apos;%1&apos;</source>
-        <translation>要求 %1</translation>
+        <translation type="obsolete">要求 %1</translation>
     </message>
     <message>
-        <location filename="qdjvuhttp.cpp" line="232"/>
         <source>Received %1 data while retrieving %2.</source>
         <comment>%1 is a mime type</comment>
-        <translation>接收 %2 時收到 %1 資料。</translation>
+        <translation type="obsolete">接收 %2 時收到 %1 資料。</translation>
     </message>
     <message>
-        <location filename="qdjvuhttp.cpp" line="238"/>
         <source>Received http status %1 while retrieving %2.</source>
         <comment>%1 is an http status code</comment>
-        <translation>接收 %2 時收到http狀態 %1。</translation>
+        <translation type="obsolete">接收 %2 時收到http狀態 %1。</translation>
     </message>
     <message>
-        <location filename="qdjvuhttp.cpp" line="272"/>
         <source>%1 while retrieving &apos;%2&apos;.</source>
-        <translation>接收 %2 時 %1。</translation>
+        <translation type="obsolete">接收 %2 時 %1。</translation>
+    </message>
+</context>
+<context>
+    <name>QDjVuNetDocument</name>
+    <message>
+        <location filename="qdjvunet.cpp" line="298"/>
+        <source>Requesting &apos;%1&apos;</source>
+        <translation type="unfinished">要求 %1</translation>
+    </message>
+</context>
+<context>
+    <name>QDjVuNetDocument::Private</name>
+    <message>
+        <location filename="qdjvunet.cpp" line="128"/>
+        <source>Received http status %1 while retrieving %2.</source>
+        <comment>%1 is an http status code</comment>
+        <translation type="unfinished">接收 %2 時收到http狀態 %1。</translation>
+    </message>
+    <message>
+        <location filename="qdjvunet.cpp" line="140"/>
+        <source>Received &lt;%1&gt; data while retrieving %2.</source>
+        <comment>%1 is a mime type</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qdjvunet.cpp" line="164"/>
+        <source>%1 while retrieving &apos;%2&apos;.</source>
+        <translation type="unfinished">接收 %2 時 %1。</translation>
     </message>
 </context>
 </TS>
