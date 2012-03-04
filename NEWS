@@ -83,3 +83,4 @@ NEW SINCE VERSION 4.8
 - Added option to override printing and saving restrictions.
 - Automatic reloading of djvu documents when the file is changed.
 - New chinese translations.
+- Improved network code (needs Qt>=4.4.)
