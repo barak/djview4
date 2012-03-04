@@ -4311,7 +4311,7 @@ QDjView::fillRecent()
           QString base = url.path().section("/",-1);
           QString name = url.toLocalFile();
           if (name.isEmpty())
-            name = url.toString();
+            name = url.toString(QUrl::RemovePassword);
           QFontMetrics metrics = QFont();
           name = metrics.elidedText(name, Qt::ElideMiddle, 400);
           name = QString("%1 [%2]").arg(base).arg(name);
