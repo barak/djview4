@@ -15,8 +15,8 @@
 //C- GNU General Public License for more details.
 //C-  ------------------------------------------------------------------
 
-#ifndef QDJVUHTTP_H
-#define QDJVUHTTP_H
+#ifndef QDJVUNET_H
+#define QDJVUNET_H
 
 #if AUTOCONF
 # include "config.h"
@@ -24,50 +24,28 @@
 
 #include <qdjvu.h>
 
-#include <QList>
-#include <QVector>
-#include <QHttp>
+class QAuthenticator;
+class QNetworkAccessManager;
 
-
-class QDjVuHttpDocument : public QDjVuDocument
+class QDjVuNetDocument : public QDjVuDocument
 {
   Q_OBJECT
-
 public:
-  ~QDjVuHttpDocument();
-  QDjVuHttpDocument(int nConnections=2, bool autoDelete=false, 
-                    QObject *parent=0);
-  QDjVuHttpDocument(bool autoDelete, QObject *parent=0);
-  QDjVuHttpDocument(QObject *parent);
-  void setProxy(QString host, int port=8080, 
-                QString user="", QString pass="");
+  ~QDjVuNetDocument();
+  QDjVuNetDocument(bool autoDelete=false, QObject *parent=0);
+  QDjVuNetDocument(QObject *parent);
   bool setUrl(QDjVuContext *ctx, QUrl url, bool cache=true);
-  
+  static QNetworkAccessManager* manager();
+  static void setProxy(QUrl proxyurl);
 protected:
   virtual void newstream(int streamid, QString name, QUrl url);
-  
+signals:
+  void authRequired(QString why, QString &user, QString &pass);
+  void sslWhiteList(QString why, bool &okay);
 private:
-  struct Req  { int streamid; QUrl url; };
-  struct Conn { QHttp *http; int reqid; int streamid; };
-  QList<Req>    requests;
-  QVector<Conn> connections;
-  QDjVuContext *ctx;
-  QUrl          url;
-  bool          cache;
-  void schedule(void);
-  void init(void);
-  
-private slots:
-  void response(const QHttpResponseHeader &resp);
-  void read(void);
-  void finished(int id, bool error);
+  class Private;
+  Private *p;
 };
-
-
-
-
-
-
 
 #endif
 

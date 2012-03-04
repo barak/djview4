@@ -65,10 +65,10 @@ macx {
 
 # -- djvu files
 HEADERS += qdjvu.h 
-HEADERS += qdjvuhttp.h 
+HEADERS += qdjvunet.h 
 HEADERS += qdjvuwidget.h
 SOURCES += qdjvu.cpp
-SOURCES += qdjvuhttp.cpp
+SOURCES += qdjvunet.cpp
 SOURCES += qdjvuwidget.cpp
 RESOURCES += qdjvuwidget.qrc 
 
@@ -87,6 +87,7 @@ SOURCES += qdjview.cpp
 SOURCES += djview.cpp
 RESOURCES += qdjview.qrc 
 FORMS += qdjviewerrordialog.ui
+FORMS += qdjviewauthdialog.ui 
 FORMS += qdjviewinfodialog.ui 
 FORMS += qdjviewmetadialog.ui 
 FORMS += qdjviewsavedialog.ui 

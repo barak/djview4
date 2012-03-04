@@ -83,6 +83,7 @@
 #include <QStackedLayout>
 #include <QStatusBar>
 #include <QString>
+#include <QTextDocument>
 #include <QTextStream>
 #include <QTimer>
 #include <QTabWidget>
@@ -96,7 +97,7 @@
 
 
 #include "qdjvu.h"
-#include "qdjvuhttp.h"
+#include "qdjvunet.h"
 #include "qdjvuwidget.h"
 #include "qdjview.h"
 #include "qdjviewprefs.h"
@@ -1323,6 +1324,7 @@ QDjView::applyPreferences(void)
   applySaved(getSavedPrefs());
   
   // Other preferences
+  QDjVuNetDocument::setProxy(prefs->proxyUrl);
   djvuContext.setCacheSize(prefs->cacheSize);
   widget->setPixelCacheSize(prefs->pixelCacheSize);
   widget->setModifiersForLens(prefs->modifiersForLens);
@@ -2513,20 +2515,13 @@ bool
 QDjView::open(QUrl url)
 {
   closeDocument();
-  QDjVuHttpDocument *doc = new QDjVuHttpDocument(true);
+  QDjVuNetDocument *doc = new QDjVuNetDocument(true);
   connect(doc, SIGNAL(error(QString,QString,int)),
           errorDialog, SLOT(error(QString,QString,int)));
-  if (prefs->proxyUrl.isValid() && prefs->proxyUrl.scheme() == "http")
-    {
-      QUrl proxyUrl = prefs->proxyUrl;
-      QString host =  proxyUrl.host();
-      int port = proxyUrl.port(8080);
-      QString user = proxyUrl.userName();
-      QString pass = proxyUrl.password();
-      if (!host.isEmpty() && proxyUrl.path().isEmpty() && port >=0 )
-        doc->setProxy(host, port, user, pass);
-    }
-  
+  connect(doc, SIGNAL(authRequired(QString,QString&,QString&)),
+          this, SLOT(authRequired(QString,QString&,QString&)) );
+  connect(doc, SIGNAL(sslWhiteList(QString,bool&)),
+          this, SLOT(sslWhiteList(QString,bool&)) );
   QUrl docurl = removeDjVuCgiArguments(url);
   doc->setUrl(&djvuContext, docurl);
   if (!doc->isValid())
@@ -2539,6 +2534,34 @@ QDjView::open(QUrl url)
   open(doc, url);
   addRecent(docurl);
   return true;
+}
+
+
+void 
+QDjView::sslWhiteList(QString why, bool &okay)
+{
+  QString ewhy = Qt::escape(why);
+  if (QMessageBox::question(this,
+        tr("Certificate validation error - DjView", "dialog caption"),
+        tr("<html> %1  Do you want to continue anyway? </html>").arg(ewhy),
+        QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok)
+    okay = true;
+  else
+    closeDocument();
+}
+
+void 
+QDjView::authRequired(QString why, QString &user, QString &pass)
+{
+  QDjViewAuthDialog *dialog = new QDjViewAuthDialog(this);
+  dialog->setInfo(why);
+  dialog->setUser(user);
+  dialog->setPass(pass);
+  int result = dialog->exec();
+  user = dialog->user();
+  pass = dialog->pass();
+  if (result != QDialog::Accepted)
+    closeDocument();
 }
 
 
@@ -2936,7 +2959,7 @@ QDjView::warnAboutPrintingRestrictions()
     if (QMessageBox::warning(this, 
                              tr("Print - DjView", "dialog caption"),
                              tr("<html> This file was served with "
-                                "printing restrictions." 
+                                "printing restrictions. " 
                                 "Do you want to print it anyway?</html>"),
                              QMessageBox::Yes | QMessageBox::Cancel,
                              QMessageBox::Cancel) != QMessageBox::Yes )
@@ -2952,7 +2975,7 @@ QDjView::warnAboutSavingRestrictions()
     if (QMessageBox::warning(this, 
                              tr("Save - DjView", "dialog caption"),
                              tr("<html> This file was served with "
-                                "saving restrictions." 
+                                "saving restrictions. " 
                                 "Do you want to save it anyway?</html>"),
                              QMessageBox::Yes | QMessageBox::Cancel,
                              QMessageBox::Cancel) != QMessageBox::Yes )
