@@ -83,6 +83,7 @@
 #include <QStackedLayout>
 #include <QStatusBar>
 #include <QString>
+#include <QTextDocument>
 #include <QTextStream>
 #include <QTimer>
 #include <QTabWidget>
@@ -2517,6 +2518,10 @@ QDjView::open(QUrl url)
   QDjVuNetDocument *doc = new QDjVuNetDocument(true);
   connect(doc, SIGNAL(error(QString,QString,int)),
           errorDialog, SLOT(error(QString,QString,int)));
+  connect(doc, SIGNAL(authRequired(QString,QString&,QString&)),
+          this, SLOT(authRequired(QString,QString&,QString&)) );
+  connect(doc, SIGNAL(sslWhiteList(QString,bool&)),
+          this, SLOT(sslWhiteList(QString,bool&)) );
   QUrl docurl = removeDjVuCgiArguments(url);
   doc->setUrl(&djvuContext, docurl);
   if (!doc->isValid())
@@ -2529,6 +2534,34 @@ QDjView::open(QUrl url)
   open(doc, url);
   addRecent(docurl);
   return true;
+}
+
+
+void 
+QDjView::sslWhiteList(QString why, bool &okay)
+{
+  QString ewhy = Qt::escape(why);
+  if (QMessageBox::question(this,
+        tr("Certificate validation error - DjView", "dialog caption"),
+        tr("<html> %1  Do you want to continue anyway? </html>").arg(ewhy),
+        QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok)
+    okay = true;
+  else
+    closeDocument();
+}
+
+void 
+QDjView::authRequired(QString why, QString &user, QString &pass)
+{
+  QDjViewAuthDialog *dialog = new QDjViewAuthDialog(this);
+  dialog->setInfo(why);
+  dialog->setUser(user);
+  dialog->setPass(pass);
+  int result = dialog->exec();
+  user = dialog->user();
+  pass = dialog->pass();
+  if (result != QDialog::Accepted)
+    closeDocument();
 }
 
 
@@ -2926,7 +2959,7 @@ QDjView::warnAboutPrintingRestrictions()
     if (QMessageBox::warning(this, 
                              tr("Print - DjView", "dialog caption"),
                              tr("<html> This file was served with "
-                                "printing restrictions." 
+                                "printing restrictions. " 
                                 "Do you want to print it anyway?</html>"),
                              QMessageBox::Yes | QMessageBox::Cancel,
                              QMessageBox::Cancel) != QMessageBox::Yes )
@@ -2942,7 +2975,7 @@ QDjView::warnAboutSavingRestrictions()
     if (QMessageBox::warning(this, 
                              tr("Save - DjView", "dialog caption"),
                              tr("<html> This file was served with "
-                                "saving restrictions." 
+                                "saving restrictions. " 
                                 "Do you want to save it anyway?</html>"),
                              QMessageBox::Yes | QMessageBox::Cancel,
                              QMessageBox::Cancel) != QMessageBox::Yes )

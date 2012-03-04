@@ -235,6 +235,9 @@ protected slots:
   void performCopyOutline();
   void performCopyAnnotation();
   void maybeReloadDocument();
+  void sslWhiteList(QString why, bool &okay);
+  void authRequired(QString why, QString &user, QString &pass);
+
 
 protected:
   // mode

@@ -68,6 +68,24 @@ private:
 };
 
 
+// ----------- QDJVIEWAUTHDIALOG
+
+class QDjViewAuthDialog : public QDialog
+{
+  Q_OBJECT
+public:
+  ~QDjViewAuthDialog();
+  QDjViewAuthDialog(QWidget *parent);
+  QString user() const;
+  QString pass() const;
+public slots:
+  void setInfo(QString why);
+  void setUser(QString user);
+  void setPass(QString pass);
+private:
+  struct Private;
+  Private *d;
+};
 
 
 // ----------- QDJVIEWINFODIALOG

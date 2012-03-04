@@ -87,6 +87,7 @@ SOURCES += qdjview.cpp
 SOURCES += djview.cpp
 RESOURCES += qdjview.qrc 
 FORMS += qdjviewerrordialog.ui
+FORMS += qdjviewauthdialog.ui 
 FORMS += qdjviewinfodialog.ui 
 FORMS += qdjviewmetadialog.ui 
 FORMS += qdjviewsavedialog.ui 

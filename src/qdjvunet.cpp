@@ -27,6 +27,7 @@
 #include <QDebug>
 #include <QList>
 #include <QMap>
+#include <QSet>
 #include <QPointer>
 
 #if QT_VERSION >= 0x40400
@@ -56,22 +57,28 @@ public:
 
 public slots:
   void readyRead();
+  void finished();
   void error(QNetworkReply::NetworkError code);
-  void readyRead(QNetworkReply *reply);
-  void error(QNetworkReply *reply, QNetworkReply::NetworkError code);
-  void finished(QNetworkReply *reply);
-  void sslErrors(QNetworkReply *reply, const QList<QSslError>&);
+  void sslErrors(const QList<QSslError>&);
   void authenticationRequired (QNetworkReply *reply, QAuthenticator *auth);
-  
-};
+  void proxyAuthenticationRequired (const QNetworkProxy &proxy, QAuthenticator *auth);
 
+private:
+  void doRead(QNetworkReply *reply, int streamid);
+  void doError(QNetworkReply *reply, int streamid);
+  bool doAuth(QString why, QAuthenticator *auth);
+};
 
 QDjVuNetDocument::Private::Private(QDjVuNetDocument *q)
   : QObject(q), 
     q(q) 
 {
+  QNetworkAccessManager *mgr = manager();
+  connect(mgr, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
+          this, SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)) );
+  connect(mgr, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&,QAuthenticator*)),
+          this, SLOT(proxyAuthenticationRequired(const QNetworkProxy&,QAuthenticator*)) );
 }
-
 
 QDjVuNetDocument::Private::~Private()
 {
@@ -89,23 +96,10 @@ QDjVuNetDocument::Private::~Private()
   reqok.clear();
 }
 
-
-void 
-QDjVuNetDocument::Private::readyRead()
+void
+QDjVuNetDocument::Private::doRead(QNetworkReply *reply, int streamid)
 {
-  QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
-  if (reply) 
-    readyRead(reply);
-}
-
-
-void 
-QDjVuNetDocument::Private::readyRead(QNetworkReply *reply)
-{
-  qDebug() << "*** readyRead " << reply;
-
   QByteArray b = reply->readAll();
-  int streamid = reqid.value(reply, -1);
   if (streamid >= 0 && b.size() > 0)
     {
       if (! reqok.value(reply, false))
@@ -133,12 +127,10 @@ QDjVuNetDocument::Private::readyRead(QNetworkReply *reply)
           if (status != 200 && status != 203 && status != 0)
             {
               QString msg = tr("Received http status %1 while retrieving %2.",
-                       "%1 is an http status code")
+                               "%1 is an http status code")
                 .arg(status)
                 .arg(reply->url().toString());
               emit q->error(msg, __FILE__, __LINE__);
-              ddjvu_stream_close(*q, streamid, false);
-              reqid[reply] = -1;
               return;
             }
           // check content type
@@ -157,22 +149,11 @@ QDjVuNetDocument::Private::readyRead(QNetworkReply *reply)
     }
 }
 
-
-void 
-QDjVuNetDocument::Private::error(QNetworkReply::NetworkError code)
+void
+QDjVuNetDocument::Private::doError(QNetworkReply *reply, int streamid)
 {
-  QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
-  if (reply) 
-    error(reply, code);
-}
-
-
-void 
-QDjVuNetDocument::Private::error(QNetworkReply *reply, QNetworkReply::NetworkError)
-{
-  qDebug() << "*** error " << reply << " " << reply->errorString();
-  int streamid = reqid.value(reply, -1);
-  if (streamid >= 0)
+  QNetworkReply::NetworkError code = reply->error();
+  if (streamid >= 0 && code != QNetworkReply::NoError)
     {
       QString msg = tr("%1 while retrieving '%2'.")
         .arg(reply->errorString())
@@ -183,41 +164,100 @@ QDjVuNetDocument::Private::error(QNetworkReply *reply, QNetworkReply::NetworkErr
     }
 }
 
-
 void 
-QDjVuNetDocument::Private::finished(QNetworkReply *reply)
+QDjVuNetDocument::Private::readyRead()
 {
-  qDebug() << "*** finished " << reply;
-  int streamid = reqid.value(reply, -1);
-  if (streamid >= 0)
+  QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
+  if (reply) 
     {
-      if (reply->bytesAvailable() > 0)
-        readyRead(reply);
-      if (reply->error() == QNetworkReply::NoError)
-        ddjvu_stream_close(*q, streamid, false);
-      else
-        error(reply, reply->error());
+      int streamid = reqid.value(reply, -1);
+      if (streamid >= 0)
+        doRead(reply, streamid);
+    }
+}
+ 
+void 
+QDjVuNetDocument::Private::finished()
+{
+  QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
+  if (reply)
+    {
+      int streamid = reqid.value(reply, -1);
+      if (streamid >= 0)
+        {
+          if (reply->bytesAvailable() > 0)
+            doRead(reply, streamid);
+          if (reply->error() != QNetworkReply::NoError)
+            doError(reply, streamid);
+          else
+            ddjvu_stream_close(*q, streamid, false);
+        }
     }
   reqid.remove(reply);
   reqok.remove(reply);
   reply->deleteLater();
 }
 
-
 void 
-QDjVuNetDocument::Private::sslErrors(QNetworkReply *reply, const QList<QSslError>& )
+QDjVuNetDocument::Private::error(QNetworkReply::NetworkError)
 {
-  qDebug() << "*** sslerrors " << reply;
-  /// TODO: keep a list of trusted hosts.
-  reply->ignoreSslErrors();
+  QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
+  if (reply) 
+    {
+      int streamid = reqid.value(reply, -1);
+      if (streamid >= 0)
+        doError(reply, streamid);
+    }
 }
 
+void 
+QDjVuNetDocument::Private::sslErrors(const QList<QSslError>&)
+{
+  QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
+  if (reply)
+    {
+      static QSet<QString> sslWhiteList;
+      QString host = reply->url().host();
+      bool okay = sslWhiteList.contains(host);
+      if (! okay)
+        {
+          QString why = tr("Cannot validate the certificate for server %1.").arg(host);
+          emit q->sslWhiteList(why, okay);
+          if (okay)
+            sslWhiteList += host;
+        }
+      if (okay)
+        reply->ignoreSslErrors();
+    }
+}
+
+bool
+QDjVuNetDocument::Private::doAuth(QString why, QAuthenticator *auth)
+{
+  QString user = auth->user();
+  QString pass = QString::null;
+  q->emit authRequired(why, user, pass);
+  if (pass.isNull())
+    return false;
+  auth->setUser(user);
+  auth->setPassword(pass);
+  return true;
+}
 
 void
 QDjVuNetDocument::Private::authenticationRequired(QNetworkReply *reply, QAuthenticator *auth)
 {
-  qDebug() << "*** authenticationRequired" << reply << auth;
-  reply->abort();
+  QString host = reply->url().host();
+  QString why = tr("Authentication required for %1 (%2).").arg(auth->realm()).arg(host);
+  if (! doAuth(why, auth))
+    reply->abort();
+}
+
+void
+QDjVuNetDocument::Private::proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth)
+{
+  QString why = tr("Authentication required for proxy %1.").arg(proxy.hostName());
+  doAuth(why, auth);
 }
 
 
@@ -225,6 +265,12 @@ QDjVuNetDocument::Private::authenticationRequired(QNetworkReply *reply, QAuthent
   \brief Represents DjVu documents accessible via the network This class is
   derived from \a QDjVuDocument and reimplements method \a newstream to handle
   documents available throught network requests. */
+
+
+QDjVuNetDocument::~QDjVuNetDocument()
+{
+  delete p;
+}
 
 
 /*! Construct a \a QDjVuNetDocument object.
@@ -236,26 +282,15 @@ QDjVuNetDocument::QDjVuNetDocument(bool autoDelete, QObject *parent)
 {
 }
 
-QDjVuNetDocument::~QDjVuNetDocument()
-{
-  delete p;
-}
-
-
 /*! \overload */
 
 QDjVuNetDocument::QDjVuNetDocument(QObject *parent)
   : QDjVuDocument(parent), 
     p(new QDjVuNetDocument::Private(this))
 {
-  QNetworkAccessManager *mgr = manager();
-  connect(mgr, SIGNAL(finished(QNetworkReply*)),
-          p, SLOT(finished(QNetworkReply*)) );
-  connect(mgr, SIGNAL(sslErrors(QNetworkReply*, const QList<QSslErrors>&)),
-          p, SLOT(sslErrors(QNetworkReply*, const QList<QSslErrors>&)) );
-  connect(mgr, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
-          p, SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)) );
 }
+
+/*! Returns the \a QNetworkAccessManager used to reach the network. */
 
 QNetworkAccessManager* 
 QDjVuNetDocument::manager()
@@ -263,18 +298,13 @@ QDjVuNetDocument::manager()
   static QPointer<QNetworkAccessManager> mgr;
   QObject *app = QCoreApplication::instance();
   if (! mgr)
-    {
-      mgr = new QNetworkAccessManager(app);
-      // maybe set cache
-      // maybe set ssl
-    }
+    mgr = new QNetworkAccessManager(app);
   return mgr;
 }
 
 /*! Sets the application proxy using the host, port, user, and password
     specified by url \a proxyUrl.  The proxy type depends on the url scheme.
-    Recognized schemes are \a "http" and \a "ftp" for caching proxies, 
-    \a "tp-socks5" and \a "tp-http" for transparent proxies.  */
+    Recognized schemes are \a "http", \a "ftp", and \a "socks5".  */
 
 void 
 QDjVuNetDocument::setProxy(QUrl proxyUrl)
@@ -285,10 +315,8 @@ QDjVuNetDocument::setProxy(QUrl proxyUrl)
     proxy.setType(QNetworkProxy::HttpCachingProxy);
   if (scheme == "ftp")
     proxy.setType(QNetworkProxy::FtpCachingProxy);
-  else if (scheme == "tp-socks5" || scheme == "socks5")
+  else if (scheme == "socks5")
     proxy.setType(QNetworkProxy::Socks5Proxy);
-  else if (scheme == "tp-http")
-    proxy.setType(QNetworkProxy::HttpProxy);
   proxy.setHostName(proxyUrl.host());
   proxy.setPort(proxyUrl.port());
   proxy.setUser(proxyUrl.userName());
@@ -333,12 +361,31 @@ QDjVuNetDocument::newstream(int streamid, QString, QUrl url)
   QNetworkReply *reply = manager()->get(request);
   connect(reply, SIGNAL(readyRead()), 
           p, SLOT(readyRead()) );
+  connect(reply, SIGNAL(finished()),
+          p, SLOT(finished()) );
+  connect(reply, SIGNAL(sslErrors(const QList<QSslError>&)),
+          p, SLOT(sslErrors(const QList<QSslError>&)) );
   connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), 
           p, SLOT(error(QNetworkReply::NetworkError)) );
   emit info(tr("Requesting '%1'").arg(url.toString()));
   p->reqid[reply] = streamid;
   p->reqok[reply] = false;
 }
+
+
+/*! \fn 
+  void QDjVuNetDocument::authRequired(QString why, QString &user, QString &pass)
+  This signal is emitted when a username and password is required.
+  String \a why contains a suitable description of the purpose of the username and password.
+  Simply set \a user and \a pass and the credentials will be remembered.
+ */
+
+
+/*! \fn QDjVuNetDocument::sslWhiteList(QString host, bool &okay)
+  This signal is emitted when there are recoverable errors on a ssl connection
+  such as an inability to validate the certificate. String \a why contains
+  a description of the problem. Setting \a okay to true allows
+  the connection to proceed for the current session. */
 
 
 // ----------------------------------------

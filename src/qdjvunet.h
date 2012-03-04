@@ -24,6 +24,7 @@
 
 #include <qdjvu.h>
 
+class QAuthenticator;
 class QNetworkAccessManager;
 
 class QDjVuNetDocument : public QDjVuDocument
@@ -38,6 +39,9 @@ public:
   static void setProxy(QUrl proxyurl);
 protected:
   virtual void newstream(int streamid, QString name, QUrl url);
+signals:
+  void authRequired(QString why, QString &user, QString &pass);
+  void sslWhiteList(QString why, bool &okay);
 private:
   class Private;
   Private *p;

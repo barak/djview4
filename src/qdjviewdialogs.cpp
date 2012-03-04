@@ -79,6 +79,7 @@
 #include <QTableWidget>
 #include <QTableWidgetItem>
 #include <QTabWidget>
+#include <QTextDocument>
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QVector>
@@ -171,6 +172,61 @@ QDjViewErrorDialog::done(int result)
   QDialog::done(result);
 }
 
+
+// =======================================
+// QDJVIEWAUTHDIALOG
+// =======================================
+
+#include "ui_qdjviewauthdialog.h"
+
+struct QDjViewAuthDialog::Private
+{
+  Ui_QDjViewAuthDialog ui;
+};
+
+QDjViewAuthDialog::~QDjViewAuthDialog()
+{
+  delete d;
+}
+
+QDjViewAuthDialog::QDjViewAuthDialog(QWidget *parent)
+  : QDialog(parent), 
+    d(new Private)
+{
+  d->ui.setupUi(this);
+  setWindowTitle(tr("Authentication required - DjView"));
+}
+
+QString 
+QDjViewAuthDialog::user() const
+{
+  return d->ui.userLineEdit->text();
+}
+
+QString 
+QDjViewAuthDialog::pass() const
+{
+  return d->ui.passLineEdit->text();
+}
+
+void 
+QDjViewAuthDialog::setInfo(QString why)
+{
+  QString txt = QString("<html>%1</html>").arg(Qt::escape(why));
+  d->ui.whyLabel->setText(txt);
+}
+
+void 
+QDjViewAuthDialog::setUser(QString user)
+{
+  d->ui.userLineEdit->setText(user);
+}
+
+void 
+QDjViewAuthDialog::setPass(QString pass)
+{
+  d->ui.passLineEdit->setText(pass);
+}
 
 
 
