@@ -2427,16 +2427,22 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 void 
 QDjView::closeDocument()
 {
+  // remember recent document
+  QDjVuDocument *doc = document;
+  if (doc && viewerMode == STANDALONE)
+    {
+      if (documentPages.size() > 0)
+        addRecent(getDecoratedUrl());
+    }
+  // clear undo data
   here.clear();
   undoList.clear();
   redoList.clear();
+  // close document
   layout->setCurrentWidget(splash);
-  QDjVuDocument *doc = document;
   if (doc)
     {
       doc->ref();
-      if (documentPages.size() > 0)
-        addRecent(getDecoratedUrl());
       disconnect(doc, 0, this, 0);
       disconnect(doc, 0, errorDialog, 0);
       printingAllowed = true;
