@@ -55,7 +55,7 @@ static bool verbose = false;
 #else
 static bool verbose = true;
 #endif
-
+static bool appReady = false;
 
 static void 
 qtMessageHandler(QtMsgType type, const char *msg)
@@ -69,11 +69,11 @@ qtMessageHandler(QtMsgType type, const char *msg)
       fprintf(stderr,"djview critical error: %s\n", msg);
       break;
     case QtWarningMsg:
-      if (verbose)
+      if (verbose || !appReady)
         fprintf(stderr,"djview: %s\n", msg);
       break;
     default:
-      if (verbose)
+      if (verbose || !appReady)
         fprintf(stderr,"%s\n", msg);
       break;
     }
@@ -127,6 +127,9 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   QTranslator *djviewTrans = new QTranslator(this);
   if (loadTranslator(djviewTrans, "djview", langs))
     installTranslator(djviewTrans);
+
+  // Application is ready
+  appReady = true;
 }
 
 
