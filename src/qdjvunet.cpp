@@ -355,10 +355,6 @@ QDjVuNetDocument::setUrl(QDjVuContext *ctx, QUrl url, bool cache)
 void 
 QDjVuNetDocument::newstream(int streamid, QString, QUrl url)
 {
-  // shortcut for file:/// urls
-  if (url.isValid() && url.scheme() == "file")
-    if (url.host().isEmpty() || url.host() == "localhost")
-      return setFileName(ctx, url.toLocalFile(), cache);
   // network request
   QNetworkRequest request(url);
   QString agent = "Djview/" + QDjViewPrefs::versionString();
