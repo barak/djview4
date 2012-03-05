@@ -84,15 +84,19 @@ class QDjView : public QMainWindow
   Q_OBJECT
 
  public:
-
+  
+  
   enum ViewerMode {
     EMBEDDED_PLUGIN = 0,
     FULLPAGE_PLUGIN = 1,
     STANDALONE      = 2
   };
-
+  
   QDjView(QDjVuContext &context, 
-          ViewerMode mode=STANDALONE, QWidget *parent=0);
+          ViewerMode mode=STANDALONE, 
+          QWidget *parent=0);
+  
+  ~QDjView();
 
   QDjVuContext       &getDjVuContext()      { return djvuContext; }
   QDjVuWidget        *getDjVuWidget()       { return widget; }
@@ -183,6 +187,7 @@ protected:
   void     parseToolBarOption(QString option, QStringList &errors);
   bool     warnAboutPrintingRestrictions();
   bool     warnAboutSavingRestrictions();
+  void     restoreRecentDocument(QUrl);
 
   virtual bool eventFilter(QObject *watched, QEvent *event);
   virtual void closeEvent(QCloseEvent *event);

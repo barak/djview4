@@ -2197,6 +2197,12 @@ QDjView::getArgument(QString key)
   correspond to a netscape plugin. */
 
 
+QDjView::~QDjView()
+{
+  closeDocument();
+}
+
+
 /*! Construct a \a QDjView object using
   the specified djvu context and viewer mode. */
 
@@ -2429,6 +2435,8 @@ QDjView::closeDocument()
   if (doc)
     {
       doc->ref();
+      if (documentPages.size() > 0)
+        addRecent(getDecoratedUrl());
       disconnect(doc, 0, this, 0);
       disconnect(doc, 0, errorDialog, 0);
       printingAllowed = true;
@@ -2503,7 +2511,7 @@ QDjView::open(QString filename)
   open(doc, url);
   documentFileName = filename;
   documentModified = QFileInfo(filename).lastModified();
-  addRecent(url);
+  restoreRecentDocument(url);
   return true;
 }
 
@@ -2532,7 +2540,6 @@ QDjView::open(QUrl url)
       return false;
     }
   open(doc, url);
-  addRecent(docurl);
   return true;
 }
 
@@ -4296,6 +4303,7 @@ QDjView::performEscape()
     actionViewFullScreen->activate(QAction::Trigger);
 }
 
+
 void 
 QDjView::performGoPage()
 {
@@ -4310,13 +4318,47 @@ QDjView::performGoPage()
 }
 
 
+void
+QDjView::restoreRecentDocument(QUrl url)
+{
+  url.setPassword(QString::null);
+  QUrl cleanUrl = removeDjVuCgiArguments(url);
+  QString prefix = cleanUrl.toString(QUrl::RemoveQuery);
+  foreach (QString recent, prefs->recentFiles)
+    if (recent.startsWith(prefix))
+      {
+        QUrl recentUrl = recent;
+        QUrl cleanRecentUrl = removeDjVuCgiArguments(recentUrl);
+        if (cleanUrl == cleanRecentUrl)
+          {
+            parseDjVuCgiArguments(recentUrl);
+            return;
+          }
+      }
+}
+
+
 void 
 QDjView::addRecent(QUrl url)
 {
+  // never remember passwords
+  url.setPassword(QString::null);
+  // remove matching entries
+  QUrl cleanUrl = removeDjVuCgiArguments(url);
+  QString prefix = cleanUrl.toString(QUrl::RemoveQuery);
+  QStringList::iterator it = prefs->recentFiles.begin();
+  while (it != prefs->recentFiles.end())
+    {
+      if (it->startsWith(prefix) &&
+          cleanUrl == removeDjVuCgiArguments(QUrl(*it)))
+        it = prefs->recentFiles.erase(it);
+      else
+        ++it;
+    }
+  // add new url (max 50)
   QString name = url.toString();
-  prefs->recentFiles.removeAll(name);
   prefs->recentFiles.prepend(name);
-  while(prefs->recentFiles.size() > 6)
+  while(prefs->recentFiles.size() > 50)
     prefs->recentFiles.pop_back();
 }
 
@@ -4326,15 +4368,15 @@ QDjView::fillRecent()
 {
   if (recentMenu)
     {
-      int n = prefs->recentFiles.size();
       recentMenu->clear();
+      int n = qMin(prefs->recentFiles.size(), 8);
       for (int i=0; i<n; i++)
         {
           QUrl url = prefs->recentFiles[i];
           QString base = url.path().section("/",-1);
           QString name = url.toLocalFile();
           if (name.isEmpty())
-            name = url.toString(QUrl::RemovePassword);
+            name = removeDjVuCgiArguments(url).toString();
           QFontMetrics metrics = QFont();
           name = metrics.elidedText(name, Qt::ElideMiddle, 400);
           name = QString("%1 [%2]").arg(base).arg(name);

@@ -84,3 +84,4 @@ NEW SINCE VERSION 4.8
 - Automatic reloading of djvu documents when the file is changed.
 - New chinese translations.
 - Improved network code (needs Qt>=4.4.)
+- Remember the position of the last 50 documents.
