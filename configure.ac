@@ -20,7 +20,7 @@
 # ----------------------------------------
 
 AC_PREREQ([2.67])
-AC_INIT([djview],[4.8])
+AC_INIT([djview],[4.9])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([config])
 AC_CONFIG_SRCDIR(README)
