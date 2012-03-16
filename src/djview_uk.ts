@@ -13,7 +13,7 @@
 <context>
     <name>QApplication</name>
     <message>
-        <location filename="djview.cpp" line="440"/>
+        <location filename="djview.cpp" line="443"/>
         <source>Option &apos;-fix&apos; is deprecated.</source>
         <translation>Параметр &apos;-fix&apos; є застарілим.</translation>
     </message>
@@ -473,117 +473,117 @@
         <translation>Параметр &apos;%1&apos; неможливо розпізнати.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2215"/>
-        <location filename="qdjview.cpp" line="2477"/>
+        <location filename="qdjview.cpp" line="2221"/>
+        <location filename="qdjview.cpp" line="2491"/>
         <source>DjView</source>
         <translation>DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2497"/>
+        <location filename="qdjview.cpp" line="2511"/>
         <source>Cannot open file &apos;%1&apos;.</source>
         <translation>Неможливо відкрити файл &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2498"/>
+        <location filename="qdjview.cpp" line="2512"/>
         <source>Opening DjVu file</source>
         <translation>Відкриття файла DjVu</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2530"/>
+        <location filename="qdjview.cpp" line="2544"/>
         <source>Cannot open URL &apos;%1&apos;.</source>
         <translation>Неможливо відкрити URL &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2531"/>
+        <location filename="qdjview.cpp" line="2545"/>
         <source>Opening DjVu document</source>
         <translation>Відкриття документа DjVu</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2545"/>
+        <location filename="qdjview.cpp" line="2558"/>
         <source>Certificate validation error - DjView</source>
         <comment>dialog caption</comment>
         <translation>Помилка під час спроби перевірити сертифікат — DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2546"/>
+        <location filename="qdjview.cpp" line="2559"/>
         <source>&lt;html&gt; %1  Do you want to continue anyway? &lt;/html&gt;</source>
         <translation>&lt;html&gt; %1 Бажаєте продовжити обробку попри це?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2624"/>
+        <location filename="qdjview.cpp" line="2637"/>
         <source>Cannot find page numbered: %1</source>
         <translation>Не вдалося знайти сторінку з номером: %1</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2656"/>
-        <location filename="qdjview.cpp" line="2686"/>
+        <location filename="qdjview.cpp" line="2669"/>
+        <location filename="qdjview.cpp" line="2699"/>
         <source>Cannot find page named: %1</source>
         <translation>Не вдалося знайти сторінку з назвою: %1</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2899"/>
+        <location filename="qdjview.cpp" line="2912"/>
         <source>Unrecognized sidebar options &apos;%1&apos;.</source>
         <translation>Нерозпізнаний параметри бічної панелі &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2961"/>
+        <location filename="qdjview.cpp" line="2974"/>
         <source>&lt;html&gt; This file was served with printing restrictions. Do you want to print it anyway?&lt;/html&gt;</source>
         <oldsource>&lt;html&gt; This file was served with printing restrictions.Do you want to print it anyway?&lt;/html&gt;</oldsource>
         <translation>&lt;html&gt; Друк цього файла обмежено під час створення. Бажаєте надрукувати його попри це?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2977"/>
+        <location filename="qdjview.cpp" line="2990"/>
         <source>&lt;html&gt; This file was served with saving restrictions. Do you want to save it anyway?&lt;/html&gt;</source>
         <oldsource>&lt;html&gt; This file was served with saving restrictions.Do you want to save it anyway?&lt;/html&gt;</oldsource>
         <translation>&lt;html&gt; Права на збереження цього файла обмежено. Бажаєте зберегти його попри це?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3329"/>
-        <location filename="qdjview.cpp" line="3394"/>
+        <location filename="qdjview.cpp" line="3342"/>
+        <location filename="qdjview.cpp" line="3407"/>
         <source>Cannot write file &apos;%1&apos;.
 %2.</source>
         <translation>Файл &apos;%1&apos; неможливо записати.
 %2.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3374"/>
+        <location filename="qdjview.cpp" line="3387"/>
         <source>Cannot determine file format.
 Filename &apos;%1&apos; has no suffix.</source>
         <translation>Неможливо визначити формат файла.
 Назва файла &apos;%1&apos; не має суфіксу.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3387"/>
+        <location filename="qdjview.cpp" line="3400"/>
         <source>Image format %1 not supported.</source>
         <translation>Формат картинки %1 не підтримується.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3614"/>
+        <location filename="qdjview.cpp" line="3627"/>
         <source>Cannot decode page %1.</source>
         <translation>Неможливо розкодувати сторінку %1.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3616"/>
+        <location filename="qdjview.cpp" line="3629"/>
         <source>Cannot decode document.</source>
         <translation>Неможливо розкодувати документ.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3618"/>
+        <location filename="qdjview.cpp" line="3631"/>
         <source>Decoding DjVu document</source>
         <translation>Розкодування документа DjVu</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3758"/>
+        <location filename="qdjview.cpp" line="3771"/>
         <source> x=%1 y=%2 </source>
         <translation> x=%1 y=%2 </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3762"/>
+        <location filename="qdjview.cpp" line="3775"/>
         <source> %3x%4+%1+%2 </source>
         <translation> %3x%4+%1+%2 </translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3790"/>
+        <location filename="qdjview.cpp" line="3803"/>
         <source>Go: %n pages forward.</source>
         <translation>
             <numerusform>Перехід на %n сторінку вперед.</numerusform>
@@ -592,7 +592,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3793"/>
+        <location filename="qdjview.cpp" line="3806"/>
         <source>Go: %n pages backward.</source>
         <translation>
             <numerusform>Перехід на %n сторінку назад.</numerusform>
@@ -601,69 +601,69 @@ Filename &apos;%1&apos; has no suffix.</source>
         </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3796"/>
-        <location filename="qdjview.cpp" line="3798"/>
+        <location filename="qdjview.cpp" line="3809"/>
+        <location filename="qdjview.cpp" line="3811"/>
         <source>Go: page %1.</source>
         <translation>Перехід: сторінка %1.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3800"/>
+        <location filename="qdjview.cpp" line="3813"/>
         <source>Go: %1</source>
         <oldsource>Link: %1</oldsource>
         <translation>Перехід: %1</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3802"/>
+        <location filename="qdjview.cpp" line="3815"/>
         <source> (in other window.)</source>
         <translation> (у іншому вікні.)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3889"/>
+        <location filename="qdjview.cpp" line="3902"/>
         <source>Cannot resolve link &apos;%1&apos;</source>
         <translation>Неможливо розпізнати посилання &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3917"/>
+        <location filename="qdjview.cpp" line="3930"/>
         <source>Cannot spawn a browser for url &apos;%1&apos;</source>
         <translation>Неможливо викликати переглядач для url &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3937"/>
+        <location filename="qdjview.cpp" line="3950"/>
         <source>Copy text (%1)</source>
         <translation>Копіювання тексту (%1)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3938"/>
+        <location filename="qdjview.cpp" line="3951"/>
         <source>Save text as...</source>
         <translation>Збереження тексту як...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3944"/>
+        <location filename="qdjview.cpp" line="3957"/>
         <source>Copy image (%1x%2 pixels)</source>
         <translation>Копіювання картинки (%1x%2 пікселів)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3946"/>
+        <location filename="qdjview.cpp" line="3959"/>
         <source>Save image as...</source>
         <translation>Збереження картинки як...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3950"/>
+        <location filename="qdjview.cpp" line="3963"/>
         <source>Zoom to rectangle</source>
         <translation>Масштабувати до прямокутника</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4132"/>
+        <location filename="qdjview.cpp" line="4145"/>
         <source>About DjView</source>
         <translation>Про DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4152"/>
+        <location filename="qdjview.cpp" line="4165"/>
         <source>DjVu files</source>
         <translation>Файли DjVu</translation>
     </message>
     <message>
-        <location filename="djview.cpp" line="460"/>
+        <location filename="djview.cpp" line="463"/>
         <source>cannot open &apos;%1&apos;.</source>
         <translation>неможливо відкрити &apos;%1&apos;.</translation>
     </message>
@@ -679,7 +679,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>Експортувати сторінку або документ DjVu у інші формати.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3035"/>
+        <location filename="qdjview.cpp" line="3048"/>
         <source>Export - DjView</source>
         <comment>dialog caption</comment>
         <translation>Експорт - DjView</translation>
@@ -1107,90 +1107,90 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>&lt;html&gt;&lt;b&gt;Навігація документом.&lt;/b&gt;&lt;br/&gt; Вибір сторінки надасть вам змогу перейти до будь-якої сторінки за назвою. Вікно вибору сторінки можна відкрити натисканням комбінації клавіш Ctrl+G. За допомогою кнопок навігації можна перейти до першої, попередньої, наступної, останньої сторінки. &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2368"/>
+        <location filename="qdjview.cpp" line="2374"/>
         <source>Thumbnails</source>
         <translation>Мініатюри</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2375"/>
+        <location filename="qdjview.cpp" line="2381"/>
         <source>Outline</source>
         <translation>Ескіз</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2382"/>
+        <location filename="qdjview.cpp" line="2388"/>
         <source>Find</source>
         <translation>Пошук</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2960"/>
-        <location filename="qdjview.cpp" line="2996"/>
+        <location filename="qdjview.cpp" line="2973"/>
+        <location filename="qdjview.cpp" line="3009"/>
         <source>Print - DjView</source>
         <comment>dialog caption</comment>
         <translation>Друк - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2976"/>
-        <location filename="qdjview.cpp" line="3016"/>
+        <location filename="qdjview.cpp" line="2989"/>
+        <location filename="qdjview.cpp" line="3029"/>
         <source>Save - DjView</source>
         <comment>dialog caption</comment>
         <translation>Збереження - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3310"/>
+        <location filename="qdjview.cpp" line="3323"/>
         <source>Text files</source>
         <comment>save filter</comment>
         <translation>Текстові файли</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3311"/>
-        <location filename="qdjview.cpp" line="3358"/>
+        <location filename="qdjview.cpp" line="3324"/>
+        <location filename="qdjview.cpp" line="3371"/>
         <source>All files</source>
         <comment>save filter</comment>
         <translation>Всі файли</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3312"/>
+        <location filename="qdjview.cpp" line="3325"/>
         <source>Save Text - DjView</source>
         <comment>dialog caption</comment>
         <translation>Збереження тексту - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3328"/>
-        <location filename="qdjview.cpp" line="3373"/>
-        <location filename="qdjview.cpp" line="3393"/>
+        <location filename="qdjview.cpp" line="3341"/>
+        <location filename="qdjview.cpp" line="3386"/>
+        <location filename="qdjview.cpp" line="3406"/>
         <source>Error - DjView</source>
         <comment>dialog caption</comment>
         <translation>Помилка - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3359"/>
+        <location filename="qdjview.cpp" line="3372"/>
         <source>Save Image - DjView</source>
         <comment>dialog caption</comment>
         <translation>Зберегти картинку - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3751"/>
+        <location filename="qdjview.cpp" line="3764"/>
         <source> P%1/%2 %3x%4 %5dpi </source>
         <translation> С%1 з %2 %3x%4 %5т/д </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4112"/>
+        <location filename="qdjview.cpp" line="4125"/>
         <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;%2&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=%3&gt;%3&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;%2&lt;p&gt;Переглядач документів DjVu&lt;br&gt;&lt;a href=%3&gt;%3&lt;/a&gt;&lt;br&gt;Авторські права© 2006 — Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;Ця програма є вільним програмним забезпеченням. Ви можете поширювати або змінювати її за умов дотримання GNU General Public License у тому вигляді, у якому її оприлюднено Free Software Foundation. Ця програма поширюється &lt;i&gt;без жодних гарантій&lt;/i&gt;. Щоб дізнатися більше, прочитайте GNU General Public License.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4172"/>
+        <location filename="qdjview.cpp" line="4185"/>
         <source>Enter the URL of a DjVu document:</source>
         <translation>Введіть адресу документа DjVu:</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4189"/>
+        <location filename="qdjview.cpp" line="4202"/>
         <source>Information - DjView</source>
         <comment>dialog caption</comment>
         <translation>Інформація - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4204"/>
+        <location filename="qdjview.cpp" line="4217"/>
         <source>Metadata - DjView</source>
         <comment>dialog caption</comment>
         <translation>Метадані - DjView</translation>
@@ -1201,7 +1201,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>Відкрити &amp;нещодавній</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4347"/>
+        <location filename="qdjview.cpp" line="4395"/>
         <source>&amp;Clear History</source>
         <translation>Сп&amp;орожнити журнал</translation>
     </message>
@@ -1259,13 +1259,13 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>Ctrl+F5</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4171"/>
+        <location filename="qdjview.cpp" line="4184"/>
         <source>Open Location - DjView</source>
         <comment>dialog caption</comment>
         <translation>Відкриття адреси - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4154"/>
+        <location filename="qdjview.cpp" line="4167"/>
         <source>Open - DjView</source>
         <comment>dialog caption</comment>
         <translation>Відкриття - DjView</translation>
@@ -1289,13 +1289,13 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>Показ панелі &amp;стану</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3355"/>
+        <location filename="qdjview.cpp" line="3368"/>
         <source>%1 files (*.%2);;</source>
         <comment>save image filter</comment>
         <translation>%1 Файлів (*.%2)</translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3931"/>
+        <location filename="qdjview.cpp" line="3944"/>
         <source>%n characters</source>
         <translation>
             <numerusform>%n символ</numerusform>
@@ -1304,12 +1304,12 @@ Filename &apos;%1&apos; has no suffix.</source>
         </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3789"/>
+        <location filename="qdjview.cpp" line="3802"/>
         <source>Go: 1 page forward.</source>
         <translation>Перехід: 1 сторінка вперед.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3792"/>
+        <location filename="qdjview.cpp" line="3805"/>
         <source>Go: 1 page backward.</source>
         <translation>Перехід: 1 сторінка назад.</translation>
     </message>
@@ -1337,42 +1337,42 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>Копіювати &amp;анотації</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3941"/>
+        <location filename="qdjview.cpp" line="3954"/>
         <source>Copy text into the clipboard.</source>
         <translation>Копіювати текст до буфера.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3942"/>
+        <location filename="qdjview.cpp" line="3955"/>
         <source>Save text into a file.</source>
         <translation>Зберегти текст до файла.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3948"/>
+        <location filename="qdjview.cpp" line="3961"/>
         <source>Save image into a file.</source>
         <translation>Зберегти зображення до файла.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3951"/>
+        <location filename="qdjview.cpp" line="3964"/>
         <source>Zoom the selection to fit the window.</source>
         <translation>Підібрати область перегляду під виділене.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3957"/>
+        <location filename="qdjview.cpp" line="3970"/>
         <source>Copy URL</source>
         <translation>Копіювати адресу URL</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3958"/>
+        <location filename="qdjview.cpp" line="3971"/>
         <source>Save into the clipboard an URL that highlights the selection.</source>
         <translation>Зберегти до буфера адресу URL, яку виділено у вибраному.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3960"/>
+        <location filename="qdjview.cpp" line="3973"/>
         <source>Copy Maparea</source>
         <translation>Копіювати область карти</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3961"/>
+        <location filename="qdjview.cpp" line="3974"/>
         <source>Save into the clipboard a maparea annotation expression for program djvused.</source>
         <translation>Зберегти до буфера вираз анотації карти області для програми djvused.</translation>
     </message>
@@ -1393,7 +1393,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>Зберегти код djvused анотації сторінки до буфера.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3947"/>
+        <location filename="qdjview.cpp" line="3960"/>
         <source>Copy image into the clipboard.</source>
         <translation>Копіювати зображення до буфера.</translation>
     </message>
@@ -1444,7 +1444,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>Показувати сторінки лівописних мов у режимі сторінок поруч.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4153"/>
+        <location filename="qdjview.cpp" line="4166"/>
         <source>All files</source>
         <translation>Всі файли</translation>
     </message>
@@ -1469,7 +1469,7 @@ Filename &apos;%1&apos; has no suffix.</source>
 <context>
     <name>QDjViewApplication</name>
     <message>
-        <location filename="djview.cpp" line="329"/>
+        <location filename="djview.cpp" line="332"/>
         <source>Usage: djview [options] [filename-or-url]
 Common options include:
 -help~~~Prints this message.
@@ -1500,7 +1500,7 @@ Common options include:
 </translation>
     </message>
     <message>
-        <location filename="djview.cpp" line="263"/>
+        <location filename="djview.cpp" line="266"/>
         <source>cannot open &apos;%1&apos;.</source>
         <translation>неможливо відкрити &apos;%1&apos;.</translation>
     </message>
@@ -3346,7 +3346,7 @@ Do you want to replace it?</source>
 <context>
     <name>QDjVuNetDocument</name>
     <message>
-        <location filename="qdjvunet.cpp" line="370"/>
+        <location filename="qdjvunet.cpp" line="371"/>
         <source>Requesting &apos;%1&apos;</source>
         <translation>Запит &apos;%1&apos;</translation>
     </message>
