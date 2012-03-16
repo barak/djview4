@@ -230,22 +230,22 @@
     <message>
         <location filename="qdjview.cpp" line="504"/>
         <source>Jump to first document page.</source>
-        <translation>Перейти до першої сторінки документу.</translation>
+        <translation>Перейти до першої сторінки документа.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="510"/>
         <source>Jump to next document page.</source>
-        <translation>Перейти до наступної сторінки документу.</translation>
+        <translation>Перейти до наступної сторінки документа.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="516"/>
         <source>Jump to previous document page.</source>
-        <translation>Перейти до попередньої сторінки документу.</translation>
+        <translation>Перейти до попередньої сторінки документа.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="522"/>
         <source>Jump to last document page.</source>
-        <translation>Перейти до останньої сторінки документу.</translation>
+        <translation>Перейти до останньої сторінки документа.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="528"/>
@@ -290,12 +290,12 @@
     <message>
         <location filename="qdjview.cpp" line="576"/>
         <source>Show information about the document encoding and structure.</source>
-        <translation>Показати інформацію про кодування документу та його структуру.</translation>
+        <translation>Показати інформацію про кодування документа та його структуру.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="583"/>
         <source>Show the document and page meta data.</source>
-        <translation>Показати метадані документу та сторінки.</translation>
+        <translation>Показати метадані документа та сторінки.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="588"/>
@@ -315,7 +315,7 @@
     <message>
         <location filename="qdjview.cpp" line="602"/>
         <source>Only display the document bitonal stencil.</source>
-        <translation>Показати тільки двокольоровий шаблон документу.</translation>
+        <translation>Показати тільки двокольоровий шаблон документа.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="609"/>
@@ -395,17 +395,17 @@
     <message>
         <location filename="qdjview.cpp" line="1094"/>
         <source>&lt;html&gt;&lt;b&gt;Document and page information.&lt;/b&gt;&lt;br&gt; Display a dialog window for viewing encoding information pertaining to the document or to a specific page.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Інформація про документ та сторінку.&lt;/b&gt;&lt;br&gt; Показує вікно діалогу для перегляду інформації про кодування, що стосується документу або певної сторінки.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Інформація про документ та сторінку.&lt;/b&gt;&lt;br&gt; Показує вікно діалогу для перегляду інформації про кодування, що стосується документа або певної сторінки.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="1100"/>
         <source>&lt;html&gt;&lt;b&gt;Document and page metadata.&lt;/b&gt;&lt;br&gt; Display a dialog window for viewing metadata pertaining to the document or to a specific page.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Метадані документу та сторінки.&lt;/b&gt;&lt;br&gt; Показує вікно діалогу для перегляду метаданих, що стосуються документу або певної сторінки.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Метадані документа та сторінки.&lt;/b&gt;&lt;br&gt; Показує діалогове вікно для перегляду метаданих, що стосуються документа або певної сторінки.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="1106"/>
         <source>&lt;html&gt;&lt;b&gt;Continuous layout.&lt;/b&gt;&lt;br/&gt; Display all the document pages arranged vertically inside the scrollable document viewing area.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;b&gt;Неперервний показ.&lt;/b&gt;&lt;br/&gt; Показує всі сторінки документу розташовані вертикально всередині області перегляду, придатної для гортання.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Неперервний показ.&lt;/b&gt;&lt;br/&gt; Показує всі сторінки документа розташованими вертикально всередині області перегляду, придатної для гортання.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="1111"/>
@@ -496,18 +496,18 @@
     <message>
         <location filename="qdjview.cpp" line="2531"/>
         <source>Opening DjVu document</source>
-        <translation>Відкриття документу DjVu</translation>
+        <translation>Відкриття документа DjVu</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2545"/>
         <source>Certificate validation error - DjView</source>
         <comment>dialog caption</comment>
-        <translation type="unfinished"></translation>
+        <translation>Помилка під час спроби перевірити сертифікат — DjView</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2546"/>
         <source>&lt;html&gt; %1  Do you want to continue anyway? &lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt; %1 Бажаєте продовжити обробку попри це?&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2624"/>
@@ -529,13 +529,13 @@
         <location filename="qdjview.cpp" line="2961"/>
         <source>&lt;html&gt; This file was served with printing restrictions. Do you want to print it anyway?&lt;/html&gt;</source>
         <oldsource>&lt;html&gt; This file was served with printing restrictions.Do you want to print it anyway?&lt;/html&gt;</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt; Друк цього файла обмежено під час створення. Бажаєте надрукувати його попри це?&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2977"/>
         <source>&lt;html&gt; This file was served with saving restrictions. Do you want to save it anyway?&lt;/html&gt;</source>
         <oldsource>&lt;html&gt; This file was served with saving restrictions.Do you want to save it anyway?&lt;/html&gt;</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt; Права на збереження цього файла обмежено. Бажаєте зберегти його попри це?&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3329"/>
@@ -570,7 +570,7 @@ Filename &apos;%1&apos; has no suffix.</source>
     <message>
         <location filename="qdjview.cpp" line="3618"/>
         <source>Decoding DjVu document</source>
-        <translation>Розкодування документу DjVu</translation>
+        <translation>Розкодування документа DjVu</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3758"/>
@@ -1268,13 +1268,13 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="4154"/>
         <source>Open - DjView</source>
         <comment>dialog caption</comment>
-        <translation>Відкрити - DjView</translation>
+        <translation>Відкриття - DjView</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="639"/>
         <source>Show &amp;Sidebar</source>
         <comment>Settings|</comment>
-        <translation>Показ &amp;бічного пеналу</translation>
+        <translation>Показ &amp;бічної панелі</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="646"/>
@@ -1385,7 +1385,7 @@ Filename &apos;%1&apos; has no suffix.</source>
     <message>
         <location filename="qdjview.cpp" line="707"/>
         <source>Save the djvused code for the outline into the clipboard.</source>
-        <translation>Зберегти код djvused ескіза до буфера.</translation>
+        <translation>Зберегти код djvused ескізу до буфера.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="711"/>
@@ -1510,17 +1510,17 @@ Common options include:
     <message>
         <location filename="qdjviewauthdialog.ui" line="48"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Пароль:</translation>
     </message>
     <message>
         <location filename="qdjviewauthdialog.ui" line="62"/>
         <source>User:</source>
-        <translation type="unfinished"></translation>
+        <translation>Користувач:</translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="197"/>
         <source>Authentication required - DjView</source>
-        <translation type="unfinished"></translation>
+        <translation>Слід пройти розпізнавання — DjView</translation>
     </message>
 </context>
 <context>
@@ -1528,7 +1528,7 @@ Common options include:
     <message>
         <location filename="qdjviewexporters.cpp" line="383"/>
         <source>&lt;html&gt; This file belongs to a non empty directory. Saving an indirect document creates many files in this directory. Do you want to continue and risk overwriting files in this directory?&lt;/html&gt;</source>
-        <translation>&lt;html&gt; Цей файл належить до не порожньої теки. Збереження непрямого документу створить багато файлів у цій теці. Бажаєте продовжувати з ризиком перезапису файлів у цій теці?&lt;/html&gt;</translation>
+        <translation>&lt;html&gt; Цей файл належить до не порожньої теки. Збереження непрямого документа створить багато файлів у цій теці. Бажаєте продовжувати з ризиком перезапису файлів у цій теці?&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewexporters.cpp" line="389"/>
@@ -2365,7 +2365,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewmetadialog.ui" line="29"/>
         <source>&amp;Document Metadata</source>
-        <translation>Метадані &amp;документу</translation>
+        <translation>Метадані &amp;документа</translation>
     </message>
     <message>
         <location filename="qdjviewmetadialog.ui" line="55"/>
@@ -2831,7 +2831,7 @@ Do you want to replace it?</source>
         <location filename="qdjviewprefsdialog.ui" line="1069"/>
         <source>Force language (next time djview runs)</source>
         <oldsource>Force language (when djview is restarted.)</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Примусово встановити мову</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1105"/>
@@ -2842,7 +2842,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1124"/>
         <source>Override saving and printing restrictions</source>
-        <translation type="unfinished"></translation>
+        <translation>Не брати до уваги обмеження на збереження та друк</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1211"/>
@@ -2888,12 +2888,12 @@ Do you want to replace it?</source>
         <location filename="qdjviewprefs.cpp" line="830"/>
         <source>&lt;html&gt;&lt;b&gt;Advanced.&lt;/b&gt;&lt;br&gt;You can override the default interface language, disable the page animations, or enable additional menu entries that are useful for authoring DjVu files.You can also disable the printing or saving restrictions dictated by certain web sites. The manual color correction can be useful with old printers.&lt;/html&gt;</source>
         <oldsource>&lt;html&gt;&lt;p&gt;&lt;b&gt;Advanced.&lt;/b&gt;You can override the default interface language, disable the page animations, or enable additional menu entries that are useful for authoring DjVu files.You can also disable the printing or saving restrictions dictated by certain web sites. The manual color correction can be useful with old printers.&lt;/html&gt;</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;b&gt;Додатково.&lt;/b&gt;&lt;br&gt;Ви можете визначити мову інтерфейсу програми, вимкнути анімацію на сторінках або увімкнути додаткові пункти меню, які можуть бути корисними для роботи з файлами DjVu.Ви також можете вимкнути обмеження на друк та збереження, які визначаються деякими з сайтів. Виправлення кольорів вручну може покращити результати друку на принтерах застарілих моделей.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="840"/>
         <source>&lt;html&gt;&lt;b&gt;Network proxy settings.&lt;/b&gt;&lt;br&gt;These proxy settings are used when the standalone djview viewer accesses a djvu document through a http url. The djview plugin always uses the proxy settings of the web browser.&lt;p&gt;&lt;b&gt;Cache settings.&lt;/b&gt;&lt;br&gt;The &lt;i&gt;pixel cache&lt;/i&gt; stores image data located outside the visible area. This cache makes panning smoother. The &lt;i&gt;decoded page cache&lt;/i&gt; contains partially decoded pages. It provides faster response times when navigating a multipage document or when returning to a previously viewed page. Clearing this cache might be useful to reflect a change in the page data without restarting the DjVu viewer.&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;b&gt;Налаштування проксі сервера.&lt;/b&gt;&lt;br&gt;Ці налаштування проксі сервера буде використано коли самодостатній переглядач djview намагатиметься отримати доступ до документу djvu через адресу http. Додаток djview завжди використовуватиме налаштування проксі сервера, які використовує переглядач сторінок інтернету.&lt;p&gt;&lt;b&gt;Кеші.&lt;/b&gt;&lt;br&gt; &lt;i&gt;Кеш пікселів&lt;/i&gt; зберігає дані картинок розташованих поза видимою областю. Цей кеш робить пересування документом плавнішим. &lt;i&gt;Кеш розкодованих сторінок&lt;/i&gt; мстить частково розкодовані сторінки. Він забезпечує швидшу реакцію переглядача під час пересування багатосторінковим документом або під час повернення для раніше переглянутої сторінки. Очищення цього кешу може бути корисним для показу змін у даних сторінки без перезапуску переглядача DjVu.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Налаштування проксі сервера.&lt;/b&gt;&lt;br&gt;Ці налаштування проксі сервера буде використано, коли самодостатній переглядач djview намагатиметься отримати доступ до документа djvu через адресу http.&lt;p&gt;&lt;b&gt;Параметри кешування.&lt;/b&gt;&lt;br&gt; &lt;i&gt;Кеш пікселів&lt;/i&gt; зберігає дані зображень, розташованих поза видимою областю. Цей кеш робить пересування документом плавнішим. &lt;i&gt;Кеш розкодованих сторінок&lt;/i&gt; мстить частково розкодовані сторінки. Він забезпечує швидшу реакцію переглядача під час пересування багатосторінковим документом або під час повернення для раніше переглянутої сторінки. Спорожнення цього кешу може бути корисним для показу змін у даних сторінки без перезапуску переглядача DjVu.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="792"/>
@@ -3373,17 +3373,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjvunet.cpp" line="224"/>
         <source>Cannot validate the certificate for server %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося перевірити сертифікат для сервера %1.</translation>
     </message>
     <message>
         <location filename="qdjvunet.cpp" line="251"/>
         <source>Authentication required for %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Слід пройти розпізнавання для доступу до %1 (%2).</translation>
     </message>
     <message>
         <location filename="qdjvunet.cpp" line="259"/>
         <source>Authentication required for proxy %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Слід пройти розпізнавання для доступу до проксі-сервера %1.</translation>
     </message>
 </context>
 </TS>
