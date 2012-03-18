@@ -168,6 +168,7 @@ QDjViewOutline::refresh()
               QString name = djview->pageName(pageno);
               item->setText(0, tr("Page %1").arg(name));
               item->setData(0, Qt::UserRole, pageno);
+              item->setData(0, Qt::UserRole+1, pageno);
               item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
               item->setToolTip(0, tr("Go: page %1.").arg(name));
               item->setWhatsThis(0, whatsThis());
@@ -293,6 +294,12 @@ QDjViewOutline::itemActivated(QTreeWidgetItem *item)
       QString link = data.toString();
       if (link.size() > 0)
         djview->goToLink(link);
+    }
+  else if (data.type() == QVariant::Int)
+    {
+      int pageno = data.toInt();
+      if (pageno >= 0)
+        djview->goToPage(pageno);
     }
 }
 
