@@ -945,12 +945,12 @@
         <location filename="qdjview.cpp" line="2558"/>
         <source>Certificate validation error - DjView</source>
         <comment>dialog caption</comment>
-        <translation type="unfinished"></translation>
+        <translation>Chyba ověřování certifikátu – DjView</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2559"/>
         <source>&lt;html&gt; %1  Do you want to continue anyway? &lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt; %1  Chcete přesto pokračovat? &lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2637"/>
@@ -971,14 +971,12 @@
     <message>
         <location filename="qdjview.cpp" line="2974"/>
         <source>&lt;html&gt; This file was served with printing restrictions. Do you want to print it anyway?&lt;/html&gt;</source>
-        <oldsource>&lt;html&gt; This file was served with printing restrictions.Do you want to print it anyway?&lt;/html&gt;</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Tento soubor byl dodán s omezením tisku. Chcete jej přesto vytisknout?&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2990"/>
         <source>&lt;html&gt; This file was served with saving restrictions. Do you want to save it anyway?&lt;/html&gt;</source>
-        <oldsource>&lt;html&gt; This file was served with saving restrictions.Do you want to save it anyway?&lt;/html&gt;</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Tento soubor byl dodán s omezením ukládání. Chcete jej přesto uložit?&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2973"/>
@@ -1520,17 +1518,17 @@ Mezi obecné přepínače patří:
     <message>
         <location filename="qdjviewauthdialog.ui" line="48"/>
         <source>Password:</source>
-        <translation type="unfinished">Heslo: </translation>
+        <translation>Heslo:</translation>
     </message>
     <message>
         <location filename="qdjviewauthdialog.ui" line="62"/>
         <source>User:</source>
-        <translation type="unfinished">Uživatel:</translation>
+        <translation>Uživatel:</translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="197"/>
         <source>Authentication required - DjView</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyžadováno prokázání totožnosti – DjView</translation>
     </message>
 </context>
 <context>
@@ -2622,13 +2620,12 @@ Chcete jej nahradit?</translation>
     <message>
         <location filename="qdjviewprefs.cpp" line="830"/>
         <source>&lt;html&gt;&lt;b&gt;Advanced.&lt;/b&gt;&lt;br&gt;You can override the default interface language, disable the page animations, or enable additional menu entries that are useful for authoring DjVu files.You can also disable the printing or saving restrictions dictated by certain web sites. The manual color correction can be useful with old printers.&lt;/html&gt;</source>
-        <oldsource>&lt;html&gt;&lt;p&gt;&lt;b&gt;Advanced.&lt;/b&gt;You can override the default interface language, disable the page animations, or enable additional menu entries that are useful for authoring DjVu files.You can also disable the printing or saving restrictions dictated by certain web sites. The manual color correction can be useful with old printers.&lt;/html&gt;</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;b&gt;Pokročilé.&lt;/b&gt;&lt;br&gt;Můžete vnutit výchozí jazyk uživatelského rozhraní, vypnout animace stránky nebo zapnout dodatečné položky v nabídkách, které se hodí při vytváření souborů DjVu. Rovněž můžete vypnout omezení na tisk nebo ukládání vyžadované některými webovými stránkami. Ruční oprava barev může být užitečná u starých tiskáren.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="840"/>
         <source>&lt;html&gt;&lt;b&gt;Network proxy settings.&lt;/b&gt;&lt;br&gt;These proxy settings are used when the standalone djview viewer accesses a djvu document through a http url. The djview plugin always uses the proxy settings of the web browser.&lt;p&gt;&lt;b&gt;Cache settings.&lt;/b&gt;&lt;br&gt;The &lt;i&gt;pixel cache&lt;/i&gt; stores image data located outside the visible area. This cache makes panning smoother. The &lt;i&gt;decoded page cache&lt;/i&gt; contains partially decoded pages. It provides faster response times when navigating a multipage document or when returning to a previously viewed page. Clearing this cache might be useful to reflect a change in the page data without restarting the DjVu viewer.&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;b&gt;Nastavení síťové proxy.&lt;/b&gt;&lt;br&gt;Tato nastavení mají vliv, pokud samostatný prohlížeč djview přistupuje k DjVu dokumentu skrze HTTP URL. Zásuvný modul vždy používá nastavení proxy z webového prohléžeče.&lt;p&gt;&lt;b&gt;Vyrovnávací paměti&lt;/b&gt;&lt;br&gt;&lt;i&gt;Pixelovákeš&lt;/i&gt; uchovává obrazová data, která se nachází mimo viditelnou oblast. Tato keš umožňuje plynulý pohyb po stránce. &lt;i&gt;Keš pro dekódované stránky&lt;/i&gt; uchovává částečně dekódované stránky. Umožňuje kratší reakční dobu při listování mezi stránkami nebo při návratu na dříve viděnou stránku. Potřebujete-li znovu načíst změněné stránky, můžete místo nového spouštění DjVu prohlížeče vyprázdnit tuto keš.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Nastavení síťové proxy.&lt;/b&gt;&lt;br&gt;Tato nastavení mají vliv, pokud samostatný prohlížeč djview přistupuje k DjVu dokumentu skrze HTTP URL. Zásuvný modul vždy používá nastavení proxy z webového prohlížeče.&lt;p&gt;&lt;b&gt;Vyrovnávací paměti&lt;/b&gt;&lt;br&gt;&lt;i&gt;Pixelová keš&lt;/i&gt; uchovává obrazová data, která se nachází mimo viditelnou oblast. Tato keš umožňuje plynulý pohyb po stránce. &lt;i&gt;Keš pro dekódované stránky&lt;/i&gt; uchovává částečně dekódované stránky. Umožňuje kratší reakční dobu při listování mezi stránkami nebo při návratu na dříve viděnou stránku. Potřebujete-li překreslit změněné stránky, můžete místo nového spouštění DjVu prohlížeče vyprázdnit tuto keš.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="14"/>
@@ -2887,8 +2884,7 @@ Chcete jej nahradit?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1069"/>
         <source>Force language (next time djview runs)</source>
-        <oldsource>Force language (when djview is restarted.)</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Vnutit jazyk (od příštího spuštění djview)</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1105"/>
@@ -2899,7 +2895,7 @@ Chcete jej nahradit?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1124"/>
         <source>Override saving and printing restrictions</source>
-        <translation type="unfinished"></translation>
+        <translation>Přebít omezení na ukládání a tisk</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1211"/>
@@ -3405,17 +3401,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjvunet.cpp" line="224"/>
         <source>Cannot validate the certificate for server %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze ověřit certifikát serveru %1.</translation>
     </message>
     <message>
         <location filename="qdjvunet.cpp" line="251"/>
         <source>Authentication required for %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (%2) vyžaduje ověření totožnosti.</translation>
     </message>
     <message>
         <location filename="qdjvunet.cpp" line="259"/>
         <source>Authentication required for proxy %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy %1 vyžaduje ověření totožnosti.</translation>
     </message>
 </context>
 </TS>
