@@ -1133,12 +1133,12 @@
         <location filename="qdjview.cpp" line="2558"/>
         <source>Certificate validation error - DjView</source>
         <comment>dialog caption</comment>
-        <translation type="unfinished"></translation>
+        <translation>証書驗証錯誤 - DjView</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2559"/>
         <source>&lt;html&gt; %1  Do you want to continue anyway? &lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt; %1  是否仍然繼續? &lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2637"/>
@@ -1167,7 +1167,7 @@
         <location filename="qdjview.cpp" line="2974"/>
         <source>&lt;html&gt; This file was served with printing restrictions. Do you want to print it anyway?&lt;/html&gt;</source>
         <oldsource>&lt;html&gt; This file was served with printing restrictions.Do you want to print it anyway?&lt;/html&gt;</oldsource>
-        <translation type="unfinished">&lt;html&gt; 本檔案有列印限制。是否仍然列印？&lt;/html&gt;</translation>
+        <translation>&lt;html&gt; 本文件有打印限制。是否仍然打印？&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2989"/>
@@ -1180,7 +1180,7 @@
         <location filename="qdjview.cpp" line="2990"/>
         <source>&lt;html&gt; This file was served with saving restrictions. Do you want to save it anyway?&lt;/html&gt;</source>
         <oldsource>&lt;html&gt; This file was served with saving restrictions.Do you want to save it anyway?&lt;/html&gt;</oldsource>
-        <translation type="unfinished">&lt;html&gt; 本檔案有儲存限制。是否仍然儲存？&lt;/html&gt;</translation>
+        <translation>&lt;html&gt; 本檔案有儲存限制。是否仍然儲存？&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3048"/>
@@ -1503,17 +1503,17 @@ Common options include:
     <message>
         <location filename="qdjviewauthdialog.ui" line="48"/>
         <source>Password:</source>
-        <translation type="unfinished">密碼:</translation>
+        <translation>密碼:</translation>
     </message>
     <message>
         <location filename="qdjviewauthdialog.ui" line="62"/>
         <source>User:</source>
-        <translation type="unfinished">用戶名:</translation>
+        <translation>用戶名:</translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="197"/>
         <source>Authentication required - DjView</source>
-        <translation type="unfinished"></translation>
+        <translation>需要身份認証 - DjView</translation>
     </message>
 </context>
 <context>
@@ -3354,17 +3354,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjvunet.cpp" line="224"/>
         <source>Cannot validate the certificate for server %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>未能驗証服務器 %1 的証書。</translation>
     </message>
     <message>
         <location filename="qdjvunet.cpp" line="251"/>
         <source>Authentication required for %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (%2) 需要身份認証。</translation>
     </message>
     <message>
         <location filename="qdjvunet.cpp" line="259"/>
         <source>Authentication required for proxy %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>代理服務器 %1 需要身份認証。</translation>
     </message>
 </context>
 </TS>
