@@ -77,6 +77,8 @@ An remote DjVu document
 of the form:
 .IP "" 5
 .BI http:// host / path "/" name.djvu "[?djvuopts&" keyword = value "&...]"
+.IP "" 5
+.BI https:// host / path "/" name.djvu "[?djvuopts&" keyword = value "&...]"
 .IP "" 3
 Browsing remote DjVu documents with the standalone viewer
 is less efficient than using the browser plugin.
@@ -596,13 +598,11 @@ bottom	dock specified panels on the bottom side.
 .TP
 .BI "-thumbnails=" keyword "{," keyword "}"
 Compatibility alias for 
-.BI "-sidebar=thumbnails," keyword "{," keyword "}."
-
+.BI "-sidebar=" keyword "{," keyword "},thumbnails."
 .TP
 .BI "-outline=" keyword "{," keyword "}"
 Compatibility alias for 
-.BI "-sidebar=outline," keyword "{," keyword "}."
-
+.BI "-sidebar=" keyword "{," keyword "},outline."
 .TP
 .BI "-menu=(yes|no)"
 Enable or disable the pop-up menu.
