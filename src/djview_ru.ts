@@ -1324,24 +1324,24 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="2558"/>
         <source>Certificate validation error - DjView</source>
         <comment>dialog caption</comment>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно удостоверить сертификат — DjView</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2559"/>
         <source>&lt;html&gt; %1  Do you want to continue anyway? &lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt; %1  Продолжить выполнение запрошенного действия? &lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2974"/>
         <source>&lt;html&gt; This file was served with printing restrictions. Do you want to print it anyway?&lt;/html&gt;</source>
         <oldsource>&lt;html&gt; This file was served with printing restrictions.Do you want to print it anyway?&lt;/html&gt;</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt; Этот файл на данном сервере опубликован с ограничением на печать. Напечатать его несмотря на это?&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2990"/>
         <source>&lt;html&gt; This file was served with saving restrictions. Do you want to save it anyway?&lt;/html&gt;</source>
         <oldsource>&lt;html&gt; This file was served with saving restrictions.Do you want to save it anyway?&lt;/html&gt;</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt; Этот файл на данном сервере опубликован с ограничением на сохранение. Сохранить его несмотря на это?&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3764"/>
@@ -1510,17 +1510,17 @@ Common options include:
     <message>
         <location filename="qdjviewauthdialog.ui" line="48"/>
         <source>Password:</source>
-        <translation type="unfinished">Пароль:</translation>
+        <translation>Пароль:</translation>
     </message>
     <message>
         <location filename="qdjviewauthdialog.ui" line="62"/>
         <source>User:</source>
-        <translation type="unfinished">Пользователь:</translation>
+        <translation>Имя пользователя:</translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="197"/>
         <source>Authentication required - DjView</source>
-        <translation type="unfinished"></translation>
+        <translation>Требуется аутентификация — DjView</translation>
     </message>
 </context>
 <context>
@@ -2611,7 +2611,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1124"/>
         <source>Override saving and printing restrictions</source>
-        <translation type="unfinished"></translation>
+        <translation>Игнорировать запреты на печать и сохранение</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1211"/>
@@ -2698,12 +2698,12 @@ Do you want to replace it?</source>
         <location filename="qdjviewprefs.cpp" line="830"/>
         <source>&lt;html&gt;&lt;b&gt;Advanced.&lt;/b&gt;&lt;br&gt;You can override the default interface language, disable the page animations, or enable additional menu entries that are useful for authoring DjVu files.You can also disable the printing or saving restrictions dictated by certain web sites. The manual color correction can be useful with old printers.&lt;/html&gt;</source>
         <oldsource>&lt;html&gt;&lt;p&gt;&lt;b&gt;Advanced.&lt;/b&gt;You can override the default interface language, disable the page animations, or enable additional menu entries that are useful for authoring DjVu files.You can also disable the printing or saving restrictions dictated by certain web sites. The manual color correction can be useful with old printers.&lt;/html&gt;</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;b&gt;Продвинутые.&lt;/b&gt;&lt;br&gt;На этой вкладке можно переопределить язык интерфейса по умолчанию, запретить анимацию страниц, а также включить дополнительные пункты меню программы. Можно также отключить следование ограничениям, устанавливаемым некоторыми веб-сайтами. Ручная настройка цветовой коррекции может быть полезна при использовании старых принтеров.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="840"/>
         <source>&lt;html&gt;&lt;b&gt;Network proxy settings.&lt;/b&gt;&lt;br&gt;These proxy settings are used when the standalone djview viewer accesses a djvu document through a http url. The djview plugin always uses the proxy settings of the web browser.&lt;p&gt;&lt;b&gt;Cache settings.&lt;/b&gt;&lt;br&gt;The &lt;i&gt;pixel cache&lt;/i&gt; stores image data located outside the visible area. This cache makes panning smoother. The &lt;i&gt;decoded page cache&lt;/i&gt; contains partially decoded pages. It provides faster response times when navigating a multipage document or when returning to a previously viewed page. Clearing this cache might be useful to reflect a change in the page data without restarting the DjVu viewer.&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;b&gt;Параметры прокси.&lt;/b&gt;&lt;br&gt;Эти параметры прокси используются, когда просмотрщик в качестве самостоятельного приложения обращается к документу DjVu по протоколу HTTP. Если просмотрщик запускается к виде плагина, всегда используются параметры браузера для прокси.&lt;p&gt;&lt;b&gt;Кэши.&lt;/b&gt;&lt;br&gt;&lt;i&gt;Пиксельный кэш&lt;/i&gt; хранит данные изображения вне видимой области. Этот кэш обеспечивает плавную прокрутку. &lt;i&gt;Кэш декодированных страниц&lt;/i&gt; содержит частично декодированные страницы. Он обеспечивает более короткое время отклика при повторном просмотре страниц многостраничного документа. Очистка кэша может быть полезна для отражения изменений страницы без перезапуска просмотрщика.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;b&gt;Параметры прокси.&lt;/b&gt;&lt;br&gt;Эти параметры прокси используются, когда просмотрщик в качестве самостоятельного приложения обращается к документу DjVu по протоколу HTTP. Если просмотрщик запускается к виде плагина, всегда используются параметры браузера для прокси.&lt;p&gt;&lt;b&gt;Параметры кэширования.&lt;/b&gt;&lt;br&gt;&lt;i&gt;Пиксельный кэш&lt;/i&gt; хранит данные изображения вне видимой области. Этот кэш обеспечивает плавную прокрутку. &lt;i&gt;Кэш декодированных страниц&lt;/i&gt; содержит частично декодированные страницы. Он обеспечивает более короткое время отклика при повторном просмотре страниц многостраничного документа. Очистка кэша может быть полезна для отражения изменений страницы без перезапуска просмотрщика.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="53"/>
@@ -2923,7 +2923,7 @@ Do you want to replace it?</source>
         <location filename="qdjviewprefsdialog.ui" line="1069"/>
         <source>Force language (next time djview runs)</source>
         <oldsource>Force language (when djview is restarted.)</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Зафиксировать язык интерфейса (со следующего запуска)</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1133"/>
@@ -3372,17 +3372,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjvunet.cpp" line="224"/>
         <source>Cannot validate the certificate for server %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно удостоверить сертификат сервера %1.</translation>
     </message>
     <message>
         <location filename="qdjvunet.cpp" line="251"/>
         <source>Authentication required for %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Требуется аутентификация для %1 (%2).</translation>
     </message>
     <message>
         <location filename="qdjvunet.cpp" line="259"/>
         <source>Authentication required for proxy %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Требуется аутентификация для прокси-сервера %1.</translation>
     </message>
 </context>
 </TS>
