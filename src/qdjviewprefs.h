@@ -150,6 +150,7 @@ public:
   QUrl       proxyUrl;          //!< Proxy information.
   bool       enableAnimations;  //!< Animated page movements.
   bool       advancedFeatures;  //!< Advanced features.
+  bool       showTextLabel;     //!< Show text label.
   bool       invertLuminance;   //!< Invert luminance by default.
   bool       mouseWheelZoom;    //!< Mouse wheel zooms instead of scroll.
   QString    languageOverride;  //!< Language settings

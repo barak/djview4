@@ -4,7 +4,7 @@
 <context>
     <name>Generic</name>
     <message>
-        <location filename="qdjviewprefs.cpp" line="964"/>
+        <location filename="qdjviewprefs.cpp" line="969"/>
         <source>thisLanguage</source>
         <comment>Name of THIS language</comment>
         <translation>简体中文</translation>
@@ -974,487 +974,487 @@
         <translation>帮助(&amp;H)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1041"/>
+        <location filename="qdjview.cpp" line="1042"/>
         <source>Control Left Mouse Button</source>
         <translation>控制鼠标左键</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1043"/>
+        <location filename="qdjview.cpp" line="1044"/>
         <source>Right Mouse Button</source>
         <translation>鼠标右键</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1050"/>
+        <location filename="qdjview.cpp" line="1051"/>
         <source>&lt;html&gt;&lt;b&gt;Selecting a rectangle.&lt;/b&gt;&lt;br/&gt; Once a rectangular area is selected, a popup menu lets you copy the corresponding text or image. Instead of using this tool, you can also hold %1 and use the Left Mouse Button.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;选择矩形。&lt;/b&gt;&lt;br/&gt; 选中矩形区域时，弹出菜单让你复制相应的文本或图像。另外亦可按住 %1 和鼠标左键。&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1058"/>
+        <location filename="qdjview.cpp" line="1059"/>
         <source>&lt;html&gt;&lt;b&gt;Zooming.&lt;/b&gt;&lt;br/&gt; Choose a zoom level for viewing the document. Zoom level 100% displays the document for a 100 dpi screen. Zoom levels &lt;tt&gt;Fit Page&lt;/tt&gt; and &lt;tt&gt;Fit Width&lt;/tt&gt; ensure that the full page or the page width fit in the window. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;缩放。&lt;/b&gt;&lt;br/&gt; 选择缩放级别以查看文档。 缩放级别 100% 显示文档于 100 dpi 的屏幕。 缩放级别 &lt;tt&gt;适应页面&lt;/tt&gt; 及 &lt;tt&gt;适应宽度&lt;/tt&gt; 使整页或宽度适应窗口。 &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1070"/>
+        <location filename="qdjview.cpp" line="1071"/>
         <source>&lt;html&gt;&lt;b&gt;Rotating the pages.&lt;/b&gt;&lt;br/&gt; Choose to display pages in portrait or landscape mode. You can also turn them upside down.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;旋转页面。&lt;/b&gt;&lt;br/&gt; 选择纵向或横向显示模式。 亦可使其上下颠倒。&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1077"/>
+        <location filename="qdjview.cpp" line="1078"/>
         <source>&lt;html&gt;&lt;b&gt;Display mode.&lt;/b&gt;&lt;br/&gt; DjVu images compose a background layer and a foreground layer using a stencil. The display mode specifies with layers should be displayed.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;显示模式。&lt;/b&gt;&lt;br/&gt; DjVu图像包括背景层和基于模板的前景层。 显示模式指定哪些层被显示。&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1085"/>
+        <location filename="qdjview.cpp" line="1086"/>
         <source>&lt;html&gt;&lt;b&gt;Navigating the document.&lt;/b&gt;&lt;br/&gt; The page selector lets you jump to any page by name and can be activated at any time by pressing Ctrl+G. The navigation buttons jump to the first page, the previous page, the next page, or the last page. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;文档导航。&lt;/b&gt;&lt;br/&gt; 用页面选择器可按名称跳到指定页面，可按 Ctrl+G 激活之。 用导航按钮可跳到首页、上一页、下一页或末页。 &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1094"/>
+        <location filename="qdjview.cpp" line="1095"/>
         <source>&lt;html&gt;&lt;b&gt;Document and page information.&lt;/b&gt;&lt;br&gt; Display a dialog window for viewing encoding information pertaining to the document or to a specific page.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;文档和页面信息。&lt;/b&gt;&lt;br&gt; 弹出对话框查看文档或页面的编码信息。&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1100"/>
+        <location filename="qdjview.cpp" line="1101"/>
         <source>&lt;html&gt;&lt;b&gt;Document and page metadata.&lt;/b&gt;&lt;br&gt; Display a dialog window for viewing metadata pertaining to the document or to a specific page.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;文档和页面元数据。&lt;/b&gt;&lt;br&gt; 弹出对话框显示文档或页面的元数据。&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1106"/>
+        <location filename="qdjview.cpp" line="1107"/>
         <source>&lt;html&gt;&lt;b&gt;Continuous layout.&lt;/b&gt;&lt;br/&gt; Display all the document pages arranged vertically inside the scrollable document viewing area.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;连续页面模式。&lt;/b&gt;&lt;br/&gt; 显示文档的全部页面与带滚动条的显示区域中。&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1111"/>
+        <location filename="qdjview.cpp" line="1112"/>
         <source>&lt;html&gt;&lt;b&gt;Side by side layout.&lt;/b&gt;&lt;br/&gt; Display pairs of pages side by side inside the scrollable document viewing area.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;并排显示模式。&lt;/b&gt;&lt;br/&gt; 将页面并排显示在查看器中。&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1116"/>
+        <location filename="qdjview.cpp" line="1117"/>
         <source>&lt;html&gt;&lt;b&gt;Page information.&lt;/b&gt;&lt;br/&gt; Display information about the page located under the cursor: the sequential page number, the page size in pixels, and the page resolution in dots per inch. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;页面信息。&lt;/b&gt;&lt;br/&gt; 显示位于光标位置的页面信息: 页码序号， 页面的尺寸（按像素）， 以及页面的分辨率（按DPI，即每英寸点数） &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1122"/>
+        <location filename="qdjview.cpp" line="1123"/>
         <source>&lt;html&gt;&lt;b&gt;Cursor information.&lt;/b&gt;&lt;br/&gt; Display the position of the mouse cursor expressed in page coordinates. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;光标信息。&lt;/b&gt;&lt;br/&gt; 显示鼠标光标在页面坐标中的位置值。 &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1127"/>
+        <location filename="qdjview.cpp" line="1128"/>
         <source>&lt;html&gt;&lt;b&gt;Document viewing area.&lt;/b&gt;&lt;br/&gt; This is the main display area for the DjVu document. &lt;ul&gt;&lt;li&gt;Arrows and page keys to navigate the document.&lt;/li&gt;&lt;li&gt;Space and BackSpace to read the document.&lt;/li&gt;&lt;li&gt;Keys &lt;tt&gt;+&lt;/tt&gt; &lt;tt&gt;-&lt;/tt&gt; &lt;tt&gt;[&lt;/tt&gt; &lt;tt&gt;]&lt;/tt&gt; to zoom or rotate the document.&lt;/li&gt;&lt;li&gt;Left Mouse Button for panning and selecting links.&lt;/li&gt;&lt;li&gt;%3 for displaying the contextual menu.&lt;/li&gt;&lt;li&gt;%1 Left Mouse Button for selecting text or images.&lt;/li&gt;&lt;li&gt;%2 for popping the magnification lens.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;文档查看区域。&lt;/b&gt;&lt;br/&gt; 这是DjVu文档的主要显示区域。 &lt;ul&gt;&lt;li&gt;用方向键和翻页键可翻动文档。&lt;/li&gt;&lt;li&gt;空格和退格键阅读文档。&lt;/li&gt;&lt;li&gt;按键 &lt;tt&gt;+&lt;/tt&gt; &lt;tt&gt;-&lt;/tt&gt; &lt;tt&gt;[&lt;/tt&gt; &lt;tt&gt;]&lt;/tt&gt; 可缩放或旋转文档。&lt;/li&gt;&lt;li&gt;鼠标左键可挪动页面及选中链接。&lt;/li&gt;&lt;li&gt;%3 显示关联弹出菜单。&lt;/li&gt;&lt;li&gt;%1 鼠标左键选择文本或图像。&lt;/li&gt;&lt;li&gt;%2 弹出放大镜。&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1140"/>
+        <location filename="qdjview.cpp" line="1141"/>
         <source>&lt;html&gt;&lt;b&gt;Document viewing area.&lt;/b&gt;&lt;br/&gt; This is the main display area for the DjVu document. But you must first open a DjVu document to see anything.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;文档查看区域。&lt;/b&gt;&lt;br/&gt; 这是DjVu文档的主要显示区域。 不过得要先打开DjVu文档哦。&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1453"/>
+        <location filename="qdjview.cpp" line="1454"/>
         <source>Option &apos;%1&apos; requires boolean argument.</source>
         <translation>选项 &apos;%1&apos; 需要布尔型参数。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1460"/>
+        <location filename="qdjview.cpp" line="1461"/>
         <source>Illegal value &apos;%2&apos; for option &apos;%1&apos;.</source>
         <translation>取值 &apos;%2&apos; 对选项 &apos;%1&apos; 无效。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1578"/>
+        <location filename="qdjview.cpp" line="1579"/>
         <source>Toolbar option &apos;%1&apos; is not implemented.</source>
         <translation>工具栏选项 &apos;%1&apos; 尚未实现。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1591"/>
+        <location filename="qdjview.cpp" line="1592"/>
         <source>Toolbar option &apos;%1&apos; is not recognized.</source>
         <translation>工具栏选项 &apos;%1&apos; 未识别。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1637"/>
+        <location filename="qdjview.cpp" line="1638"/>
         <source>Option &apos;%1&apos; requires a standalone viewer.</source>
         <translation>选项 &apos;%1&apos; 需要单独的查看器。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1892"/>
+        <location filename="qdjview.cpp" line="1893"/>
         <source>Deprecated option &apos;%1&apos;</source>
         <translation>过期选项 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1940"/>
+        <location filename="qdjview.cpp" line="1941"/>
         <source>Option &apos;%1&apos; is not implemented.</source>
         <translation>选项 &apos;%1&apos; 尚未实现。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="1945"/>
+        <location filename="qdjview.cpp" line="1946"/>
         <source>Option &apos;%1&apos; is not recognized.</source>
         <translation>选项 &apos;%1&apos; 未识别。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2221"/>
-        <location filename="qdjview.cpp" line="2491"/>
+        <location filename="qdjview.cpp" line="2222"/>
+        <location filename="qdjview.cpp" line="2504"/>
         <source>DjView</source>
         <translation>DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2374"/>
+        <location filename="qdjview.cpp" line="2386"/>
         <source>Thumbnails</source>
         <translation>缩略图</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2381"/>
+        <location filename="qdjview.cpp" line="2393"/>
         <source>Outline</source>
         <translation>书签</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2388"/>
+        <location filename="qdjview.cpp" line="2400"/>
         <source>Find</source>
         <translation>查找</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2511"/>
+        <location filename="qdjview.cpp" line="2524"/>
         <source>Cannot open file &apos;%1&apos;.</source>
         <translation>未能打开文件 &apos;%1&apos;。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2512"/>
+        <location filename="qdjview.cpp" line="2525"/>
         <source>Opening DjVu file</source>
         <translation>打开DjVu文件</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2544"/>
+        <location filename="qdjview.cpp" line="2557"/>
         <source>Cannot open URL &apos;%1&apos;.</source>
         <translation>未能打开URL &apos;%1&apos;。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2545"/>
+        <location filename="qdjview.cpp" line="2558"/>
         <source>Opening DjVu document</source>
         <translation>打开DjVu文档</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2558"/>
+        <location filename="qdjview.cpp" line="2571"/>
         <source>Certificate validation error - DjView</source>
         <comment>dialog caption</comment>
         <translation>证书验证错误 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2559"/>
+        <location filename="qdjview.cpp" line="2572"/>
         <source>&lt;html&gt; %1  Do you want to continue anyway? &lt;/html&gt;</source>
         <translation>&lt;html&gt; %1  是否仍然继续? &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2637"/>
+        <location filename="qdjview.cpp" line="2650"/>
         <source>Cannot find page numbered: %1</source>
         <translation>未能找到此编号的页: %1</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2669"/>
-        <location filename="qdjview.cpp" line="2699"/>
+        <location filename="qdjview.cpp" line="2682"/>
+        <location filename="qdjview.cpp" line="2712"/>
         <source>Cannot find page named: %1</source>
         <translation>未能找到此名称的页: %1</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2912"/>
+        <location filename="qdjview.cpp" line="2925"/>
         <source>Unrecognized sidebar options &apos;%1&apos;.</source>
         <translation>未识别的侧栏选项 &apos;%1&apos;。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2973"/>
-        <location filename="qdjview.cpp" line="3009"/>
+        <location filename="qdjview.cpp" line="2986"/>
+        <location filename="qdjview.cpp" line="3022"/>
         <source>Print - DjView</source>
         <comment>dialog caption</comment>
         <translation>打印 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2974"/>
+        <location filename="qdjview.cpp" line="2987"/>
         <source>&lt;html&gt; This file was served with printing restrictions. Do you want to print it anyway?&lt;/html&gt;</source>
         <oldsource>&lt;html&gt; This file was served with printing restrictions.Do you want to print it anyway?&lt;/html&gt;</oldsource>
         <translation>&lt;html&gt; 本文件有打印限制。是否仍然打印？&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2989"/>
-        <location filename="qdjview.cpp" line="3029"/>
+        <location filename="qdjview.cpp" line="3002"/>
+        <location filename="qdjview.cpp" line="3042"/>
         <source>Save - DjView</source>
         <comment>dialog caption</comment>
         <translation>保存 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="2990"/>
+        <location filename="qdjview.cpp" line="3003"/>
         <source>&lt;html&gt; This file was served with saving restrictions. Do you want to save it anyway?&lt;/html&gt;</source>
         <oldsource>&lt;html&gt; This file was served with saving restrictions.Do you want to save it anyway?&lt;/html&gt;</oldsource>
         <translation>&lt;html&gt; 本文件有保存限制。是否仍然保存？&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3048"/>
+        <location filename="qdjview.cpp" line="3061"/>
         <source>Export - DjView</source>
         <comment>dialog caption</comment>
         <translation>导出 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3323"/>
+        <location filename="qdjview.cpp" line="3336"/>
         <source>Text files</source>
         <comment>save filter</comment>
         <translation>文本文件</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3324"/>
-        <location filename="qdjview.cpp" line="3371"/>
+        <location filename="qdjview.cpp" line="3337"/>
+        <location filename="qdjview.cpp" line="3384"/>
         <source>All files</source>
         <comment>save filter</comment>
         <translation>所有文件</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3325"/>
+        <location filename="qdjview.cpp" line="3338"/>
         <source>Save Text - DjView</source>
         <comment>dialog caption</comment>
         <translation>保存文本 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3341"/>
-        <location filename="qdjview.cpp" line="3386"/>
-        <location filename="qdjview.cpp" line="3406"/>
+        <location filename="qdjview.cpp" line="3354"/>
+        <location filename="qdjview.cpp" line="3399"/>
+        <location filename="qdjview.cpp" line="3419"/>
         <source>Error - DjView</source>
         <comment>dialog caption</comment>
         <translation>错误 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3342"/>
-        <location filename="qdjview.cpp" line="3407"/>
+        <location filename="qdjview.cpp" line="3355"/>
+        <location filename="qdjview.cpp" line="3420"/>
         <source>Cannot write file &apos;%1&apos;.
 %2.</source>
         <translation>未能写入文件 &apos;%1&apos;.
 %2.</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3368"/>
+        <location filename="qdjview.cpp" line="3381"/>
         <source>%1 files (*.%2);;</source>
         <comment>save image filter</comment>
         <translation>%1 文件 (*.%2);;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3372"/>
+        <location filename="qdjview.cpp" line="3385"/>
         <source>Save Image - DjView</source>
         <comment>dialog caption</comment>
         <translation>保存图像 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3387"/>
+        <location filename="qdjview.cpp" line="3400"/>
         <source>Cannot determine file format.
 Filename &apos;%1&apos; has no suffix.</source>
         <translation>不能确定文件格式。
 文件名 &apos;%1&apos; 未包含扩展名。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3400"/>
+        <location filename="qdjview.cpp" line="3413"/>
         <source>Image format %1 not supported.</source>
         <translation>图像格式 %1 未支持。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3627"/>
+        <location filename="qdjview.cpp" line="3641"/>
         <source>Cannot decode page %1.</source>
         <translation>未能解码页面 %1。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3629"/>
+        <location filename="qdjview.cpp" line="3643"/>
         <source>Cannot decode document.</source>
         <translation>未能解码文档。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3631"/>
+        <location filename="qdjview.cpp" line="3645"/>
         <source>Decoding DjVu document</source>
         <translation>解码DjVu文档</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3764"/>
+        <location filename="qdjview.cpp" line="3778"/>
         <source> P%1/%2 %3x%4 %5dpi </source>
         <translation> P%1/%2 %3x%4 %5dpi </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3771"/>
+        <location filename="qdjview.cpp" line="3785"/>
         <source> x=%1 y=%2 </source>
         <translation> x=%1 y=%2 </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3775"/>
+        <location filename="qdjview.cpp" line="3789"/>
         <source> %3x%4+%1+%2 </source>
         <translation> %3x%4+%1+%2 </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3802"/>
+        <location filename="qdjview.cpp" line="3861"/>
         <source>Go: 1 page forward.</source>
         <translation>转到：向前一页。</translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3803"/>
+        <location filename="qdjview.cpp" line="3862"/>
         <source>Go: %n pages forward.</source>
         <translation>
             <numerusform>转到：向前 %n 页。</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3805"/>
+        <location filename="qdjview.cpp" line="3864"/>
         <source>Go: 1 page backward.</source>
         <translation>转到：向后一页。</translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3806"/>
+        <location filename="qdjview.cpp" line="3865"/>
         <source>Go: %n pages backward.</source>
         <translation>
             <numerusform>转到：向后 %n 页。</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3809"/>
-        <location filename="qdjview.cpp" line="3811"/>
+        <location filename="qdjview.cpp" line="3868"/>
+        <location filename="qdjview.cpp" line="3870"/>
         <source>Go: page %1.</source>
         <translation>转到：第 %1 页。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3813"/>
+        <location filename="qdjview.cpp" line="3872"/>
         <source>Go: %1</source>
         <translation>转到：%1</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3815"/>
+        <location filename="qdjview.cpp" line="3874"/>
         <source> (in other window.)</source>
         <translation> (在其它窗口)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3902"/>
+        <location filename="qdjview.cpp" line="3961"/>
         <source>Cannot resolve link &apos;%1&apos;</source>
         <translation>未能解析链接 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3930"/>
+        <location filename="qdjview.cpp" line="3989"/>
         <source>Cannot spawn a browser for url &apos;%1&apos;</source>
         <translation>未能用浏览器打开URL &apos;%1&apos;</translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjview.cpp" line="3944"/>
+        <location filename="qdjview.cpp" line="4003"/>
         <source>%n characters</source>
         <translation>
             <numerusform>%n 字符</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3950"/>
+        <location filename="qdjview.cpp" line="4009"/>
         <source>Copy text (%1)</source>
         <translation>复制文本 (%1)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3951"/>
+        <location filename="qdjview.cpp" line="4010"/>
         <source>Save text as...</source>
         <translation>另存文本为...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3954"/>
+        <location filename="qdjview.cpp" line="4013"/>
         <source>Copy text into the clipboard.</source>
         <translation>复制文本到剪贴板。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3955"/>
+        <location filename="qdjview.cpp" line="4014"/>
         <source>Save text into a file.</source>
         <translation>保存文本到文件。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3957"/>
+        <location filename="qdjview.cpp" line="4016"/>
         <source>Copy image (%1x%2 pixels)</source>
         <translation>复制图像(%1x%2像素)</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3959"/>
+        <location filename="qdjview.cpp" line="4018"/>
         <source>Save image as...</source>
         <translation>另存图像为...</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3960"/>
+        <location filename="qdjview.cpp" line="4019"/>
         <source>Copy image into the clipboard.</source>
         <translation>复制图像到剪贴板。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3961"/>
+        <location filename="qdjview.cpp" line="4020"/>
         <source>Save image into a file.</source>
         <translation>保存图像到文件。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3963"/>
+        <location filename="qdjview.cpp" line="4022"/>
         <source>Zoom to rectangle</source>
         <translation>缩放到矩形区域</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3964"/>
+        <location filename="qdjview.cpp" line="4023"/>
         <source>Zoom the selection to fit the window.</source>
         <translation>缩放选中区域适应窗口。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3970"/>
+        <location filename="qdjview.cpp" line="4029"/>
         <source>Copy URL</source>
         <translation>复制URL</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3971"/>
+        <location filename="qdjview.cpp" line="4030"/>
         <source>Save into the clipboard an URL that highlights the selection.</source>
         <translation>复制选中对象的URL到剪贴板。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3973"/>
+        <location filename="qdjview.cpp" line="4032"/>
         <source>Copy Maparea</source>
         <translation>复制映射区域</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="3974"/>
+        <location filename="qdjview.cpp" line="4033"/>
         <source>Save into the clipboard a maparea annotation expression for program djvused.</source>
         <translation>复制映射区域注释对应的djvu代码到剪贴板。</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4125"/>
+        <location filename="qdjview.cpp" line="4184"/>
         <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;%2&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=%3&gt;%3&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;%2&lt;p&gt;DjVu文档查看工具&lt;br&gt;&lt;a href=%3&gt;%3&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;本程序是自由软件。你可依据自由软件基金会发布的GNU GPL的条款重新发布或修改本程序。 本程序之发布&lt;i&gt;无任何担保&lt;/i&gt;。 详细请参见 GNU GPL。&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4145"/>
+        <location filename="qdjview.cpp" line="4204"/>
         <source>About DjView</source>
         <translation>关于DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4165"/>
+        <location filename="qdjview.cpp" line="4224"/>
         <source>DjVu files</source>
         <translation>DjVu文件</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4166"/>
+        <location filename="qdjview.cpp" line="4225"/>
         <source>All files</source>
         <translation>所有文件</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4167"/>
+        <location filename="qdjview.cpp" line="4226"/>
         <source>Open - DjView</source>
         <comment>dialog caption</comment>
         <translation>打开 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4184"/>
+        <location filename="qdjview.cpp" line="4243"/>
         <source>Open Location - DjView</source>
         <comment>dialog caption</comment>
         <translation>打开位置 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4185"/>
+        <location filename="qdjview.cpp" line="4244"/>
         <source>Enter the URL of a DjVu document:</source>
         <translation>输入DjVu文档的URL：</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4202"/>
+        <location filename="qdjview.cpp" line="4261"/>
         <source>Information - DjView</source>
         <comment>dialog caption</comment>
         <translation>信息 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4217"/>
+        <location filename="qdjview.cpp" line="4276"/>
         <source>Metadata - DjView</source>
         <comment>dialog caption</comment>
         <translation>元数据 - DjView</translation>
     </message>
     <message>
-        <location filename="qdjview.cpp" line="4395"/>
+        <location filename="qdjview.cpp" line="4454"/>
         <source>&amp;Clear History</source>
         <translation>清除历史(&amp;C)</translation>
     </message>
@@ -2025,62 +2025,62 @@ Do you want to replace it?</source>
 <context>
     <name>QDjViewFind</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1568"/>
+        <location filename="qdjviewsidebar.cpp" line="1575"/>
         <source>Case sensitive</source>
         <translation>区分大小写</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1571"/>
+        <location filename="qdjviewsidebar.cpp" line="1578"/>
         <source>Words only</source>
         <translation>仅词语</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1574"/>
+        <location filename="qdjviewsidebar.cpp" line="1581"/>
         <source>Regular expression</source>
         <translation>正则表达式</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1593"/>
+        <location filename="qdjviewsidebar.cpp" line="1600"/>
         <source>Find Previous (Shift+F3) </source>
         <translation>查找前一个 (Shift+F3) </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1598"/>
+        <location filename="qdjviewsidebar.cpp" line="1605"/>
         <source>Find Next (F3) </source>
         <translation>查找下一个 (F3) </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1604"/>
+        <location filename="qdjviewsidebar.cpp" line="1611"/>
         <source>Reset search options to default values.</source>
         <translation>重置搜索选项到默认值。</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1608"/>
+        <location filename="qdjviewsidebar.cpp" line="1615"/>
         <source>Options</source>
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1655"/>
+        <location filename="qdjviewsidebar.cpp" line="1662"/>
         <source>&lt;html&gt;&lt;b&gt;Finding text.&lt;/b&gt;&lt;br/&gt; Search hits appear progressively as soon as you type a search string. Typing enter jumps to the next hit. To move to the previous or next hit, you can also use the arrow buttons or the shortcuts &lt;tt&gt;F3&lt;/tt&gt; or &lt;tt&gt;Shift-F3&lt;/tt&gt;. You can also double click a page name. Use the &lt;tt&gt;Options&lt;/tt&gt; menu to search words only or to specify the case sensitivity.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;查找文本。&lt;/b&gt;&lt;br/&gt; 输入搜索字符串时命中数会递增出现。 敲回车键跳到下一个命中处。 要转到前一处或下一处命中， 亦可使用方向键或快捷键 &lt;tt&gt;F3&lt;/tt&gt; 或 &lt;tt&gt;Shift-F3&lt;/tt&gt;。 又可双击页面名. 在 &lt;tt&gt;选项&lt;/tt&gt; 菜单设定搜索词语或区分大小写。&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1665"/>
+        <location filename="qdjviewsidebar.cpp" line="1672"/>
         <source>Specify whether search hits must begin on a word boundary.</source>
         <translation>设定搜索命中是否开始于词语边界。</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1667"/>
+        <location filename="qdjviewsidebar.cpp" line="1674"/>
         <source>Specify whether searches are case sensitive.</source>
         <translation>设定是否考虑大小写。</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1669"/>
+        <location filename="qdjviewsidebar.cpp" line="1676"/>
         <source>Regular expressions describe complex string matching patterns.</source>
         <translation>正则表达式表述复杂的字符串匹配模式。</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1671"/>
+        <location filename="qdjviewsidebar.cpp" line="1678"/>
         <source>&lt;html&gt;&lt;b&gt;Regular Expression Quick Guide&lt;/b&gt;&lt;ul&gt;&lt;li&gt;The dot &lt;tt&gt;.&lt;/tt&gt; matches any character.&lt;/li&gt;&lt;li&gt;Most characters match themselves.&lt;/li&gt;&lt;li&gt;Prepend a backslash &lt;tt&gt;\&lt;/tt&gt; to match special    characters &lt;tt&gt;()[]{}|*+.?!^$\&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\b&lt;/tt&gt; matches a word boundary.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\w&lt;/tt&gt; matches a word character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\d&lt;/tt&gt; matches a digit character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\s&lt;/tt&gt; matches a blank character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\n&lt;/tt&gt; matches a newline character.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; matches characters in range    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[^&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; matches characters outside range    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;|&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt; matches either regular expression    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt; or regular expression &lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{&lt;i&gt;n&lt;/i&gt;,&lt;i&gt;m&lt;/i&gt;}&lt;/tt&gt; matches regular expression    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt; repeated &lt;tt&gt;&lt;i&gt;n&lt;/i&gt;&lt;/tt&gt; to &lt;tt&gt;&lt;i&gt;m&lt;/i&gt;&lt;/tt&gt;    times.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;?&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;*&lt;/tt&gt;, and &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;+&lt;/tt&gt;    are shorthands for &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,1}&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,}&lt;/tt&gt;,     and &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{1,}&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;Use parentheses &lt;tt&gt;()&lt;/tt&gt; to group regular expressions     before &lt;tt&gt;?+*{&lt;/tt&gt;.&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;正则表达式快速指南&lt;/b&gt;&lt;ul&gt;&lt;li&gt;点 &lt;tt&gt;.&lt;/tt&gt; 匹配任意字符。&lt;/li&gt;&lt;li&gt;多数字符匹配其本身。&lt;/li&gt;&lt;li&gt;这些字符前面加一个反斜杠 &lt;tt&gt;\&lt;/tt&gt; 可匹配相应字符 &lt;tt&gt;()[]{}|*+.?!^$\&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\b&lt;/tt&gt; 匹配词语边界。&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\w&lt;/tt&gt; 匹配一个文本字符。&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\d&lt;/tt&gt; 匹配一个数字字符。&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\s&lt;/tt&gt; 匹配一个空白字符。&lt;/li&gt;&lt;li&gt;&lt;tt&gt;\n&lt;/tt&gt; 匹配一个换行符。&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; 匹配此范围中的任意字符    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;[^&lt;i&gt;a&lt;/i&gt;-&lt;i&gt;b&lt;/i&gt;]&lt;/tt&gt; 匹配此范围之外的任意字符    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt;-&lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;。&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;|&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt; 匹配正则表达式    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt; 或正则表达式 &lt;tt&gt;&lt;i&gt;b&lt;/i&gt;&lt;/tt&gt;。&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{&lt;i&gt;n&lt;/i&gt;,&lt;i&gt;m&lt;/i&gt;}&lt;/tt&gt; 匹配正则表达式    &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;&lt;/tt&gt; 重复 &lt;tt&gt;&lt;i&gt;n&lt;/i&gt;&lt;/tt&gt; 到 &lt;tt&gt;&lt;i&gt;m&lt;/i&gt;&lt;/tt&gt;    次。&lt;/li&gt;&lt;li&gt;&lt;tt&gt;&lt;i&gt;a&lt;/i&gt;?&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;*&lt;/tt&gt;, 及 &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;+&lt;/tt&gt;    为 &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,1}&lt;/tt&gt;, &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{0,}&lt;/tt&gt;,     及 &lt;tt&gt;&lt;i&gt;a&lt;/i&gt;{1,}&lt;/tt&gt;对应的简写。&lt;/li&gt;&lt;li&gt;用括号 &lt;tt&gt;()&lt;/tt&gt; 可将表达式分组     于 &lt;tt&gt;?+*{&lt;/tt&gt;之前。&lt;/li&gt;&lt;/ul&gt;&lt;/html&gt;</translation>
     </message>
@@ -2088,51 +2088,51 @@ Do you want to replace it?</source>
 <context>
     <name>QDjViewFind::Model</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="950"/>
+        <location filename="qdjviewsidebar.cpp" line="957"/>
         <source>1 hit</source>
         <translation>1 命中</translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjviewsidebar.cpp" line="951"/>
+        <location filename="qdjviewsidebar.cpp" line="958"/>
         <source>%n hits</source>
         <translation>
             <numerusform>%n 命中</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1019"/>
+        <location filename="qdjviewsidebar.cpp" line="1026"/>
         <source>Page %1 (1 hit)</source>
         <translation>页 %1 (1 命中)</translation>
     </message>
     <message numerus="yes">
-        <location filename="qdjviewsidebar.cpp" line="1021"/>
+        <location filename="qdjviewsidebar.cpp" line="1028"/>
         <source>Page %1 (%n hits)</source>
         <translation>
             <numerusform>页 %1 (%n 命中)</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1324"/>
+        <location filename="qdjviewsidebar.cpp" line="1331"/>
         <source>Searching page %1 (waiting for data.)</source>
         <translation>搜索页 %1 (等待数据。)</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1337"/>
+        <location filename="qdjviewsidebar.cpp" line="1344"/>
         <source>Searching page %1.</source>
         <translation>搜索页 %1。</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1372"/>
+        <location filename="qdjviewsidebar.cpp" line="1379"/>
         <source>No hits!</source>
         <translation>无命中！</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1377"/>
+        <location filename="qdjviewsidebar.cpp" line="1384"/>
         <source>&lt;html&gt;Document is not searchable. No page contains information about its textual content.&lt;/html&gt;</source>
         <translation>&lt;html&gt;文档不可搜索。 页面中没有此文本内容的信息。&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="1383"/>
+        <location filename="qdjviewsidebar.cpp" line="1390"/>
         <source>&lt;html&gt;Invalid regular expression.&lt;/html&gt;</source>
         <translation>&lt;html&gt;无效的正则表达式。&lt;/html&gt;</translation>
     </message>
@@ -2419,18 +2419,18 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="169"/>
-        <location filename="qdjviewsidebar.cpp" line="219"/>
+        <location filename="qdjviewsidebar.cpp" line="220"/>
         <source>Page %1</source>
         <translation>页 %1</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="172"/>
-        <location filename="qdjviewsidebar.cpp" line="231"/>
+        <location filename="qdjviewsidebar.cpp" line="173"/>
+        <location filename="qdjviewsidebar.cpp" line="232"/>
         <source>Go: page %1.</source>
         <translation>转到：第 %1 页。</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="227"/>
+        <location filename="qdjviewsidebar.cpp" line="228"/>
         <source>Go: %1</source>
         <translation>转到：%1</translation>
     </message>
@@ -2867,88 +2867,93 @@ Do you want to replace it?</source>
         <translation>强制界面语言(下次启动时)</translation>
     </message>
     <message>
-        <location filename="qdjviewprefsdialog.ui" line="1098"/>
+        <location filename="qdjviewprefsdialog.ui" line="1108"/>
         <source>Enable advanced features in menus</source>
         <translation>在菜单中启用高级功能</translation>
     </message>
     <message>
-        <location filename="qdjviewprefsdialog.ui" line="1105"/>
+        <location filename="qdjviewprefsdialog.ui" line="1098"/>
         <source>Enable page animations</source>
         <translation>启用页面动画</translation>
     </message>
     <message>
-        <location filename="qdjviewprefsdialog.ui" line="1118"/>
+        <location filename="qdjviewprefsdialog.ui" line="1115"/>
+        <source>Show hidden text in status bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qdjviewprefsdialog.ui" line="1125"/>
         <source>Miscellaneous</source>
         <translation>其他</translation>
     </message>
     <message>
-        <location filename="qdjviewprefsdialog.ui" line="1124"/>
+        <location filename="qdjviewprefsdialog.ui" line="1131"/>
         <source>Override saving and printing restrictions</source>
         <translation>覆盖保存和打印限制</translation>
     </message>
     <message>
-        <location filename="qdjviewprefsdialog.ui" line="1133"/>
+        <location filename="qdjviewprefsdialog.ui" line="1140"/>
         <source>Manual printer color correction</source>
         <translation>手动打印机颜色校正</translation>
     </message>
     <message>
-        <location filename="qdjviewprefsdialog.ui" line="1146"/>
+        <location filename="qdjviewprefsdialog.ui" line="1153"/>
         <source>gamma=</source>
         <translatorcomment>TODO</translatorcomment>
         <translation>gamma=</translation>
     </message>
     <message>
-        <location filename="qdjviewprefsdialog.ui" line="1211"/>
+        <location filename="qdjviewprefsdialog.ui" line="1218"/>
         <source>&amp;Defaults</source>
         <translation>默认值(&amp;D)</translation>
     </message>
     <message>
-        <location filename="qdjviewprefsdialog.ui" line="1237"/>
+        <location filename="qdjviewprefsdialog.ui" line="1244"/>
         <source>&amp;Apply</source>
         <translation>应用(&amp;A)</translation>
     </message>
     <message>
-        <location filename="qdjviewprefsdialog.ui" line="1244"/>
+        <location filename="qdjviewprefsdialog.ui" line="1251"/>
         <source>&amp;Ok</source>
         <translation>确定(&amp;O)</translation>
     </message>
     <message>
-        <location filename="qdjviewprefsdialog.ui" line="1251"/>
+        <location filename="qdjviewprefsdialog.ui" line="1258"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="722"/>
+        <location filename="qdjviewprefs.cpp" line="726"/>
         <source>Preferences[*] - DjView</source>
         <translation>设置[*] - DjView</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="792"/>
+        <location filename="qdjviewprefs.cpp" line="796"/>
         <source>&lt;html&gt;&lt;b&gt;Screen gamma correction.&lt;/b&gt;&lt;br&gt;The best color rendition is achieved by adjusting the gamma correction slider and choosing the position that makes the gray square as uniform as possible.&lt;p&gt;&lt;b&gt;Screen resolution.&lt;/b&gt;&lt;br&gt;This option forces a particular resolution instead of using the unreliable resolution advertised by the operating system. Forcing the resolution to 100 dpi matches the behavior of the djvulibre command line tools.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;屏幕颜色Gamma校正。&lt;/b&gt;&lt;br&gt;用滑块调整Gamma值使灰色方块区域尽量一致以获得最佳色彩表现。&lt;p&gt;&lt;b&gt;屏幕分辨率。&lt;/b&gt;&lt;br&gt;此选项强制使用指定的分辨率值取代由操作系统提供的不可靠的分辨率值。 强制分辨率为 100 dpi 时与 djvulibre 命令行工具一致。&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="805"/>
+        <location filename="qdjviewprefs.cpp" line="809"/>
         <source>&lt;html&gt;&lt;b&gt;Initial interface setup.&lt;/b&gt;&lt;br&gt;DjView can run as a standalone viewer, as a full screen viewer, as a full page browser plugin, or as a plugin embedded inside a html page. For each case, check the &lt;tt&gt;Remember&lt;/tt&gt; box to automatically save and restore the interface setup. Otherwise, specify an initial configuration.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;初始界面设置。&lt;/b&gt;&lt;br&gt;DjView 可按以下方式运行： 单独显示， 全屏显示， 全页面浏览器插件， 或 嵌入html页面中。 对于每种方式， 可选中 &lt;tt&gt;记住上次&lt;/tt&gt; 框以便自动保存及重用界面设置； 或者,不选中而指定一个固定的初始设置。&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="815"/>
+        <location filename="qdjviewprefs.cpp" line="819"/>
         <source>&lt;html&gt;&lt;b&gt;Modifiers keys.&lt;/b&gt;&lt;br&gt;Define which combination of modifier keys will show the manifying lens, temporarily enable the selection mode, or highlight the hyperlinks.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;按键。&lt;/b&gt;&lt;br&gt;定义一些组合键， 如 显示放大镜， 临时启用选择模式， 或高亮显示链接。&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="822"/>
+        <location filename="qdjviewprefs.cpp" line="826"/>
         <source>&lt;html&gt;&lt;b&gt;Magnifying lens.&lt;/b&gt;&lt;br&gt;The magnifying lens appears when you depress the modifier keys specified in tab &lt;tt&gt;Keys&lt;/tt&gt;. This panel lets you choose the power and the size of the magnifying lens.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;放大镜。&lt;/b&gt;&lt;br&gt;用 &lt;tt&gt;按键&lt;/tt&gt; 页中定义的按键可调出放大镜。 在本面板可选择放大倍数和放大镜的尺寸。&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="830"/>
+        <location filename="qdjviewprefs.cpp" line="834"/>
         <source>&lt;html&gt;&lt;b&gt;Advanced.&lt;/b&gt;&lt;br&gt;You can override the default interface language, disable the page animations, or enable additional menu entries that are useful for authoring DjVu files.You can also disable the printing or saving restrictions dictated by certain web sites. The manual color correction can be useful with old printers.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;高级。&lt;/b&gt;&lt;br&gt;你可选择默认界面语言， 禁用页面动画， 或 启用更多编辑 DjVu 文件的菜单项。亦可禁用某些网站的打印或保存限制。 对于旧式打印机可用手动颜色校正。&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="qdjviewprefs.cpp" line="840"/>
+        <location filename="qdjviewprefs.cpp" line="844"/>
         <source>&lt;html&gt;&lt;b&gt;Network proxy settings.&lt;/b&gt;&lt;br&gt;These proxy settings are used when the standalone djview viewer accesses a djvu document through a http url. The djview plugin always uses the proxy settings of the web browser.&lt;p&gt;&lt;b&gt;Cache settings.&lt;/b&gt;&lt;br&gt;The &lt;i&gt;pixel cache&lt;/i&gt; stores image data located outside the visible area. This cache makes panning smoother. The &lt;i&gt;decoded page cache&lt;/i&gt; contains partially decoded pages. It provides faster response times when navigating a multipage document or when returning to a previously viewed page. Clearing this cache might be useful to reflect a change in the page data without restarting the DjVu viewer.&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;网络代理设置。&lt;/b&gt;&lt;br&gt;本代理设置用于以单独显示方式从http URL地址访问djvu文档。 以插件方式时经通常用浏览器的代理设置。&lt;p&gt;&lt;b&gt;缓存设置。&lt;/b&gt;&lt;br&gt; &lt;i&gt;像素缓存&lt;/i&gt; 保存可见区之外的图像数据， 使平移更平滑。 &lt;i&gt;解码页面缓存&lt;/i&gt; 包含有部分解码的页面， 使得浏览多页文档或返回前面看过的页面时反应迅速； 页面数据改变时可清除此缓存而不必重启程序。&lt;/html&gt;</translation>
     </message>
@@ -3235,47 +3240,47 @@ Do you want to replace it?</source>
 <context>
     <name>QDjViewThumbnails</name>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="695"/>
+        <location filename="qdjviewsidebar.cpp" line="702"/>
         <source>Tiny</source>
         <comment>thumbnail menu</comment>
         <translation>极小</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="700"/>
+        <location filename="qdjviewsidebar.cpp" line="707"/>
         <source>Small</source>
         <comment>thumbnail menu</comment>
         <translation>小</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="705"/>
+        <location filename="qdjviewsidebar.cpp" line="712"/>
         <source>Medium</source>
         <comment>thumbnail menu</comment>
         <translation>中</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="710"/>
+        <location filename="qdjviewsidebar.cpp" line="717"/>
         <source>Large</source>
         <comment>thumbnail menu</comment>
         <translation>大</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="716"/>
+        <location filename="qdjviewsidebar.cpp" line="723"/>
         <source>Smart</source>
         <comment>thumbnail menu</comment>
         <translation>智能</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="723"/>
+        <location filename="qdjviewsidebar.cpp" line="730"/>
         <source>Control Left Mouse Button</source>
         <translation>控制鼠标左键</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="725"/>
+        <location filename="qdjviewsidebar.cpp" line="732"/>
         <source>Right Mouse Button</source>
         <translation>鼠标右键</translation>
     </message>
     <message>
-        <location filename="qdjviewsidebar.cpp" line="727"/>
+        <location filename="qdjviewsidebar.cpp" line="734"/>
         <source>&lt;html&gt;&lt;b&gt;Document thumbnails.&lt;/b&gt;&lt;br/&gt; This panel display thumbnails for the document pages. Double click a thumbnail to jump to the selected page. %1 to change the thumbnail size or the refresh mode. The smart refresh mode only computes thumbnails when the page data is present (displayed or cached.)&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;文档缩略图。&lt;/b&gt;&lt;br/&gt; 本面板显示文档页面的缩略图。 双击缩略图跳到相应的页面。 %1 设置缩略图尺寸或刷新模式。 智能刷新模式只在页面数据被使用（显示或缓存）时生成缩略图。&lt;/html&gt;</translation>
     </message>

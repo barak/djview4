@@ -1093,6 +1093,16 @@
            </layout>
           </item>
           <item>
+           <widget class="QCheckBox" name="animationCheckBox">
+            <property name="text">
+             <string>Enable page animations</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QCheckBox" name="advancedCheckBox">
             <property name="text">
              <string>Enable advanced features in menus</string>
@@ -1100,12 +1110,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="animationCheckBox">
+           <widget class="QCheckBox" name="textLabelCheckBox">
             <property name="text">
-             <string>Enable page animations</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
+             <string>Show hidden text in status bar</string>
             </property>
            </widget>
           </item>
@@ -1307,8 +1314,9 @@
   <tabstop>cacheClearButton</tabstop>
   <tabstop>languageCheckBox</tabstop>
   <tabstop>languageComboBox</tabstop>
-  <tabstop>advancedCheckBox</tabstop>
   <tabstop>animationCheckBox</tabstop>
+  <tabstop>advancedCheckBox</tabstop>
+  <tabstop>textLabelCheckBox</tabstop>
   <tabstop>restrictOverrideCheckBox</tabstop>
   <tabstop>printerManualCheckBox</tabstop>
   <tabstop>printerGammaSpinBox</tabstop>

@@ -210,6 +210,7 @@ protected slots:
   void pointerSelect(const QPoint &pointerPos, const QRect &rect);
   void updateActions(void);
   void updateActionsLater(void);
+  void updateTextLabel(void);
   void modeComboActivated(int);
   void zoomComboActivated(int);
   void zoomComboEdited(void);
@@ -269,6 +270,7 @@ protected:
   QStatusBar         *statusBar;
   QLabel             *pageLabel;
   QLabel             *mouseLabel;
+  QLabel             *textLabel;
   QToolBar           *toolBar;
   QComboBox          *modeCombo;
   QComboBox          *zoomCombo;
@@ -296,6 +298,8 @@ protected:
   // delayed updates
   bool  updateActionsScheduled;
   bool  performPendingScheduled;
+  QTimer *textLabelTimer;
+  QRect   textLabelRect;
   // action lists
   QActionGroup *zoomActionGroup;
   QActionGroup *modeActionGroup;
