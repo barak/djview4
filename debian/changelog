@@ -1,8 +1,12 @@
 djview4 (4.9-1) unstable; urgency=low
 
+  [ Leon Bottou ]
   * new upstream version
 
- -- Leon Bottou <leon@bottou.org>  Thu, 15 Mar 2012 15:32:02 +0900
+  [ Barak A. Pearlmutter ]
+  * switch deprecated rsvg to plug-compatible rsvg-convert (closes: #666475)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Sat, 31 Mar 2012 21:39:45 +0100
 
 djview4 (4.8-3) unstable; urgency=low
 
