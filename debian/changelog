@@ -4,7 +4,7 @@ djview4 (4.9-1) unstable; urgency=low
   * new upstream version
 
   [ Barak A. Pearlmutter ]
-  * switch deprecated rsvg to plug-compatible rsvg-convert (closes: #666475)
+  * switch deprecated rsvg to plug-compatible rsvg-convert (closes: #666474)
   * bump to dh 9
   * bump debian policy version
 
