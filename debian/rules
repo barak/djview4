@@ -21,11 +21,11 @@ override_dh_auto_install:
 	mkdir --parents $(iconbasedir)/32x32/apps
 	mkdir --parents $(iconbasedir)/64x64/apps
 	cp desktopfiles/hi-djview4.svgz  $(iconbasedir)/scalable/apps/$(icon).svgz
-	rsvg -w 32 -h 32 desktopfiles/djview.svg $(iconbasedir)/32x32/apps/$(icon).png
+	rsvg-convert -w 32 -h 32 desktopfiles/djview.svg $(iconbasedir)/32x32/apps/$(icon).png
 	pngtopnm < $(iconbasedir)/32x32/apps/$(icon).png \
 	 | ppmtoxpm > $(iconbasedir)/32x32/apps/$(icon).xpm
 	rm $(iconbasedir)/32x32/apps/$(icon).png
-	rsvg -w 64 -h 64 desktopfiles/djview.svg $(iconbasedir)/64x64/apps/$(icon).png
+	rsvg-convert -w 64 -h 64 desktopfiles/djview.svg $(iconbasedir)/64x64/apps/$(icon).png
 	pngtopnm < $(iconbasedir)/64x64/apps/$(icon).png \
 	 | ppmtoxpm > $(iconbasedir)/64x64/apps/$(icon).xpm
 	rm $(iconbasedir)/64x64/apps/$(icon).png
