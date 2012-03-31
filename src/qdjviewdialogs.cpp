@@ -1532,7 +1532,6 @@ struct QDjViewPrintDialog::Private
   QDjViewExporter *exporter;
   QString groupname;
   QPrinter *printer;
-  QPrintDialog *dialog;
   bool stopping;
 };
 
@@ -1556,7 +1555,6 @@ QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
   d->stopping = false;
   d->exporter = 0;
   d->printer = new QPrinter(QPrinter::HighResolution);
-  d->dialog = new QPrintDialog(d->printer, this);
   d->ui.setupUi(this);
   setAttribute(Qt::WA_GroupLeader, true);
   connect(d->ui.okButton, SIGNAL(clicked()), 
@@ -1730,18 +1728,52 @@ QDjViewPrintDialog::choose()
 {
   if (d->exporter)
     {
-      d->exporter->printSetup(d->dialog, false);
-#if QT_VERSION >= 0x40400
-      delete d->dialog;
-      d->dialog = new QPrintDialog(d->printer, this);
-#endif
-      QPrintDialog::PrintDialogOptions options = d->dialog->enabledOptions();
+      d->exporter->savePrintSetup(d->printer);
+      QPrintDialog *dialog = new QPrintDialog(d->printer, this);
+      // options
+      QPrintDialog::PrintDialogOptions options = dialog->enabledOptions();
       options |= QPrintDialog::PrintCollateCopies;
       options &= ~QPrintDialog::PrintToFile;
       options &= ~QPrintDialog::PrintSelection;
-      d->dialog->setEnabledOptions(options);
-      if (d->dialog->exec() == QDialog::Accepted)
-        d->exporter->printSetup(d->dialog, true);      
+      dialog->setEnabledOptions(options);
+      // copy page spec
+      int pagenum = d->djview->pageNum();
+      int curpage = d->djview->getDjVuWidget()->page();
+      int frompage = d->ui.fromPageCombo->currentIndex();
+      int topage = d->ui.toPageCombo->currentIndex();
+      dialog->setMinMax(1, pagenum);
+      dialog->setFromTo(1, pagenum);
+      dialog->setPrintRange(QPrintDialog::PageRange);
+      if (d->ui.currentPageButton->isChecked())
+        dialog->setFromTo(curpage+1, curpage+1);
+      else if (d->ui.pageRangeButton->isChecked())
+        dialog->setFromTo(frompage+1, topage+1);
+      else
+        dialog->setPrintRange(QPrintDialog::AllPages);
+      // exec
+      if (dialog->exec() == QDialog::Accepted)
+        {
+          d->exporter->loadPrintSetup(d->printer, dialog);
+          // copy page spec back
+          frompage = qBound(0, dialog->fromPage()-1, pagenum-1);
+          topage = qBound(0, dialog->toPage()-1, pagenum-1);
+          if (dialog->printRange() == QPrintDialog::AllPages)
+            {
+              d->ui.documentButton->setChecked(true);
+              d->ui.fromPageCombo->setCurrentIndex(0);
+              d->ui.toPageCombo->setCurrentIndex(pagenum-1);
+            }
+          else
+            {
+              d->ui.fromPageCombo->setCurrentIndex(frompage);
+              d->ui.toPageCombo->setCurrentIndex(topage);
+              if (frompage == curpage && topage == curpage)
+                d->ui.currentPageButton->setChecked(true);
+              else
+                d->ui.pageRangeButton->setChecked(true);
+            }
+        }
+      delete dialog;
     }
   refresh();
 }

@@ -176,18 +176,37 @@ QDjViewExporter::exportOnePageOnly()
 void 
 QDjViewExporter::resetProperties() 
 { 
+  // reset all properties to default values
 }
 
 
 void 
 QDjViewExporter::loadProperties(QString) 
 { 
+  // fill properties from settings keyed by string
 }
 
 
 void 
 QDjViewExporter::saveProperties(QString) 
 { 
+  // save properties into settings keyed by string
+}
+
+
+bool
+QDjViewExporter::loadPrintSetup(QPrinter*, QPrintDialog*) 
+{ 
+  // fill properties using printer and print dialog data
+  return false;
+}
+
+
+bool
+QDjViewExporter::savePrintSetup(QPrinter*) 
+{ 
+  // save properties into printer settings
+  return false;
 }
 
 
@@ -231,13 +250,6 @@ QString
 QDjViewExporter::name()
 {
   return exporterName;
-}
-
-
-bool
-QDjViewExporter::printSetup(QPrintDialog *, bool) 
-{ 
-  return false;
 }
 
 
@@ -491,10 +503,11 @@ public:
   virtual void resetProperties();
   virtual void loadProperties(QString group);
   virtual void saveProperties(QString group);
+  virtual bool loadPrintSetup(QPrinter *printer, QPrintDialog *dialog);
+  virtual bool savePrintSetup(QPrinter *printer);
   virtual int propertyPages();
   virtual QWidget* propertyPage(int num);
   virtual bool save(QString fileName);
-  virtual bool printSetup(QPrintDialog *dialog, bool dir);
   virtual bool print(QPrinter *printer);
   virtual ddjvu_status_t status();
   virtual void stop();
@@ -723,6 +736,51 @@ QDjViewPSExporter::saveProperties(QString group)
   s.setValue("bookletShift", ui3.rectoVersoShiftSpinBox->value());
   s.setValue("bookletCenter", ui3.centerMarginSpinBox->value());
   s.setValue("bookletCenterAdd", ui3.centerIncreaseSpinBox->value());
+}
+
+
+bool
+QDjViewPSExporter::loadPrintSetup(QPrinter *printer, QPrintDialog *dialog)
+{
+  bool grayscale = (printer->colorMode() == QPrinter::GrayScale);
+  bool landscape = (printer->orientation() == QPrinter::Landscape);
+  ui1.grayScaleButton->setChecked(grayscale);  
+  ui1.colorButton->setChecked(!grayscale);  
+  ui2.landscapeButton->setChecked(landscape);
+  ui2.portraitButton->setChecked(!landscape);
+  // BEGIN HACK //
+  // Directly steal settings from print dialog.
+  copies = 1;
+  collate = true;
+  lastfirst = false;
+#if QT_VERSION >= 0x40400
+  QSpinBox* lcop = qFindChild<QSpinBox*>(dialog, "copies");
+  QCheckBox* lcol = qFindChild<QCheckBox*>(dialog, "collate");
+  QCheckBox* lplf = qFindChild<QCheckBox*>(dialog, "reverse");
+#else
+  QSpinBox* lcop = qFindChild<QSpinBox*>(dialog, "sbNumCopies");
+  QCheckBox* lcol = qFindChild<QCheckBox*>(dialog, "chbCollate");
+  QCheckBox* lplf = qFindChild<QCheckBox*>(dialog, "chbPrintLastFirst");
+#endif
+  if (lcop)
+    copies = qMax(1, lcop->value());
+  if (lcol)
+    collate = lcol->isChecked();
+  if (lplf)
+    lastfirst = lplf->isChecked();
+  // END HACK //
+  return true;
+}
+
+
+bool
+QDjViewPSExporter::savePrintSetup(QPrinter *printer)
+{
+  bool g = ui1.grayScaleButton->isChecked();
+  bool l = ui2.landscapeButton->isChecked();
+  printer->setColorMode(g ? QPrinter::GrayScale : QPrinter::Color);
+  printer->setOrientation(l ? QPrinter::Landscape : QPrinter::Portrait);
+  return true;
 }
 
 
@@ -966,52 +1024,6 @@ QDjViewPSExporter::print(QPrinter *qprinter)
   prefs->printReverse = lastfirst;
   prefs->printCollate = collate;
   return start();
-}
-
-bool
-QDjViewPSExporter::printSetup(QPrintDialog *dialog, bool dir)
-{
-  printer = dialog->printer();
-  if (dir)
-    {
-      bool grayscale = (printer->colorMode() == QPrinter::GrayScale);
-      bool landscape = (printer->orientation() == QPrinter::Landscape);
-      ui1.grayScaleButton->setChecked(grayscale);  
-      ui1.colorButton->setChecked(!grayscale);  
-      ui2.landscapeButton->setChecked(landscape);
-      ui2.portraitButton->setChecked(!landscape);
-      // BEGIN HACK //
-      // Directly steal settings from print dialog.
-      copies = 1;
-      collate = true;
-      lastfirst = false;
-#if QT_VERSION >= 0x40400
-      QSpinBox* lcop = qFindChild<QSpinBox*>(dialog, "copies");
-      QCheckBox* lcol = qFindChild<QCheckBox*>(dialog, "collate");
-      QCheckBox* lplf = qFindChild<QCheckBox*>(dialog, "reverse");
-#else
-      QSpinBox* lcop = qFindChild<QSpinBox*>(dialog, "sbNumCopies");
-      QCheckBox* lcol = qFindChild<QCheckBox*>(dialog, "chbCollate");
-      QCheckBox* lplf = qFindChild<QCheckBox*>(dialog, "chbPrintLastFirst");
-#endif
-      if (lcop)
-        copies = qMax(1, lcop->value());
-      if (lcol)
-        collate = lcol->isChecked();
-      if (lplf)
-        lastfirst = lplf->isChecked();
-      // END HACK //
-    }
-  else
-    {
-      bool grayscale = ui1.grayScaleButton->isChecked();
-      bool landscape = ui2.landscapeButton->isChecked();
-      printer->setColorMode(grayscale ? 
-                            QPrinter::GrayScale : QPrinter::Color);
-      printer->setOrientation(landscape ? 
-                              QPrinter::Landscape : QPrinter::Portrait);
-    }
-  return true;
 }
 
 
@@ -1957,10 +1969,11 @@ public:
   virtual void resetProperties();
   virtual void loadProperties(QString group);
   virtual void saveProperties(QString group);
+  virtual bool loadPrintSetup(QPrinter *printer, QPrintDialog *dialog);
+  virtual bool savePrintSetup(QPrinter *printer);
   virtual int propertyPages();
   virtual QWidget* propertyPage(int num);
   virtual bool save(QString fileName);
-  virtual bool printSetup(QPrintDialog *dialog, bool dir);
   virtual bool print(QPrinter *printer);
 protected:
   virtual void closeFile();
@@ -2074,25 +2087,25 @@ QDjViewPrnExporter::saveProperties(QString group)
 
 
 bool
-QDjViewPrnExporter::printSetup(QPrintDialog *dialog, bool dir)
+QDjViewPrnExporter::loadPrintSetup(QPrinter *printer, QPrintDialog *)
 {
-  printer = dialog->printer();
-  if (dir)
-    {
-      bool grayscale = (printer->colorMode() == QPrinter::GrayScale);
-      bool landscape = (printer->orientation() == QPrinter::Landscape);
-      ui.grayScaleButton->setChecked(grayscale);  
-      ui.colorButton->setChecked(!grayscale);  
-      ui.landscapeButton->setChecked(landscape);
-      ui.portraitButton->setChecked(!landscape);
-    }
-  else
-    {
-      bool grayscale = ui.grayScaleButton->isChecked();
-      bool landscape = ui.landscapeButton->isChecked();
-      printer->setColorMode(grayscale ? QPrinter::GrayScale : QPrinter::Color);
-      printer->setOrientation(landscape ? QPrinter::Landscape : QPrinter::Portrait);
-    }
+  bool grayscale = (printer->colorMode() == QPrinter::GrayScale);
+  bool landscape = (printer->orientation() == QPrinter::Landscape);
+  ui.grayScaleButton->setChecked(grayscale);  
+  ui.colorButton->setChecked(!grayscale);  
+  ui.landscapeButton->setChecked(landscape);
+  ui.portraitButton->setChecked(!landscape);
+  return true;
+}
+
+
+bool
+QDjViewPrnExporter::savePrintSetup(QPrinter *printer)
+{
+  bool grayscale = ui.grayScaleButton->isChecked();
+  bool landscape = ui.landscapeButton->isChecked();
+  printer->setColorMode(grayscale ? QPrinter::GrayScale : QPrinter::Color);
+  printer->setOrientation(landscape ? QPrinter::Landscape : QPrinter::Portrait);
   return true;
 }
 

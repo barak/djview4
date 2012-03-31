@@ -55,6 +55,8 @@ public:
   virtual void resetProperties();
   virtual void loadProperties(QString group=QString::null);
   virtual void saveProperties(QString group=QString::null);
+  virtual bool loadPrintSetup(QPrinter *printer, QPrintDialog *dialog);
+  virtual bool savePrintSetup(QPrinter *printer);
   virtual int propertyPages();
   virtual QWidget* propertyPage(int num);
   virtual ddjvu_status_t status();
@@ -62,7 +64,6 @@ public:
 public slots:
   virtual bool save(QString fileName) = 0;
   virtual bool print(QPrinter *printer);
-  virtual bool printSetup(QPrintDialog *dialog, bool dir=true);
   virtual void stop();
   virtual void error(QString, QString, int);
 signals:
