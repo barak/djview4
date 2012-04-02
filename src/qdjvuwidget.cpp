@@ -152,15 +152,6 @@ all_numbers(const char *s)
   return true;
 }
 
-template<class T> static inline void 
-swap(T& x, T& y)
-{
-  T tmp;
-  tmp = x;
-  x = y;
-  y = tmp;
-}
-
 template<class T> static inline int
 ksmallest(T *v, int n, int k)
 {
@@ -173,11 +164,11 @@ ksmallest(T *v, int n, int k)
       /* Sort v[lo], v[m], v[hi] by insertion */
       m = (lo+hi)/2;
       if (v[lo]>v[m])
-        swap(v[lo],v[m]);
+        qSwap(v[lo],v[m]);
       if (v[m]>v[hi]) {
-        swap(v[m],v[hi]);
+        qSwap(v[m],v[hi]);
         if (v[lo]>v[m])
-          swap(v[lo],v[m]);
+          qSwap(v[lo],v[m]);
       }
       /* Extract pivot, place sentinel */
       pivot = v[m];
@@ -191,7 +182,7 @@ ksmallest(T *v, int n, int k)
       do ++l; while (v[l]<pivot);
       do --h; while (v[h]>pivot);
       if (l < h) { 
-        swap(v[l],v[h]); 
+        qSwap(v[l],v[h]); 
         goto loop; 
       }
       /* Finish up */
