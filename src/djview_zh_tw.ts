@@ -2879,7 +2879,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1115"/>
         <source>Show hidden text in status bar</source>
-        <translation type="unfinished"></translation>
+        <translation>在狀態欄顯示隱藏文字</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1125"/>
