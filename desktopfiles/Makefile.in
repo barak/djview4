@@ -50,9 +50,10 @@ icons: hi-djview4.svgz hi32-djview4.png hi64-djview4.png
 
 hi32-djview4.png hi64-djview4.png: djview.svg
 	s=`echo $@ | sed -e 's/[a-z]*\([0-9]*\).*/\1/'`; \
-	  ${RSVG} -w $${s} -h $${s} $< $@ \
+	  ${RSVG} -w $${s} -h $${s} -o $@ $< \
 	  || ${CONVERT} -geometry $${s}x$${s} -depth 8 -background none $< $@ \
-	  || ${INKSCAPE} --without-gui --export-width=$${s} --export-height=$${s} --export-png=$@ $< \
+	  || ${INKSCAPE} --without-gui --export-width=$${s} \
+                         --export-height=$${s} --export-png=$@ $< \
 	  || cp ${srcdir}/prebuilt-$@ $@
 
 hi-djview4.svgz: djview.svg
