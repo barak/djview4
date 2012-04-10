@@ -1006,12 +1006,12 @@
         <location filename="qdjview.cpp" line="2571"/>
         <source>Certificate validation error - DjView</source>
         <comment>dialog caption</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Überprüfen des Zertifikates - DjView</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2572"/>
         <source>&lt;html&gt; %1  Do you want to continue anyway? &lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt; %1  Sind Sie sich des Risikos bewußt und wollen dennoch fortfahren? &lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2650"/>
@@ -1033,13 +1033,13 @@
         <location filename="qdjview.cpp" line="2987"/>
         <source>&lt;html&gt; This file was served with printing restrictions. Do you want to print it anyway?&lt;/html&gt;</source>
         <oldsource>&lt;html&gt; This file was served with printing restrictions.Do you want to print it anyway?&lt;/html&gt;</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt; Diese Datei enthält Einschränkungen beim Drucken. Wollen Sie dennoch drucken?&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="3003"/>
         <source>&lt;html&gt; This file was served with saving restrictions. Do you want to save it anyway?&lt;/html&gt;</source>
         <oldsource>&lt;html&gt; This file was served with saving restrictions.Do you want to save it anyway?&lt;/html&gt;</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt; Diese Datei enthält Einschränkungen beim Speichern. Wollen Sie dennoch speichern?&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="2986"/>
@@ -1507,17 +1507,17 @@ Optionen sind:
     <message>
         <location filename="qdjviewauthdialog.ui" line="48"/>
         <source>Password:</source>
-        <translation type="unfinished">Passwort:</translation>
+        <translation>Passwort:</translation>
     </message>
     <message>
         <location filename="qdjviewauthdialog.ui" line="62"/>
         <source>User:</source>
-        <translation type="unfinished">Benutzer:</translation>
+        <translation>Benutzer:</translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="197"/>
         <source>Authentication required - DjView</source>
-        <translation type="unfinished"></translation>
+        <translation>Authentifizierung erforderlich - DjView</translation>
     </message>
 </context>
 <context>
@@ -2824,7 +2824,7 @@ Soll die Datei überschrieben werden?</translation>
         <location filename="qdjviewprefsdialog.ui" line="1069"/>
         <source>Force language (next time djview runs)</source>
         <oldsource>Force language (when djview is restarted.)</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Spracheinstellung erzwingen (erfordert Neustart von djview)</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1098"/>
@@ -2840,7 +2840,7 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1131"/>
         <source>Override saving and printing restrictions</source>
-        <translation type="unfinished"></translation>
+        <translation>Überschreibe Speicher- und Druckeinschränkungen</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1218"/>
@@ -2886,12 +2886,12 @@ Soll die Datei überschrieben werden?</translation>
         <location filename="qdjviewprefs.cpp" line="834"/>
         <source>&lt;html&gt;&lt;b&gt;Advanced.&lt;/b&gt;&lt;br&gt;You can override the default interface language, disable the page animations, or enable additional menu entries that are useful for authoring DjVu files.You can also disable the printing or saving restrictions dictated by certain web sites. The manual color correction can be useful with old printers.&lt;/html&gt;</source>
         <oldsource>&lt;html&gt;&lt;p&gt;&lt;b&gt;Advanced.&lt;/b&gt;You can override the default interface language, disable the page animations, or enable additional menu entries that are useful for authoring DjVu files.You can also disable the printing or saving restrictions dictated by certain web sites. The manual color correction can be useful with old printers.&lt;/html&gt;</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;b&gt;Erweitert.&lt;/b&gt;&lt;br&gt;Es ist möglich, die Standardsprache zu überschreiben, Seitenanmationen zu deaktivieren oder zusätzliche Menüs zu aktivieren. Diese sind nützlich beim Bearbeiten von DjVu Dateien. Sie können auch Druck- oder Speichereinschränkungen abstellen. Die manuelle Farbkorrektur kann mit alten Druckern sinnvoll sein.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="844"/>
         <source>&lt;html&gt;&lt;b&gt;Network proxy settings.&lt;/b&gt;&lt;br&gt;These proxy settings are used when the standalone djview viewer accesses a djvu document through a http url. The djview plugin always uses the proxy settings of the web browser.&lt;p&gt;&lt;b&gt;Cache settings.&lt;/b&gt;&lt;br&gt;The &lt;i&gt;pixel cache&lt;/i&gt; stores image data located outside the visible area. This cache makes panning smoother. The &lt;i&gt;decoded page cache&lt;/i&gt; contains partially decoded pages. It provides faster response times when navigating a multipage document or when returning to a previously viewed page. Clearing this cache might be useful to reflect a change in the page data without restarting the DjVu viewer.&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;b&gt;Netzwerkproxy Einstellungen.&lt;/b&gt;&lt;br&gt;Diese Einstellungen finden Verwendung, wenn DjView als &apos;eigenständiges&apos; Programm verwendet wird und Seiten über Html/Url dargestellt werden sollen. Das Plugin verwendet immer die Proxyeinstellungen des verwendeten Browsers.
+        <translation>&lt;html&gt;&lt;b&gt;Netzwerkproxy Einstellungen.&lt;/b&gt;&lt;br&gt;Diese Einstellungen finden Verwendung, wenn DjView als &apos;eigenständiges&apos; Programm verwendet wird und Seiten über Html/Url dargestellt werden sollen. Das Plugin verwendet immer die Proxyeinstellungen des verwendeten Browsers.
 &lt;p&gt;&lt;b&gt;Zwischenspeicher.&lt;/b&gt;&lt;br&gt;Der &lt;i&gt;Cache der Bildpunkte&lt;/i&gt; hält die Daten des Bildes ausserhalb des sichtbaren Bereiches. Durch diesen Speicher wird das Verschieben des Bildes flüssiger. Der &lt;i&gt;Speicher zum Dekodieren&lt;/i&gt; enthält partiell dekodierte Seiten. Dadurch werden kürzere Antwortzeiten bei der Navigation durch das Dokument erreicht. Das Leeren dieses Speichers ist sinnvoll, um die Daten der Seite neu zu laden, ohne das Programm neu zu starten.&lt;/html&gt;</translation>
     </message>
     <message>
@@ -3372,17 +3372,17 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjvunet.cpp" line="224"/>
         <source>Cannot validate the certificate for server %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann das Zertifikat von %1 nicht überprüfen.</translation>
     </message>
     <message>
         <location filename="qdjvunet.cpp" line="251"/>
         <source>Authentication required for %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Authentifizierung benötigt für %1 (%2).</translation>
     </message>
     <message>
         <location filename="qdjvunet.cpp" line="259"/>
         <source>Authentication required for proxy %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Authentifizierung benötigt für Proxy %1.</translation>
     </message>
 </context>
 </TS>
