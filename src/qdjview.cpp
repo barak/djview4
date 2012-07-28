@@ -2256,7 +2256,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   
   // Create djvu widget
   QWidget *central = new QWidget(this);
-  widget = new QDjVuWidget(central);
+  widget = new QDjVuWidget(prefs->openGLAccel, central);
   widget->setFrameShape(QFrame::NoFrame);
   if (viewerMode == STANDALONE)
     widget->setFrameShadow(QFrame::Sunken);

@@ -53,6 +53,8 @@
 #include <QVector>
 #include <QWheelEvent>
 #include <QWidget>
+#include <QGLWidget>
+#include <QGLFormat>
 
 
 #if DDJVUAPI_VERSION < 17
@@ -857,6 +859,7 @@ public:
   QCursor cursHandOpen;
   QCursor cursHandClosed;
 
+  void initWidget(bool noaccel);
   void changeLayout(int change, int delay=0);
   void getAnnotationsAndText(Page *p);
   bool requestPage(Page *p);
@@ -1979,23 +1982,61 @@ QDjVuWidget::~QDjVuWidget()
   priv = 0;
 }
 
+// This is a helper for the constructors
+void
+QDjVuPrivate::initWidget(bool opengl)
+{
+  // set widget policies
+  widget->setFocusPolicy(Qt::StrongFocus);
+  widget->setSizePolicy(QSizePolicy::MinimumExpanding, 
+                        QSizePolicy::MinimumExpanding);
+  // set opengl acceleration
+#if QT_VERSION >= 0x040400
+  if (opengl && QGLFormat::hasOpenGL())
+    {
+      QGLWidget *gw = new QGLWidget();
+      if (gw->isValid())
+        widget->setViewport(gw);
+      else
+        delete gw;
+    }
+#endif
+  // setup viewport
+  QWidget *vp = widget->viewport();
+#if QT_VERSION >= 0x040100
+  vp->setAttribute(Qt::WA_OpaquePaintEvent);
+#endif
+  vp->setAttribute(Qt::WA_NoSystemBackground);
+  vp->setAttribute(Qt::WA_StaticContents);
+  vp->setMouseTracking(true);
+}
+
 /*! Construct a \a QDjVuWidget instance.
-  Argument \a parent is the parent of this widget
-  in the \a QObject hierarchy. */
+  Argument \a parent is the parent of this widget 
+  in the \a QObject hierarchy. Setting argument
+  \a opengl to true enables openGL acceleration */
+
+QDjVuWidget::QDjVuWidget(bool opengl, QWidget *parent)
+  : QAbstractScrollArea(parent), priv(new QDjVuPrivate(this))
+{
+  priv->initWidget(opengl);
+}
+
+/*! Overloaded constructor */
 
 QDjVuWidget::QDjVuWidget(QWidget *parent)
   : QAbstractScrollArea(parent), priv(new QDjVuPrivate(this))
 {
-  setFocusPolicy(Qt::StrongFocus);
-  setSizePolicy(QSizePolicy::MinimumExpanding, 
-                QSizePolicy::MinimumExpanding);
-  // setup viewport
-#if QT_VERSION >= 0x040100
-  viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
-#endif
-  viewport()->setAttribute(Qt::WA_NoSystemBackground);
-  viewport()->setAttribute(Qt::WA_StaticContents);
-  viewport()->setMouseTracking(true);
+  priv->initWidget(false);
+}
+
+/*! This overloaded constructor calls \a setDocument. */
+
+QDjVuWidget::QDjVuWidget(QDjVuDocument *doc, bool opengl, QWidget *parent)
+  : QAbstractScrollArea(parent), priv(new QDjVuPrivate(this))
+{
+  priv->initWidget(opengl);
+  setDocument(doc);
 }
 
 /*! This overloaded constructor calls \a setDocument. */
@@ -2003,15 +2044,7 @@ QDjVuWidget::QDjVuWidget(QWidget *parent)
 QDjVuWidget::QDjVuWidget(QDjVuDocument *doc, QWidget *parent)
   : QAbstractScrollArea(parent), priv(new QDjVuPrivate(this))
 {
-  setFocusPolicy(Qt::StrongFocus);
-  setSizePolicy(QSizePolicy::MinimumExpanding, 
-                QSizePolicy::MinimumExpanding);
-#if QT_VERSION >= 0x040100
-  viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
-#endif
-  viewport()->setAttribute(Qt::WA_NoSystemBackground);
-  viewport()->setAttribute(Qt::WA_StaticContents);
-  viewport()->setMouseTracking(true);
+  priv->initWidget(false);
   setDocument(doc);
 }
 

@@ -165,6 +165,8 @@ public:
 
   QDjVuWidget(QWidget *parent=0);
   QDjVuWidget(QDjVuDocument *doc, QWidget *parent=0);
+  QDjVuWidget(bool opengl, QWidget *parent=0);
+  QDjVuWidget(QDjVuDocument *doc, bool opengl, QWidget *parent=0);
   
   QDjVuDocument *document(void) const;
   int page(void) const;

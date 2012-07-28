@@ -18,7 +18,7 @@
 TEMPLATE = app 
 TARGET = djview
 CONFIG += qt thread warn_on 
-QT += network 
+QT += network opengl
 
 # -- find libraries
 CONFIG(autoconf) {

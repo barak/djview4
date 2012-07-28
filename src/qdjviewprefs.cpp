@@ -148,6 +148,7 @@ QDjViewPrefs::QDjViewPrefs(void)
     invertLuminance(false),
     mouseWheelZoom(false),
     restrictOverride(false),
+    openGLAccel(false),
     modifiersForLens(Qt::ControlModifier|Qt::ShiftModifier),
     modifiersForSelect(Qt::ControlModifier),
     modifiersForLinks(Qt::ShiftModifier),
@@ -360,6 +361,8 @@ QDjViewPrefs::load()
     languageOverride = s.value("language").toString();
   if (s.contains("restrictOverride"))
     restrictOverride = s.value("restrictOverride").toBool();
+  if (s.contains("openGLAccel"))
+    openGLAccel = s.value("openGLAccel").toBool();
   if (s.contains("modifiersForLens"))
     modifiersForLens 
       = stringToModifiers(s.value("modifiersForLens").toString());
@@ -455,6 +458,7 @@ QDjViewPrefs::save(void)
   s.setValue("modifiersForLinks", modifiersToString(modifiersForLinks));
   s.setValue("language", languageOverride);
   s.setValue("restrictOverride", restrictOverride);
+  s.setValue("openGLAccel", openGLAccel);
 
   s.setValue("thumbnailSize", thumbnailSize);
   s.setValue("thumbnailSmart", thumbnailSmart);
@@ -944,6 +948,7 @@ QDjViewPrefsDialog::load(QDjView *djview)
   d->ui.animationCheckBox->setChecked(prefs->enableAnimations);
   d->ui.textLabelCheckBox->setChecked(prefs->showTextLabel);
   d->ui.restrictOverrideCheckBox->setChecked(prefs->restrictOverride);
+  d->ui.openGLCheckBox->setChecked(prefs->openGLAccel);
   d->ui.printerManualCheckBox->setChecked(pgamma > 0);
   d->ui.printerGammaSpinBox->setValue((pgamma > 0) ? pgamma : 2.2);
   // no longer modified
@@ -1043,6 +1048,7 @@ QDjViewPrefsDialog::apply()
   prefs->advancedFeatures = d->ui.advancedCheckBox->isChecked();
   prefs->showTextLabel = d->ui.textLabelCheckBox->isChecked();
   prefs->restrictOverride = d->ui.restrictOverrideCheckBox->isChecked();
+  prefs->openGLAccel = d->ui.openGLCheckBox->isChecked();
   prefs->printerGamma = 0;
   if (d->ui.printerManualCheckBox->isChecked())
     prefs->printerGamma = d->ui.printerGammaSpinBox->value();
@@ -1088,14 +1094,16 @@ QDjViewPrefsDialog::reset()
   d->ui.lensSizeSpinBox->setValue(300);
   // 5- network tab
   d->ui.proxyCheckBox->setChecked(false);
-  // 6- advanced tab
   d->ui.pixelCacheSpinBox->setValue(1);
   d->ui.pageCacheSpinBox->setValue(10);
+  // 6- advanced tab
   d->ui.languageCheckBox->setChecked(false);
-  d->ui.printerManualCheckBox->setChecked(false);
-  d->ui.printerGammaSpinBox->setValue(2.2);
+  d->ui.animationCheckBox->setChecked(true);
   d->ui.advancedCheckBox->setChecked(false);
   d->ui.textLabelCheckBox->setChecked(false);
+  d->ui.openGLCheckBox->setChecked(false);
+  d->ui.printerManualCheckBox->setChecked(false);
+  d->ui.printerGammaSpinBox->setValue(2.2);
 }
 
 

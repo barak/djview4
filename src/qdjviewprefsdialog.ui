@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>509</width>
-    <height>374</height>
+    <height>388</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1126,6 +1126,16 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_12">
           <item>
+           <widget class="QCheckBox" name="openGLCheckBox">
+            <property name="text">
+             <string>Render with openGL when available</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QCheckBox" name="restrictOverrideCheckBox">
             <property name="text">
              <string>Override saving and printing restrictions</string>
@@ -1317,6 +1327,7 @@
   <tabstop>animationCheckBox</tabstop>
   <tabstop>advancedCheckBox</tabstop>
   <tabstop>textLabelCheckBox</tabstop>
+  <tabstop>openGLCheckBox</tabstop>
   <tabstop>restrictOverrideCheckBox</tabstop>
   <tabstop>printerManualCheckBox</tabstop>
   <tabstop>printerGammaSpinBox</tabstop>
