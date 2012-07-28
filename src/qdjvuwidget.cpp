@@ -1992,13 +1992,24 @@ QDjVuPrivate::initWidget(bool opengl)
                         QSizePolicy::MinimumExpanding);
   // set opengl acceleration
 #if QT_VERSION >= 0x040400
-  if (opengl && QGLFormat::hasOpenGL())
+  if (opengl)
     {
-      QGLWidget *gw = new QGLWidget();
-      if (gw->isValid())
+      const char *ge = 0;
+      QGLWidget *gw = 0;
+      if (! QGLFormat::hasOpenGL())
+        ge = "not supported on this system";
+      if (!ge)
+        gw = new QGLWidget();
+      if (gw && !ge && !gw->isValid())
+        ge = "cannot setup context";
+      if (gw && !ge && !gw->format().directRendering())
+        ge = "cannot setup direct rendering";
+      if (gw && !ge)
         widget->setViewport(gw);
-      else
+      else if (gw)
         delete gw;
+      if (ge)
+        qWarning("Not using openGL (%s)", ge);
     }
 #endif
   // setup viewport
