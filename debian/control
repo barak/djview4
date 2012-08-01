@@ -4,12 +4,12 @@ Priority: optional
 Maintainer: Barak A. Pearlmutter <bap@debian.org>
 Build-Depends: debhelper (>= 9),
     dh-autoreconf,
-    pkg-config,
+    pkg-config, 
     libdjvulibre-dev (>= 3.5.20),
     x11proto-core-dev, libx11-dev, libxext-dev, 
     libxt-dev, libglib2.0-dev,
-    libqt4-dev (>= 4.4),
-    libtiff4-dev | libtiff3g-dev | libtiff-dev,
+    libqt4-dev (>= 4.4), libqt4-opengl-dev (>= 4.4),
+    libtiff5-dev | libtiff4-dev | libtiff3g-dev | libtiff-dev,
     netpbm,
     librsvg2-bin, imagemagick
 Vcs-Git: git://git.debian.org/git/collab-maint/djview4.git
@@ -34,8 +34,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, djview4 | djview3
 Provides: djvulibre-plugin
 Enhances: chromium-browser,
 	  mozilla-browser, mozilla, firefox, iceweasel, iceape-browser,
-	  konqueror,
-	  galeon
+	  konqueror, rekonq, galeon
 Recommends: chromium-browser
 	    | mozilla-browser | mozilla | firefox | iceweasel | iceape-browser
 	    | konqueror | galeon
