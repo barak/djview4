@@ -1,12 +1,21 @@
+djview4 (4.9-2) unstable; urgency=low
+
+  * fix plugin bug, see
+    https://bugs.launchpad.net/ubuntu/+source/djvulibre/+bug/940853
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Sun, 17 Jun 2012 00:20:11 +0100
+
 djview4 (4.9-1) unstable; urgency=low
 
   [ Leon Bottou ]
   * new upstream version
 
   [ Barak A. Pearlmutter ]
-  * switch deprecated rsvg to plug-compatible rsvg-convert (closes: #666475)
+  * switch deprecated rsvg to plug-compatible rsvg-convert (closes: #666474)
+  * bump to dh 9
+  * bump debian policy version
 
- -- Barak A. Pearlmutter <bap@debian.org>  Sat, 31 Mar 2012 21:39:45 +0100
+ -- Barak A. Pearlmutter <bap@debian.org>  Wed, 04 Apr 2012 09:25:22 +0100
 
 djview4 (4.8-3) unstable; urgency=low
 
