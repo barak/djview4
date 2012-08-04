@@ -322,9 +322,11 @@ static int
 WriteStringLen(int fd, const char *str, int length)
 {
   int type = TYPE_STRING;
+  static char zero = 0;
   if ( (Write(fd, &type, sizeof(type)) < 0) ||
        (Write(fd, &length, sizeof(length)) < 0) ||
-       (Write(fd, str, length+1) < 0) )
+       (Write(fd, str, length) < 0) ||
+       (Write(fd, &zero, 1) < 0) )
     return -1;
   return 1;
 }
@@ -1160,8 +1162,8 @@ LoadStatic(void)
  ********************************** Callbacks **********************************
  *******************************************************************************/
 
-static int  Detach(void * id);
-static int  Resize(void * id);
+static int  Detach(void *id);
+static int  Resize(void *id);
 static void CloseConnection(void);
 static int  IsConnectionOK(int);
 static void ProgramDied(void);
@@ -1659,7 +1661,7 @@ CloseConnection(void)
 }
 
 static int
-Resize(void * id)
+Resize(void *id)
 {
   /* Instead of selecting ConfigureEvent in the application I catch
      resizeCallback here and send the appropriate request to the
@@ -1719,7 +1721,7 @@ Detach(void * id)
 }
 
 static int
-Attach(Display * displ, Window window, void * id)
+Attach(Display *displ, NPWindow *npw, void *id)
 {
   char *displ_str;
   Instance *inst;
@@ -1728,6 +1730,7 @@ Attach(Display * displ, Window window, void * id)
   Visual *visual;
   char protocol_str[128]; 
   XWindowAttributes attributes;
+  Window window = (npw) ? (Window)npw->window : 0;
   int width, height;
 #if USE_XT
   XtAppContext app_context = 0;   
@@ -1790,7 +1793,11 @@ Attach(Display * displ, Window window, void * id)
       /* Prepare protocol string */
       protocol_str[0]=0;
       if (inst->xembed_mode)
-        strcpy(protocol_str, "XEMBED");
+        {
+          width = (npw) ? npw->width : width;
+          height = (npw) ? npw->height : height;
+          strcpy(protocol_str, "XEMBED");
+        }
 #if USE_XT
       else
         {
@@ -2432,7 +2439,7 @@ NPP_SetWindow(NPP np_inst, NPWindow * win_str)
   new_window = (win_str) ? (Window) win_str->window : 0;
   if (cur_window)
     {
-      if (new_window==cur_window)
+      if (new_window == cur_window)
         {
           Resize(id);
           return NPERR_NO_ERROR;
@@ -2450,7 +2457,7 @@ NPP_SetWindow(NPP np_inst, NPWindow * win_str)
         displ = ((NPSetWindowCallbackStruct *)(win_str->ws_info))->display;
       if (!IsConnectionOK(FALSE)) 
         return NPERR_GENERIC_ERROR;
-      if (Attach(displ, new_window, id) < 0)
+      if (Attach(displ, win_str, id) < 0)
         {
           ProgramDied();
           return NPERR_GENERIC_ERROR;
