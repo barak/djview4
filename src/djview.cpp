@@ -359,6 +359,7 @@ usage()
   exit(10);
 }
 
+
 int 
 main(int argc, char *argv[])
 {
@@ -369,11 +370,21 @@ main(int argc, char *argv[])
   
   // Message handler
   qInstallMsgHandler(qtMessageHandler);
+
+  // Set verbose flag as early as possible
 #ifdef Q_OS_UNIX
   const char *s = ::getenv("DJVIEW_VERBOSE");
   if (s && strcmp(s,"0"))
     verbose = true;
 #endif
+  for (int i=1; i<argc; i++)
+    {
+      char *s = argv[i];
+      while (s && *s=='-') 
+        s++;
+      if (! strcmp(s, "verbose"))
+        verbose = true;
+    }
   
   // Color specification 
   // (cause XRender errors under many versions of Qt/X11)
