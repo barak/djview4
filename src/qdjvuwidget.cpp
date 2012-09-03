@@ -1629,8 +1629,9 @@ QDjVuPrivate::getAnnotationsAndText(Page *p)
   if (p->annotations == miniexp_dummy)
     {
       p->annotations = doc->getPageAnnotations(p->pageno);
-      if (p->annotations && !continuous && !sideBySide)
-        adjustSettings(PRIORITY_ANNO, p->annotations);
+      if (p->annotations)
+        if (pageLayout.size() > 0 && p == pageLayout[0])
+          adjustSettings(PRIORITY_ANNO, p->annotations);
       if (p->annotations)
         prepareMapAreas(p);
     }
@@ -3590,8 +3591,7 @@ QDjVuPrivate::prepareMapAreas(Page *p)
     if (p->mapAreas[j].expr)
       p->mapAreas.removeAt(j);
   // parse annotations.
-  if (p->annotations && 
-      p->annotations != miniexp_dummy) 
+  if (p->annotations && p->annotations != miniexp_dummy)
     {
       miniexp_t *annos;
       annos = ddjvu_anno_get_hyperlinks(p->annotations);
