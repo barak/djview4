@@ -1111,10 +1111,9 @@ QDjVuPrivate::makeLayout()
           for(int i=0; i<numPages; i++)
             if (i < loPage - 2 && i >= hiPage + 2)
               pageData[i].clear();
-          if (continuous || sideBySide)
-            adjustSettings(PRIORITY_ANNO, miniexp_nil);
-          else
-            adjustSettings(PRIORITY_ANNO, pageLayout[0]->annotations);
+          // Display settings are unclear when showing multiple page.
+          // We use the annotations of the first displayed page as a proxy.
+          adjustSettings(PRIORITY_ANNO, pageLayout[0]->annotations);
         }
       // Layout page sizes
       else if (layoutChange & CHANGE_SIZE)
