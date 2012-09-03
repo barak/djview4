@@ -242,9 +242,9 @@ QDjViewApplication::loadTranslator(QTranslator *trans,
           if (qdir.exists())
             if (trans->load(name + "_" + lang, dir, "_.-"))
               return true;
-          if (lang.startsWith("en_") || lang == "en" || lang == "c")
-            break;
         }
+      if (lang.startsWith("en_") || lang == "en" || lang == "c")
+        break;
     }
   return false;
 }
