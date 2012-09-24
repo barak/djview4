@@ -214,9 +214,7 @@ QDjViewApplication::getTranslationLangs()
 #ifdef LC_MESSAGES
       addLang(langs, QString::fromLocal8Bit(::setlocale(LC_MESSAGES, 0)));
 #endif
-#ifdef LC_ALL
-      addLang(langs, QString::fromLocal8Bit(::setlocale(LC_ALL, 0)));
-#endif
+      addLang(langs, QString::fromLocal8Bit(::getenv("LANG")));
 #ifdef Q_WS_MAC
       QSettings g(".", "globalPreferences");
       foreach (QString lang, g.value("AppleLanguages").toStringList())
