@@ -200,6 +200,12 @@ addLang(QStringList &langs, QString s)
     return;
   if (! langs.contains(s))
     langs << s;
+#ifdef Q_WS_MAC
+  if (s.toLower() == "zh-hans" && ! langs.contains("zh-CN"))
+    langs << "zh-CN";
+  if (s.toLower() == "zh-hant" && ! langs.contains("zh-TW"))
+    langs << "zh-TW";
+#endif
 }
 
 
