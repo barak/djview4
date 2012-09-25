@@ -46,7 +46,7 @@ class QDjViewApplication : public QApplication
   QDjViewApplication(int &argc, char **argv);
   QDjVuContext *djvuContext() { return &context; }
   QDjView *newWindow();
-  bool loadTranslator(QTranslator *trans, QString name, QStringList langs);
+  bool loadTranslators(QStringList langs, QTranslator *dt, QTranslator *qt);
 protected:
   bool event(QEvent *ev);
 #ifdef Q_WS_X11

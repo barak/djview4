@@ -981,9 +981,10 @@ QDjViewPrefsDialog::loadLanguageComboBox(QString lang)
       {
         QString nlang = languages[i];
         QString xlang = QString::null;
-        QTranslator *trans = new QTranslator();
-        if (app->loadTranslator(trans, "djview", QStringList(nlang)))
-          xlang = trans->translate("Generic", thisLang[0].src);
+        QTranslator *dTrans = new QTranslator();
+        QTranslator *qTrans = new QTranslator();
+        if (app->loadTranslators(QStringList(nlang), dTrans, qTrans))
+          xlang = dTrans->translate("Generic", thisLang[0].src);
         else if (nlang == "en" || nlang.startsWith("en"))
           xlang = "English";
         if (lang == nlang && xlang.size() > 0)
@@ -992,7 +993,8 @@ QDjViewPrefsDialog::loadLanguageComboBox(QString lang)
           index = cb->count();
         if (xlang.size() > 0)
           cb->addItem(xlang, nlang);
-        delete trans;
+        delete dTrans;
+        delete qTrans;
       }
   db->setChecked(index >= 0 && lang.size() > 0);
   cb->setCurrentIndex(index);
