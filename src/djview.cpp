@@ -196,16 +196,18 @@ QDjViewApplication::getTranslationDirs()
 static void
 addLang(QStringList &langs, QString s)
 {
-  if (s.size() <= 0)
-    return;
-  if (! langs.contains(s))
-    langs << s;
+  if (s.size() > 0)
+    {
+      s = s.replace(QChar('-'), QChar('_'));
+      if (! langs.contains(s))
+        langs << s;
 #ifdef Q_WS_MAC
-  if (s.toLower() == "zh-hans" && ! langs.contains("zh-CN"))
-    langs << "zh-CN";
-  if (s.toLower() == "zh-hant" && ! langs.contains("zh-TW"))
-    langs << "zh-TW";
+      if (s == "zh_Hans" && ! langs.contains("zh_CN"))
+        langs << "zh_CN";
+      if (s == "zh_Hant" && ! langs.contains("zh_TW"))
+        langs << "zh_TW";
 #endif
+    }
 }
 
 
