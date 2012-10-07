@@ -355,7 +355,7 @@ QDjVuNetDocument::setUrl(QDjVuContext *ctx, QUrl url, bool cache)
 void 
 QDjVuNetDocument::newstream(int streamid, QString, QUrl url)
 {
-  // network request
+  QString message = tr("Requesting '%1'").arg(url.toString());
   QNetworkRequest request(url);
   QString agent = "Djview/" + QDjViewPrefs::versionString();
   request.setRawHeader("User-Agent", agent.toAscii());
@@ -368,9 +368,9 @@ QDjVuNetDocument::newstream(int streamid, QString, QUrl url)
           p, SLOT(sslErrors(const QList<QSslError>&)) );
   connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), 
           p, SLOT(error(QNetworkReply::NetworkError)) );
-  emit info(tr("Requesting '%1'").arg(url.toString()));
   p->reqid[reply] = streamid;
   p->reqok[reply] = false;
+  emit info(message);
 }
 
 

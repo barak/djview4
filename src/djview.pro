@@ -29,17 +29,13 @@ CONFIG(autoconf) {
     #   QMAKE_CXXFLAGS += ...
     #   QMAKE_CFLAGS += ...
     #   QMAKE_LFLAGS += ...
-} else:unix:!macx {
-    # for use under unix with pkgconfig
-    CONFIG += link_pkgconfig
-    PKGCONFIG += ddjvuapi
 } else {
-    # for use on other platforms
-    # LIBS += -ldjvulibre
-    # QMAKE_CXXFLAGS +=  ... (c++ flags)
-    # QMAKE_CFLAGS += ...    (c flags)
-    # QMAKE_LFLAGS += ...    (link flags)
-    # DEFINES += ...         (definitions)
+    # customize below
+    LIBS += -ldjvulibre
+    #QMAKE_CXXFLAGS += 
+    #QMAKE_CFLAGS += 
+    #QMAKE_LFLAGS += 
+    #DEFINES += 
 }
 
 
