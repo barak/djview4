@@ -3275,6 +3275,10 @@ QDjView::pageNumber(QString name, int from)
     if (documentPages[i].name && 
         !strcmp(utf8Name, documentPages[i].name))
       return i;
+  // Compatibility with unknown viewers:
+  // If name contains space, remove all spaces, and try again
+  if (name.contains(" "))
+    return pageNumber(name.replace(" ", ""));
   // Give up
   return -1;
 }
