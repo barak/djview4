@@ -3820,7 +3820,7 @@ QDjView::updateTextLabel()
       QFontMetrics m(textLabel->font());
       QString lb = QString::fromUtf8(" \302\253 ");
       QString rb = QString::fromUtf8(" \302\273 ");
-      int w = textLabel->width() - m.width(lb+rb);
+      int w = textLabel->width() - 2 * textLabel->frameWidth() - m.width(lb + rb + "MM");
       if (! textLabelRect.isEmpty())
         {
           text = widget->getTextForRect(textLabelRect);
