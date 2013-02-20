@@ -984,6 +984,7 @@ QDjView::updateActions()
 
   // Misc
   textLabel->setVisible(prefs->showTextLabel);
+  textLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored);
   actionCopyOutline->setVisible(prefs->advancedFeatures);
   actionCopyAnnotation->setVisible(prefs->advancedFeatures);
   actionCopyUrl->setEnabled(pagenum > 0);
