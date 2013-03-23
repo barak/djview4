@@ -3158,10 +3158,12 @@ QDjView::getDecoratedUrl()
         pagestr = QString::fromUtf8(dp[pageNo].id);
       url.addQueryItem("page", pagestr);
       int rotation = widget->rotation();
-      if (rotation)
+      if (rotation) 
         url.addQueryItem("rotate", QString::number(90 * rotation));
-      int zoom = widget->zoomFactor();
-      url.addQueryItem("zoom", QString::number(zoom));
+      QString zoom = getArgument("zoom");
+      if (zoom.isEmpty()) 
+        zoom = QString::number(widget->zoomFactor());
+      url.addQueryItem("zoom", zoom);
       double ha = pos.hAnchor / 100.0;
       double va = pos.vAnchor / 100.0;
       url.addQueryItem("showposition", QString("%1,%2").arg(ha).arg(va));
