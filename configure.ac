@@ -302,9 +302,7 @@ AC_SUBST(DESKTOP_NO)
 
 # Define installation paths and version string
 AC_DEFINE_INSTALL_PATHS
-AC_DEFINE_VERSION([DJVIEW_VERSION], [${PACKAGE_VERSION}])
-AC_DEFINE_UNQUOTED([DJVIEW_VERSION_STR], ["${PACKAGE_VERSION}"], [string])
-
+AC_DEFINE_VERSION([${PACKAGE_VERSION}])
 
 # ----------------------------------------
 # Run qmake
