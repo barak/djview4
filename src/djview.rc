@@ -1,2 +1,31 @@
-IDI_ICON1               ICON    DISCARDABLE     "images/DjVuApp.ico"
-IDI_ICON2               ICON    DISCARDABLE     "images/DjVu.ico"
+
+#include <windows.h>
+#include "version.h"
+
+
+IDI_ICON1 ICON DISCARDABLE "images/DjVuApp.ico"
+
+IDI_ICON2 ICON DISCARDABLE "images/DjVu.ico"
+
+VS_VERSION_INFO VERSIONINFO
+  FILEVERSION     RC_VERSION
+  PRODUCTVERSION  RC_VERSION
+  BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName",        DJVIEW_ORG
+            VALUE "FileDescription",    DJVIEW_APP
+            VALUE "ProductName",        DJVIEW_APP
+            VALUE "FileVersion",        RC_VERSION_STR
+            VALUE "ProductVersion",     RC_VERSION_STR
+            VALUE "InternalName",       DJVIEW_APP
+            VALUE "OriginalFilename",   "djview.exe"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+  END
