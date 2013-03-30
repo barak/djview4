@@ -31,7 +31,7 @@ CONFIG(autoconf) {
     #   QMAKE_LFLAGS += ...
 } else {
     # customize below
-    LIBS += -ldjvulibre
+    #LIBS += -ldjvulibre
     #QMAKE_CXXFLAGS += 
     #QMAKE_CFLAGS += 
     #QMAKE_LFLAGS += 
