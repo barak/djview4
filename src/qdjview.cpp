@@ -1287,9 +1287,7 @@ QDjView::applySaved(Saved *saved)
 
 
 static const Qt::WindowStates 
-unusualWindowStates = (Qt::WindowMinimized |
-                       Qt::WindowMaximized |
-                       Qt::WindowFullScreen );
+unusualWindowStates = (Qt::WindowMinimized|Qt::WindowFullScreen);
 
 
 void
