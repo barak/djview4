@@ -3740,6 +3740,8 @@ void
 QDjVuWidget::addHighlight(int pageno, int x, int y, int w, int h, 
                           QColor color, bool rc)
 {
+  if (!priv->docReady)
+    priv->docinfo();
   if (pageno>=0 && pageno<priv->pageData.size() && w>0 && h>0)
     {
       Page *p = &priv->pageData[pageno];
@@ -3757,6 +3759,10 @@ QDjVuWidget::addHighlight(int pageno, int x, int y, int w, int h,
       priv->pixelCache.clear();
       if (priv->pageMap.contains(pageno) && p->dpi>0)
         area.update(viewport(), p->mapper, priv->visibleRect.topLeft());
+    }
+  else
+    {
+      qWarning("nopage");
     }
 }
 
@@ -5014,6 +5020,13 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
             verticalScrollBar()->setSingleStep(svstep);
             horizontalScrollBar()->setSingleStep(shstep);
             return; 
+          }
+        case Qt::Key_H:
+          {
+            int pageno = page();
+            if (pageno>=0)
+              clearHighlights(pageno);
+            return;
           }
         default:
           event->ignore();

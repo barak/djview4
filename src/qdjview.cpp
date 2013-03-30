@@ -3743,16 +3743,16 @@ QDjView::performPending()
               int pageno = widget->page();
               if (! pair.first.isEmpty())
                 pageno = pageNumber(pair.first);
-              if (pageno >= 0 && pageno < pageNum() &&
-                  parse_highlight(pair.second, x, y, w, h, color) &&
-                  w > 0 && h > 0 )
+              if (pageno < pageNum() && pageno >= 0 
+                    && parse_highlight(pair.second, x, y, w, h, color) 
+                    && w > 0 && h > 0 )
                 {
                   color.setAlpha(96);
                   widget->addHighlight(pageno, x, y, w, h, color);
                 }
-        }
+            }
           pendingHilite.clear();
-    }
+        }
       if (pendingFind.size() > 0)
         {
           find(pendingFind);
@@ -3835,8 +3835,11 @@ QDjView::updateTextLabel()
           QString results[3];
           if (widget->getTextForPointer(results))
             {
+              results[0] = results[0].simplified();
+              results[1] = results[1].simplified();
+              results[2] = results[2].simplified();
               if (results[0].size() || results[2].size())
-                results[1] = "[" + results[1] + "]";
+                results[1] = " [" + results[1] + "] ";
               int r1 = m.width(results[1]);
               int r2 = m.width(results[2]);
               int r0 = qMax(0, qMax( (w-r1)/2, (w-r1-r2) ));
