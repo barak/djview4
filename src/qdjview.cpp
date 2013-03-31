@@ -1367,6 +1367,18 @@ QDjView::applyPreferences(void)
 }
 
 
+void
+QDjView::updatePreferences(void)
+{
+  updateSaved(getSavedPrefs());
+  prefs->thumbnailSize = thumbnailWidget->size();
+  prefs->thumbnailSmart = thumbnailWidget->smart();
+  prefs->searchWordsOnly = findWidget->wordOnly();
+  prefs->searchCaseSensitive = findWidget->caseSensitive();
+  prefs->searchRegExpMode = findWidget->regExpMode();
+}
+
+
 void 
 QDjView::preferencesChanged(void)
 {
@@ -3301,8 +3313,7 @@ QDjView*
 QDjView::copyWindow(bool openDocument)
 {
   // update preferences
-  if (viewerMode == STANDALONE)
-    updateSaved(getSavedPrefs());
+  updatePreferences();
   // create new window
   QDjView *other = new QDjView(djvuContext, STANDALONE);
   QDjVuWidget *otherWidget = other->widget;
@@ -3532,13 +3543,8 @@ QDjView::closeEvent(QCloseEvent *event)
   // Save options.
   //  after closing the document in order to 
   //  avoid saving document defined settings.
-  updateSaved(getSavedPrefs());
-  prefs->thumbnailSize = thumbnailWidget->size();
-  prefs->thumbnailSmart = thumbnailWidget->smart();
-  prefs->searchWordsOnly = findWidget->wordOnly();
-  prefs->searchCaseSensitive = findWidget->caseSensitive();
-  prefs->searchRegExpMode = findWidget->regExpMode();
-  prefs->save();
+  updatePreferences();
+  prefs->saveRemembered();
   // continue closing the window
   event->accept();
 }
@@ -4303,8 +4309,8 @@ QDjView::performMetadata(void)
 void
 QDjView::performPreferences(void)
 {
+  updatePreferences();
   QDjViewPrefsDialog *dialog = QDjViewPrefsDialog::instance();
-  updateSaved(getSavedPrefs());
   dialog->load(this);
   dialog->show();
   dialog->raise();
@@ -4425,6 +4431,7 @@ QDjView::restoreRecentDocument(QUrl url)
 void 
 QDjView::addRecent(QUrl url)
 {
+  prefs->loadRecent();
   // never remember passwords
   url.setPassword(QString::null);
   // remove matching entries
@@ -4444,6 +4451,8 @@ QDjView::addRecent(QUrl url)
   prefs->recentFiles.prepend(name);
   while(prefs->recentFiles.size() > 50)
     prefs->recentFiles.pop_back();
+  // save
+  prefs->saveRecent();
 }
 
 
@@ -4453,6 +4462,7 @@ QDjView::fillRecent()
   if (recentMenu)
     {
       recentMenu->clear();
+      prefs->loadRecent();
       int n = qMin(prefs->recentFiles.size(), 8);
       for (int i=0; i<n; i++)
         {
@@ -4495,7 +4505,7 @@ void
 QDjView::clearRecent()
 {
   prefs->recentFiles.clear();
-  prefs->save();
+  prefs->saveRecent();
 }
 
 

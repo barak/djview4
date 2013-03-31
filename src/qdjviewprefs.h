@@ -172,9 +172,11 @@ public:
   static QDjViewPrefs *instance(void);
   
 public slots:
+  void loadRecent();
   void load();
+  void saveRecent();
+  void saveRemembered();
   void save();
-  void update();
 
 signals:
   void updated();
@@ -183,6 +185,7 @@ private:
   QDjViewPrefs(void);
   void loadGroup(QSettings &s, QString name, Saved &saved);
   void saveGroup(QSettings &s, QString name, Saved &saved);
+  friend class QDjViewPrefsDialog;
 };
 
 

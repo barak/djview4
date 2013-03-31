@@ -184,6 +184,7 @@ protected:
   void     applySaved(Saved *saved);
   void     updateSaved(Saved *saved);
   void     applyPreferences(void);
+  void     updatePreferences(void);
   void     parseToolBarOption(QString option, QStringList &errors);
   bool     warnAboutPrintingRestrictions();
   bool     warnAboutSavingRestrictions();
