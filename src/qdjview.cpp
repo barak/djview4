@@ -1286,9 +1286,8 @@ QDjView::applySaved(Saved *saved)
 }
 
 
-static const Qt::WindowStates 
-unusualWindowStates = (Qt::WindowMinimized|Qt::WindowFullScreen);
-
+static const Qt::WindowStates unusualWindowStates = 
+       (Qt::WindowMinimized|Qt::WindowMaximized|Qt::WindowFullScreen);
 
 void
 QDjView::updateSaved(Saved *saved)
@@ -1311,8 +1310,14 @@ QDjView::updateSaved(Saved *saved)
                            QDjViewPrefs::HANDLE_CONTEXTMENU );
       // main window size in standalone mode
       if (saved == &prefs->forStandalone)
-        if (! (windowState() & unusualWindowStates))
-          prefs->windowSize = size();
+        {
+          Qt::WindowStates wstate = windowState();
+          prefs->windowMaximized = false;
+          if (wstate & Qt::WindowMaximized)
+            prefs->windowMaximized = true;
+          else if (! (wstate & unusualWindowStates))
+            prefs->windowSize = size();
+        }
     }
 }
 
@@ -2427,8 +2432,12 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 
   // Remembered geometry (before the window is shown)
   if (viewerMode == STANDALONE)
-    if (! (prefs->windowSize.isNull()))
-      resize(prefs->windowSize);
+    {
+      if (! (prefs->windowSize.isNull()))
+        resize(prefs->windowSize);
+      if (prefs->windowMaximized)
+        setWindowState(Qt::WindowMaximized);
+    }
   
   // Options set so far have default priority
   widget->reduceOptionsToPriority(QDjVuWidget::PRIORITY_DEFAULT);

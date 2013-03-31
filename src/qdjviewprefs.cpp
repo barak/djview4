@@ -134,6 +134,7 @@ QDjViewPrefs::Saved::Saved(void)
 QDjViewPrefs::QDjViewPrefs(void)
   : QObject(QCoreApplication::instance()),
     windowSize(640,400),
+    windowMaximized(false),
     tools(defaultTools),
     gamma(2.2),
     white(QColor(Qt::white)),
@@ -325,6 +326,8 @@ QDjViewPrefs::load()
   
   if (s.contains("windowSize"))
     windowSize = s.value("windowSize").toSize();
+  if (s.contains("windowMaximized"))
+    windowMaximized = s.value("windowMaximized").toBool();
   if (s.contains("tools"))
     tools = stringToTools(s.value("tools").toString());
   if (versionFix < 0x40200)
@@ -438,6 +441,7 @@ QDjViewPrefs::save(void)
   saveGroup(s, "forFullScreen", forFullScreen);
 
   s.setValue("windowSize", windowSize);
+  s.setValue("windowMaximized", windowMaximized);
   s.setValue("tools", toolsToString(tools));
   s.setValue("gamma", gamma);
   s.setValue("white", white.name());

@@ -124,6 +124,7 @@ public:
   Saved      forStandalone;     //!< Prefs for the standalone viewer mode.
   Saved      forFullScreen;     //!< Prefs for the full screen mode.
   QSize      windowSize;        //!< Size of the standalone window.
+  bool       windowMaximized;   //!< Window was maximized.
 
   // Preferences set via the preference dialog.
   Tools      tools;             //!< Toolbar composition.
