@@ -3760,10 +3760,6 @@ QDjVuWidget::addHighlight(int pageno, int x, int y, int w, int h,
       if (priv->pageMap.contains(pageno) && p->dpi>0)
         area.update(viewport(), p->mapper, priv->visibleRect.topLeft());
     }
-  else
-    {
-      qWarning("nopage");
-    }
 }
 
 
