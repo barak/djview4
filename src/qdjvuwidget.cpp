@@ -1165,10 +1165,11 @@ QDjVuPrivate::makeLayout()
           foreach(p, pageLayout)
             {
               QSize size;
-              if (p->width <= 0 || p->height <= 0)
+              if (p->width <= 0 || p->height <= 0) 
                 size = unknownSize;
-              else if (p->dpi <= 0)
-                size = scale_size(p->width, p->height, zoom*sdpi, 10000, r);
+              else if (p->dpi <= 0) 
+                size = (zoom <= 0) ? unknownSize :
+                  scale_size(p->width, p->height, zoom*sdpi, 10000, r);
               else if (layoutChange & CHANGE_SCALE_PASS2)
                 size = scale_size(p->width, p->height, sdpi, p->dpi, r);
               else if (zoom == ZOOM_ONE2ONE) 
