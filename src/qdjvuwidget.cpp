@@ -1447,16 +1447,24 @@ QDjVuPrivate::makeLayout()
           QRect &rd = deskRect;
           QScrollBar *hBar = widget->horizontalScrollBar();
           QScrollBar *vBar = widget->verticalScrollBar();
-          int hStep = qMin(rv.width(), rd.width());
-          int vStep = qMin(rv.height(), rd.height());
+          int vw = rv.width();
+          int vh = rv.height();
+          int hStep = qMin(vw, rd.width());
+          int vStep = qMin(vh, rd.height());
           int vcorr = 0;
-          if (zoom == ZOOM_FITWIDTH && vBar->isVisible() &&
-              widget->verticalScrollBarPolicy() == Qt::ScrollBarAsNeeded )
-            { // detect and prevent infinite loops
-              int vw = rv.width();
-              int sw = vBar->width();
-              if (scale_int(rd.height(), vw+sw, vw) > rv.height())
-                vcorr = 1;
+          int hcorr = 0;
+          if (widget->horizontalScrollBarPolicy() == Qt::ScrollBarAsNeeded)
+            { // prevent hbar loops
+              if (zoom == ZOOM_FITWIDTH || zoom == ZOOM_FITPAGE)
+                hcorr = hStep - rd.width(); // force hbar off
+            }
+          if (widget->verticalScrollBarPolicy() == Qt::ScrollBarAsNeeded)
+            { // prevent vbar loops
+              if (zoom == ZOOM_FITPAGE && rd.height() <= vh)
+                vcorr = vStep - rd.height(); // force vbar off
+              if (zoom == ZOOM_FITWIDTH && vBar->isVisible() && rd.height() <= vh)
+                if (scale_int(rd.height(), vw + vBar->width(), vw) > rv.height())
+                  vcorr = 1;  // force vbar on
             }
           changingSBars = true;
           vBar->setMinimum(rd.top());
@@ -1465,7 +1473,7 @@ QDjVuPrivate::makeLayout()
           vBar->setSingleStep(lineStep * 2);
           vBar->setValue(rv.top());
           hBar->setMinimum(rd.left());
-          hBar->setMaximum(rd.left()+rd.width()-hStep);
+          hBar->setMaximum(rd.left()+rd.width()-hStep+hcorr);
           hBar->setPageStep(hStep);
           hBar->setSingleStep(lineStep * 2);
           hBar->setValue(rv.left());
