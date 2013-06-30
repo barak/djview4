@@ -465,10 +465,12 @@ main(int argc, char *argv[])
 #endif
   
   // Process command line
+  QStringList args;
   QDjView *main = app.newWindow();
   while (argc > 1 && argv[1][0] == '-')
     {
       QString arg = QString::fromLocal8Bit(argv[1]).replace(QRegExp("^-+"),"");
+      QString key = arg.section(QChar('='),0,1);
       if (arg == "help")
         usage();
       else if (arg == "verbose")
@@ -478,7 +480,7 @@ main(int argc, char *argv[])
       else if (arg == "fix")
         message(QApplication::tr("Option '-fix' is deprecated."));
       else 
-        message(main->parseArgument(arg));
+        args += arg;
       argc --;
       argv ++;
     }
@@ -501,7 +503,9 @@ main(int argc, char *argv[])
         }
     }
   
-  // Process events
+  // Process options and go
+  foreach(QString arg, args)
+    message(main->parseArgument(arg));
   main->show();
   return app.exec();
 }
