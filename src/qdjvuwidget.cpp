@@ -3403,7 +3403,8 @@ MapArea::update(QWidget *w, QRectMapper &m, QPoint offset)
     }
   else
     {
-      QRegion region = rect.adjusted(-1, -1, 1, 1);
+      int bw2 = (bw / 2) + 1;
+      QRegion region = rect.adjusted(-bw2-1, -bw2-1, bw2+1, bw2+1);
       region.subtract(rect.adjusted(bw+1, bw+1, -bw-1, -bw-1));
       w->update(region);
     }  
@@ -4292,9 +4293,18 @@ QDjVuPrivate::paintMapAreas(QImage &img, Page *p, const QRect &r,
   bool changed = false;
   for (int i=0; i<p->mapAreas.size(); i++)
     {
+      QRect arect;
       MapArea &area = p->mapAreas[i];
-      QRect arect = pmapper->mapped(area.areaRect);
-      if (r.intersects(arect.adjusted(-16,-16,16,16)))
+      QPoint p1 = pmapper->mapped(area.areaRect.topLeft());
+      QPoint p2 = pmapper->mapped(area.areaRect.bottomRight());
+      int bw2 = (area.borderWidth + 1) / 2;
+      arect.setLeft(qMin(p1.x(),p2.x())-bw2);
+      arect.setTop(qMin(p1.y(),p2.y())-bw2);
+      arect.setRight(qMax(p1.x(),p2.x())+bw2);
+      arect.setBottom(qMax(p1.y(),p2.y())+bw2);
+      // The above code is necessary because mapping a small rect 
+      // can round to a rect of zero width or height.
+      if (r.intersects(arect.adjusted(-8,-8,8,8)))
         {
           if (perm) 
             {
