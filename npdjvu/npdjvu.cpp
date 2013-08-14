@@ -461,7 +461,7 @@ np_hasmethod(NPObject*, NPIdentifier name)
 
 static bool
 np_invoke(NPObject *npobj, NPIdentifier name,
-          const NPVariant *args, uint32_t argCount,
+          const NPVariant *args, uint32 argCount,
           NPVariant *result)
 {
   QVariant res;

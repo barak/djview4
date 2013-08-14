@@ -240,7 +240,7 @@ AC_SUBST(NSDEJAVU_NO)
 
 ac_npdjvu=no
 AC_ARG_ENABLE(npdjvu,
-    AS_HELP_STRING([--enable-npdjvu],[Compile the npdjvu browser plugin.]),
+    AS_HELP_STRING([--enable-npdjvu],[Compile the npdjvu browser plugin (experimental).]),
     [ac_npdjvu=$enableval])
 
 if test "$ac_npdjvu" != no ; then

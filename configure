@@ -1412,7 +1412,7 @@ Optional Features:
                           optimize for fast installation [default=yes]
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --disable-nsdejavu      Do not compile the nsdejavu browser plugin.
-  --enable-npdjvu         Compile the npdjvu browser plugin.
+  --enable-npdjvu         Compile the npdjvu browser plugin (experimental).
   --disable-desktopfiles  Do not install scripts to register icons and menus.
 
 Optional Packages:
