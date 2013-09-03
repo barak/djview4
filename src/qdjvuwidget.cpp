@@ -2206,16 +2206,22 @@ QDjVuWidget::page(void) const
 }
 
 void 
-QDjVuWidget::setPage(int n)
+QDjVuWidget::setPage(int n, bool keep)
 {
   int currentPageNo = page();
   if (n != currentPageNo && n>=0 && n<priv->numPages)
     {
-      Position pos = priv->findPosition(priv->currentPoint);
+      Position pos;
+      QPoint pnt(priv->borderSize, priv->borderSize);
+      if (keep)
+        {
+          pnt = priv->currentPoint;
+          pos = priv->findPosition(pnt);
+        }
       pos.pageNo = n;
       pos.doPage = true;
       pos.inPage = false;
-      setPosition(pos, priv->currentPoint);
+      setPosition(pos, pnt);
     }
 }
 
@@ -5636,7 +5642,7 @@ QDjVuWidget::nextPage(void)
         if (pr.top() != pg->rect.top() || vr.width() < dr.width())
           break;
     }
-  setPage(pageNo);
+  setPage(pageNo, true);
 }
 
 /*! Move to the previous page. */
@@ -5659,7 +5665,7 @@ QDjVuWidget::prevPage(void)
         if (pr.top() != pg->rect.top() || vr.width() < dr.width())
           break;
     }
-  setPage(pageNo);
+  setPage(pageNo, true);
 }
 
 /*! Move to the first page. */
