@@ -1,3 +1,12 @@
+djview4 (4.9-4) unstable; urgency=low
+
+  * bump policy version (no changes needed)
+  * clean some icons generated during build (closes: #679921)
+  * update debian packaging repo urls to current naming scheme
+  * the upstream changelog is called NEWS
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Mon, 30 Sep 2013 12:17:34 +0100
+
 djview4 (4.9-3) unstable; urgency=low
 
   * merge upstream fixes
