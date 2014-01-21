@@ -23,7 +23,7 @@ AC_PREREQ([2.67])
 AC_INIT([djview],[4.9])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([config])
-AC_CONFIG_SRCDIR(README)
+AC_CONFIG_SRCDIR([src/djview.cpp])
 AC_CONFIG_HEADER(config.h:config/config.h.in)
 AC_PREFIX_DEFAULT(/usr/local)
 AC_CANONICAL_HOST
@@ -240,7 +240,7 @@ AC_SUBST(NSDEJAVU_NO)
 
 ac_npdjvu=no
 AC_ARG_ENABLE(npdjvu,
-    AS_HELP_STRING([--enable-npdjvu],[Compile the npdjvu browser plugin.]),
+    AS_HELP_STRING([--enable-npdjvu],[Compile the npdjvu browser plugin (experimental).]),
     [ac_npdjvu=$enableval])
 
 if test "$ac_npdjvu" != no ; then
@@ -302,9 +302,7 @@ AC_SUBST(DESKTOP_NO)
 
 # Define installation paths and version string
 AC_DEFINE_INSTALL_PATHS
-AC_DEFINE_VERSION([DJVIEW_VERSION], [${PACKAGE_VERSION}])
-AC_DEFINE_UNQUOTED([DJVIEW_VERSION_STR], ["${PACKAGE_VERSION}"], [string])
-
+AC_DEFINE_VERSION([${PACKAGE_VERSION}])
 
 # ----------------------------------------
 # Run qmake

@@ -21,20 +21,23 @@ dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA02111 USA
 dnl
 
 
-dnl -------------------------------------------------------
+dnl ------------------------------------------------------- 
 dnl @synopsis AC_DEFINE_VERSION
 dnl Defines a hexadecimal version number
 dnl -------------------------------------------------------
 
 AC_DEFUN([AC_DEFINE_VERSION], [
   IFS=. read major minor revis <<__eof__
-$2
+$1
 __eof__
   test -z "$major" && major=0
   test -z "$minor" && minor=0
   test -z "$revis" && revis=0
   hexversion=`printf '0x%x%02x%02x' $major $minor $revis`
-  AC_DEFINE_UNQUOTED($1,[$hexversion],[hexadecimal version number])
+  AC_DEFINE_UNQUOTED(DJVIEW_VERSION,[$hexversion],[hexadecimal version number])
+  AC_DEFINE_UNQUOTED(DJVIEW_VERSION_STR, ["$1"], [string])
+  AC_DEFINE_UNQUOTED(RC_VERSION,[$major,$minor,$revis,0],[rc file version number])
+  AC_DEFINE_UNQUOTED(RC_VERSION_STR,["$major,$minor,$revis,0\0"],[rc file version string])
 ])
 
 

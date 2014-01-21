@@ -133,6 +133,12 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
+/* rc file version number */
+#undef RC_VERSION
+
+/* rc file version string */
+#undef RC_VERSION_STR
+
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 

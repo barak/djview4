@@ -63,6 +63,10 @@ x11 {
 
 # ============ djview stuff
 
+CONFIG += qt thread warn_on 
+QT += network opengl
+
+# -- find libraries
 CONFIG(autoconf) {
     # for use with autoconf
     DEFINES += AUTOCONF
@@ -71,32 +75,26 @@ CONFIG(autoconf) {
     #   QMAKE_CXXFLAGS += ...
     #   QMAKE_CFLAGS += ...
     #   QMAKE_LFLAGS += ...
-} else:unix:!macx {
-    # for use under unix with pkgconfig
-    CONFIG += link_pkgconfig
-    PKGCONFIG += ddjvuapi
 } else {
-    # for use on other platforms
-    # LIBS += -ldjvulibre
-    # QMAKE_CXXFLAGS +=  ... (c++ flags)
-    # QMAKE_CFLAGS += ...    (c flags)
-    # QMAKE_LFLAGS += ...    (link flags)
-    # DEFINES += ...         (definitions)
+    # customize below
+    #LIBS += -ldjvulibre
+    #QMAKE_CXXFLAGS += 
+    #QMAKE_CFLAGS += 
+    #QMAKE_LFLAGS += 
+    #DEFINES += 
 }
 
 # -- config
-CONFIG += qt thread warn_on 
-QT += network 
 CONFIG(release,debug|release) {
     DEFINES += NDEBUG QT_NO_DEBUG QT_NO_DEBUG_STREAM
 }
 
 # -- djvu
 HEADERS += ../src/qdjvu.h 
-HEADERS += ../src/qdjvuhttp.h 
+HEADERS += ../src/qdjvunet.h 
 HEADERS += ../src/qdjvuwidget.h
 SOURCES += ../src/qdjvu.cpp
-SOURCES += ../src/qdjvuhttp.cpp
+SOURCES += ../src/qdjvunet.cpp
 SOURCES += ../src/qdjvuwidget.cpp
 RESOURCES += ../src/qdjvuwidget.qrc 
 
@@ -112,6 +110,7 @@ SOURCES += ../src/qdjviewdialogs.cpp
 SOURCES += ../src/qdjviewexporters.cpp
 SOURCES += ../src/qdjview.cpp
 RESOURCES += ../src/qdjview.qrc 
+FORMS += ../src/qdjviewauthdialog.ui
 FORMS += ../src/qdjviewerrordialog.ui
 FORMS += ../src/qdjviewinfodialog.ui 
 FORMS += ../src/qdjviewmetadialog.ui 

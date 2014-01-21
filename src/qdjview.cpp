@@ -414,8 +414,7 @@ QDjView::createActions()
     << QKeySequence(tr("Ctrl+F", "Edit|Find"))
     << QIcon(":/images/icon_find.png")
     << tr("Find text in the document.")
-    << Trigger(this, SLOT(showFind()))
-    << Trigger(findWidget, SLOT(findNext()));
+    << Trigger(this, SLOT(showFind()));
 
   actionFindNext = makeAction(tr("Find &Next", "Edit|"))
     << QKeySequence(tr("Ctrl+F3", "Edit|Find Next"))
@@ -984,6 +983,7 @@ QDjView::updateActions()
 
   // Misc
   textLabel->setVisible(prefs->showTextLabel);
+  textLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored);
   actionCopyOutline->setVisible(prefs->advancedFeatures);
   actionCopyAnnotation->setVisible(prefs->advancedFeatures);
   actionCopyUrl->setEnabled(pagenum > 0);
@@ -1285,11 +1285,8 @@ QDjView::applySaved(Saved *saved)
 }
 
 
-static const Qt::WindowStates 
-unusualWindowStates = (Qt::WindowMinimized |
-                       Qt::WindowMaximized |
-                       Qt::WindowFullScreen );
-
+static const Qt::WindowStates unusualWindowStates = 
+       (Qt::WindowMinimized|Qt::WindowMaximized|Qt::WindowFullScreen);
 
 void
 QDjView::updateSaved(Saved *saved)
@@ -1312,8 +1309,14 @@ QDjView::updateSaved(Saved *saved)
                            QDjViewPrefs::HANDLE_CONTEXTMENU );
       // main window size in standalone mode
       if (saved == &prefs->forStandalone)
-        if (! (windowState() & unusualWindowStates))
-          prefs->windowSize = size();
+        {
+          Qt::WindowStates wstate = windowState();
+          prefs->windowMaximized = false;
+          if (wstate & Qt::WindowMaximized)
+            prefs->windowMaximized = true;
+          else if (! (wstate & unusualWindowStates))
+            prefs->windowSize = size();
+        }
     }
 }
 
@@ -1360,6 +1363,18 @@ QDjView::applyPreferences(void)
   // Preload full screen prefs.
   fsSavedNormal = prefs->forStandalone;
   fsSavedFullScreen = prefs->forFullScreen;
+}
+
+
+void
+QDjView::updatePreferences(void)
+{
+  updateSaved(getSavedPrefs());
+  prefs->thumbnailSize = thumbnailWidget->size();
+  prefs->thumbnailSmart = thumbnailWidget->smart();
+  prefs->searchWordsOnly = findWidget->wordOnly();
+  prefs->searchCaseSensitive = findWidget->caseSensitive();
+  prefs->searchRegExpMode = findWidget->regExpMode();
 }
 
 
@@ -2428,8 +2443,12 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 
   // Remembered geometry (before the window is shown)
   if (viewerMode == STANDALONE)
-    if (! (prefs->windowSize.isNull()))
-      resize(prefs->windowSize);
+    {
+      if (! (prefs->windowSize.isNull()))
+        resize(prefs->windowSize);
+      if (prefs->windowMaximized)
+        setWindowState(Qt::WindowMaximized);
+    }
   
   // Options set so far have default priority
   widget->reduceOptionsToPriority(QDjVuWidget::PRIORITY_DEFAULT);
@@ -2963,6 +2982,8 @@ QDjView::showSideBar(bool show)
   thumbnailDock->setVisible(show);
   outlineDock->setVisible(show);
   findDock->setVisible(show);
+  if (! show)
+    widget->setFocus(Qt::OtherFocusReason);
   return true;
 }
 
@@ -3157,10 +3178,12 @@ QDjView::getDecoratedUrl()
         pagestr = QString::fromUtf8(dp[pageNo].id);
       url.addQueryItem("page", pagestr);
       int rotation = widget->rotation();
-      if (rotation)
+      if (rotation) 
         url.addQueryItem("rotate", QString::number(90 * rotation));
-      int zoom = widget->zoomFactor();
-      url.addQueryItem("zoom", QString::number(zoom));
+      QString zoom = getArgument("zoom");
+      if (zoom.isEmpty()) 
+        zoom = QString::number(widget->zoomFactor());
+      url.addQueryItem("zoom", zoom);
       double ha = pos.hAnchor / 100.0;
       double va = pos.vAnchor / 100.0;
       url.addQueryItem("showposition", QString("%1,%2").arg(ha).arg(va));
@@ -3275,6 +3298,10 @@ QDjView::pageNumber(QString name, int from)
     if (documentPages[i].name && 
         !strcmp(utf8Name, documentPages[i].name))
       return i;
+  // Compatibility with unknown viewers:
+  // If name contains space, remove all spaces, and try again
+  if (name.contains(" "))
+    return pageNumber(name.replace(" ", ""));
   // Give up
   return -1;
 }
@@ -3287,8 +3314,7 @@ QDjView*
 QDjView::copyWindow(bool openDocument)
 {
   // update preferences
-  if (viewerMode == STANDALONE)
-    updateSaved(getSavedPrefs());
+  updatePreferences();
   // create new window
   QDjView *other = new QDjView(djvuContext, STANDALONE);
   QDjVuWidget *otherWidget = other->widget;
@@ -3518,13 +3544,8 @@ QDjView::closeEvent(QCloseEvent *event)
   // Save options.
   //  after closing the document in order to 
   //  avoid saving document defined settings.
-  updateSaved(getSavedPrefs());
-  prefs->thumbnailSize = thumbnailWidget->size();
-  prefs->thumbnailSmart = thumbnailWidget->smart();
-  prefs->searchWordsOnly = findWidget->wordOnly();
-  prefs->searchCaseSensitive = findWidget->caseSensitive();
-  prefs->searchRegExpMode = findWidget->regExpMode();
-  prefs->save();
+  updatePreferences();
+  prefs->saveRemembered();
   // continue closing the window
   event->accept();
 }
@@ -3736,16 +3757,16 @@ QDjView::performPending()
               int pageno = widget->page();
               if (! pair.first.isEmpty())
                 pageno = pageNumber(pair.first);
-              if (pageno >= 0 && pageno < pageNum() &&
-                  parse_highlight(pair.second, x, y, w, h, color) &&
-                  w > 0 && h > 0 )
+              if (pageno < pageNum() && pageno >= 0 
+                    && parse_highlight(pair.second, x, y, w, h, color) 
+                    && w > 0 && h > 0 )
                 {
                   color.setAlpha(96);
                   widget->addHighlight(pageno, x, y, w, h, color);
                 }
-        }
+            }
           pendingHilite.clear();
-    }
+        }
       if (pendingFind.size() > 0)
         {
           find(pendingFind);
@@ -3816,7 +3837,7 @@ QDjView::updateTextLabel()
       QFontMetrics m(textLabel->font());
       QString lb = QString::fromUtf8(" \302\253 ");
       QString rb = QString::fromUtf8(" \302\273 ");
-      int w = textLabel->width() - m.width(lb+rb);
+      int w = textLabel->width() - 2 * textLabel->frameWidth() - m.width(lb + rb + "MM");
       if (! textLabelRect.isEmpty())
         {
           text = widget->getTextForRect(textLabelRect);
@@ -3828,8 +3849,11 @@ QDjView::updateTextLabel()
           QString results[3];
           if (widget->getTextForPointer(results))
             {
+              results[0] = results[0].simplified();
+              results[1] = results[1].simplified();
+              results[2] = results[2].simplified();
               if (results[0].size() || results[2].size())
-                results[1] = "[" + results[1] + "]";
+                results[1] = " [" + results[1] + "] ";
               int r1 = m.width(results[1]);
               int r2 = m.width(results[2]);
               int r0 = qMax(0, qMax( (w-r1)/2, (w-r1-r2) ));
@@ -4286,8 +4310,8 @@ QDjView::performMetadata(void)
 void
 QDjView::performPreferences(void)
 {
+  updatePreferences();
   QDjViewPrefsDialog *dialog = QDjViewPrefsDialog::instance();
-  updateSaved(getSavedPrefs());
   dialog->load(this);
   dialog->show();
   dialog->raise();
@@ -4408,6 +4432,7 @@ QDjView::restoreRecentDocument(QUrl url)
 void 
 QDjView::addRecent(QUrl url)
 {
+  prefs->loadRecent();
   // never remember passwords
   url.setPassword(QString::null);
   // remove matching entries
@@ -4427,6 +4452,8 @@ QDjView::addRecent(QUrl url)
   prefs->recentFiles.prepend(name);
   while(prefs->recentFiles.size() > 50)
     prefs->recentFiles.pop_back();
+  // save
+  prefs->saveRecent();
 }
 
 
@@ -4436,6 +4463,7 @@ QDjView::fillRecent()
   if (recentMenu)
     {
       recentMenu->clear();
+      prefs->loadRecent();
       int n = qMin(prefs->recentFiles.size(), 8);
       for (int i=0; i<n; i++)
         {
@@ -4478,7 +4506,7 @@ void
 QDjView::clearRecent()
 {
   prefs->recentFiles.clear();
-  prefs->save();
+  prefs->saveRecent();
 }
 
 

@@ -134,6 +134,7 @@ QDjViewPrefs::Saved::Saved(void)
 QDjViewPrefs::QDjViewPrefs(void)
   : QObject(QCoreApplication::instance()),
     windowSize(640,400),
+    windowMaximized(false),
     tools(defaultTools),
     gamma(2.2),
     white(QColor(Qt::white)),
@@ -307,24 +308,37 @@ QDjViewPrefs::loadGroup(QSettings &s, QString name, Saved &saved)
 }
 
 
+/*! Load recent files */
+
+void
+QDjViewPrefs::loadRecent()
+{
+  QSettings s;
+  if (s.contains("recentFiles"))
+    recentFiles = s.value("recentFiles").toStringList();
+}
+
 /*! Load saved preferences and set all member variables. */
 
 void
 QDjViewPrefs::load()
 {
+  // load recent files
+  loadRecent();
+  
+  // load everything else
   QSettings s;
-
   int versionFix = 0;
   if (s.contains("versionFix"))
     versionFix = s.value("versionFix").toInt();
-
   loadGroup(s, "forEmbeddedPlugin", forEmbeddedPlugin);
   loadGroup(s, "forFullPagePlugin", forFullPagePlugin);
   loadGroup(s, "forStandalone", forStandalone);
   loadGroup(s, "forFullScreen", forFullScreen);
-  
   if (s.contains("windowSize"))
     windowSize = s.value("windowSize").toSize();
+  if (s.contains("windowMaximized"))
+    windowMaximized = s.value("windowMaximized").toBool();
   if (s.contains("tools"))
     tools = stringToTools(s.value("tools").toString());
   if (versionFix < 0x40200)
@@ -372,19 +386,16 @@ QDjViewPrefs::load()
   if (s.contains("modifiersForLinks"))
     modifiersForLinks 
       = stringToModifiers(s.value("modifiersForLinks").toString());
-  
   if (s.contains("thumbnailSize"))
     thumbnailSize = s.value("thumbnailSize").toInt();
   if (s.contains("thumbnailSmart"))
     thumbnailSmart = s.value("thumbnailSmart").toBool();
-
   if (s.contains("searchWordsOnly"))
     searchWordsOnly = s.value("searchWordsOnly").toBool();
   if (s.contains("searchCaseSensitive"))
     searchCaseSensitive = s.value("searchCaseSensitive").toBool();
   if (s.contains("searchRegExpMode"))
     searchRegExpMode = s.value("searchRegExpMode").toBool();
-  
   if (s.contains("infoDialogTab"))
     infoDialogTab = s.value("infoDialogTab").toInt();
   if (s.contains("metaDialogTab"))
@@ -400,8 +411,8 @@ QDjViewPrefs::load()
   if (s.contains("printReverse"))
     printCollate = s.value("printReverse").toBool();
 
-  if (s.contains("recentFiles"))
-    recentFiles = s.value("recentFiles").toStringList();
+  // advertise change
+  emit updated();
 }
 
 
@@ -417,27 +428,73 @@ QDjViewPrefs::saveGroup(QSettings &s, QString name, Saved &saved)
 }
 
 
-/*! Save all member variables for later use. */
+/*! Save recent files. */
 
 void
-QDjViewPrefs::save(void)
+QDjViewPrefs::saveRecent(void)
 {
   QSettings s;
-  
-  s.setValue("version", versionString());
+  s.setValue("recentFiles", recentFiles);
+}
 
+
+/*! Save remembered state. */
+
+void
+QDjViewPrefs::saveRemembered(void)
+{
+  QSettings s;
+
+  s.setValue("version", versionString());
   int versionFix = 0;
   if (s.contains("versionFix"))
     versionFix = s.value("versionFix").toInt();
   if (DJVIEW_VERSION > versionFix)
     s.setValue("versionFix", DJVIEW_VERSION);
-  
-  saveGroup(s, "forEmbeddedPlugin", forEmbeddedPlugin);
-  saveGroup(s, "forFullPagePlugin", forFullPagePlugin);
-  saveGroup(s, "forStandalone", forStandalone);
-  saveGroup(s, "forFullScreen", forFullScreen);
+
+  if (forEmbeddedPlugin.remember)
+    saveGroup(s, "forEmbeddedPlugin", forEmbeddedPlugin);
+  if (forFullPagePlugin.remember)
+    saveGroup(s, "forFullPagePlugin", forFullPagePlugin);
+  if (forStandalone.remember)
+    saveGroup(s, "forStandalone", forStandalone);
+  if (forFullScreen.remember)
+    saveGroup(s, "forFullScreen", forFullScreen);
 
   s.setValue("windowSize", windowSize);
+  s.setValue("windowMaximized", windowMaximized);
+  s.setValue("thumbnailSize", thumbnailSize);
+  s.setValue("thumbnailSmart", thumbnailSmart);
+  s.setValue("searchWordsOnly", searchWordsOnly);
+  s.setValue("searchCaseSensitive", searchCaseSensitive);
+  s.setValue("searchRegExpMode", searchRegExpMode);
+  s.setValue("infoDialogTab", infoDialogTab);
+  s.setValue("metaDialogTab", metaDialogTab);
+  s.setValue("printerName", printerName);
+  s.setValue("printFile", printFile);
+  s.setValue("printCollate", printCollate);
+  s.setValue("printReverse", printReverse);
+}
+
+/*! Save all member variables for later use. */
+
+void
+QDjViewPrefs::save(void)
+{
+  // save parts
+  saveRecent();
+  saveRemembered();
+
+  // save everything else
+  QSettings s;
+  if (! forEmbeddedPlugin.remember)
+    saveGroup(s, "forEmbeddedPlugin", forEmbeddedPlugin);
+  if (! forFullPagePlugin.remember)
+    saveGroup(s, "forFullPagePlugin", forFullPagePlugin);
+  if (! forStandalone.remember)
+    saveGroup(s, "forStandalone", forStandalone);
+  if (! forFullScreen.remember)
+    saveGroup(s, "forFullScreen", forFullScreen);
   s.setValue("tools", toolsToString(tools));
   s.setValue("gamma", gamma);
   s.setValue("white", white.name());
@@ -459,34 +516,9 @@ QDjViewPrefs::save(void)
   s.setValue("language", languageOverride);
   s.setValue("restrictOverride", restrictOverride);
   s.setValue("openGLAccel", openGLAccel);
-
-  s.setValue("thumbnailSize", thumbnailSize);
-  s.setValue("thumbnailSmart", thumbnailSmart);
-
-  s.setValue("searchWordsOnly", searchWordsOnly);
-  s.setValue("searchCaseSensitive", searchCaseSensitive);
-  s.setValue("searchRegExpMode", searchRegExpMode);
-  
-  s.setValue("infoDialogTab", infoDialogTab);
-  s.setValue("metaDialogTab", metaDialogTab);
   s.setValue("printerGamma", printerGamma);
-  s.setValue("printerName", printerName);
-  s.setValue("printFile", printFile);
-  s.setValue("printCollate", printCollate);
-  s.setValue("printReverse", printReverse);
-
-  s.setValue("recentFiles", recentFiles);
 }
 
-
-
-/*! Emit the updated() signal. */
-
-void
-QDjViewPrefs::update()
-{
-  emit updated();
-}
 
 
 /*! \fn QDjViewPrefs::updated() 
@@ -1058,7 +1090,7 @@ QDjViewPrefsDialog::apply()
   setWindowModified(false);
   d->ui.applyButton->setEnabled(false);
   prefs->save();
-  prefs->update();
+  emit prefs->updated();
 }
 
 

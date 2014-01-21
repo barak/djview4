@@ -1165,10 +1165,11 @@ QDjVuPrivate::makeLayout()
           foreach(p, pageLayout)
             {
               QSize size;
-              if (p->width <= 0 || p->height <= 0)
+              if (p->width <= 0 || p->height <= 0) 
                 size = unknownSize;
-              else if (p->dpi <= 0)
-                size = scale_size(p->width, p->height, zoom*sdpi, 10000, r);
+              else if (p->dpi <= 0) 
+                size = (zoom <= 0) ? unknownSize :
+                  scale_size(p->width, p->height, zoom*sdpi, 10000, r);
               else if (layoutChange & CHANGE_SCALE_PASS2)
                 size = scale_size(p->width, p->height, sdpi, p->dpi, r);
               else if (zoom == ZOOM_ONE2ONE) 
@@ -1446,16 +1447,24 @@ QDjVuPrivate::makeLayout()
           QRect &rd = deskRect;
           QScrollBar *hBar = widget->horizontalScrollBar();
           QScrollBar *vBar = widget->verticalScrollBar();
-          int hStep = qMin(rv.width(), rd.width());
-          int vStep = qMin(rv.height(), rd.height());
+          int vw = rv.width();
+          int vh = rv.height();
+          int hStep = qMin(vw, rd.width());
+          int vStep = qMin(vh, rd.height());
           int vcorr = 0;
-          if (zoom == ZOOM_FITWIDTH && vBar->isVisible() &&
-              widget->verticalScrollBarPolicy() == Qt::ScrollBarAsNeeded )
-            { // detect and prevent infinite loops
-              int vw = rv.width();
-              int sw = vBar->width();
-              if (scale_int(rd.height(), vw+sw, vw) > rv.height())
-                vcorr = 1;
+          int hcorr = 0;
+          if (widget->horizontalScrollBarPolicy() == Qt::ScrollBarAsNeeded)
+            { // prevent hbar loops
+              if (zoom == ZOOM_FITWIDTH || zoom == ZOOM_FITPAGE)
+                hcorr = hStep - rd.width(); // force hbar off
+            }
+          if (widget->verticalScrollBarPolicy() == Qt::ScrollBarAsNeeded)
+            { // prevent vbar loops
+              if (zoom == ZOOM_FITPAGE && rd.height() <= vh)
+                vcorr = vStep - rd.height(); // force vbar off
+              if (zoom == ZOOM_FITWIDTH && vBar->isVisible() && rd.height() <= vh)
+                if (scale_int(rd.height(), vw + vBar->width(), vw) > rv.height())
+                  vcorr = 1;  // force vbar on
             }
           changingSBars = true;
           vBar->setMinimum(rd.top());
@@ -1464,7 +1473,7 @@ QDjVuPrivate::makeLayout()
           vBar->setSingleStep(lineStep * 2);
           vBar->setValue(rv.top());
           hBar->setMinimum(rd.left());
-          hBar->setMaximum(rd.left()+rd.width()-hStep);
+          hBar->setMaximum(rd.left()+rd.width()-hStep+hcorr);
           hBar->setPageStep(hStep);
           hBar->setSingleStep(lineStep * 2);
           hBar->setValue(rv.left());
@@ -2197,16 +2206,22 @@ QDjVuWidget::page(void) const
 }
 
 void 
-QDjVuWidget::setPage(int n)
+QDjVuWidget::setPage(int n, bool keep)
 {
   int currentPageNo = page();
   if (n != currentPageNo && n>=0 && n<priv->numPages)
     {
-      Position pos = priv->findPosition(priv->currentPoint);
+      Position pos;
+      QPoint pnt(priv->borderSize, priv->borderSize);
+      if (keep)
+        {
+          pnt = priv->currentPoint;
+          pos = priv->findPosition(pnt);
+        }
       pos.pageNo = n;
       pos.doPage = true;
       pos.inPage = false;
-      setPosition(pos, priv->currentPoint);
+      setPosition(pos, pnt);
     }
 }
 
@@ -3394,7 +3409,8 @@ MapArea::update(QWidget *w, QRectMapper &m, QPoint offset)
     }
   else
     {
-      QRegion region = rect.adjusted(-1, -1, 1, 1);
+      int bw2 = (bw / 2) + 1;
+      QRegion region = rect.adjusted(-bw2-1, -bw2-1, bw2+1, bw2+1);
       region.subtract(rect.adjusted(bw+1, bw+1, -bw-1, -bw-1));
       w->update(region);
     }  
@@ -3740,6 +3756,8 @@ void
 QDjVuWidget::addHighlight(int pageno, int x, int y, int w, int h, 
                           QColor color, bool rc)
 {
+  if (!priv->docReady)
+    priv->docinfo();
   if (pageno>=0 && pageno<priv->pageData.size() && w>0 && h>0)
     {
       Page *p = &priv->pageData[pageno];
@@ -4281,9 +4299,18 @@ QDjVuPrivate::paintMapAreas(QImage &img, Page *p, const QRect &r,
   bool changed = false;
   for (int i=0; i<p->mapAreas.size(); i++)
     {
+      QRect arect;
       MapArea &area = p->mapAreas[i];
-      QRect arect = pmapper->mapped(area.areaRect);
-      if (r.intersects(arect.adjusted(-16,-16,16,16)))
+      QPoint p1 = pmapper->mapped(area.areaRect.topLeft());
+      QPoint p2 = pmapper->mapped(area.areaRect.bottomRight());
+      int bw2 = (area.borderWidth + 1) / 2;
+      arect.setLeft(qMin(p1.x(),p2.x())-bw2);
+      arect.setTop(qMin(p1.y(),p2.y())-bw2);
+      arect.setRight(qMax(p1.x(),p2.x())+bw2);
+      arect.setBottom(qMax(p1.y(),p2.y())+bw2);
+      // The above code is necessary because mapping a small rect 
+      // can round to a rect of zero width or height.
+      if (r.intersects(arect.adjusted(-8,-8,8,8)))
         {
           if (perm) 
             {
@@ -5015,6 +5042,13 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
             horizontalScrollBar()->setSingleStep(shstep);
             return; 
           }
+        case Qt::Key_H:
+          {
+            int pageno = page();
+            if (pageno>=0)
+              clearHighlights(pageno);
+            return;
+          }
         default:
           event->ignore();
           return;
@@ -5608,7 +5642,7 @@ QDjVuWidget::nextPage(void)
         if (pr.top() != pg->rect.top() || vr.width() < dr.width())
           break;
     }
-  setPage(pageNo);
+  setPage(pageNo, true);
 }
 
 /*! Move to the previous page. */
@@ -5631,7 +5665,7 @@ QDjVuWidget::prevPage(void)
         if (pr.top() != pg->rect.top() || vr.width() < dr.width())
           break;
     }
-  setPage(pageNo);
+  setPage(pageNo, true);
 }
 
 /*! Move to the first page. */

@@ -22,6 +22,8 @@
 # include "config.h"
 #endif
 
+#include "version.h"
+
 #include <Qt>
 #include <QByteArray>
 #include <QDialog>
@@ -36,20 +38,6 @@
 #include <QUrl>
 #include <QVariant>
 #include <QWidget>
-
-
-#ifndef DJVIEW_ORG
-# define DJVIEW_ORG "DjVuLibre"
-#endif
-#ifndef DJVIEW_DOMAIN
-# define DJVIEW_DOMAIN "djvu.org"
-#endif
-#ifndef DJVIEW_APP
-# define DJVIEW_APP "DjView"
-#endif
-#ifndef DJVIEW_VERSION
-# define DJVIEW_VERSION 0x40900
-#endif
 
 
 // ========================================
@@ -136,6 +124,7 @@ public:
   Saved      forStandalone;     //!< Prefs for the standalone viewer mode.
   Saved      forFullScreen;     //!< Prefs for the full screen mode.
   QSize      windowSize;        //!< Size of the standalone window.
+  bool       windowMaximized;   //!< Window was maximized.
 
   // Preferences set via the preference dialog.
   Tools      tools;             //!< Toolbar composition.
@@ -183,9 +172,11 @@ public:
   static QDjViewPrefs *instance(void);
   
 public slots:
+  void loadRecent();
   void load();
+  void saveRecent();
+  void saveRemembered();
   void save();
-  void update();
 
 signals:
   void updated();
@@ -194,6 +185,7 @@ private:
   QDjViewPrefs(void);
   void loadGroup(QSettings &s, QString name, Saved &saved);
   void saveGroup(QSettings &s, QString name, Saved &saved);
+  friend class QDjViewPrefsDialog;
 };
 
 

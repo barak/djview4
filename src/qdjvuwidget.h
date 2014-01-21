@@ -209,7 +209,7 @@ public:
 
 public slots:
   void setDocument(QDjVuDocument *d);
-  void setPage(int p);
+  void setPage(int p, bool keep=false);
   void setPosition(const Position &pos);
   void setPosition(const Position &pos, const QPoint &p, bool animate=true);
   void setRotation(int);

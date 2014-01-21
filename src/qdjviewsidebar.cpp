@@ -1139,6 +1139,21 @@ parse_text_type(miniexp_t exp)
   return -1;
 }
 
+static int count_final_spaces(const QString &s)
+{
+  int c = 0;
+  int l = s.size();
+  while (l>0 && s[--l].isSpace())
+    c += 1;
+  return c;
+}
+
+static QString chopped(QString s, int c)
+{
+  s.chop(c);
+  return s;
+}
+
 static bool
 miniexp_get_text(miniexp_t exp, QString &result, 
                  QMap<int,miniexp_t> &positions, int &state)
@@ -1155,10 +1170,14 @@ miniexp_get_text(miniexp_t exp, QString &result,
   state = qMax(state, typenum);
   if (miniexp_stringp(s) && !miniexp_cdr(r))
     {
-      result += (state >= 2) ? "\n" : (state >= 1) ? " " : "";
+      int c = count_final_spaces(result);
+      if (state >= 2 && !result.endsWith('\n'))
+        result = chopped(result,c) + "\n";
+      else if (state >= 1 && c == 0)
+        result += " ";
       state = -1;
       positions[result.size()] = exp;
-      result += QString::fromUtf8(miniexp_to_str(s));
+      result += QString::fromUtf8(miniexp_to_str(s)).trimmed();
       r = miniexp_cdr(r);
     }
   while(miniexp_consp(s))
