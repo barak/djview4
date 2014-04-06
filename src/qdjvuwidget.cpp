@@ -1730,6 +1730,8 @@ QDjVuPrivate::findPosition(const QPoint &point, bool closestAnchor)
   int bestDistance = 0;
   QPoint deskPoint = visibleRect.topLeft() + point;
   findClosestPage(deskPoint, pageVisible, &bestPage, &bestDistance);
+  if (! bestPage)
+    findClosestPage(deskPoint, pageLayout, &bestPage, &bestDistance);
   if (bestPage)
     {
       pos.pageNo = bestPage->pageno;
@@ -4437,7 +4439,7 @@ void
 QDjVuPrivate::paintAll(QPainter &paint, const QRegion &paintRegion)
 {
   // Document not ready yet
-  if (pageVisible.isEmpty())
+  if (pageLayout.isEmpty())
     {
       bool waiting = (docReady || !docFailed) && !docStopped;
       QRect rect(QPoint(borderSize,borderSize), unknownSize);
