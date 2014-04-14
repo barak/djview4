@@ -1,3 +1,11 @@
+djview4 (4.9-3ubuntu1) saucy; urgency=low
+
+  * debian/rules: Use dh_autotools-dev rather than dh-autoreconf, so
+    config/config.{sub,guess} actually get updated.
+  * nsdejavu/npsdk/prcpucfg.h: Add aarch64 CPU definitions.
+
+ -- William Grant <wgrant@ubuntu.com>  Sat, 12 Oct 2013 20:10:34 +1100
+
 djview4 (4.9-3) unstable; urgency=low
 
   * merge upstream fixes
