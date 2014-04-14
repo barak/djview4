@@ -1,4 +1,4 @@
-djview4 (4.9-4ubuntu2) trusty; urgency=medium
+djview4 (4.9-4ubuntu3) trusty; urgency=medium
 
   * Fix build on ppc64el.
 
