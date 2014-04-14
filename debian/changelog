@@ -1,3 +1,11 @@
+djview4 (4.9-6) unstable; urgency=medium
+
+  * accept patches to upstream from ubuntu/4.9-4ubuntu3
+    - debian/patches/aarch64_cpu_definitions.patch
+    - debian/patches/ppc64el.diff
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Mon, 14 Apr 2014 09:38:05 +0100
+
 djview4 (4.9-5) unstable; urgency=low
 
   * bump policy version (no changes needed)
