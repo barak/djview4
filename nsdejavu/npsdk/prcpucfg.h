@@ -50,8 +50,13 @@
 
 #ifdef __powerpc64__
 
+#ifdef __LITTLE_ENDIAN__
+#undef  IS_BIG_ENDIAN
+#define IS_LITTLE_ENDIAN    1
+#else
 #undef  IS_LITTLE_ENDIAN
 #define IS_BIG_ENDIAN    1
+#endif
 #define IS_64
 
 #define PR_BYTES_PER_BYTE   1
