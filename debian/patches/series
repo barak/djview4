@@ -1,2 +1,3 @@
 debian-changes
 aarch64_cpu_definitions.patch
+ppc64el.diff

@@ -1,3 +1,9 @@
+djview4 (4.9-4ubuntu2) trusty; urgency=medium
+
+  * Fix build on ppc64el.
+
+ -- Matthias Klose <doko@ubuntu.com>  Sun, 13 Apr 2014 18:41:40 +0000
+
 djview4 (4.9-4ubuntu1) trusty; urgency=low
 
   * Merge from Debian unstable.  Remaining changes:
