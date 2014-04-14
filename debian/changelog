@@ -1,3 +1,12 @@
+djview4 (4.9-4ubuntu1) trusty; urgency=low
+
+  * Merge from Debian unstable.  Remaining changes:
+    - debian/rules: Use dh_autotools-dev rather than dh-autoreconf, so
+      config/config.{sub,guess} actually get updated.
+    - nsdejavu/npsdk/prcpucfg.h: Add aarch64 CPU definitions.
+
+ -- William Grant <wgrant@ubuntu.com>  Mon, 28 Oct 2013 12:42:48 +1100
+
 djview4 (4.9-4) unstable; urgency=low
 
   * bump policy version (no changes needed)
@@ -6,6 +15,14 @@ djview4 (4.9-4) unstable; urgency=low
   * the upstream changelog is called NEWS
 
  -- Barak A. Pearlmutter <bap@debian.org>  Mon, 30 Sep 2013 12:17:34 +0100
+
+djview4 (4.9-3ubuntu1) saucy; urgency=low
+
+  * debian/rules: Use dh_autotools-dev rather than dh-autoreconf, so
+    config/config.{sub,guess} actually get updated.
+  * nsdejavu/npsdk/prcpucfg.h: Add aarch64 CPU definitions.
+
+ -- William Grant <wgrant@ubuntu.com>  Sat, 12 Oct 2013 20:10:34 +1100
 
 djview4 (4.9-3) unstable; urgency=low
 
