@@ -20,6 +20,10 @@ TARGET = djview
 CONFIG += qt thread warn_on 
 QT += network opengl
 
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += printsupport
+} 
+
 # -- find libraries
 CONFIG(autoconf) {
     # for use with autoconf

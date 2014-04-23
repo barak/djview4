@@ -133,8 +133,8 @@ AC_PROG_PKG_CONFIG([],[
   AC_MSG_ERROR([Cannot find required program pkg-config.])
 ])
 
-AC_PROGS_QT4([],[
-  AC_MSG_ERROR([Cannot find required Qt4 programs.])
+AC_PROGS_QT([],[
+  AC_MSG_ERROR([Cannot find required Qt programs.])
 ])
 
 AC_PATH_DDJVUAPI([],[
@@ -316,7 +316,7 @@ AUTO_FLAGS="-I.. $DDJVUAPI_CFLAGS $TIFF_CFLAGS"
 #          because qmake determines itself
 #          its optimization flags...
 
-# out-of-tree?
+# copy files for out-of-tree build
 if test -d src && test -r src/qdjvu.cpp ; then : ; else
   test -d src || mkdir src
   test -d npdjvu || mkdir npdjvu
@@ -328,7 +328,9 @@ if test -d src && test -r src/qdjvu.cpp ; then : ; else
       m=`basename $n`
       test -r $n && ( cmp -s $n npdjvu/$m || cp $n npdjvu/$m )
   done
-fi
+ fi
+
+# determine relative location of srcdir
 nsrcdir="$srcdir"
 case "$srcdir" in .*) nsrcdir="../$srcdir" ;; esac
 AUTO_FLAGS="-I$nsrcdir/src $AUTO_FLAGS"
@@ -355,23 +357,24 @@ if test -n "$QMAKESPEC" ; then
     QARG="-spec "'"'"$QMAKESPEC"'"'" $QARG"
 fi
 
-# run
+# config qmake command for djview
 AC_CONFIG_COMMANDS([qmake_src], [
-    echo "config.status: running $QMAKE_COMMAND1."
+    echo "config.status: running $QMAKE_COMMAND1"
     ( cd src ; eval "$QMAKE_COMMAND1" )
 ],[
     read QMAKE_COMMAND1 <<QMAKE_COMMAND_EOF
-$QMAKE $QARG VPATH="$nsrcdir/src"
+$QMAKE $QARG VPATH="$nsrcdir/src" djview.pro
 QMAKE_COMMAND_EOF
 ] )
 
+# config qmake command for npdjvu
 if test "$ac_npdjvu" != "no" ; then
 AC_CONFIG_COMMANDS([qmake_npdjvu], [
-    echo "config.status (npdjvu) running $QMAKE_COMMAND2."
+    echo "config.status (npdjvu) running $QMAKE_COMMAND2"
     ( cd npdjvu ; eval "$QMAKE_COMMAND2" )
 ],[
     read QMAKE_COMMAND2 <<QMAKE_COMMAND_EOF
-$QMAKE $QARG VPATH="$nsrcdir/src $nsrcdir/npdjvu"
+$QMAKE $QARG VPATH="$nsrcdir/src $nsrcdir/npdjvu" npdjvu.pro
 QMAKE_COMMAND_EOF
 ] )
 fi

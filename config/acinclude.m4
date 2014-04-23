@@ -301,7 +301,7 @@ dnl Sets output variables QMAKE, MOC, UIC, RCC, LUPDATE, LRELEASE
 dnl Prints an error message if QMAKE is not found or not suitable
 dnl ------------------------------------------------------------------
 
-AC_DEFUN([AC_PROGS_QT4],
+AC_DEFUN([AC_PROGS_QT],
 [
   AC_REQUIRE([AC_PATH_X])
   AC_REQUIRE([AC_PATH_XTRA])
@@ -318,7 +318,7 @@ AC_DEFUN([AC_PROGS_QT4],
   if test -n "QTDIR" && test -d "$QTDIR/include" ; then
     if test -d "$QTDIR/include/Qt" ; then :
     elif test -f "$QTDIR/include/qobject.h" ; then
-      AC_MSG_ERROR([We want Qt4 but your QTDIR variable points to a Qt3 install.
+      AC_MSG_ERROR([We want Qt4 or Qt5 but your QTDIR variable points to a Qt3 install.
 Please check variables QTDIR, QMAKE, QMAKESPEC, etc..
 Unsetting them is better than setting them wrong.])
     fi
@@ -327,10 +327,10 @@ Unsetting them is better than setting them wrong.])
     path=$QTDIR/bin:$PATH
   fi
   if test -z "$QMAKE" ; then
-    AC_PATH_PROGS([QMAKE], [qmake-qt4 qmake], [], [$path])
+    AC_PATH_PROGS([QMAKE], [qmake make-qt4 qmake-qt5], [], [$path])
   fi
   if test -z "$QMAKE" ; then
-    AC_MSG_ERROR([Cannot find the Qt4 program qmake. 
+    AC_MSG_ERROR([Cannot find the Qt program qmake. 
 Please define variable QMAKE and possibly QMAKESPEC.
 Defining QTDIR can help although it is deprecated.])
   fi
@@ -352,13 +352,18 @@ EOF
     rm -rf conftest.d
   else
     rm -rf conftest.d
-    AC_MSG_ERROR([Cannot successfully run Qt4 program qmake. 
+    AC_MSG_ERROR([Cannot successfully run Qt program qmake. 
 Please define variable QMAKE to a working qmake.
 If you define QMAKESPEC, make sure it is correct.])
   fi
   case "$QT_VERSION" in
     4.*)
       AC_MSG_RESULT([Program qmake reports Qt version $QT_VERSION.]) 
+      qtversion=qt4
+      ;;
+    5.*)
+      AC_MSG_RESULT([Program qmake reports Qt version $QT_VERSION. (experimental)]) 
+      qtversion=qt5
       ;;
     *)
       AC_MSG_ERROR([Qt version $QT_VERSION is insufficient.
@@ -386,7 +391,7 @@ Please define variable QMAKE to a suitable qmake.])
       MOC="$QTDIR/bin/moc"
       AC_MSG_RESULT([Defining MOC=$MOC])
     else
-      AC_PATH_PROGS([MOC], [moc-qt4 moc], [], [$path])
+      AC_PATH_PROGS([MOC], [moc-${qtversion-qt4} moc], [], [$path])
     fi
   fi
   if test -z "$UIC" ; then
@@ -397,17 +402,17 @@ Please define variable QMAKE to a suitable qmake.])
       UIC="$QTDIR/bin/uic"
       AC_MSG_RESULT([Defining UIC=$UIC])
     else
-      AC_PATH_PROGS([UIC], [uic-qt4 uic], [], [$path])
+      AC_PATH_PROGS([UIC], [uic-${qtversion-qt4} uic], [], [$path])
     fi
   fi
   if test -z "$RCC" ; then
-    AC_PATH_PROGS([RCC], [rcc-qt4 rcc], [], [$path])
+    AC_PATH_PROGS([RCC], [rcc-${qtversion-qt4} rcc], [], [$path])
   fi
   if test -z "$LUPDATE" ; then
-    AC_PATH_PROGS([LUPDATE], [lupdate-qt4 lupdate], [], [$path])
+    AC_PATH_PROGS([LUPDATE], [lupdate-${qtversion-qt4} lupdate], [], [$path])
   fi
   if test -z "$LRELEASE" ; then
-    AC_PATH_PROGS([LRELEASE], [lrelease-qt4 lrelease], [], [$path])
+    AC_PATH_PROGS([LRELEASE], [lrelease-${qtversion-qt4} lrelease], [], [$path])
   fi
   PATH=$path
 ])
