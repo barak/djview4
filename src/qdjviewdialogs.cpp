@@ -143,7 +143,11 @@ QDjViewErrorDialog::error(QString msg, QString, int)
   // Remove [1-nnnnn] prefix from djvulibre-3.5
   if (msg.startsWith("["))
     msg = msg.replace(QRegExp("^\\[\\d*-?\\d*\\]\\s*") , "");
+#if QT_VERSION >= 0x50000
+  msg = msg.toHtmlEscaped();
+#else
   msg = Qt::escape(msg);
+#endif
   // Ignore empty and duplicate messages
   if (msg.isEmpty()) return;
   if (!d->messages.isEmpty() && msg == d->messages[0]) return;
@@ -212,7 +216,12 @@ QDjViewAuthDialog::pass() const
 void 
 QDjViewAuthDialog::setInfo(QString why)
 {
-  QString txt = QString("<html>%1</html>").arg(Qt::escape(why));
+#if QT_VERSION >= 0x50000
+  QString ewhy = why.toHtmlEscaped();
+#else
+  QString ewhy = Qt::escape(why);
+#endif
+  QString txt = QString("<html>%1</html>").arg(ewhy);
   d->ui.whyLabel->setText(txt);
 }
 
@@ -655,13 +664,21 @@ QDjViewMetaDialog::QDjViewMetaDialog(QDjView *parent)
   d->ui.docTable->setHorizontalHeaderLabels(labels);
   d->ui.docTable->horizontalHeader()->setHighlightSections(false);
   d->ui.docTable->horizontalHeader()->setStretchLastSection(true);
+#if QT_VERSION >= 0x50000
+  d->ui.docTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+#else
   d->ui.docTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+#endif
   d->ui.docTable->verticalHeader()->hide();
   d->ui.pageTable->setColumnCount(2);
   d->ui.pageTable->setHorizontalHeaderLabels(labels);
   d->ui.pageTable->horizontalHeader()->setHighlightSections(false);
   d->ui.pageTable->horizontalHeader()->setStretchLastSection(true);
+#if QT_VERSION >= 0x50000
+  d->ui.pageTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+#else
   d->ui.pageTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+#endif
   d->ui.pageTable->verticalHeader()->hide();
   d->ui.pageCombo->setEnabled(false);
   d->ui.jumpButton->setEnabled(false);

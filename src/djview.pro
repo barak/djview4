@@ -20,9 +20,11 @@ TARGET = djview
 CONFIG += qt thread warn_on 
 QT += network opengl
 
+# -- QT5 modules
 greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += printsupport
+    QT += widgets printsupport
 } 
+
 
 # -- find libraries
 CONFIG(autoconf) {

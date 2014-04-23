@@ -58,6 +58,9 @@
 #include <QTreeWidget>
 #include <QVariant>
 #include <QVBoxLayout>
+#if QT_VERSION >= 0x50000
+# include <QUrlQuery>
+#endif
 
 #include <libdjvu/ddjvuapi.h>
 #include <libdjvu/miniexp.h>
@@ -187,11 +190,16 @@ QDjViewOutline::pageNumber(const char *link)
     return djview->pageNumber(QString::fromUtf8(link+1));
   if (link == 0 || link[0] != '?')
     return -1;
-  QUrl url = QUrl::fromEncoded(QByteArray("http://f/f") + link);
-  if (url.hasQueryItem("page"))
-    return djview->pageNumber(url.queryItemValue("page"));
-  else if (url.hasQueryItem("pageno"))
-    return djview->pageNumber("$" + url.queryItemValue("pageno"));
+  QByteArray burl = QByteArray("http://f/f") + link;
+#if QT_VERSION >= 0x50000
+  QUrlQuery qurl(QUrl::fromEncoded(burl));
+#else
+  QUrl qurl = QUrl::fromEncoded(burl);
+#endif
+  if (qurl.hasQueryItem("page"))
+    return djview->pageNumber(qurl.queryItemValue("page"));
+  else if (qurl.hasQueryItem("pageno"))
+    return djview->pageNumber("$" + qurl.queryItemValue("pageno"));
   return -1;
 }
 
@@ -1424,7 +1432,7 @@ QDjViewFind::Model::animTimeout()
 {
   if (animButton && !animIcon.isNull())
     {
-      if (animButton->icon().serialNumber() == findIcon.serialNumber())
+      if (animButton->icon().cacheKey() == findIcon.cacheKey())
         animButton->setIcon(animIcon);
       else
         animButton->setIcon(findIcon);

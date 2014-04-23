@@ -139,7 +139,7 @@ struct QDjViewPlugin::Instance
   QPointer<QDjViewPlugin::Document> document;
   QPointer<QWidget>                 shell;
   QPointer<QDjView>                 djview;
-  XID                               container;
+  WId                               container;
   QStringList                    args;
   QByteArray                     saved;
   int                            savedformat;
@@ -417,7 +417,6 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
       QWidget *w = static_cast<QWidget*>(o);
       switch( e->type() )
         {
-#ifdef Q_WS_X11
           // Try to fix transient windows properties.
           // - this does not work too well...
         case QEvent::Show:
@@ -425,10 +424,11 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
             QApplication::postEvent(w, new QEvent(QEvent::User));
           break;
         case QEvent::User:
+#ifdef Q_WS_X11
           if (w->windowFlags() & Qt::Window)
             x11SetTransientForHint(w);
-          break;
 #endif
+          break;
         default:
           break;
         }
@@ -854,7 +854,7 @@ QDjViewPlugin::cmdAttachWindow()
   Instance *instance = (Instance*) readPointer(pipeRead);
   QByteArray display = readRawString(pipeRead);
   QString protocol = readString(pipeRead);
-  XID window = (XID)readInteger(pipeRead);
+  WId window = (WId)readInteger(pipeRead);
   readInteger(pipeRead);   // colormap
   readInteger(pipeRead);   // visualid
   int width = readInteger(pipeRead);

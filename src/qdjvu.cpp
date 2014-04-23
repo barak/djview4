@@ -41,7 +41,9 @@
 #include <QTimer>
 #include <QUrl>
 #include <QVector>
-
+#if QT_VERSION >= 0x50000
+# include <QUrlQuery>
+#endif
 #if DDJVUAPI_VERSION < 17
 # error "DDJVUAPI_VERSION>=17 is required !"
 #endif
@@ -494,7 +496,12 @@ QDjVuDocument::setUrl(QDjVuContext *ctx, QUrl url)
     cache = false;
   bool djvuopts = false;
   QPair<QString,QString> pair;
-  foreach(pair, url.queryItems())
+#if QT_VERSION >= 0x50000
+  QList<QPair<QString,QString> > qitems = QUrlQuery(url).queryItems();
+#else
+  QList<QPair<QString,QString> > qitems = url.queryItems();
+#endif
+  foreach(pair, qitems)
     {
       if (pair.first.toLower() == "djvuopts")
         djvuopts = true;
@@ -797,7 +804,7 @@ QDjVuPage::handle(ddjvu_message_t *msg)
       emit pageinfo();
       return true;
     case DDJVU_CHUNK:
-      emit chunk(QString::fromAscii(msg->m_chunk.chunkid));
+      emit chunk(QString::fromLatin1(msg->m_chunk.chunkid));
       return true;
     case DDJVU_RELAYOUT:
       emit relayout();

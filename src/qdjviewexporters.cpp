@@ -753,7 +753,11 @@ QDjViewPSExporter::loadPrintSetup(QPrinter *printer, QPrintDialog *dialog)
   copies = 1;
   collate = true;
   lastfirst = false;
-#if QT_VERSION >= 0x40400
+#if QT_VERSION >= 0x50000
+  QSpinBox* lcop = dialog->findChild<QSpinBox*>("copies");
+  QCheckBox* lcol = dialog->findChild<QCheckBox*>("collate");
+  QCheckBox* lplf = dialog->findChild<QCheckBox*>("reverse");
+#elif QT_VERSION >= 0x40400
   QSpinBox* lcop = qFindChild<QSpinBox*>(dialog, "copies");
   QCheckBox* lcol = qFindChild<QCheckBox*>(dialog, "collate");
   QCheckBox* lplf = qFindChild<QCheckBox*>(dialog, "reverse");
@@ -2134,7 +2138,7 @@ QDjViewPrnExporter::save(QString fileName)
   printer = new QPrinter(QPrinter::HighResolution);
   printer->setOutputFileName(fileName);
 #if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN) 
-  printer->setOutputFormat(QPrinter::PostScriptFormat);
+  printer->setOutputFormat(QPrinter::PdfFormat);
 #endif
   return start();
 }
@@ -2225,7 +2229,11 @@ QDjViewPrnExporter::doPage()
     }
   else if (imageFormat == QImage::Format_Indexed8)
     {
+#if QT_VERSION >= 0x40600
+      img.setColorCount(256);
+#else
       img.setNumColors(256);
+#endif
       for (int i=0; i<256; i++)
         img.setColor(i, qRgb(i,i,i));
       fmt = ddjvu_format_create(DDJVU_FORMAT_GREY8, 0, 0);

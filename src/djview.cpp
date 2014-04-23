@@ -49,7 +49,6 @@
 #include <QStringList>
 #include <QTranslator>
 
-
 #ifdef QT_NO_DEBUG
 static bool verbose = false;
 #else
@@ -58,7 +57,7 @@ static bool verbose = true;
 static bool appReady = false;
 
 static void 
-qtMessageHandler(QtMsgType type, const char *msg)
+qt4MessageHandler(QtMsgType type, const char *msg)
 {
   switch (type) 
     {
@@ -78,6 +77,15 @@ qtMessageHandler(QtMsgType type, const char *msg)
       break;
     }
 }
+
+#if QT_VERSION >= 0x50000
+static void 
+qt5MessageHandler(QtMsgType type, const QMessageLogContext&, const QString &msg)
+{
+  QByteArray bmsg = msg.toLocal8Bit();
+  qt4MessageHandler(type, bmsg.data());
+}
+#endif
 
 
 static void
@@ -101,7 +109,11 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
     context(argv[0])
 {
   // Message handler
-  qInstallMsgHandler(qtMessageHandler);
+#if QT_VERSION >= 0x50000
+  qInstallMessageHandler(qt5MessageHandler);
+#else
+  qInstallMsgHandler(qt4MessageHandler);
+#endif
   
   // Locale should not mess with printf
   // We do this again because old libdjvulibre
@@ -388,7 +400,11 @@ main(int argc, char *argv[])
   QApplication::setApplicationName(DJVIEW_APP);
   
   // Message handler
-  qInstallMsgHandler(qtMessageHandler);
+#if QT_VERSION >= 0x50000
+  qInstallMessageHandler(qt5MessageHandler);
+#else
+  qInstallMsgHandler(qt4MessageHandler);
+#endif
 
   // Set verbose flag as early as possible
 #ifdef Q_OS_UNIX

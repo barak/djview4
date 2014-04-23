@@ -217,7 +217,7 @@ cover_region(QRegion region, const QRect &brect)
   // dilate region
   QRegion dilated;
   for (int i=0; i<rects.size(); i++)
-    dilated |= rects[i].adjusted(-8, -8, 8, 8).intersect(brect);
+    dilated |= rects[i].adjusted(-8, -8, 8, 8).intersected(brect);
   rects = dilated.rects();
   // find nice cover
   QList<int>   myarea;
@@ -230,7 +230,7 @@ cover_region(QRegion region, const QRect &brect)
       while (--j >= 0)
         {
           int na = myarea[j] + a;
-          QRect nr = myrect[j].unite(r);
+          QRect nr = myrect[j].united(r);
           if (nr.width() * nr.height() < 2 * na )
             {
               myarea[j] = na;
@@ -3413,7 +3413,7 @@ MapArea::update(QWidget *w, QRectMapper &m, QPoint offset)
     {
       int bw2 = (bw / 2) + 1;
       QRegion region = rect.adjusted(-bw2-1, -bw2-1, bw2+1, bw2+1);
-      region.subtract(rect.adjusted(bw+1, bw+1, -bw-1, -bw-1));
+      region = region.subtracted(rect.adjusted(bw+1, bw+1, -bw-1, -bw-1));
       w->update(region);
     }  
 }
@@ -3914,7 +3914,7 @@ QDjVuWidget::getTextForRect(const QRect &vtarget)
       miniexp_t q = p->hiddenText;
       if (p->initialRot < 0 || q == miniexp_nil || q == miniexp_dummy)
         continue;
-      QRect pagerect = target.intersect(p->rect);
+      QRect pagerect = target.intersected(p->rect);
       if (!p->hiddenText || pagerect.isEmpty())
         { separator = 0; continue; }
       // map rectangle
@@ -4346,7 +4346,7 @@ QDjVuPrivate::paintPage(QPainter &paint, Page *p, const QRegion &region)
   for (int i=0; i<pixelCache.size(); i++)
     {
       QRect rect = pixelCache[i].rect.translated(deskToView);
-      if (region.intersect(rect).isEmpty()) continue;
+      if (! region.intersects(rect)) continue;
       cachelist << &pixelCache[i];
       remainder -= rect;
     }
@@ -4357,8 +4357,8 @@ QDjVuPrivate::paintPage(QPainter &paint, Page *p, const QRegion &region)
   for (int i=cachelist.size()-1; i>=0; i--)
     {
       QRect r = cachelist[i]->rect.translated(deskToView);
-      r = region.intersect(r).boundingRect();
-      if (shown.intersect(r) == r)
+      r = region.intersected(r).boundingRect();
+      if (shown.intersected(r) == r)
         cachelist.removeAt(i);
       shown += r;
     }
@@ -4377,7 +4377,7 @@ QDjVuPrivate::paintPage(QPainter &paint, Page *p, const QRegion &region)
       paintMapAreas(img, p, r, false);
 #endif
       r.translate(deskToView);
-      QRegion dr = region.intersect(r) - displayed;
+      QRegion dr = region.intersected(r) - displayed;
       if (dr.isEmpty()) continue;
       QRect d = dr.boundingRect();
       displayed += d;
@@ -4425,7 +4425,7 @@ QDjVuPrivate::paintPage(QPainter &paint, Page *p, const QRegion &region)
       addToPixelCache(r, img);
       paintMapAreas(img, p, r, false);
       r.translate(deskToView);
-      QRegion dr = region.intersect(r) - displayed;
+      QRegion dr = region.intersected(r) - displayed;
       if (dr.isEmpty()) continue;
       QRect d = dr.boundingRect();
       displayed += d;
@@ -5741,7 +5741,7 @@ QDjVuWidget::readNext(void)
     {
       Page *p = priv->pageMap[pos.pageNo];
       QRect nv = priv->visibleRect.adjusted(bs,bs,-bs,-bs);
-      QRect v = priv->visibleRect.intersect(p->rect);
+      QRect v = priv->visibleRect.intersected(p->rect);
       if (v.bottom() < p->rect.bottom())
         {
           // scroll in page
@@ -5784,7 +5784,7 @@ QDjVuWidget::readPrev(void)
     {
       Page *p = priv->pageMap[pos.pageNo];
       QRect nv = priv->visibleRect.adjusted(bs,bs,-bs,-bs);
-      QRect v = priv->visibleRect.intersect(p->rect);
+      QRect v = priv->visibleRect.intersected(p->rect);
       if (v.top() > p->rect.top())
         {
           // scroll in page

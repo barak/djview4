@@ -31,8 +31,6 @@
 #include <QStringList>
 #include <QUrl>
 
-#ifdef Q_WS_X11
-
 #include "qdjvu.h"
 #include "qdjview.h"
 #include "djview.h"
@@ -123,8 +121,6 @@ private:
   int        pipeRequest;
 };
 
-
-#endif // Q_WS_X11
 
 #endif // QDJVIEWPLUGIN_H
 
