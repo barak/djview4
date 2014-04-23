@@ -118,7 +118,6 @@ clean-subdirs: FORCE
 
 distclean: distclean-subdirs FORCE
 	-${RM} 2>/dev/null src/*.qm src/djview
-	-${RM} 2>/dev/null src/djview.pro npdjvu/npdjvu.pro
 	-${RM} 2>/dev/null Makefile config.log config.status config.h libtool
 	-${RM} 2>/dev/null -r autom4te.cache
 	@echo "Done."
