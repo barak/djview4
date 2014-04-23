@@ -49,10 +49,8 @@ class QDjViewApplication : public QApplication
   bool loadTranslators(QStringList langs, QTranslator *dt, QTranslator *qt);
 protected:
   bool event(QEvent *ev);
-#ifdef Q_WS_X11
-  void commitData(QSessionManager &sm);
-  void saveState(QSessionManager &sm);
-#endif
+protected slots:
+  void saveSessionState(QSessionManager &sm);
 private:
   QStringList getTranslationLangs();
   QStringList getTranslationDirs();

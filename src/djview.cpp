@@ -118,6 +118,10 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   extern void qt_mac_set_native_menubar(bool);
   qt_mac_set_native_menubar(false);
 #endif
+
+  // Wire session management signals
+  connect(this, SIGNAL(saveStateRequest(QSessionManager&)),
+          this, SLOT(saveSessionState(QSessionManager&)) );
   
   // Install translators
   QStringList langs = getTranslationLangs();
@@ -300,16 +304,8 @@ QDjViewApplication::event(QEvent *ev)
   return QApplication::event(ev);
 }
 
-
-#ifdef Q_WS_X11
-
 void 
-QDjViewApplication::commitData(QSessionManager &)
-{
-}
-
-void 
-QDjViewApplication::saveState(QSessionManager &sm)
+QDjViewApplication::saveSessionState(QSessionManager &sm)
 {
   int n = 0;
   QSettings s;
@@ -345,8 +341,6 @@ QDjViewApplication::saveState(QSessionManager &sm)
       s.sync();
     }
 }
-
-#endif
 
 
 #ifndef NPDJVU
@@ -412,8 +406,8 @@ main(int argc, char *argv[])
     }
   
   // Color specification 
-  // (cause XRender errors under many versions of Qt/X11)
-#ifndef Q_WS_X11
+  // (cause XRender errors under many versions of Qt4/X11)
+#ifndef Q_WS_X11 
   QApplication::setColorSpec(QApplication::ManyColor);
 #endif
   
@@ -428,7 +422,6 @@ main(int argc, char *argv[])
 #endif
   
   // Discard session
-#ifdef Q_WS_X11
   if (argc==3 && !strcmp(argv[1],"-discard"))
     {
       QSettings s;
@@ -436,13 +429,11 @@ main(int argc, char *argv[])
       s.sync();
       return 0;
     }
-#endif
   
   // Create application
   QDjViewApplication app(argc, argv);
 
   // Restore session
-#ifdef Q_WS_X11
   if (app.isSessionRestored())
     {
       QSettings s;
@@ -462,7 +453,6 @@ main(int argc, char *argv[])
           return app.exec();
         }
     }
-#endif
   
   // Process command line
   QStringList args;
