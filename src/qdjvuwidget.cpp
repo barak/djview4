@@ -5459,7 +5459,6 @@ QDjVuLens::redisplay(void)
 void 
 QDjVuLens::paintEvent(QPaintEvent *event)
 {
-  qWarning("paintEvent");
   // Copied from main painting code but simpler
   // TODO: maybe hyperlinks.
   QPainter paint(this);
