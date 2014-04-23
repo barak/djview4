@@ -4242,7 +4242,7 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
               QFont font = paint.font();
               font.setPixelSize(128);
               QFontMetrics metrics(font);
-#if QT_VERSION >= 0x40300 && ! defined(Q_WS_WIN)
+#if QT_VERSION >= 0x40300 && !defined(Q_OS_WIN)
               QRect brect = metrics.tightBoundingRect(text);
 #else
               QRect brect = metrics.boundingRect(text);
@@ -5436,7 +5436,7 @@ QDjVuLens::moveEvent(QMoveEvent *event)
   refocus();
   QPoint delta = event->pos() - event->oldPos();
   QRect r = rect().adjusted(1,1,-1,-1);
-#ifdef Q_WS_MAC
+#ifdef Q_OS_DARWIN
   repaint(r);  // scroll broken ?
 #else
   scroll(-mag*delta.x(), -mag*delta.y(), r);

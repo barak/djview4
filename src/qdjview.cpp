@@ -311,7 +311,7 @@ static inline QAction *
 operator<<(QAction *action, QKeySequence shortcut)
 {
   QList<QKeySequence> shortcuts = action->shortcuts();
-# ifdef Q_WS_MAC
+# ifdef Q_OS_DARWIN
   shortcuts.append(shortcut);
 # else
   shortcuts.prepend(shortcut);
@@ -576,7 +576,7 @@ QDjView::createActions()
     << Trigger(this, SLOT(performInformation()));
 
   actionMetadata = makeAction(tr("&Metadata...", "Edit|"))
-#ifndef Q_WS_MAC
+#ifndef Q_OS_DARWIN
     << QKeySequence(tr("Ctrl+M", "Edit|Metadata"))
 #endif
     << tr("Show the document and page meta data.")
@@ -585,7 +585,7 @@ QDjView::createActions()
   actionWhatsThis = QWhatsThis::createAction(this);
 
   actionAbout = makeAction(tr("&About DjView..."))
-#ifndef Q_WS_MAC
+#ifndef Q_OS_DARWIN
     << QIcon(":/images/djview.png")
 #endif
     << tr("Show information about this program.")
@@ -678,7 +678,7 @@ QDjView::createActions()
     << Trigger(this, SLOT(updateActionsLater()));
   
   actionLayoutCoverPage = makeAction(tr("Co&ver Page", "Layout|"), false)
-#ifdef Q_WS_MAC
+#ifdef Q_OS_DARWIN
     << QIcon(":/images/icon_coverpage.png")
 #endif
     << QKeySequence(tr("Ctrl+F6", "Layout|CoverPage"))
@@ -688,7 +688,7 @@ QDjView::createActions()
     << Trigger(this, SLOT(updateActionsLater()));
   
   actionLayoutRightToLeft = makeAction(tr("&Right to Left", "Layout|"), false)
-#ifdef Q_WS_MAC
+#ifdef Q_OS_DARWIN
     << QIcon(":/images/icon_righttoleft.png")
 #endif
     << QKeySequence(tr("Ctrl+Shift+F6", "Layout|RightToLeft"))
@@ -880,11 +880,6 @@ QDjView::updateActions()
   // Rebuild toolbar if necessary
   if (tools != toolsCached)
     fillToolBar(toolBar);
-#ifdef Q_WS_MAC_WITH_UNIFIED_TITLE_AND_TOOLBAR
-  if (viewerMode == STANDALONE && !isFullScreen())
-    setUnifiedTitleAndToolBarOnMac((! toolBar->isHidden()) && 
-                                   (toolBarArea(toolBar) & Qt::TopToolBarArea) );
-#endif
   
   // Enable all actions
   foreach(QObject *object, children())
@@ -1038,7 +1033,7 @@ QDjView::createWhatsThis()
   };
   
   QString mc, ms, ml;
-#ifdef Q_WS_MAC
+#ifdef Q_OS_DARWIN
   mc = tr("Control Left Mouse Button");
 #else
   mc = tr("Right Mouse Button");
@@ -2236,7 +2231,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   // Main window setup
   setWindowTitle(tr("DjView"));
   setWindowIcon(QIcon(":/images/djview.png"));
-#ifndef Q_WS_MAC
+#ifndef Q_OS_DARWIN
   if (QApplication::windowIcon().isNull())
     QApplication::setWindowIcon(windowIcon());
 #endif
@@ -3462,7 +3457,7 @@ QDjView::startBrowser(QUrl url)
 {
   // Determine browsers to try
   QStringList browsers;
-#ifdef Q_WS_MAC
+#ifdef Q_OS_DARWIN
   browsers << "open";
 #endif
 #ifdef Q_OS_WIN32

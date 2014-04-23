@@ -2133,7 +2133,7 @@ QDjViewPrnExporter::save(QString fileName)
   this->fileName = fileName;
   printer = new QPrinter(QPrinter::HighResolution);
   printer->setOutputFileName(fileName);
-#if defined(Q_OS_UNIX) && !defined(Q_WS_MAC) 
+#if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN) 
   printer->setOutputFormat(QPrinter::PostScriptFormat);
 #endif
   return start();

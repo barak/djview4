@@ -192,7 +192,7 @@ QString
 QDjViewPrefs::modifiersToString(Qt::KeyboardModifiers m)
 {
   QStringList l;
-#ifdef Q_WS_MAC
+#ifdef Q_OS_DARWIN
   if (m & Qt::MetaModifier)
     l << "Control";
   if (m & Qt::AltModifier)
@@ -224,7 +224,7 @@ QDjViewPrefs::stringToModifiers(QString s)
       key = key.toLower();
       if (key == "shift")
         m |= Qt::ShiftModifier;
-#ifdef Q_WS_MAC
+#ifdef Q_OS_DARWIN
       else if (key == "control")
         m |= Qt::MetaModifier;
       else if (key == "command")
@@ -673,7 +673,7 @@ QDjViewModifiersComboBox::QDjViewModifiersComboBox(QWidget *parent)
   keynames << "Shift";
   keynames << "Control";
   keynames << "Alt";
-#ifdef Q_WS_MAC
+#ifdef Q_OS_DARWIN
   keynames << "Command";
 #else
   keynames << "Meta";

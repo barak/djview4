@@ -1614,13 +1614,9 @@ QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
     d->printer->setPageOrder(QPrinter::FirstPageFirst);
   
   // Create exporter
-#ifdef Q_WS_WIN
-  // ... maybe do windows specific things here.
+#ifdef Q_OS_WIN
   if (! d->exporter)
     d->exporter = QDjViewExporter::create(this, d->djview, "PRN");
-#endif
-#ifdef Q_WS_MAC
-  // ... maybe do mac specific things here.
 #endif
   if (! d->exporter)
     d->exporter = QDjViewExporter::create(this, d->djview, "PS");

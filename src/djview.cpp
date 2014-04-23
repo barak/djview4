@@ -114,7 +114,7 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
 #endif
   
   // Mac/Cocoa bug workaround
-#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA) && QT_VERSION<0x40503
+#if defined(Q_OS_DARWIN) && defined(QT_MAC_USE_COCOA) && QT_VERSION<0x40503
   extern void qt_mac_set_native_menubar(bool);
   qt_mac_set_native_menubar(false);
 #endif
@@ -173,7 +173,7 @@ QDjViewApplication::getTranslationDirs()
       addDirectory(dirs, datadir + "/djvu/djview4");
       addDirectory(dirs, datadir + "/djview4");
 #endif
-#ifdef Q_WS_MAC
+#ifdef Q_OS_DARWIN
       addDirectory(dirs, dirPath + "/Resources/$LANG.lproj");
       addDirectory(dirs, dirPath + "/../Resources/$LANG.lproj");
       addDirectory(dirs, dirPath + "/../../Resources/$LANG.lproj");
@@ -201,7 +201,7 @@ addLang(QStringList &langs, QString s)
       s = s.replace(QChar('-'), QChar('_'));
       if (! langs.contains(s))
         langs << s;
-#ifdef Q_WS_MAC
+#ifdef Q_OS_DARWIN
       if (s == "zh_Hans" && ! langs.contains("zh_CN"))
         langs << "zh_CN";
       if (s == "zh_Hant" && ! langs.contains("zh_TW"))
@@ -225,7 +225,7 @@ QDjViewApplication::getTranslationLangs()
       addLang(langs, QString::fromLocal8Bit(::setlocale(LC_MESSAGES, 0)));
 #endif
       addLang(langs, QString::fromLocal8Bit(::getenv("LANG")));
-#ifdef Q_WS_MAC
+#ifdef Q_OS_DARWIN
       QSettings g(".", "globalPreferences");
       foreach (QString lang, g.value("AppleLanguages").toStringList())
         addLang(langs, lang);
