@@ -185,7 +185,7 @@ if test "$ac_nsdejavu" != no ; then
     fi
 fi
 
-if test "$ac_nsdejavu" != no ; then
+if test "$ac_nsdejavu" != no && test "$qtversion" == "qt4" ; then
     ac_qt_x11=no
     AC_LANG_PUSH(C++)
     saved_CXXFLAGS=$CXXFLAGS

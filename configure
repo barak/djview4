@@ -17647,7 +17647,7 @@ $as_echo "$as_me: WARNING: Disabling plugin compilation (need Xt and/or Glib2.)"
     fi
 fi
 
-if test "$ac_nsdejavu" != no ; then
+if test "$ac_nsdejavu" != no && test "$qtversion" == "qt4" ; then
     ac_qt_x11=no
     ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
