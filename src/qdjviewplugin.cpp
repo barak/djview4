@@ -36,6 +36,14 @@
 #include <QString>
 #include <QTimer>
 #include <QUrl>
+#include <QWidget>
+#if QT_VERSION >= 0x50000
+# include <QAbstractNativeEventFilter>
+# include <QWindow>
+# if QT_X11EXTRAS_LIB
+#  include <QX11Info>
+# endif
+#endif
 
 #include "qdjvu.h"
 #include "qdjview.h"
@@ -53,27 +61,30 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#ifdef Q_WS_X11
-# ifndef X_DISPLAY_MISSING
-#  include <X11/Xlib.h>
-#  include <X11/Xutil.h>
-#  include <X11/Xatom.h>
-#  undef FocusOut
-#  undef FocusIn
-#  undef KeyPress
-#  undef KeyRelease
-#  undef None
-#  undef RevertToParent
-#  undef GrayScale
-#  undef CursorShape
-#  define HAVE_X11 1
+#if QT_VERSION >= 0x50000
+# define HAVE_QT5EMBED 1
+#else
+# ifdef Q_WS_X11
+#  ifndef X_DISPLAY_MISSING
+#   include <X11/Xlib.h>
+#   include <X11/Xutil.h>
+#   include <X11/Xatom.h>
+#   undef FocusOut
+#   undef FocusIn
+#   undef KeyPress
+#   undef KeyRelease
+#   undef None
+#   undef RevertToParent
+#   undef GrayScale
+#   undef CursorShape
+#   define HAVE_XLIB 1
+#  endif
 # endif
-#endif
-
-#ifdef Q_WS_X11
-# include <QX11Info>
-# include <QX11EmbedWidget>
-# define HAVE_QX11EMBED 1
+# ifdef Q_WS_X11
+#  include <QX11Info>
+#  include <QX11EmbedWidget>
+#  define HAVE_QX11EMBED 1
+# endif
 #endif
 
 
@@ -94,13 +105,23 @@ public:
 };
 
 
-class QDjViewPlugin::Forwarder : public QObject
+class QDjViewPlugin::Forwarder 
+#if HAVE_QT5EMBED
+  : public QObject, public QAbstractNativeEventFilter
+#else
+  : public QObject
+#endif
 {
   Q_OBJECT
 public:
   QDjViewPlugin * const dispatcher;
   Forwarder(QDjViewPlugin *dispatcher);
+#if HAVE_XLIB
   virtual bool eventFilter(QObject*, QEvent*);
+#endif
+#if HAVE_QT5EMBED
+  virtual bool nativeEventFilter(const QByteArray&, void*, long*);
+#endif
 public slots:
   void containerClosed();
   void showStatus(QString message);
@@ -159,11 +180,10 @@ struct QDjViewPlugin::Instance
 // FIXING TRANSIENT WINDOW PROPERTIES
 // ========================================
 
-#if HAVE_X11
+#if HAVE_XLIB
 
 static Atom wm_state;
 static Atom wm_client_leader;
-
 
 static Window 
 x11ToplevelWindow(Display *dpy, Window start)
@@ -327,6 +347,11 @@ QDjViewPlugin::Forwarder::containerClosed()
   Instance *instance = dispatcher->findInstance(shell);
   if (instance && dispatcher->xembedFlag)
     instance->destroy();
+#elif HAVE_QT5EMBED
+  QDjView *shell = qobject_cast<QDjView*>(sender());
+  Instance *instance = dispatcher->findInstance(shell);
+  if (instance && dispatcher->xembedFlag)
+    instance->destroy();
 #endif
 }
 
@@ -390,7 +415,54 @@ QDjViewPlugin::Forwarder::continueExec()
 }
 
 
-#if HAVE_X11
+#if HAVE_QT5EMBED
+# if QT_X11EXTRAS_LIB
+extern "C" void xcb_set_input_focus(xcb_connection_t*,quint8,quint32,quint32);
+# endif
+
+bool 
+QDjViewPlugin::Forwarder::nativeEventFilter(const QByteArray &type, void *msg, long*)
+{
+  if (type == "xcb_generic_event_t") 
+    {
+      const quint8 XCB_BUTTON_PRESS = 4;
+      struct xcb_button_press_event_t { // see xcb headers
+        quint8   response_type, detail; 
+        quint16  sequence;
+        quint32  time;
+        quint32  root, event, child;
+        qint16   root_x, root_y, event_x, event_y;
+        quint16  state;
+        quint8   same_screen, pad0;
+      };
+      xcb_button_press_event_t *ev = static_cast<xcb_button_press_event_t*>(msg);
+      if (ev && ev->response_type == XCB_BUTTON_PRESS)
+        {
+          QWidget *w = QWidget::find(ev->event);
+          if (w && w->window()->objectName() == "djvu_shell")
+            {
+              // broken
+#if QT_X11EXTRAS_LIB
+              if (QX11Info::isPlatformX11())
+                {
+                  //qWarning("xcb_set_input_focus");
+                  //xcb_set_input_focus(QX11Info::connection(), 2, 
+                  //                    w->window()->winId(), 
+                  //                    QX11Info::appTime());
+                }
+#else
+              QApplication *app = (QApplication*)QCoreApplication::instance();
+              app->setActiveWindow(w->window());
+#endif
+            }
+        }
+    }
+  return false;
+}
+#endif
+
+
+#if HAVE_XLIB
 static bool x11EventFilter(void *message, long *)
 {
   // We define a low level handler because we need to make
@@ -409,6 +481,7 @@ static bool x11EventFilter(void *message, long *)
 }
 #endif
 
+#if HAVE_XLIB
 bool 
 QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
 {
@@ -424,10 +497,8 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
             QApplication::postEvent(w, new QEvent(QEvent::User));
           break;
         case QEvent::User:
-#ifdef Q_WS_X11
           if (w->windowFlags() & Qt::Window)
             x11SetTransientForHint(w);
-#endif
           break;
         default:
           break;
@@ -436,6 +507,7 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
   // Keep processing
   return false;
 }
+#endif
 
 
 
@@ -448,8 +520,10 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
 QDjViewPlugin::Instance::~Instance()
 {
   destroy();
-  delete shell;
-  delete djview;
+  if (shell && shell != djview)
+    delete shell;
+  if (djview)
+    delete djview;
   if (document)
     document->deref();
   document = 0;
@@ -491,7 +565,13 @@ QDjViewPlugin::Instance::destroy()
     }
   if (shell)
     {
-#if HAVE_X11
+#if HAVE_QT5EMBED
+      QWindow *window = shell->windowHandle();
+      if (window)
+        window->setVisible(false);
+      if (window)
+        window->setParent(0);
+#elif HAVE_XLIB
       Display *dpy = QX11Info::display();
       XUnmapWindow(dpy, shell->winId());  
       XReparentWindow(dpy, shell->winId(), QX11Info::appRootWindow(), 0,0);
@@ -871,7 +951,7 @@ QDjViewPlugin::cmdAttachWindow()
     {
       argc = 0;
       argv[argc++] = progname;
-#if HAVE_X11
+#if HAVE_XLIB
       Display *dpy = XOpenDisplay(display);
       if (!dpy)
         {
@@ -884,14 +964,18 @@ QDjViewPlugin::cmdAttachWindow()
 #endif
       application = new QDjViewApplication(argc, const_cast<char**>(argv));
       application->setQuitOnLastWindowClosed(false);
-#if HAVE_X11
+#if HAVE_XLIB
       application->setEventFilter(x11EventFilter);
       XCloseDisplay(dpy);
 #endif
       argc = 1;
       context = application->djvuContext();
       forwarder = new Forwarder(this);
+#if HAVE_QT5EMBED
+      application->installNativeEventFilter(forwarder);
+#elif HAVE_XLIB
       application->installEventFilter(forwarder);
+#endif
       QObject::connect(application, SIGNAL(lastWindowClosed()), 
                        forwarder, SLOT(lastViewerClosed()));
       notifier = new QSocketNotifier(pipeRead, QSocketNotifier::Read); 
@@ -902,7 +986,7 @@ QDjViewPlugin::cmdAttachWindow()
       timer->start(5*60*1000);
       QObject::connect(timer, SIGNAL(timeout()), 
                        forwarder, SLOT(quit()));
-#if HAVE_QX11EMBED
+#if HAVE_QX11EMBED || HAVE_QT5EMBED
       if (protocol.startsWith("XEMBED"))
         xembedFlag = true;
 #endif
@@ -913,7 +997,21 @@ QDjViewPlugin::cmdAttachWindow()
   QDjView *djview = instance->djview;
   if (! shell)
     {
-#if HAVE_QX11EMBED
+#if HAVE_QT5EMBED
+      if (xembedFlag)
+        {
+          djview = new QDjView(*context, instance->viewerMode, 0);
+          djview->setAttribute(Qt::WA_NativeWindow, true);
+          shell = djview;
+          QObject::connect(shell, SIGNAL(destroyed()),
+                           forwarder, SLOT(containerClosed()) );
+          shell->setObjectName("djvu_shell");
+          shell->setGeometry(0, 0, width, height);
+          QWindow *dwindow = djview->windowHandle();
+          dwindow->setParent(QWindow::fromWinId(window));
+        }
+      else
+#elif HAVE_QX11EMBED
       if (xembedFlag)
         {
           QX11EmbedWidget *embed = new QX11EmbedWidget();
@@ -922,6 +1020,12 @@ QDjViewPlugin::cmdAttachWindow()
                            forwarder, SLOT(containerClosed()) );
           shell->setObjectName("djvu_shell");
           shell->setGeometry(0, 0, width, height);
+          djview = new QDjView(*context, instance->viewerMode, shell);
+          djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
+          djview->setAttribute(Qt::WA_DeleteOnClose, false);
+#if QT_VERSION >= 0x40400
+          djview->setAttribute(Qt::WA_NativeWindow, true);
+#endif
           embed->embedInto(window);
         }
       else
@@ -930,23 +1034,26 @@ QDjViewPlugin::cmdAttachWindow()
           shell = new QWidget();
           shell->setObjectName("djvu_shell");
           shell->setGeometry(0, 0, width, height);
-#if HAVE_X11
+          djview = new QDjView(*context, instance->viewerMode, shell);
+          djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
+          djview->setAttribute(Qt::WA_DeleteOnClose, false);
+#if QT_VERSION >= 0x40400
+          djview->setAttribute(Qt::WA_NativeWindow, true);
+#endif
+#if HAVE_XLIB
           Display *dpy = QX11Info::display();
           XReparentWindow(dpy, shell->winId(), (Window)window, 0,0);
 #else
           qWarning("djview: unable to embed the djview window.");
 #endif
         }
-      djview = new QDjView(*context, instance->viewerMode, shell);
-      djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
-      djview->setAttribute(Qt::WA_DeleteOnClose, false);
-#if QT_VERSION >= 0x40400
-      djview->setAttribute(Qt::WA_NativeWindow, true);
-#endif
-      QLayout *layout = new QHBoxLayout(shell);
-      layout->setMargin(0);
-      layout->setSpacing(0);
-      layout->addWidget(djview);
+      if (shell && djview && shell != djview)
+        {
+          QLayout *layout = new QHBoxLayout(shell);
+          layout->setMargin(0);
+          layout->setSpacing(0);
+          layout->addWidget(djview);
+        }
       QObject::connect(djview, SIGNAL(pluginStatusMessage(QString)),
                        forwarder, SLOT(showStatus(QString)) );
       QObject::connect(djview, SIGNAL(pluginGetUrl(QUrl,QString)),
@@ -984,7 +1091,7 @@ QDjViewPlugin::cmdResize()
   Instance *instance = (Instance*) readPointer(pipeRead);
   int width = readInteger(pipeRead);
   int height = readInteger(pipeRead);
-#if HAVE_X11
+#if HAVE_XLIB
   if (instance->container)
     { 
       // the plugin lies sometimes (why?)
@@ -1346,7 +1453,7 @@ QDjViewPlugin::exec()
   try 
     {
       // startup message announcing capabilities
-#if HAVE_QX11EMBED
+#if HAVE_QX11EMBED || HAVE_QT5EMBED
       const char *djviewName = "DJVIEW/4 SCRIPT XEMBED";
 #else
       const char *djviewName = "DJVIEW/4 SCRIPT";

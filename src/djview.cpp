@@ -28,10 +28,8 @@
 #include "qdjview.h"
 #include "qdjvuwidget.h"
 #include "djview.h"
-#ifdef Q_WS_X11
-# ifndef NPDJVU
+#ifndef NPDJVU
 #  include "qdjviewplugin.h"
-# endif
 #endif
 
 #include <QtGlobal>
@@ -428,14 +426,12 @@ main(int argc, char *argv[])
 #endif
   
   // Plugin mode
-#ifdef Q_WS_X11
   if (argc==2 && !strcmp(argv[1],"-netscape"))
     {
       verbose = true;
       QDjViewPlugin dispatcher(argv[0]);
       return dispatcher.exec();
     }
-#endif
   
   // Discard session
   if (argc==3 && !strcmp(argv[1],"-discard"))
