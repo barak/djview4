@@ -2667,8 +2667,9 @@ NPP_GetValue(NPP np_inst, NPPVariable variable, void *value)
       {
         void * id = np_inst->pdata;
         Instance *inst = map_lookup(&instance, id);
-        if (! inst || ! inst->xembed_mode) break;
+        if (! inst ) break;
         err = NPERR_NO_ERROR;
+        if (! inst->xembed_mode) break;
         *((NPBool*)value) = TRUE;
       }
       break;
