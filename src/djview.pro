@@ -78,7 +78,7 @@ win32 {
 !macx:!win32 {
     DEFINES *= WITH_DJVIEWPLUGIN
     greaterThan(QT_MAJOR_VERSION, 4) {
-        QT += x11extras
+        # QT += x11extras
     } else {
         DEFINES *= WITH_X11
         CONFIG += x11

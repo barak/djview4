@@ -37,13 +37,6 @@
 #include <QTimer>
 #include <QUrl>
 #include <QWidget>
-#if QT_VERSION >= 0x50000
-# include <QAbstractNativeEventFilter>
-# include <QWindow>
-# if QT_X11EXTRAS_LIB
-#  include <QX11Info>
-# endif
-#endif
 
 #include "qdjvu.h"
 #include "qdjview.h"
@@ -62,26 +55,36 @@
 #include <fcntl.h>
 
 #if QT_VERSION >= 0x50000
-# define HAVE_QT5EMBED 1
+# include <QWindow>
+# if QT_X11EXTRAS_LIB
+#  define HAVE_XCB 1
+#  include <QX11Info>
+# endif
 #endif
 
 #if QT_VERSION < 0x50000
 # if defined(Q_WS_X11)
 #  include <QX11Info>
 #  include <QX11EmbedWidget>
-#  define HAVE_QX11EMBED 1
 # endif
+#endif
+
+#if QT_VERSION >= 0x50000
+# define HAVE_QT5EMBED 1
+#endif
+#if QT_VERSION < 0x50000 && defined(Q_WS_X11)
+# define HAVE_QX11EMBED 1
 #endif
 
 #if WITH_X11
 # ifndef X_DISPLAY_MISSING
-#  ifdef Q_WS_X11
-#   define HAVE_XLIB 1
-#  elif QT_VERSION >= 0x50000
-#   define HAVE_XLIB 1
+#  if QT_VERSION < 0x50000
+#   ifdef Q_WS_X11
+#    define HAVE_X11 1
+#   endif
 #  endif
 # endif
-# if HAVE_XLIB
+# if HAVE_X11
 #  include <X11/Xlib.h>
 #  include <X11/Xutil.h>
 #  include <X11/Xatom.h>
@@ -93,7 +96,6 @@
 #  undef RevertToParent
 #  undef GrayScale
 #  undef CursorShape
-#  define HAVE_XLIB 1
 # endif
 #endif
 
@@ -116,23 +118,16 @@ public:
 };
 
 
-class QDjViewPlugin::Forwarder 
-#if HAVE_QT5EMBED
-  : public QObject, public QAbstractNativeEventFilter
-#else
-  : public QObject
-#endif
+class QDjViewPlugin::Forwarder : public QObject
 {
   Q_OBJECT
 public:
   QDjViewPlugin * const dispatcher;
   Forwarder(QDjViewPlugin *dispatcher);
-#if HAVE_QT5EMBED
-  virtual bool nativeEventFilter(const QByteArray&, void*, long*);
-#endif
-#if HAVE_XLIB
+#if HAVE_X11
   virtual bool eventFilter(QObject*, QEvent*);
 #endif
+
 public slots:
   void containerClosed();
   void showStatus(QString message);
@@ -191,7 +186,7 @@ struct QDjViewPlugin::Instance
 // FIXING TRANSIENT WINDOW PROPERTIES
 // ========================================
 
-#if HAVE_XLIB
+#if HAVE_X11
 
 static Atom wm_state;
 static Atom wm_client_leader;
@@ -230,7 +225,6 @@ x11ToplevelWindow(Display *dpy, Window start)
     }
   return shell;
 }
-
 
 static void
 x11SetTransientForHint(QWidget *widget)
@@ -277,7 +271,6 @@ x11SetTransientForHint(QWidget *widget)
         }
     }
 }
-
 
 #endif
 
@@ -425,40 +418,7 @@ QDjViewPlugin::Forwarder::continueExec()
   dispatcher->continueExec();
 }
 
-
-#if HAVE_QT5EMBED
-bool 
-QDjViewPlugin::Forwarder::nativeEventFilter(const QByteArray &type, void *msg, long*)
-{
-  if (type == "xcb_generic_event_t") 
-    {
-      const quint8 XCB_BUTTON_PRESS = 4;
-      struct xcb_button_press_event_t { // see xcb headers
-        quint8   response_type, detail; 
-        quint16  sequence;
-        quint32  time;
-        quint32  root, event, child;
-        qint16   root_x, root_y, event_x, event_y;
-        quint16  state;
-        quint8   same_screen, pad0;
-      };
-      xcb_button_press_event_t *ev = static_cast<xcb_button_press_event_t*>(msg);
-      if (ev && ev->response_type == XCB_BUTTON_PRESS)
-        {
-          QWidget *w = QWidget::find(ev->event);
-          if (w && w->window()->objectName() == "djvu_shell")
-            {
-              QApplication *app = (QApplication*)QCoreApplication::instance();
-              app->setActiveWindow(w->window());
-            }
-        }
-    }
-  return false;
-}
-#endif
-
-
-#if HAVE_XLIB && QT_VERSION < 0x50000
+#if HAVE_X11
 static bool x11EventFilter(void *message, long *)
 {
   // We define a low level handler because we need to make
@@ -477,7 +437,7 @@ static bool x11EventFilter(void *message, long *)
 }
 #endif
 
-#if HAVE_XLIB
+#if HAVE_X11
 bool 
 QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
 {
@@ -567,7 +527,7 @@ QDjViewPlugin::Instance::destroy()
         window->setVisible(false);
       if (window)
         window->setParent(0);
-#elif HAVE_XLIB
+#elif HAVE_X11
       Display *dpy = QX11Info::display();
       XUnmapWindow(dpy, shell->winId());  
       XReparentWindow(dpy, shell->winId(), QX11Info::appRootWindow(), 0,0);
@@ -949,30 +909,16 @@ QDjViewPlugin::cmdAttachWindow()
       argv[argc++] = progname;
       if (! display.isEmpty())
         {
-#if HAVE_XLIB
-          Display *dpy = XOpenDisplay(display);
-          if (dpy)
-            {
-#endif
-              argv[argc++] = "-display";
-              argv[argc++] = (const char*) display;
-#if HAVE_XLIB
-              XCloseDisplay(dpy);
-            }
-#endif
+          argv[argc++] = "-display";
+          argv[argc++] = (const char*) display;
         }
       application = new QDjViewApplication(argc, const_cast<char**>(argv));
       application->setQuitOnLastWindowClosed(false);
       argc = 1;
       context = application->djvuContext();
       forwarder = new Forwarder(this);
-#if HAVE_XLIB && QT_VERSION < 0x50000
+#if HAVE_X11
       application->setEventFilter(x11EventFilter);
-#endif
-#if HAVE_QT5EMBED
-      application->installNativeEventFilter(forwarder);
-#endif
-#if HAVE_XLIB
       application->installEventFilter(forwarder);
 #endif
       QObject::connect(application, SIGNAL(lastWindowClosed()), 
@@ -1039,7 +985,7 @@ QDjViewPlugin::cmdAttachWindow()
 #if QT_VERSION >= 0x40400
           djview->setAttribute(Qt::WA_NativeWindow, true);
 #endif
-#if HAVE_XLIB
+#if HAVE_X11
           Display *dpy = QX11Info::display();
           XReparentWindow(dpy, shell->winId(), (Window)window, 0,0);
 #else
@@ -1090,7 +1036,7 @@ QDjViewPlugin::cmdResize()
   Instance *instance = (Instance*) readPointer(pipeRead);
   int width = readInteger(pipeRead);
   int height = readInteger(pipeRead);
-#if HAVE_XLIB
+#if HAVE_X11
   if (instance->container)
     { 
       // the plugin lies sometimes (why?)
