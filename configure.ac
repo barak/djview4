@@ -145,7 +145,7 @@ AC_PATH_TIFF([],[
   AC_MSG_WARN([Cannot find libtiff (required for tiff export).])
 ])
 
-
+AC_PATH_XTRA
 
 # ----------------------------------------
 # nsdejavu
@@ -157,8 +157,6 @@ AC_ARG_ENABLE(nsdejavu,
     [ac_nsdejavu=$enableval])
 
 if test "$ac_nsdejavu" != no ; then
-    AC_PATH_X
-    AC_PATH_XTRA
     if test "$no_x" = yes; then
         ac_nsdejavu=no
         AC_MSG_WARN([Disabling plugin compilation (missing X11 include files).])
@@ -311,7 +309,7 @@ AC_DEFINE_VERSION([${PACKAGE_VERSION}])
 # autoconf
 QARG="CONFIG+=autoconf"
 AUTO_LIBS="$DDJVUAPI_LIBS $TIFF_LIBS $LIBS"
-AUTO_FLAGS="-I.. $DDJVUAPI_CFLAGS $TIFF_CFLAGS"
+AUTO_FLAGS="-I.. $DDJVUAPI_CFLAGS $TIFF_CFLAGS $X_CFLAGS"
 #    note: AUTO_FLAGS does not contain $OPTS
 #          because qmake determines itself
 #          its optimization flags...

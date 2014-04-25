@@ -63,29 +63,40 @@
 
 #if QT_VERSION >= 0x50000
 # define HAVE_QT5EMBED 1
-#else
-# ifdef Q_WS_X11
-#  ifndef X_DISPLAY_MISSING
-#   include <X11/Xlib.h>
-#   include <X11/Xutil.h>
-#   include <X11/Xatom.h>
-#   undef FocusOut
-#   undef FocusIn
-#   undef KeyPress
-#   undef KeyRelease
-#   undef None
-#   undef RevertToParent
-#   undef GrayScale
-#   undef CursorShape
-#   define HAVE_XLIB 1
-#  endif
-# endif
-# ifdef Q_WS_X11
+#endif
+
+#if QT_VERSION < 0x50000
+# if defined(Q_WS_X11)
 #  include <QX11Info>
 #  include <QX11EmbedWidget>
 #  define HAVE_QX11EMBED 1
 # endif
 #endif
+
+#if WITH_X11
+# ifndef X_DISPLAY_MISSING
+#  ifdef Q_WS_X11
+#   define HAVE_XLIB 1
+#  elif QT_VERSION >= 0x50000
+#   define HAVE_XLIB 1
+#  endif
+# endif
+# if HAVE_XLIB
+#  include <X11/Xlib.h>
+#  include <X11/Xutil.h>
+#  include <X11/Xatom.h>
+#  undef FocusOut
+#  undef FocusIn
+#  undef KeyPress
+#  undef KeyRelease
+#  undef None
+#  undef RevertToParent
+#  undef GrayScale
+#  undef CursorShape
+#  define HAVE_XLIB 1
+# endif
+#endif
+
 
 
 
@@ -116,11 +127,11 @@ class QDjViewPlugin::Forwarder
 public:
   QDjViewPlugin * const dispatcher;
   Forwarder(QDjViewPlugin *dispatcher);
-#if HAVE_XLIB
-  virtual bool eventFilter(QObject*, QEvent*);
-#endif
 #if HAVE_QT5EMBED
   virtual bool nativeEventFilter(const QByteArray&, void*, long*);
+#endif
+#if HAVE_XLIB
+  virtual bool eventFilter(QObject*, QEvent*);
 #endif
 public slots:
   void containerClosed();
@@ -342,13 +353,13 @@ QDjViewPlugin::Forwarder::Forwarder(QDjViewPlugin *dispatcher)
 void 
 QDjViewPlugin::Forwarder::containerClosed()
 {
-#if HAVE_QX11EMBED
-  QX11EmbedWidget *shell = qobject_cast<QX11EmbedWidget*>(sender());
+#if HAVE_QT5EMBED
+  QDjView *shell = qobject_cast<QDjView*>(sender());
   Instance *instance = dispatcher->findInstance(shell);
   if (instance && dispatcher->xembedFlag)
     instance->destroy();
-#elif HAVE_QT5EMBED
-  QDjView *shell = qobject_cast<QDjView*>(sender());
+#elif HAVE_QX11EMBED
+  QX11EmbedWidget *shell = qobject_cast<QX11EmbedWidget*>(sender());
   Instance *instance = dispatcher->findInstance(shell);
   if (instance && dispatcher->xembedFlag)
     instance->destroy();
@@ -416,10 +427,6 @@ QDjViewPlugin::Forwarder::continueExec()
 
 
 #if HAVE_QT5EMBED
-# if QT_X11EXTRAS_LIB
-extern "C" void xcb_set_input_focus(xcb_connection_t*,quint8,quint32,quint32);
-# endif
-
 bool 
 QDjViewPlugin::Forwarder::nativeEventFilter(const QByteArray &type, void *msg, long*)
 {
@@ -441,19 +448,8 @@ QDjViewPlugin::Forwarder::nativeEventFilter(const QByteArray &type, void *msg, l
           QWidget *w = QWidget::find(ev->event);
           if (w && w->window()->objectName() == "djvu_shell")
             {
-              // broken
-#if QT_X11EXTRAS_LIB
-              if (QX11Info::isPlatformX11())
-                {
-                  //qWarning("xcb_set_input_focus");
-                  //xcb_set_input_focus(QX11Info::connection(), 2, 
-                  //                    w->window()->winId(), 
-                  //                    QX11Info::appTime());
-                }
-#else
               QApplication *app = (QApplication*)QCoreApplication::instance();
               app->setActiveWindow(w->window());
-#endif
             }
         }
     }
@@ -462,7 +458,7 @@ QDjViewPlugin::Forwarder::nativeEventFilter(const QByteArray &type, void *msg, l
 #endif
 
 
-#if HAVE_XLIB
+#if HAVE_XLIB && QT_VERSION < 0x50000
 static bool x11EventFilter(void *message, long *)
 {
   // We define a low level handler because we need to make
@@ -951,29 +947,32 @@ QDjViewPlugin::cmdAttachWindow()
     {
       argc = 0;
       argv[argc++] = progname;
-#if HAVE_XLIB
-      Display *dpy = XOpenDisplay(display);
-      if (!dpy)
+      if (! display.isEmpty())
         {
-          fprintf(stderr,"djview dispatcher: "
-                  "cannot open display %s\n", (const char*)display);
-          throw 2;
-        }
-      argv[argc++] = "-display";
-      argv[argc++] = (const char*) display;
+#if HAVE_XLIB
+          Display *dpy = XOpenDisplay(display);
+          if (dpy)
+            {
 #endif
+              argv[argc++] = "-display";
+              argv[argc++] = (const char*) display;
+#if HAVE_XLIB
+              XCloseDisplay(dpy);
+            }
+#endif
+        }
       application = new QDjViewApplication(argc, const_cast<char**>(argv));
       application->setQuitOnLastWindowClosed(false);
-#if HAVE_XLIB
-      application->setEventFilter(x11EventFilter);
-      XCloseDisplay(dpy);
-#endif
       argc = 1;
       context = application->djvuContext();
       forwarder = new Forwarder(this);
+#if HAVE_XLIB && QT_VERSION < 0x50000
+      application->setEventFilter(x11EventFilter);
+#endif
 #if HAVE_QT5EMBED
       application->installNativeEventFilter(forwarder);
-#elif HAVE_XLIB
+#endif
+#if HAVE_XLIB
       application->installEventFilter(forwarder);
 #endif
       QObject::connect(application, SIGNAL(lastWindowClosed()), 

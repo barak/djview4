@@ -50,20 +50,41 @@ CONFIG(release,debug|release) {
     DEFINES += NDEBUG QT_NO_DEBUG QT_NO_DEBUG_STREAM
 }
 
-# -- check for x11
+# -- mac stuff
 macx {
   ICON = images/DjVuApp.icns
   RESOURCES.path = Contents/Resources
   RESOURCES.files = images/DjVu.icns
   QMAKE_BUNDLE_DATA += RESOURCES
   QMAKE_INFO_PLIST = djview.plist
-  contains(DEFINES,__USE_WS_X11__): CONFIG += x11
-} else:win32 {
+  greaterThan(QT_MAJOR_VERSION, 4) {
+      DEFINES *= WITH_DJVIEWPLUGIN
+  } else:contains(DEFINES,__USE_WS_X11__) { 
+      DEFINES *= WITH_DJVIEWPLUGIN
+  }
+} 
+
+# --- windows stuff 
+win32 {
   RC_FILE = djview.rc
-  contains(DEFINES,_WIN32_X11_): CONFIG += x11
-} else:unix {
-  CONFIG += x11
+  greaterThan(QT_MAJOR_VERSION, 4) {
+      DEFINES *= WITH_DJVIEWPLUGIN
+  } else:contains(DEFINES,_WIN32_X11_) {
+      DEFINES *= WITH_DJVIEWPLUGIN
+  }
 }
+
+# --- unix stuff
+!macx:!win32 {
+    DEFINES *= WITH_DJVIEWPLUGIN
+    greaterThan(QT_MAJOR_VERSION, 4) {
+        QT += x11extras
+    } else {
+        DEFINES *= WITH_X11
+        CONFIG += x11
+    }
+}
+
 
 # -- djvu files
 HEADERS += qdjvu.h 
@@ -101,7 +122,7 @@ FORMS += qdjviewexportps3.ui
 FORMS += qdjviewexporttiff.ui
 FORMS += qdjviewexportprn.ui
 FORMS += qdjviewprefsdialog.ui 
-x11 {
+contains(DEFINES,WITH_DJVIEWPLUGIN) {
   HEADERS += qdjviewplugin.h
   SOURCES += qdjviewplugin.cpp
 }

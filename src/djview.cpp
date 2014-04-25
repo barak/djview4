@@ -426,12 +426,14 @@ main(int argc, char *argv[])
 #endif
   
   // Plugin mode
+#if WITH_DJVIEWPLUGIN
   if (argc==2 && !strcmp(argv[1],"-netscape"))
     {
       verbose = true;
       QDjViewPlugin dispatcher(argv[0]);
       return dispatcher.exec();
     }
+#endif
   
   // Discard session
   if (argc==3 && !strcmp(argv[1],"-discard"))
