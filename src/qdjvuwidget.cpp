@@ -2015,9 +2015,10 @@ QDjVuPrivate::initWidget(bool opengl)
         ge = "cannot setup openGL context";
       if (gw && !ge && !gw->format().directRendering())
         ge = "cannot setup openGL direct rendering";
-      if (gw && !ge)
+      if (gw && !ge) {
+        gw->setFocusPolicy(Qt::ClickFocus);
         widget->setViewport(gw);
-      else if (gw)
+      } else if (gw)
         delete gw;
       if (ge)
         qWarning("Using default rendering (%s)", ge);
