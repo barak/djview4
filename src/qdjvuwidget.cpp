@@ -53,9 +53,10 @@
 #include <QVector>
 #include <QWheelEvent>
 #include <QWidget>
-#include <QGLWidget>
-#include <QGLFormat>
-
+#ifdef QT_OPENGL_LIB
+# include <QGLWidget>
+# include <QGLFormat>
+#endif
 
 #if DDJVUAPI_VERSION < 17
 # error "DDJVUAPI_VERSION>=17 is required !"
@@ -2006,6 +2007,7 @@ QDjVuPrivate::initWidget(bool opengl)
   if (opengl)
     {
       const char *ge = 0;
+#ifdef QT_OPENGL_LIB
       QGLWidget *gw = 0;
       if (! QGLFormat::hasOpenGL())
         ge = "cannot find openGL on this system";
@@ -2020,10 +2022,13 @@ QDjVuPrivate::initWidget(bool opengl)
         widget->setViewport(gw);
       } else if (gw)
         delete gw;
-      if (ge)
-        qWarning("Using default rendering (%s)", ge);
-      else
+#else
+      ge = "disabled at compilation time";
+#endif
+      if (!ge)
         qWarning("Using openGL rendering");
+      else
+        qWarning("Using default rendering (%s)", ge);
     }
 #endif
   // setup viewport

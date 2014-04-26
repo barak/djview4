@@ -310,7 +310,7 @@ AC_DEFINE_VERSION([${PACKAGE_VERSION}])
 # autoconf
 QARG="CONFIG+=autoconf"
 AUTO_LIBS="$DDJVUAPI_LIBS $TIFF_LIBS $LIBS"
-AUTO_FLAGS="-I.. $DDJVUAPI_CFLAGS $TIFF_CFLAGS $X_CFLAGS"
+AUTO_FLAGS="-I.. $DDJVUAPI_CFLAGS $TIFF_CFLAGS"
 #    note: AUTO_FLAGS does not contain $OPTS
 #          because qmake determines itself
 #          its optimization flags...
