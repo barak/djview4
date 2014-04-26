@@ -57,28 +57,25 @@ macx {
   RESOURCES.files = images/DjVu.icns
   QMAKE_BUNDLE_DATA += RESOURCES
   QMAKE_INFO_PLIST = djview.plist
-  greaterThan(QT_MAJOR_VERSION, 4) {
-      DEFINES *= WITH_DJVIEWPLUGIN
-  } else:contains(DEFINES,__USE_WS_X11__) { 
-      DEFINES *= WITH_DJVIEWPLUGIN
-  }
 } 
 
-# --- windows stuff 
+# --- windows stuff
 win32 {
   RC_FILE = djview.rc
-  greaterThan(QT_MAJOR_VERSION, 4) {
-      DEFINES *= WITH_DJVIEWPLUGIN
-  } else:contains(DEFINES,_WIN32_X11_) {
-      DEFINES *= WITH_DJVIEWPLUGIN
-  }
 }
 
-# --- unix stuff
-!macx:!win32 {
+# --- djviewplugin logic
+greaterThan(QT_MAJOR_VERSION, 4) {
     DEFINES *= WITH_DJVIEWPLUGIN
+} else:macx:contains(DEFINES,__USE_WS_X11__) { 
+    DEFINES *= WITH_DJVIEWPLUGIN
+} else:win32:contains(DEFINES,_WIN32_X11_) {
+    DEFINES *= WITH_DJVIEWPLUGIN
+} else:!macx:!win32 {
+    DEFINES *= WITH_DJVIEWPLUGIN
+}
+contains(DEFINES,WITH_DJVIEWPLUGIN) {
     greaterThan(QT_MAJOR_VERSION, 4) {
-        # QT += x11extras
     } else {
         DEFINES *= WITH_X11
         CONFIG += x11
