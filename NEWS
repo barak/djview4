@@ -1,3 +1,12 @@
+
+NEWER
+-----
+- Works with both Qt4 and Qt5
+- Layout annotations are honored in multipage mode
+- Experimental OpenGL rendering 
+- Bug fixes: layout, usability, preferences, locale selection
+
+
 NEW IN VERSION 4.9
 ------------------
 - Added language selection in preference.
