@@ -166,7 +166,8 @@ struct QDjViewPlugin::Instance
   QPointer<QDjViewPlugin::Document> document;
   QPointer<QWidget>                 shell;
   QPointer<QDjView>                 djview;
-  WId                               container;
+  QPointer<QObject>                 containerwin;
+  WId                               containerid;
   QStringList                    args;
   QByteArray                     saved;
   int                            savedformat;
@@ -476,10 +477,9 @@ QDjViewPlugin::Forwarder::eventFilter(QObject *o, QEvent *e)
 QDjViewPlugin::Instance::~Instance()
 {
   destroy();
-  if (shell && shell != djview)
-    delete shell;
-  if (djview)
-    delete djview;
+  delete shell;
+  delete djview;
+  delete containerwin;
   if (document)
     document->deref();
   document = 0;
@@ -488,7 +488,7 @@ QDjViewPlugin::Instance::~Instance()
 
 QDjViewPlugin::Instance::Instance(QDjViewPlugin *parent)
   : url(), dispatcher(parent), 
-    document(0), shell(0), djview(0), container(0),
+    document(0), shell(0), djview(0), containerid(0),
     onchange(0)
 {
 }
@@ -534,7 +534,7 @@ QDjViewPlugin::Instance::destroy()
 #endif
       shell->close();
       dispatcher->registerForDeletion(shell);
-      container = 0;
+      containerid = 0;
       shell = 0;
     }
 }
@@ -953,6 +953,7 @@ QDjViewPlugin::cmdAttachWindow()
           shell->setObjectName("djvu_shell");
           shell->setGeometry(0, 0, width, height);
           QWindow *dwindow = djview->windowHandle();
+          instance->containerwin = dwindow;
           dwindow->setParent(QWindow::fromWinId(window));
         }
       else
@@ -971,6 +972,7 @@ QDjViewPlugin::cmdAttachWindow()
 #if QT_VERSION >= 0x40400
           djview->setAttribute(Qt::WA_NativeWindow, true);
 #endif
+          instance->containerid = window;
           embed->embedInto(window);
         }
       else
@@ -986,6 +988,7 @@ QDjViewPlugin::cmdAttachWindow()
           djview->setAttribute(Qt::WA_NativeWindow, true);
 #endif
 #if HAVE_X11
+          instance->containerid = window;
           Display *dpy = QX11Info::display();
           XReparentWindow(dpy, shell->winId(), (Window)window, 0,0);
 #else
@@ -1007,7 +1010,6 @@ QDjViewPlugin::cmdAttachWindow()
                        forwarder, SLOT(onChange()) );
       instance->shell = shell;
       instance->djview = djview;
-      instance->container = window;
       // apply arguments
       while (instance->args.size() > 0)
         djview->parseArgument(instance->args.takeFirst());
@@ -1037,11 +1039,11 @@ QDjViewPlugin::cmdResize()
   int width = readInteger(pipeRead);
   int height = readInteger(pipeRead);
 #if HAVE_X11
-  if (instance->container)
+  if (instance->containerid)
     { 
       // the plugin lies sometimes (why?)
       int x, y; unsigned int w, h, b, d; Window r;
-      if (XGetGeometry(QX11Info::display(), (Window)(instance->container), 
+      if (XGetGeometry(QX11Info::display(), (Window)(instance->containerid), 
                        &r, &x, &y, &w, &h, &b, &d))
         { 
           width = qMin(width, (int)w);
