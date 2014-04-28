@@ -195,8 +195,6 @@ QDjViewPrefs::modifiersToString(Qt::KeyboardModifiers m)
 #ifdef Q_OS_DARWIN
   if (m & Qt::MetaModifier)
     l << "Control";
-  if (m & Qt::AltModifier)
-    l << "Alt";
   if (m & Qt::ControlModifier)
     l << "Command";
 #else
@@ -204,9 +202,9 @@ QDjViewPrefs::modifiersToString(Qt::KeyboardModifiers m)
     l << "Meta";
   if (m & Qt::ControlModifier)
     l << "Control";
+#endif
   if (m & Qt::AltModifier)
     l << "Alt";
-#endif
   if (m & Qt::ShiftModifier)
     l << "Shift";
   return l.join("+");
@@ -224,6 +222,8 @@ QDjViewPrefs::stringToModifiers(QString s)
       key = key.toLower();
       if (key == "shift")
         m |= Qt::ShiftModifier;
+      else if (key == "alt")
+        m |= Qt::AltModifier;
 #ifdef Q_OS_DARWIN
       else if (key == "control")
         m |= Qt::MetaModifier;
@@ -235,8 +235,6 @@ QDjViewPrefs::stringToModifiers(QString s)
       else if (key == "control")
         m |= Qt::ControlModifier;
 #endif
-      else if (key == "alt")
-        m |= Qt::AltModifier;
     }
   return m;
 }

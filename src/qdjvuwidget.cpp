@@ -5442,8 +5442,8 @@ QDjVuLens::moveEvent(QMoveEvent *event)
   refocus();
   QPoint delta = event->pos() - event->oldPos();
   QRect r = rect().adjusted(1,1,-1,-1);
-#ifdef Q_OS_DARWIN
-  repaint(r);  // scroll broken ?
+#if defined(Q_OS_DARWIN) && QT_VERSION<0x50000
+  repaint(r);  // bug hopefully fixed in qt5
 #else
   scroll(-mag*delta.x(), -mag*delta.y(), r);
 #endif

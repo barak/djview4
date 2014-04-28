@@ -368,11 +368,11 @@ static inline QAction *
 operator<<(QAction *action, QKeySequence shortcut)
 {
   QList<QKeySequence> shortcuts = action->shortcuts();
-# ifdef Q_OS_DARWIN
+#ifdef Q_OS_DARWIN
   shortcuts.append(shortcut);
-# else
+#else
   shortcuts.prepend(shortcut);
-# endif
+#endif
   action->setShortcuts(shortcuts);
   return action;
 }
