@@ -114,11 +114,14 @@
 typedef QList<QPair<QString, QString> > QueryItems;
 
 static QueryItems 
-urlQueryItems(const QUrl &url)
+urlQueryItems(const QUrl &url, bool fullydecoded=false)
 {
 #if QT_VERSION >= 0x50000
+  if (fullydecoded)
+    return QUrlQuery(url).queryItems(QUrl::FullyDecoded);
   return QUrlQuery(url).queryItems();
 #else
+  Q_UNUSED(fullydecoded);
   return url.queryItems();
 #endif
 }
@@ -2043,7 +2046,7 @@ QDjView::parseDjVuCgiArguments(QUrl url)
   // parse
   bool djvuopts = false;
   QPair<QString,QString> pair;
-  foreach(pair, urlQueryItems(url))
+  foreach(pair, urlQueryItems(url, true))
     {
       if (pair.first.toLower() == "djvuopts")
         djvuopts = true;
