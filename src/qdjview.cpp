@@ -4275,13 +4275,17 @@ QDjView::performAbout(void)
 #else
   QString vstr = "";
 #endif
-  QString html = 
-    tr("<html>"
+#if QT_VERSION < 0x50000
+  QString html = trUtf8
+#else
+  QString html = tr
+#endif
+      ("<html>"
        "<h2>DjVuLibre DjView %1</h2>%2"
        "<p>"
        "Viewer for DjVu documents<br>"
        "<a href=%3>%3</a><br>"
-       "Copyright \251 2006-- L\351on Bottou."
+       "Copyright \302\251 2006-- L\303\251on Bottou."
        "</p>"
        "<p align=justify><small>"
        "This program is free software. "
