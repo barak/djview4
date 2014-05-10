@@ -677,15 +677,15 @@ struct MapArea
   bool parse(miniexp_t anno, int pageno=-1);
   bool isClickable(bool hyperlink=true);
   bool clicked(void);
-  bool hasTransient();
+  bool hasTransient(bool allLinks=false);
   bool hasPermanent();
   bool contains(const QPoint &p);
   void maybeRotate(struct Page *p);
   QPainterPath contour(QRectMapper &m, QPoint &offset);
   void update(QWidget *w, QRectMapper &m, QPoint offset);
-  void paintBorder(QPaintDevice *w, QRectMapper &m, QPoint offset);
+  void paintBorder(QPaintDevice *w, QRectMapper &m, QPoint offset, bool allLinks=false);
   void paintPermanent(QPaintDevice *w, QRectMapper &m, QPoint o, double z=100);
-  void paintTransient(QPaintDevice *w, QRectMapper &m, QPoint o);
+  void paintTransient(QPaintDevice *w, QRectMapper &m, QPoint o, bool allLinks=false);
 };
 
 struct Page
@@ -3083,7 +3083,7 @@ MapArea::MapArea()
   expr = miniexp_nil;
   url = target = comment = miniexp_nil;
   areaType = borderType = miniexp_nil;
-  borderWidth = 0;
+  borderWidth = 1;
   borderAlwaysVisible = false;
   hiliteOpacity = 50;
   lineArrow = false;
@@ -3190,6 +3190,7 @@ MapArea::parse(miniexp_t full, int pageno)
             {
               if (! miniexp_get_color(a, borderColor))
                 return error("Color expected", pageno, q);
+              borderWidth = 1;
             } 
           else 
             {
@@ -3274,6 +3275,21 @@ MapArea::parse(miniexp_t full, int pageno)
       if (a)
         error("Extra arguments were ignored", pageno, q);
     }
+  // border type sanity checks
+  if (areaType == k.line)
+    {
+      if (borderType && borderType != k.none)
+        error("Line maparea should not specify a border.", pageno, expr);
+      if (miniexp_stringp(url))
+        error("Line maparea should not specify a url.", pageno, expr);
+      borderType = miniexp_nil;
+      url = miniexp_nil;
+    }
+  else if (borderType == miniexp_nil)
+    {
+      error("Maparea without border type defaults to (xor).", pageno, expr);
+      borderType = k.xxor;
+    }
   return true;
 }
 
@@ -3310,13 +3326,14 @@ MapArea::isClickable(bool hyperlink)
 }
 
 bool 
-MapArea::hasTransient()
+MapArea::hasTransient(bool allLinks)
 {
   Keywords &k = *keywords();
-  if (areaType == miniexp_nil ||
-      borderType == k.none || 
-      borderType == miniexp_nil ||
-      borderAlwaysVisible )
+  if (areaType == miniexp_nil || borderAlwaysVisible)
+    return false;
+  if (allLinks && miniexp_stringp(url))
+    return true;
+  if (borderType == k.none || borderType == miniexp_nil)
     return false;
   return true;
 }
@@ -3425,12 +3442,15 @@ MapArea::update(QWidget *w, QRectMapper &m, QPoint offset)
 }
 
 void 
-MapArea::paintBorder(QPaintDevice *w, QRectMapper &m, QPoint offset)
+MapArea::paintBorder(QPaintDevice *w, QRectMapper &m, QPoint offset, bool allLinks)
 {
   // The mapper <m> maps page coordinates to 
   // widget coordinates translated by <offset>.
   Keywords &k = *keywords();
   QRect rect = m.mapped(areaRect).translated(-offset);
+  bool forceXor = false;
+  if (allLinks && miniexp_stringp(url))
+    forceXor = (borderType == k.none || borderType == miniexp_nil);
   QPainter paint(w);
   paint.setRenderHint(QPainter::Antialiasing);
   paint.setRenderHint(QPainter::TextAntialiasing);
@@ -3439,7 +3459,7 @@ MapArea::paintBorder(QPaintDevice *w, QRectMapper &m, QPoint offset)
       QPainterPath path = contour(m, offset);
       paint.strokePath(path, QPen(borderColor, borderWidth));
     }
-  else if (borderType == k.xxor)
+  else if (borderType == k.xxor || forceXor)
     {
       QPainterPath path = contour(m, offset);
       paint.strokePath(path, QPen(Qt::white, borderWidth));
@@ -3600,10 +3620,10 @@ MapArea::paintPermanent(QPaintDevice *w, QRectMapper &m,
 }
 
 void 
-MapArea::paintTransient(QPaintDevice *w, QRectMapper &m, QPoint offset)
+MapArea::paintTransient(QPaintDevice *w, QRectMapper &m, QPoint offset, bool allLinks)
 {
-  if (hasTransient())
-    paintBorder(w, m, offset);
+  if (hasTransient(allLinks))
+    paintBorder(w, m, offset, allLinks);
 }
 
 void
@@ -3724,7 +3744,7 @@ QDjVuPrivate::showTransientMapAreas(bool b)
           {
             MapArea &area = p->mapAreas[i];
             area.maybeRotate(p);
-            if (area.hasTransient())
+            if (area.hasTransient(allLinksDisplayed))
               area.update(widget->viewport(), p->mapper, 
                           visibleRect.topLeft() );
           }
@@ -4326,10 +4346,10 @@ QDjVuPrivate::paintMapAreas(QImage &img, Page *p, const QRect &r,
               area.paintPermanent(&img, *pmapper, r.topLeft(), z);
               changed = true;
             }
-          else if (mustDisplayMapArea(&area) && area.hasTransient()) 
+          else if (mustDisplayMapArea(&area) && area.hasTransient(allLinksDisplayed))
             {
               img.detach();
-              area.paintTransient(&img, *pmapper, r.topLeft());
+              area.paintTransient(&img, *pmapper, r.topLeft(), allLinksDisplayed);
               changed = true;
             }
         }
