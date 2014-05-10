@@ -4270,11 +4270,16 @@ QDjView::pageComboEdited(void)
 void
 QDjView::performAbout(void)
 {
+  QStringList version;
 #if DDJVUAPI_VERSION >= 20
-  QString vstr = QString("(%1)<p>").arg(ddjvu_get_version_string());
-#else
-  QString vstr = "";
+  version << QString(ddjvu_get_version_string());
 #endif
+#ifdef QT_VERSION
+  version << QString("Qt-%1").arg(qVersion());
+#endif
+  QString versioninfo = "";
+  if (version.size() > 0)
+    versioninfo = "(" + version.join(", ") + ")";
 #if QT_VERSION < 0x50000
   QString html = trUtf8
 #else
@@ -4297,7 +4302,7 @@ QDjView::performAbout(void)
        "</small></p>"
        "</html>")
     .arg(QDjViewPrefs::versionString())
-    .arg(vstr)
+    .arg(versioninfo)
     .arg("http://djvu.sourceforge.net");
 
   QMessageBox::about(this, tr("About DjView"), html);
