@@ -1671,6 +1671,8 @@ QDjVuPrivate::requestPage(Page *p)
               this, SLOT(error(QString,QString,int)) );
       connect(p->page, SIGNAL(info(QString)), 
               this, SLOT(info(QString)) );
+      if (! p->page->isValid())
+        emit widget->errorCondition(p->pageno);
       p->redisplay = true;
       changeLayout(REFRESH_PAGES);
       result = true;
@@ -4485,10 +4487,10 @@ QDjVuPrivate::paintAll(QPainter &paint, const QRegion &paintRegion)
         {
           // Cannot paint page yet
           ddjvu_status_t s = DDJVU_JOB_FAILED;
-          if (pageRequestTimer->isActive())
-            s = DDJVU_JOB_STARTED;
-          if (p->page)
+          if (p->page && *(p->page)) 
             s = ddjvu_page_decoding_status(*(p->page));
+          if (!p->page && pageRequestTimer->isActive())
+            s = DDJVU_JOB_STARTED;
           widget->paintEmpty(paint, p->viewRect, 
                              s==DDJVU_JOB_STARTED,
                              s==DDJVU_JOB_STOPPED,
