@@ -499,7 +499,7 @@ QDjViewInfoDialog::fillFileCombo()
       if (info.type == 'P')
         {
           if (info.title && info.name && strcmp(info.title, info.name))
-            msg = tr("Page #%1 - \253 %2 \273") // << .. >>
+            msg = trUtf8("Page #%1 - \302\253 %2 \302\273") // << .. >>
               .arg(info.pageno + 1).arg(QString::fromUtf8(info.title));
           else
             msg = tr("Page #%1").arg(info.pageno + 1);

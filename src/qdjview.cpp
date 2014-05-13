@@ -606,25 +606,25 @@ QDjView::createActions()
     << Trigger(widget, SLOT(rotateRight()))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionRotate0 = makeAction(tr("Rotate &0\260", "Rotate|"), false)
+  actionRotate0 = makeAction(trUtf8("Rotate &0\302\260", "Rotate|"), false)
     << tr("Set natural page orientation.")
     << QVariant(0)
     << Trigger(this, SLOT(performRotation()))
     << *rotationActionGroup;
 
-  actionRotate90 = makeAction(tr("Rotate &90\260", "Rotate|"), false)
+  actionRotate90 = makeAction(trUtf8("Rotate &90\302\260", "Rotate|"), false)
     << tr("Turn page on its left side.")
     << QVariant(1)
     << Trigger(this, SLOT(performRotation()))
     << *rotationActionGroup;
 
-  actionRotate180 = makeAction(tr("Rotate &180\260", "Rotate|"), false)
+  actionRotate180 = makeAction(trUtf8("Rotate &180\302\260", "Rotate|"), false)
     << tr("Turn page upside-down.")
     << QVariant(2)
     << Trigger(this, SLOT(performRotation()))
     << *rotationActionGroup;
 
-  actionRotate270 = makeAction(tr("Rotate &270\260", "Rotate|"), false)
+  actionRotate270 = makeAction(trUtf8("Rotate &270\302\260", "Rotate|"), false)
     << tr("Turn page on its right side.")
     << QVariant(3)
     << Trigger(this, SLOT(performRotation()))
@@ -4280,12 +4280,7 @@ QDjView::performAbout(void)
   QString versioninfo = "";
   if (version.size() > 0)
     versioninfo = "(" + version.join(", ") + ")";
-#if QT_VERSION < 0x50000
-  QString html = trUtf8
-#else
-  QString html = tr
-#endif
-      ("<html>"
+  QString html = trUtf8("<html>"
        "<h2>DjVuLibre DjView %1</h2>%2"
        "<p>"
        "Viewer for DjVu documents<br>"
