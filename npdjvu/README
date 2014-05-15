@@ -9,6 +9,9 @@ and the Qt library used by the plugin.
 Static compilation would fix that at the expense
 of considerable bloat.
 
+The mac version does not work because the Qt solution
+file is based on the deprecated Carbon interface,
+whereas modern Qt versions are based on Coca.
 
 ---------------------------------------------------------
 
