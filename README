@@ -4,11 +4,11 @@ DJVIEW4
 -------
 
 This package contains the djview4 viewer and browser plugin.
-This new viewer relies on the DjVulibre library and the Qt4 toolkit.
+This new viewer relies on the DjVulibre library and the Qt toolkit.
 
 Highlights:
 - entirely based on the public djvulibre api.
-- entirely written in portable Qt4.
+- entirely written in portable Qt4/Qt5.
 - works natively under Unix/X11, MS Windows, and MacOS X.
 - continuous scrolling of pages
 - side-by-side display of pages
@@ -23,7 +23,7 @@ Highlights:
 
 Prerequisites:
 - DjVuLibre >= 3.5.18
-- Qt4 >= 4.4
+- Qt >= 4.4
 
 
 

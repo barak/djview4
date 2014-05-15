@@ -7,17 +7,17 @@
 1.1 DJVULIBRE
 -------------
 
-You need DjVuLibre >= 3.5.18.
+You need DjVuLibre (>= 3.5.18)
 
 See http://djvu.sourceforge.net for the 
 source code and for pointers to binary packages.
 Under debian type "apt-get install libdjvulibre-dev"
 
 
-1.2 QT4
--------
+1.2 QT4 OR QT5
+--------------
 
-You need Qt4 >= 4.2.0
+You need Qt4 (>= 4.4.0) or QT5 (tested with 5.2)
 
 See http://trolltech.com for the source code.
 Select the version of Qt adapted to your platform.
@@ -192,7 +192,7 @@ There are two options under Mac OS X.
 
 There are also two ways to compile djview under Windows.
 
-* Using Visual C++ 2010
+* Using Visual C++ 
 
   - First you need to compile Qt4 using Visual C++.
     This used to be require patching the Qt source

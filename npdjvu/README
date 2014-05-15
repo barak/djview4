@@ -15,21 +15,20 @@ whereas modern Qt versions are based on Coca.
 
 ---------------------------------------------------------
 
-The following files are the genuine qt solution files:
+The following files are slightly modified variants 
+of the qt browserplugin solution files:
+
+  qtbrowserplugin.h
+  qtbrowserplugin_p.h
   qtbrowserplugin_mac.cpp  (does not work)
   qtbrowserplugin_x11.cpp
   qtbrowserplugin_win.cpp
   qtbrowserplugin.def
   qtnpapi.h
-
-This files is a slightly modified qt solution file:
-  qtbrowserplugin_p.h
-
-These files are derived from the qt solution code:
-  qtbrowserplugin.h
   qtnpapi.cpp
 
-This is the main file:
+These are the main files:
+  npdjvu.h
   npdjvu.cpp
 
 
