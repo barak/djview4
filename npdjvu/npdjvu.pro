@@ -14,8 +14,13 @@
 #C- GNU General Public License for more details.
 #C-  ------------------------------------------------------------------
 
-TARGET = npdjvu
 TEMPLATE = lib
+TARGET = npdjvu
+CONFIG += qt thread warn_on 
+QT += network
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += widgets printsupport
+} 
 
 # ============ qtbrowserplugin code
 
@@ -28,12 +33,25 @@ SOURCES += npdjvu.cpp
 
 # ============ test for X11
 
-win32 {
-    contains(DEFINES,__USE_WS_X11__) { CONFIG += x11 }
-} else:mac {
-    contains(DEFINES,__USE_WS_X11__) { CONFIG += x11 }
-} else {
+win32:contains(DEFINES,__WIN32_X11__) { 
+    DEFINES *= WITH_X11 
+} else:macx:contains(DEFINES,__USE_WS_X11__) { 
+    DEFINES *= WITH_X11 
+} else:!macx:!win32 {
+    DEFINES *= WITH_X11
+}
+contains(DEFINES,WITH_X11) {
     CONFIG += x11
+}    
+greaterThan(QT_MAJOR_VERSION, 4) {
+    contains(DEFINES,WITH_X11) {
+        DEFINES *= Q_WS_X11
+        DEFINES *= QX11Info=qintptr
+    } else:win32 { 
+        DEFINES *= Q_WS_WIN
+    } else:macx {
+        DEFINES *= Q_WS_MAC
+    }
 }
 
 # ============ plugin stuff
@@ -104,11 +122,13 @@ HEADERS += ../src/qdjviewsidebar.h
 HEADERS += ../src/qdjviewdialogs.h 
 HEADERS += ../src/qdjviewexporters.h
 HEADERS += ../src/qdjview.h
+HEADERS += ../src/djview.h
 SOURCES += ../src/qdjviewprefs.cpp 
 SOURCES += ../src/qdjviewsidebar.cpp 
 SOURCES += ../src/qdjviewdialogs.cpp
 SOURCES += ../src/qdjviewexporters.cpp
 SOURCES += ../src/qdjview.cpp
+SOURCES += ../src/djview.cpp
 RESOURCES += ../src/qdjview.qrc 
 FORMS += ../src/qdjviewauthdialog.ui
 FORMS += ../src/qdjviewerrordialog.ui

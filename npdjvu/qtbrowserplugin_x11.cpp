@@ -20,8 +20,23 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
+
 #include <QtGui>
-#include <QtGui/QX11EmbedWidget>
+#include <QWidget>
+#include <QApplication>
+#include <QLayout>
+#include <QHBoxLayout>
+
+#ifdef Q_WS_X11
+# if QT_VERSION >= 0x50000
+#  define Q_WS_X11_QT5 1
+#  include <QtGui/QWindow>
+#  define QX11EmbedWidget QWidget
+# else
+#  define Q_WS_X11_QT4 1
+#  include <QtGui/QX11EmbedWidget>
+# endif
+#endif
 
 #include "qtbrowserplugin.h"
 #include "qtbrowserplugin_p.h"
@@ -106,10 +121,19 @@ extern "C" void qtns_embed(QtNPInstance *This)
     QMap<QtNPInstance*, QX11EmbedWidget*>::iterator it = clients.find(This);
     if (it == clients.end())
         return;
+#if Q_WS_X11_QT5
+    QWidget* client = it.value();
+    client->setAttribute(Qt::WA_NativeWindow, true);
+    This->qt.widget->setParent(client);
+    client->layout()->addWidget(This->qt.widget);
+    QWindow *dwindow = client->windowHandle();            // memory leak?
+    dwindow->setParent(QWindow::fromWinId(This->window)); // memory leak?
+#else
     QX11EmbedWidget* client = it.value();
     This->qt.widget->setParent(client);
     client->layout()->addWidget(This->qt.widget);
     client->embedInto(This->window);
+#endif
     client->show();
 }
 

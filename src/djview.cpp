@@ -29,7 +29,7 @@
 #include "qdjvuwidget.h"
 #include "djview.h"
 #ifndef NPDJVU
-#  include "qdjviewplugin.h"
+# include "qdjviewplugin.h"
 #endif
 
 #include <QtGlobal>

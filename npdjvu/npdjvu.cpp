@@ -40,7 +40,13 @@
 #include <QWidget>
 
 #ifdef Q_WS_X11
-# include <QX11EmbedWidget>
+# if QT_VERSION >= 0x50000
+#  define Q_WS_X11_QT5 1
+#  include <QWindow>
+# else
+#  define Q_WS_X11_QT4 1
+#  include <QX11EmbedWidget>
+# endif
 #endif
 
 // Djview includes
@@ -99,32 +105,8 @@ private:
 
 static QPointer<QApplication> theApp;
 static QPointer<QDjVuContext> djvuContext;
-static bool verbose = true;
 
-static void 
-qtMessageHandler(QtMsgType type, const char *msg)
-{
-  switch (type) 
-    {
-    case QtFatalMsg:
-      fprintf(stderr,"djview fatal error: %s\n", msg);
-      abort();
-    case QtCriticalMsg:
-      fprintf(stderr,"djview critical error: %s\n", msg);
-      break;
-    case QtWarningMsg:
-      if (verbose)
-        fprintf(stderr,"djview: %s\n", msg);
-      break;
-    default:
-      if (verbose)
-        fprintf(stderr,"%s\n", msg);
-      break;
-    }
-}
-
-
-#ifdef Q_WS_X11
+#ifdef Q_WS_X11_QT4
 static bool x11EventFilter(void *message, long *)
 {
   // We define a low level handler because we need to make
@@ -163,7 +145,6 @@ setupApplication(QtNPInstance *instance)
   QApplication::setOrganizationName(DJVIEW_ORG);
   QApplication::setOrganizationDomain(DJVIEW_DOMAIN);
   QApplication::setApplicationName(DJVIEW_APP);
-  qInstallMsgHandler(qtMessageHandler);
   // mac
 #ifdef Q_WS_MAC
   extern void qt_mac_set_native_menubar(bool);
@@ -174,7 +155,7 @@ setupApplication(QtNPInstance *instance)
   if (! djvuContext)
     djvuContext = new QDjVuContext;
   theApp = (QApplication*)QCoreApplication::instance();
-#ifdef Q_WS_X11
+#ifdef Q_WS_X11_QT4
   theApp->setEventFilter(x11EventFilter);
 #endif
 #ifdef LC_NUMERIC
