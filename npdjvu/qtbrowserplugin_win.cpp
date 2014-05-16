@@ -34,27 +34,97 @@
 
 static HHOOK hhook = 0;
 static bool ownsqapp = false;
-Q_GUI_EXPORT int qt_translateKeyCode(int);
+
+
+static const uint keytbl[256] = {  // Keyboard mapping table
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_Cancel,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_Backspace, Qt::Key_Tab, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_Clear, Qt::Key_Return, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_Shift, Qt::Key_Control, Qt::Key_Alt, Qt::Key_Pause,
+  Qt::Key_CapsLock, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_Escape,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_Mode_switch,
+  Qt::Key_Space, Qt::Key_PageUp, Qt::Key_PageDown, Qt::Key_End,
+  Qt::Key_Home, Qt::Key_Left, Qt::Key_Up, Qt::Key_Right,
+  Qt::Key_Down, Qt::Key_Select, Qt::Key_Printer, Qt::Key_Execute,
+  Qt::Key_Print, Qt::Key_Insert, Qt::Key_Delete, Qt::Key_Help,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_Meta,
+  Qt::Key_Meta, Qt::Key_Menu, Qt::Key_unknown, Qt::Key_Sleep,
+  Qt::Key_0, Qt::Key_1, Qt::Key_2, Qt::Key_3,
+  Qt::Key_4, Qt::Key_5, Qt::Key_6, Qt::Key_7,
+  Qt::Key_8, Qt::Key_9, Qt::Key_Asterisk, Qt::Key_Plus,
+  Qt::Key_Comma, Qt::Key_Minus, Qt::Key_Period, Qt::Key_Slash,
+  Qt::Key_F1, Qt::Key_F2, Qt::Key_F3, Qt::Key_F4,
+  Qt::Key_F5, Qt::Key_F6, Qt::Key_F7, Qt::Key_F8,
+  Qt::Key_F9, Qt::Key_F10, Qt::Key_F11, Qt::Key_F12,
+  Qt::Key_F13, Qt::Key_F14, Qt::Key_F15, Qt::Key_F16,
+  Qt::Key_F17, Qt::Key_F18, Qt::Key_F19, Qt::Key_F20,
+  Qt::Key_F21, Qt::Key_F22, Qt::Key_F23, Qt::Key_F24,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_NumLock, Qt::Key_ScrollLock, Qt::Key_unknown, Qt::Key_Massyo,
+  Qt::Key_Touroku, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_Shift, Qt::Key_Shift, Qt::Key_Control, Qt::Key_Control,
+  Qt::Key_Alt, Qt::Key_Alt, Qt::Key_Back, Qt::Key_Forward,
+  Qt::Key_Refresh, Qt::Key_Stop, Qt::Key_Search, Qt::Key_Favorites,
+  Qt::Key_HomePage, Qt::Key_VolumeMute, Qt::Key_VolumeDown, Qt::Key_VolumeUp,
+  Qt::Key_MediaNext, Qt::Key_MediaPrevious, Qt::Key_MediaStop, Qt::Key_MediaPlay,
+  Qt::Key_LaunchMail, Qt::Key_LaunchMedia, Qt::Key_Launch0, Qt::Key_Launch1,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown, Qt::Key_unknown,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_Play, Qt::Key_Zoom,
+  Qt::Key_unknown, Qt::Key_unknown, Qt::Key_Clear, 0
+};
+
+static int qt_translateKeyCode(int vk)
+{
+  if (vk >= 0 && vk <= 255)
+    return keytbl[vk];
+  return Qt::Key_unknown;
+}
 
 LRESULT CALLBACK FilterProc( int nCode, WPARAM wParam, LPARAM lParam )
 {
     if (qApp)
 	qApp->sendPostedEvents(0, -1);
-
     if (nCode < 0 || !(wParam & PM_REMOVE))
         return CallNextHookEx(hhook, nCode, wParam, lParam);
-
     MSG *msg = (MSG*)lParam;
     bool processed = false;
-
     // (some) support for key-sequences via QAction and QShortcut
     if(msg->message == WM_KEYDOWN || msg->message == WM_SYSKEYDOWN) {
-        QWidget *focusWidget = QWidget::find(msg->hwnd);
+      QWidget *focusWidget = QWidget::find(msg->hwnd);
         if (focusWidget) {
             int key = msg->wParam;
             if (!(key >= 'A' && key <= 'Z') && !(key >= '0' && key <= '9'))
                 key = qt_translateKeyCode(msg->wParam);
-
             Qt::KeyboardModifiers modifiers = 0;
             int modifierKey = 0;
             if (GetKeyState(VK_SHIFT) < 0) {
@@ -73,7 +143,6 @@ LRESULT CALLBACK FilterProc( int nCode, WPARAM wParam, LPARAM lParam )
             override.ignore();
             QApplication::sendEvent(focusWidget, &override);
             processed = override.isAccepted();
-
             QKeySequence shortcutKey(modifierKey + key);
             if (!processed) {
                 QList<QAction*> actions = qFindChildren<QAction*>(focusWidget->window());
@@ -97,7 +166,6 @@ LRESULT CALLBACK FilterProc( int nCode, WPARAM wParam, LPARAM lParam )
             }
         }
     }
-
     return CallNextHookEx(hhook, nCode, wParam, lParam);
 }
 
@@ -106,17 +174,13 @@ extern "C" bool qtns_event(QtNPInstance *, NPEvent *)
     return false;
 }
 
-extern Q_CORE_EXPORT void qWinMsgHandler(QtMsgType t, const char* str);
-
 extern "C" void qtns_initialize(QtNPInstance*)
 {
     if (!qApp) {
-        qInstallMsgHandler(qWinMsgHandler);
         ownsqapp = true;
 	static int argc=0;
 	static char **argv={ 0 };
 	(void)new QApplication(argc, argv);
-
         QT_WA({
 	    hhook = SetWindowsHookExW( WH_GETMESSAGE, FilterProc, 0, GetCurrentThreadId() );
         }, {
