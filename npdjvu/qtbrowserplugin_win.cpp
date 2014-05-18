@@ -145,7 +145,7 @@ LRESULT CALLBACK FilterProc( int nCode, WPARAM wParam, LPARAM lParam )
             processed = override.isAccepted();
             QKeySequence shortcutKey(modifierKey + key);
             if (!processed) {
-                QList<QAction*> actions = qFindChildren<QAction*>(focusWidget->window());
+                QList<QAction*> actions = focusWidget->window()->findChildren<QAction*>();
                 for (int i = 0; i < actions.count() && !processed; ++i) {
                     QAction *action = actions.at(i);
                     if (!action->isEnabled() || action->shortcut() != shortcutKey)
@@ -155,7 +155,7 @@ LRESULT CALLBACK FilterProc( int nCode, WPARAM wParam, LPARAM lParam )
                 }
             }
             if (!processed) {
-                QList<QShortcut*> shortcuts = qFindChildren<QShortcut*>(focusWidget->window());
+                QList<QShortcut*> shortcuts = focusWidget->window()->findChildren<QShortcut*>();
                 for (int i = 0; i < shortcuts.count() && !processed; ++i) {
                     QShortcut *shortcut = shortcuts.at(i);
                     if (!shortcut->isEnabled() || shortcut->key() != shortcutKey)
