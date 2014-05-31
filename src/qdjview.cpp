@@ -4745,13 +4745,18 @@ qstring_puts(miniexp_io_t *io, const char *s)
 static QString
 miniexp_to_string(miniexp_t expr, int width=40, bool octal=false)
 {
-  static int one = 1;
   QByteArray buffer;
   miniexp_io_t io;
   miniexp_io_init(&io);
   io.fputs = qstring_puts;
   io.data[1] = (void*)&buffer;
-  io.p_print7bits = (octal ? &one : 0);
+#ifdef miniexp_io_print7bits
+  static int flags = miniexp_io_print7bits;
+  io.p_flags = (octal) ? &flags : 0;
+#else
+  static int flags = 1;
+  io.p_print7bits = (octal) ? &flags : 0;
+#endif
   miniexp_pprint_r(&io, expr, width);
   return QString::fromUtf8(buffer.data());
 }
