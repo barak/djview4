@@ -992,8 +992,8 @@ QDjViewPrefsDialog::loadLanguageComboBox(QString lang)
 {
   // supported languages
   static const char *languages[] = { 
-    "cs","de","en","fr","it","ja","ru","uk","es",
-    "zh_cn","zh_tw",0 } ;
+    "cs","de","en","es","fr","it","ja","ru","uk",
+    "zh_CN","zh_TW",0 } ;
   // get application
   QComboBox *cb = d->ui.languageComboBox;
   QCheckBox *db = d->ui.languageCheckBox;
