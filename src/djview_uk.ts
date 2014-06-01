@@ -836,9 +836,10 @@ Filename &apos;%1&apos; has no suffix.</source>
     </message>
     <message>
         <location filename="qdjview.cpp" line="537"/>
-        <source>150%</source>
+        <source>&amp;150%</source>
+        <oldsource>150%</oldsource>
         <comment>Zoom|</comment>
-        <translation>150%</translation>
+        <translation>&amp;150%</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="543"/>

@@ -404,9 +404,10 @@
     </message>
     <message>
         <location filename="qdjview.cpp" line="537"/>
-        <source>150%</source>
+        <source>&amp;150%</source>
+        <oldsource>150%</oldsource>
         <comment>Zoom|</comment>
-        <translation>150%</translation>
+        <translation>&amp;150%</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="538"/>
@@ -422,7 +423,7 @@
     <message>
         <location filename="qdjview.cpp" line="544"/>
         <source>Magnify 100%</source>
-        <translation>Amoliar 100%</translation>
+        <translation>Ampliar 100%</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="549"/>
@@ -521,13 +522,13 @@
     <message>
         <location filename="qdjview.cpp" line="599"/>
         <source>Rotate page image counter-clockwise.</source>
-        <translation>Girar página en sentidoanti horario.</translation>
+        <translation>Girar página en sentido antihorario.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="603"/>
         <source>Rotate &amp;Right</source>
         <comment>Rotate|</comment>
-        <translation>Girar hacia la &amp;derecha</translation>
+        <translation>Girar a la &amp;derecha</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="605"/>

@@ -534,7 +534,7 @@ QDjView::createActions()
     << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
-  actionZoom150 = makeAction(tr("150%", "Zoom|"), false)
+  actionZoom150 = makeAction(tr("&150%", "Zoom|"), false)
     << tr("Magnify 150%")
     << QVariant(200)
     << Trigger(this, SLOT(performZoom()))
