@@ -49,10 +49,11 @@ CONTRIBUTORS
 
 Translations for djview were contributed by:
 
-djview_fr.ts            Leon Bottou <leonb@users.sourceforge.net>
-djview_uk.ts            Yuri Chornoivan <yurchor@ukr.net>
-djview_de.ts            Marc Feld <mfeld@users.sourceforge.net>
 djview_cs.ts            Petr Pisar <petr.pisar@atlas.cz>
+djview_de.ts            Marc Feld <mfeld@users.sourceforge.net>
+djview_es.ts            Mike Molina <mmolina.unphysics@gmail.com>
+djview_fr.ts            Leon Bottou <leonb@users.sourceforge.net>
 djview_ru.ts            Alexander Potashev <aspotashev@gmail.com>
-djview_zh_cn.ts         Lee Chenhwa <leechenhwa@aim.com>
+djview_uk.ts            Yuri Chornoivan <yurchor@ukr.net>
+djview_zh_CN/TW.ts      Lee Chenhwa <leechenhwa@aim.com>
 
