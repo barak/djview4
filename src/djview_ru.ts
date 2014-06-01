@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ru">
+<TS version="2.0" language="ru">
 <context>
     <name>Generic</name>
     <message>
-        <location filename="qdjviewprefs.cpp" line="1004"/>
+        <location filename="qdjviewprefs.cpp" line="1005"/>
         <source>thisLanguage</source>
         <comment>Name of THIS language</comment>
         <translation>Русский</translation>
@@ -915,25 +915,25 @@ Filename &apos;%1&apos; has no suffix.</source>
         <comment>View|Rotate</comment>
         <translation>По&amp;ворот</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="qdjview.cpp" line="609"/>
         <source>Rotate &amp;0°</source>
         <comment>Rotate|</comment>
         <translation>Поворот на &amp;0°</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="qdjview.cpp" line="621"/>
         <source>Rotate &amp;180°</source>
         <comment>Rotate|</comment>
         <translation>Поворот на &amp;180°</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="qdjview.cpp" line="627"/>
         <source>Rotate &amp;270°</source>
         <comment>Rotate|</comment>
         <translation>Поворот на &amp;270°</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="qdjview.cpp" line="615"/>
         <source>Rotate &amp;90°</source>
         <comment>Rotate|</comment>
@@ -1444,7 +1444,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <source>Show pages right-to-left in side-by-side mode.</source>
         <translation>Показывать страницы справа налево в режиме пар страниц.</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="qdjview.cpp" line="4283"/>
         <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;%2&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=%3&gt;%3&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;%2&lt;p&gt;Программа просмотра документов DjVu&lt;br&gt;&lt;a href=%3&gt;%3&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;Данная программа - свободное программное обеспечение. Вы можете распространять и/или модифицировать ее на условиях Стандартной Общественной Лицензии GNU (GNU General Public License), опубликованной Фондом Свободного ПО (Free Software Foundation). Данная прогдамма распространяется &lt;i&gt;без каких-либо гарантий&lt;/i&gt;. Подробности смотрите в Стандартной Общественной Лицензии GNU (GNU General Public License).&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</translation>
@@ -1474,7 +1474,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <translation>не удается открыть «%1».</translation>
     </message>
     <message>
-        <location filename="djview.cpp" line="362"/>
+        <location filename="djview.cpp" line="361"/>
         <source>Usage: djview [options] [filename-or-url]
 Common options include:
 -help~~~Prints this message.
@@ -2276,7 +2276,7 @@ Do you want to replace it?</source>
         <source>Page #%1</source>
         <translation>Страница №%1</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="qdjviewdialogs.cpp" line="502"/>
         <source>Page #%1 - « %2 »</source>
         <translation>Страница №%1 — «%2»</translation>
