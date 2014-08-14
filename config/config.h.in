@@ -37,6 +37,9 @@
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
 
+/* Define to 1 if you have the <getopt.h> header file. */
+#undef HAVE_GETOPT_H
+
 /* Define if you have glib-2.0. */
 #undef HAVE_GLIB
 

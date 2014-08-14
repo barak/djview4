@@ -114,7 +114,7 @@ AC_HEADER_STDC
 AC_HEADER_DIRENT
 AC_HEADER_TIME
 AC_HEADER_SYS_WAIT     
-AC_CHECK_HEADERS(unistd.h string.h strings.h)
+AC_CHECK_HEADERS(unistd.h string.h strings.h getopt.h)
 
 
 # ----------------------------------------
