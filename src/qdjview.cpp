@@ -1011,7 +1011,7 @@ QDjView::updateActions()
   pageCombo->setCurrentIndex(pageCombo->findData(QVariant(pageno)));
   if (pageno >= 0 && pagenum > 0)
     {
-      if (pageName(pageno,true).isEmpty())
+      if (pageName(pageno,true).isEmpty() && !pageCombo->hasFocus())
         pageCombo->setEditText(QString("%1 / %2").arg(pageno+1).arg(pagenum));
       else
         pageCombo->setEditText(pageName(pageno));
@@ -2449,6 +2449,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   pageCombo->setInsertPolicy(QComboBox::NoInsert);
   pageCombo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
   pageCombo->setMinimumWidth(90);
+  pageCombo->installEventFilter(this);
   connect(pageCombo, SIGNAL(activated(int)),
           this, SLOT(pageComboActivated(int)));
   connect(pageCombo->lineEdit(), SIGNAL(editingFinished()),
@@ -3689,6 +3690,11 @@ QDjView::eventFilter(QObject *watched, QEvent *event)
       if (qobject_cast<QMenu*>(watched))
         return QApplication::sendEvent(this, event);
       break;
+    case QEvent::FocusIn:
+      if (watched == pageCombo)
+        if (widget && documentPages.size())
+          pageCombo->setEditText(pageName(widget->page()));
+      break;
     default:
       break;
     }
@@ -4471,13 +4477,11 @@ QDjView::performEscape()
 void 
 QDjView::performGoPage()
 {
-  if (pageCombo && pageCombo->lineEdit())
+  if (pageCombo)
     {
-      QLineEdit *le = pageCombo->lineEdit();
       toolBar->show();
-      le->setFocus();
-      updateActionsLater();
-      QTimer::singleShot(0, le, SLOT(selectAll()));
+      pageCombo->setFocus();
+      QTimer::singleShot(0, pageCombo->lineEdit(), SLOT(selectAll()));
     }
 }
 
