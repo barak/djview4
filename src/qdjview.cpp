@@ -2326,6 +2326,9 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 
   // Try using GLWidget?
   bool useOpenGL = prefs->openGLAccel;
+  QString envOpenGL = QString::fromLocal8Bit(::getenv("DJVIEW_OPENGL"));
+  useOpenGL |= string_is_on(envOpenGL);
+  useOpenGL &= !string_is_off(envOpenGL);
   if (viewerMode != STANDALONE)
     useOpenGL = false; // GLWidget/XEmbed has focus issues
   
