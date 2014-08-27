@@ -682,7 +682,7 @@ struct MapArea
   bool contains(const QPoint &p);
   void maybeRotate(struct Page *p);
   QPainterPath contour(QRectMapper &m, QPoint &offset);
-  void update(QWidget *w, QRectMapper &m, QPoint offset);
+  void update(QWidget *w, QRectMapper &m, QPoint offset, bool clicked=false);
   void paintBorder(QPaintDevice *w, QRectMapper &m, QPoint offset, bool allLinks=false);
   void paintPermanent(QPaintDevice *w, QRectMapper &m, QPoint o, double z=100);
   void paintTransient(QPaintDevice *w, QRectMapper &m, QPoint o, bool allLinks=false);
@@ -3409,7 +3409,7 @@ MapArea::contains(const QPoint &p)
 }
 
 void 
-MapArea::update(QWidget *w, QRectMapper &m, QPoint offset)
+MapArea::update(QWidget *w, QRectMapper &m, QPoint offset, bool clicked)
 {
   // The mapper <m> maps page coordinates to 
   // widget coordinates translated by <offset>.
@@ -3433,6 +3433,11 @@ MapArea::update(QWidget *w, QRectMapper &m, QPoint offset)
       QRegion region(bm);
       region.translate(rect.topLeft());
       w->update(region);
+    }
+  else if (clicked && (areaType == k.text || areaType == k.pushpin))
+    {
+      int bw2 = (bw / 2) + 1;
+      w->update(rect.adjusted(-bw2-1, -bw2-1, bw2+1, bw2+1));
     }
   else
     {
@@ -4795,7 +4800,8 @@ QDjVuWidget::stopInteraction(void)
           priv->pixelCache.clear();
           priv->currentMapArea->update(priv->widget->viewport(),
                                        priv->currentMapAreaPage->mapper,
-                                       priv->visibleRect.topLeft()); 
+                                       priv->visibleRect.topLeft(),
+                                       true); 
         }
       else if (priv->currentMapArea && priv->currentMapArea->url 
                && priv->hyperlinkEnabled )
