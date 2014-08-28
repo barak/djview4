@@ -799,6 +799,35 @@ SHIFT	Hold this key to display all hyperlinks.
 .TE
 .PP
 
+
+.SH ENVIRONMENT
+Setting environment variable 
+.BR DJVIEW_VERBOSE
+to a nonzero value is equivalent to calling 
+.BR djview
+with option 
+.BR -verbose .
+Setting environment variable
+.BR DJVIEW_OPENGL
+to values 0 or 1 overrides the preference
+settings regarding OpenGL rendering.
+
+When the user clicks on a djvu hyperlink pointing to a web page, the program
+first tries to execute the web browser programs whose names are listed in the
+colon separated environment variable
+.BR BROWSER ,
+then tries sensible platform dependent defaults.
+
+The user interface language is determined by first trying
+to find a complete set of translation files for the 
+language specified in the preference dialog, then
+for the ISO 639 languages specified in the colon separated
+environment variable 
+.BR LANGUAGE ,
+and finally the language specified by the system locale.
+If all these searches fail, the user interface language
+reverts to the english default.
+
 .SH CREDITS
 This program was written by L\('eon Bottou <leonb@users.sf.net>
 and is distributed under the GNU General Public License.
