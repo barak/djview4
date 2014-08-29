@@ -83,6 +83,8 @@
 #include <QStackedLayout>
 #include <QStatusBar>
 #include <QString>
+#include <QStyle>
+#include <QStyleOptionComboBox>
 #include <QTextDocument>
 #include <QTextStream>
 #include <QTimer>
@@ -157,7 +159,17 @@ urlSetQueryItems(QUrl &url, const QueryItems &items)
 #endif
 }
 
-
+static void
+growPageCombo(QComboBox *p, QString contents = QString())
+{
+  QFontMetrics metrics(p->font());
+  QSize csize = metrics.size(Qt::TextSingleLine, contents);
+  QStyleOptionComboBox options;
+  options.initFrom(p);
+  options.editable = true;
+  QSize osize = p->style()->sizeFromContents(QStyle::CT_ComboBox,&options,csize,p);
+  p->setMinimumWidth(qMax(p->minimumWidth(), osize.width()));
+}
 
 
 
@@ -1009,12 +1021,13 @@ QDjView::updateActions()
   int pageno = widget->page();
   pageCombo->clearEditText();
   pageCombo->setCurrentIndex(pageCombo->findData(QVariant(pageno)));
-  if (pageno >= 0 && pagenum > 0)
+  if (pageno >= 0 && pagenum > 0  && !pageCombo->hasFocus())
     {
-      if (pageName(pageno,true).isEmpty() && !pageCombo->hasFocus())
-        pageCombo->setEditText(QString("%1 / %2").arg(pageno+1).arg(pagenum));
-      else
-        pageCombo->setEditText(pageName(pageno));
+      QString sNumber = QString("%1 / %2").arg(pageno+1).arg(pagenum);
+      QString sName = pageName(pageno,true);
+      growPageCombo(pageCombo, sNumber);
+      pageCombo->setEditText((sName.isEmpty()) ? sNumber : sName);
+      pageCombo->lineEdit()->setCursorPosition(0);
     }
   pageCombo->setEnabled(pagenum > 0);
   actionNavFirst->setEnabled(pagenum>0 && pageno>0);
@@ -2451,7 +2464,6 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   pageCombo->setEditable(true);
   pageCombo->setInsertPolicy(QComboBox::NoInsert);
   pageCombo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-  pageCombo->setMinimumWidth(90);
   pageCombo->installEventFilter(this);
   connect(pageCombo, SIGNAL(activated(int)),
           this, SLOT(pageComboActivated(int)));
