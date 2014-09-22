@@ -333,7 +333,6 @@ protected:
   QStyleOptionViewItem viewOptions() const;
 private:
   QDjViewThumbnails *widget;
-  QDjView *djview;
 };
 
 
@@ -378,8 +377,7 @@ private:
 
 QDjViewThumbnails::View::View(QDjViewThumbnails *widget)
   : QListView(widget), 
-    widget(widget), 
-    djview(widget->djview)
+    widget(widget)
 {
   setDragEnabled(false);
   setEditTriggers(QAbstractItemView::NoEditTriggers);
