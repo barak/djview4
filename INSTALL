@@ -156,35 +156,38 @@ There are two options under Mac OS X.
   Please refer to section 2 for details.      
 
 * Installing the native Mac OS X version of Qt4.
-  First install the native Mac version of Qt4.
-  We recommend that you first install macports
-  with the libraries zlib, libpng, jpeg and tiff.
-  You must also install Qt and compile djvulibre.
-  Assuming Qt is in the default location and
-  djvulibre in /usr/local, configure with
+  First install the native Mac version of Qt4 or Qt5.
 
-    $ ./configure --disable-nsdejavu \
+  We recommend that you first install macports or homebrew and make 
+  sure that libraries zlib, libpng, jpeg, and tiff are available. 
+  You must also install (or compile) Qt and djvulibre.
+
+  Here are examples of configure commands that have worked:
+
+    $ ./configure --disable-nsdejavu --disable-desktopfiles \
         PKG_CONFIG_PATH=/usr/local/lib/pkgconfig \
         QMAKE=/Developer/Tools/Qt/qmake \
         QMAKESPEC=macx-g++
-        
+
+    $ ./configure --disable-nsdejavu --disable-desktopfiles \
+        PKG_CONFIG_PATH=/usr/local/lib/pkgconfig \
+        QMAKE=/Users/sombody/Qt/5.3/clang_64/bin/qmake \
+        DDJVUAPI_LIBS="/usr/local/lib/libdjvulibre.a /usr/local/lib/libjpeg.a" \
+        DDJVUAPI_CFLAGS=-I/usr/local/include \
+        --with-tiff=no 
+
   Then compile with
   
     $ make
 
-  Note1: The Qt4 documentation states that qmake can 
-  also be used to generate an XCode project file.
-  But this is more dependent on the exact XCode version
-  you are using. Use QMAKESPEC=macx-xcode
-   
-  Note2: This procedure generates a nice application bundle.
+  This procedure generates a nice application bundle.
   However the binaries inside the bundle may depend on 
   shared libraries located elsewhere. To produce a distributable
-  application bundle, you must fix that with command install_name_tool.
-  See the Qt documentation about the deployment of Mac applications.
-
-  Note3: Do not use command "make install".  
-  Simply copy the application bundle where you want it.
+  application bundle, you must copy the libraries inside the bundle
+  and use command install_name_tool to make sure that the executable
+  finds the included copy of the libraries. This is explained in post 
+  <http://sourceforge.net/p/djvu/discussion/103286/thread/d50b1c32/#614e/e4f9>.
+  See also the Qt documentation about the deployment of Mac applications.
 
 
 3.2 WINDOWS
