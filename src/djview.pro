@@ -37,7 +37,8 @@ CONFIG(autoconf) {
     #   QMAKE_LFLAGS += ...
 } else {
     # customize below
-    #LIBS += -ldjvulibre
+    INCLUDEPATH += /usr/include
+    LIBS += -L/usr/local/lib -ldjvulibre -ljpeg
     #QMAKE_CXXFLAGS += 
     #QMAKE_CFLAGS += 
     #QMAKE_LFLAGS += 
