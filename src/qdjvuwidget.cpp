@@ -4998,77 +4998,85 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
       if (done) 
         return;
       // Standard key bindings
-      event->accept();
+      Qt::KeyboardModifiers modifiers = event->modifiers();
       switch(event->key())
         {
         case Qt::Key_1:
           setZoom(100);
-          return;
+          break;
         case Qt::Key_2:
           setZoom(200);
-          return;
+          break;
         case Qt::Key_3:
           setZoom(300);
-          return;
+          break;
         case Qt::Key_W:
           setZoom(ZOOM_FITWIDTH);
-          return;
+          break;
         case Qt::Key_P:
           setZoom(ZOOM_FITPAGE);
-          return;
+          break;
         case Qt::Key_BracketLeft: 
           priv->updateCurrentPoint(priv->cursorPos);
           rotateLeft(); 
-          return;
+          break;
         case Qt::Key_BracketRight: 
           priv->updateCurrentPoint(priv->cursorPos);
           rotateRight(); 
-          return;
+          break;
         case Qt::Key_Plus: 
         case Qt::Key_Equal: 
           priv->updateCurrentPoint(priv->cursorPos);
           zoomIn(); 
-          return;
+          break;
         case Qt::Key_Minus: 
           priv->updateCurrentPoint(priv->cursorPos);
           zoomOut(); 
-          return;
+          break;
         case Qt::Key_Home:
-          if (event->modifiers() == Qt::ControlModifier)
+          if (modifiers == Qt::ControlModifier)
             firstPage();
-          else
+          else if (modifiers == Qt::NoModifier)
             moveToPageTop();
-          return;
+          else 
+            return;
+          break;
         case Qt::Key_End:
-          if (event->modifiers()==Qt::ControlModifier)
+          if (modifiers==Qt::ControlModifier)
             lastPage();
-          else
+          else if (modifiers == Qt::NoModifier)
             moveToPageBottom();
-          return;
+          else 
+            return;
+          break;
         case Qt::Key_PageUp:
           prevPage(); 
-          return;
+          break;
         case Qt::Key_PageDown:
           nextPage(); 
-          return;
+          break;
         case Qt::Key_Space:
-          if (event->modifiers()==Qt::ShiftModifier)
+          if (modifiers==Qt::ShiftModifier)
             readPrev();
-          else
+          else if (modifiers == Qt::NoModifier)
             readNext();
-          return;
+          else 
+            return;
+          break;
         case Qt::Key_B:
         case Qt::Key_Backspace:
-          if (event->modifiers()==Qt::ShiftModifier)
+          if (modifiers==Qt::ShiftModifier)
             readNext();
-          else
+          else if (modifiers == Qt::NoModifier)
             readPrev();
-          return;
+          else
+            return;
+          break;
         case Qt::Key_Left:
         case Qt::Key_Right:
         case Qt::Key_Up:
         case Qt::Key_Down: 
-          {
+          if (modifiers == Qt::NoModifier) {
             int svstep = verticalScrollBar()->singleStep();
             int shstep = horizontalScrollBar()->singleStep();
             verticalScrollBar()->setSingleStep(priv->lineStep);
@@ -5076,19 +5084,22 @@ QDjVuWidget::keyPressEvent(QKeyEvent *event)
             QAbstractScrollArea::keyPressEvent(event);           
             verticalScrollBar()->setSingleStep(svstep);
             horizontalScrollBar()->setSingleStep(shstep);
-            return; 
-          }
+          } else
+            return;
+          break; 
         case Qt::Key_H:
           {
             int pageno = page();
             if (pageno>=0)
               clearHighlights(pageno);
-            return;
+            break;
           }
         default:
-          event->ignore();
+          // Return without accepting the event
           return;
         }
+      // Only reach this point when key is accepted
+      event->accept();
     }
 }
 

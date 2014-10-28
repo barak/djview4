@@ -172,6 +172,7 @@ protected:
 
   void     fillToolBar(QToolBar *toolBar);
   QAction *makeAction(QString text);
+  QAction *makeAction(QString text, Qt::ShortcutContext sc);
   QAction *makeAction(QString text, bool value);
   void     createActions(void);
   void     createMenus(void);
@@ -306,6 +307,7 @@ protected:
   QActionGroup *modeActionGroup;
   QActionGroup *rotationActionGroup;
   // all actions
+  QObjectList allActions;
   QAction *actionNew;
   QAction *actionOpen;
   QAction *actionOpenLocation;

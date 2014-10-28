@@ -353,13 +353,25 @@ QDjView::fillToolBar(QToolBar *toolBar)
 QAction *
 QDjView::makeAction(QString text)
 {
-  return new QAction(text, this);
+  QAction *action = new QAction(text, this);
+  allActions.append(action);
+  return action;
+}
+
+QAction *
+QDjView::makeAction(QString text, Qt::ShortcutContext scontext)
+{
+  QAction *action = new QAction(text, widget);
+  allActions.append(action);
+  action->setShortcutContext(scontext);
+  return action;
 }
 
 QAction *
 QDjView::makeAction(QString text, bool value)
 {
   QAction *action = new QAction(text, this);
+  allActions.append(action);
   action->setCheckable(true);
   action->setChecked(value);
   return action;
@@ -506,29 +518,31 @@ QDjView::createActions()
     << tr("Select a rectangle in the document.")
     << Trigger(this, SLOT(performSelect(bool)));
   
-  actionZoomIn = makeAction(tr("Zoom &In", "Zoom|"))
+  actionZoomIn = makeAction(tr("Zoom &In", "Zoom|"), Qt::WidgetWithChildrenShortcut)
     << QIcon(":/images/icon_zoomin.png")
     << tr("Increase the magnification.")
+    << QKeySequence("+")
     << Trigger(widget, SLOT(zoomIn()));
 
-  actionZoomOut = makeAction(tr("Zoom &Out", "Zoom|"))
+  actionZoomOut = makeAction(tr("Zoom &Out", "Zoom|"), Qt::WidgetWithChildrenShortcut)
     << QIcon(":/images/icon_zoomout.png")
     << tr("Decrease the magnification.")
+    << QKeySequence("-")
     << Trigger(widget, SLOT(zoomOut()));
 
-  actionZoomFitWidth = makeAction(tr("Fit &Width", "Zoom|"),false)
+  actionZoomFitWidth = makeAction(tr("Fit &Width", "Zoom|"), false)
     << tr("Set magnification to fit page width.")
     << QVariant(QDjVuWidget::ZOOM_FITWIDTH)
     << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
-  actionZoomFitPage = makeAction(tr("Fit &Page", "Zoom|"),false)
+  actionZoomFitPage = makeAction(tr("Fit &Page", "Zoom|"), false)
     << tr("Set magnification to fit page.")
     << QVariant(QDjVuWidget::ZOOM_FITPAGE)
     << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
-  actionZoomOneToOne = makeAction(tr("One &to one", "Zoom|"),false)
+  actionZoomOneToOne = makeAction(tr("One &to one", "Zoom|"), false)
     << tr("Set full resolution magnification.")
     << QVariant(QDjVuWidget::ZOOM_ONE2ONE)
     << Trigger(this, SLOT(performZoom()))
@@ -570,51 +584,59 @@ QDjView::createActions()
     << Trigger(this, SLOT(performZoom()))
     << *zoomActionGroup;
 
-  actionNavFirst = makeAction(tr("&First Page", "Go|"))
+  actionNavFirst = makeAction(tr("&First Page", "Go|"), Qt::WidgetWithChildrenShortcut)
     << QIcon(":/images/icon_first.png")
     << tr("Jump to first document page.")
+    << QKeySequence("Ctrl+Home")
     << Trigger(widget, SLOT(firstPage()))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionNavNext = makeAction(tr("&Next Page", "Go|"))
+  actionNavNext = makeAction(tr("&Next Page", "Go|"), Qt::WidgetWithChildrenShortcut)
     << QIcon(":/images/icon_next.png")
     << tr("Jump to next document page.")
+    << QKeySequence("PgDown")
     << Trigger(widget, SLOT(nextPage()))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionNavPrev = makeAction(tr("&Previous Page", "Go|"))
+  actionNavPrev = makeAction(tr("&Previous Page", "Go|"), Qt::WidgetWithChildrenShortcut)
     << QIcon(":/images/icon_prev.png")
     << tr("Jump to previous document page.")
+    << QKeySequence("PgUp")
     << Trigger(widget, SLOT(prevPage()))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionNavLast = makeAction(tr("&Last Page", "Go|"))
+  actionNavLast = makeAction(tr("&Last Page", "Go|"), Qt::WidgetWithChildrenShortcut)
     << QIcon(":/images/icon_last.png")
     << tr("Jump to last document page.")
+    << QKeySequence("Ctrl+End")
     << Trigger(widget, SLOT(lastPage()))
     << Trigger(this, SLOT(updateActionsLater()));
 
   actionBack = makeAction(tr("&Backward", "Go|"))
     << QIcon(":/images/icon_back.png")
     << tr("Backward in history.")
+    << QKeySequence("Alt+Left")
     << Trigger(this, SLOT(performUndo()))
     << Trigger(this, SLOT(updateActionsLater()));
 
   actionForw = makeAction(tr("&Forward", "Go|"))
     << QIcon(":/images/icon_forw.png")
     << tr("Forward in history.")
+    << QKeySequence("Alt+Right")
     << Trigger(this, SLOT(performRedo()))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionRotateLeft = makeAction(tr("Rotate &Left", "Rotate|"))
+  actionRotateLeft = makeAction(tr("Rotate &Left", "Rotate|"), Qt::WidgetWithChildrenShortcut)
     << QIcon(":/images/icon_rotateleft.png")
     << tr("Rotate page image counter-clockwise.")
+    << QKeySequence("[")
     << Trigger(widget, SLOT(rotateLeft()))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionRotateRight = makeAction(tr("Rotate &Right", "Rotate|"))
+  actionRotateRight = makeAction(tr("Rotate &Right", "Rotate|"), Qt::WidgetWithChildrenShortcut)
     << QIcon(":/images/icon_rotateright.png")
     << tr("Rotate page image clockwise.")
+    << QKeySequence("]")
     << Trigger(widget, SLOT(rotateRight()))
     << Trigger(this, SLOT(updateActionsLater()));
 
@@ -954,7 +976,7 @@ QDjView::updateActions()
     fillToolBar(toolBar);
   
   // Enable all actions
-  foreach(QObject *object, children())
+  foreach(QObject *object, allActions)
     if (QAction *action = qobject_cast<QAction*>(object))
       action->setEnabled(true);
 
@@ -1062,7 +1084,7 @@ QDjView::updateActions()
   // Disable almost everything when document==0
   if (! document)
     {
-      foreach(QObject *object, children())
+      foreach(QObject *object, allActions)
         if (QAction *action = qobject_cast<QAction*>(object))
           if (action != actionNew &&
               action != actionOpen &&
