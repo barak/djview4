@@ -315,7 +315,7 @@ AC_DEFUN([AC_PROGS_QT],
   AC_ARG_VAR(QTDIR,[Location of the Qt package (deprecated).])
 
   path=$PATH
-  if test -n "QTDIR" && test -d "$QTDIR/include" ; then
+  if test -n "$QTDIR" && test -d "$QTDIR/include" ; then
     if test -d "$QTDIR/include/Qt" ; then :
     elif test -f "$QTDIR/include/qobject.h" ; then
       AC_MSG_ERROR([We want Qt4 or Qt5 but your QTDIR variable points to a Qt3 install.
@@ -362,7 +362,7 @@ If you define QMAKESPEC, make sure it is correct.])
       qtversion=qt4
       ;;
     5.*)
-      AC_MSG_RESULT([Program qmake reports Qt version $QT_VERSION. (experimental)]) 
+      AC_MSG_RESULT([Program qmake reports Qt version $QT_VERSION.]) 
       qtversion=qt5
       ;;
     *)

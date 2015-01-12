@@ -16390,7 +16390,7 @@ fi
 
 
   path=$PATH
-  if test -n "QTDIR" && test -d "$QTDIR/include" ; then
+  if test -n "$QTDIR" && test -d "$QTDIR/include" ; then
     if test -d "$QTDIR/include/Qt" ; then :
     elif test -f "$QTDIR/include/qobject.h" ; then
       as_fn_error $? "We want Qt4 or Qt5 but your QTDIR variable points to a Qt3 install.
@@ -16480,8 +16480,8 @@ $as_echo "Program qmake reports Qt version $QT_VERSION." >&6; }
       qtversion=qt4
       ;;
     5.*)
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: Program qmake reports Qt version $QT_VERSION. (experimental)" >&5
-$as_echo "Program qmake reports Qt version $QT_VERSION. (experimental)" >&6; }
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: Program qmake reports Qt version $QT_VERSION." >&5
+$as_echo "Program qmake reports Qt version $QT_VERSION." >&6; }
       qtversion=qt5
       ;;
     *)
