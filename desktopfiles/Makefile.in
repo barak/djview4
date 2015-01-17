@@ -44,11 +44,12 @@ datadir_djview = ${datadir}/djvu/djview4/desktop
 
 # -------- all
 
-all: icons register-djview-menu
+SVGICONS = hi-djview4.svgz 
+PNGICONS = hi32-djview4.png hi64-djview4.png
 
-icons: hi-djview4.svgz hi32-djview4.png hi64-djview4.png
+all: register-djview-menu ${SVGICONS} ${PNGICONS}
 
-hi32-djview4.png hi64-djview4.png: djview.svg
+${PNGICONS}: djview.svg
 	s=`echo $@ | sed -e 's/[a-z]*\([0-9]*\).*/\1/'`; \
 	  ${RSVG} -w $${s} -h $${s} -o $@ $< \
 	  || ${CONVERT} -geometry $${s}x$${s} -depth 8 -background none $< $@ \
@@ -56,7 +57,7 @@ hi32-djview4.png hi64-djview4.png: djview.svg
                          --export-height=$${s} --export-png=$@ $< \
 	  || cp ${srcdir}/prebuilt-$@ $@
 
-hi-djview4.svgz: djview.svg
+${SVGICONS}: djview.svg
 	gzip <$< >$@
 
 register-djview-menu: register-djview-menu.in
@@ -75,16 +76,16 @@ install: install-djview-files
 install-djview-files: FORCE
 	${INSTALL} -d ${DESTDIR}${datadir_djview}
 	${INSTALL_PROGRAM} register-djview-menu ${DESTDIR}${datadir_djview}
-	${INSTALL_DATA} *djview4.png ${DESTDIR}${datadir_djview}
-	${INSTALL_DATA} *djview4.svgz ${DESTDIR}${datadir_djview}
-	${INSTALL_PROGRAM} ${srcdir}/*djview4.desktop ${DESTDIR}${datadir_djview}
+	${INSTALL_DATA} ${PNGICONS} ${DESTDIR}${datadir_djview}
+	${INSTALL_DATA} ${SVGICONS} ${DESTDIR}${datadir_djview}
+	${INSTALL_PROGRAM} ${srcdir}/djvulibre-djview4.desktop ${DESTDIR}${datadir_djview}
 	-@echo "Run ${datadir_djview}/register-djview-menu install"
 	-@echo " to register the djview3 menu entries."
 
 # -------- misc
 
 clean: FORCE
-	-${RM} 2>/dev/null register-djview-menu
+	-${RM} 2>/dev/null register-djview-menu ${PNGICONS} ${SVGICONS}
 
 distclean: clean 
 	-${RM} -r 2>/dev/null Makefile *.rpo ii_files

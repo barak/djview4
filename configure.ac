@@ -321,21 +321,17 @@ AUTO_FLAGS="-I.. $DDJVUAPI_CFLAGS $TIFF_CFLAGS"
 #          because qmake determines itself
 #          its optimization flags...
 
-# copy files for out-of-tree build
-if test -d src && test -r src/qdjvu.cpp ; then : ; else
-  test -d src || mkdir src
-  test -d npdjvu || mkdir npdjvu
-  for n in $srcdir/src/*.pro $srcdir/src/*.ts ; do
-      m=`basename $n`
-      test -r $n && ( cmp -s $n src/$m || cp $n src/$m )
-  done
-  for n in $srcdir/npdjvu/*.pro ; do
-      m=`basename $n`
-      test -r $n && ( cmp -s $n npdjvu/$m || cp $n npdjvu/$m )
-  done
- fi
+# copy qmake files for out-of-tree build
+test -d src \
+  || mkdir src 
+cmp -s $srcdir/src/djview.pro src/djview.pro \
+  || cp $srcdir/src/djview.pro src/djview.pro
+test -d npdjvu \ 
+  || mkdir npdjvu 
+cmp -s $srcdir/npdjvu/npdjvu.pro npdjvu/npdjvu.pro \
+  || cp $srcdir/npdjvu/npdjvu.pro npdjvu/npdjvu.pro
 
-# determine relative location of srcdir
+# patch relative srcdir
 nsrcdir="$srcdir"
 case "$srcdir" in .*) nsrcdir="../$srcdir" ;; esac
 AUTO_FLAGS="-I$nsrcdir/src $AUTO_FLAGS"
@@ -356,6 +352,7 @@ QARG="$QARG QMAKE_LFLAGS+="'"'"$LDFLAGS"'"'
 QARG="$QARG QMAKE_CFLAGS+="'"'"$CFLAGS $AUTO_FLAGS"'"'
 QARG="$QARG QMAKE_CXXFLAGS+="'"'"$CXXFLAGS $AUTO_FLAGS"'"'
 QARG="$QARG QMAKE_CPPFLAGS+="'"'"$CPPFLAGS $AUTO_FLAGS"'"'
+QARG="$QARG MAKEFILE=Makefile.qmake"
 
 # qmake environment variables
 if test -n "$QMAKESPEC" ; then

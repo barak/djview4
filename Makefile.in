@@ -39,43 +39,31 @@ srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 top_builddir = .
 
-SUBDIRS=src nsdejavu desktopfiles
+QMAKESUBDIRS=src
+@NPDJVU_YES@QMAKESUBDIRS:=${QMAKESUBDIRS} npdjvu
+
+AUTOSUBDIRS=
+@NSDEJAVU_YES@AUTOSUBDIRS:=${AUTOSUBDIRS} nsdejavu
+@DESKTOP_YES@AUTOSUBDIRS:=${AUTOSUBDIRS} desktopfiles
 
 # make all
 
-all: all-djview
+all: all-subdirs all-djview-qm
 
-@NSDEJAVU_YES@all: all-nsdejavu
-
-@NPDJVU_YES@all: all-npdjvu
-
-all: all-desktopfiles
-
-all: all-djview-qm
-
-all-djview: FORCE
-	cd src && ${MAKE}
-
-all-nsdejavu: FORCE
-	cd nsdejavu && ${MAKE}
-
-all-npdjvu: FORCE
-	cd npdjvu && ${MAKE}
-
-all-desktopfiles: FORCE
-	cd desktopfiles && ${MAKE}
+all-subdirs: FORCE
+	-for d in ${QMAKESUBDIRS} ; do ( cd $$d && ${MAKE} -f Makefile.qmake ) ; done
+	-for d in ${AUTOSUBDIRS} ; do ( cd $$d && ${MAKE} ) ; done
 
 all-djview-qm: FORCE
+	-for n in ${srcdir}/src/*.ts ; do \
+	   m=`basename $$n` ; cmp $$n src/$$m || cp $$n src/$$m ; done
 	-grep TRANSLATIONS src/djview.pro > src/translations.pro
 	-cd src && test -x "${LRELEASE}" && "${LRELEASE}" translations.pro
 
-# make install
+install: install-subdirs install-djview 
 
-install: install-djview 
-
-@NSDEJAVU_YES@install: install-nsdejavu 
-
-@DESKTOP_YES@install: install-desktopfiles
+install-subdirs: FORCE
+	-for d in ${AUTOSUBDIRS} ; do ( cd $$d && ${MAKE} install ) ; done
 
 install-djview: install-djview-bin install-djview-man install-djview-qm
 
@@ -97,34 +85,19 @@ install-djview-qm: FORCE
           ${INSTALL_DATA} $$qm ${DESTDIR}${datadir}/djvu/djview4 || true ; \
 	done
 
-install-nsdejavu: FORCE
-	( cd nsdejavu && ${MAKE} install )
-
-
-install-desktopfiles: FORCE
-	( cd desktopfiles && ${MAKE} install )
-
-# make clean
-
-clean: clean-subdirs FORCE
-	-${RM} 2>/dev/null src/*.qm src/djview
-	@echo "Done."
+clean: clean-subdirs
 
 clean-subdirs: FORCE
-	-for d in ${SUBDIRS} ; do ( cd $$d && ${MAKE} clean ) ; done
+	-for d in ${QMAKESUBDIRS} ; do ( cd $$d && ${MAKE} -f Makefile.qmake clean ) ; done
+	-for d in ${AUTOSUBDIRS} ; do ( cd $$d && ${MAKE} clean ) ; done
 
-
-# make distclean
-
-distclean: distclean-subdirs FORCE
-	-${RM} 2>/dev/null src/*.qm src/djview
-	-${RM} 2>/dev/null Makefile config.log config.status config.h libtool
-	-${RM} 2>/dev/null -r autom4te.cache
-	@echo "Done."
+distclean: distclean-subdirs
 
 distclean-subdirs: FORCE
-	-for d in ${SUBDIRS} ; do ( cd $$d && ${MAKE} distclean ) ; done
-
+	-for d in ${QMAKESUBDIRS} ; do ( cd $$d && ${MAKE} -f Makefile.qmake distclean ) ; done
+	-for d in ${QMAKESUBDIRS} ; do rm $$d/Makefile.qmake ; done
+	-for d in ${AUTOSUBDIRS} ; do ( cd $$d && ${MAKE} distclean ) ; done
+ 
 
 # phony targets
 
