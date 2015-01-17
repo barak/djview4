@@ -55,10 +55,16 @@ all-subdirs: FORCE
 	-for d in ${AUTOSUBDIRS} ; do ( cd $$d && ${MAKE} ) ; done
 
 all-djview-qm: FORCE
-	-for n in ${srcdir}/src/*.ts ; do \
+	@test -d qm.tmp || mkdir qm.tmp
+	@for n in ${srcdir}/src/*.ts ; do \
+	   m=`basename $$n` ; cmp $$n qm.tmp/$$m || cp $$n qm.tmp/$$m ; done
+	@grep TRANSLATIONS src/djview.pro > qm.tmp/translations.pro
+	cd qm.tmp && test -x "${LRELEASE}" && "${LRELEASE}" translations.pro
+	@for n in qm.tmp/*.qm ; do \
 	   m=`basename $$n` ; cmp $$n src/$$m || cp $$n src/$$m ; done
-	-grep TRANSLATIONS src/djview.pro > src/translations.pro
-	-cd src && test -x "${LRELEASE}" && "${LRELEASE}" translations.pro
+
+clean-djview-qm: FORCE
+	-${RM} -rf qm.tmp
 
 install: install-subdirs install-djview 
 
@@ -85,13 +91,13 @@ install-djview-qm: FORCE
           ${INSTALL_DATA} $$qm ${DESTDIR}${datadir}/djvu/djview4 || true ; \
 	done
 
-clean: clean-subdirs
+clean: clean-djview-qm clean-subdirs
 
 clean-subdirs: FORCE
 	-for d in ${QMAKESUBDIRS} ; do ( cd $$d && ${MAKE} -f Makefile.qmake clean ) ; done
 	-for d in ${AUTOSUBDIRS} ; do ( cd $$d && ${MAKE} clean ) ; done
 
-distclean: distclean-subdirs
+distclean: clean-djview-qm distclean-subdirs
 
 distclean-subdirs: FORCE
 	-for d in ${QMAKESUBDIRS} ; do ( cd $$d && ${MAKE} -f Makefile.qmake distclean ) ; done
