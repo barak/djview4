@@ -57,7 +57,7 @@ all-subdirs: FORCE
 all-djview-qm: FORCE
 	@test -d qm.tmp || mkdir qm.tmp
 	@for n in ${srcdir}/src/*.ts ; do \
-	   m=`basename $$n` ; cmp $$n qm.tmp/$$m || cp $$n qm.tmp/$$m ; done
+	   m=`basename $$n` ; cp $$n qm.tmp/$$m ; done
 	@grep TRANSLATIONS src/djview.pro > qm.tmp/translations.pro
 	cd qm.tmp && test -x "${LRELEASE}" && "${LRELEASE}" translations.pro
 	@for n in qm.tmp/*.qm ; do \

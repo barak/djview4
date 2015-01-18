@@ -352,7 +352,6 @@ QARG="$QARG QMAKE_LFLAGS+="'"'"$LDFLAGS"'"'
 QARG="$QARG QMAKE_CFLAGS+="'"'"$CFLAGS $AUTO_FLAGS"'"'
 QARG="$QARG QMAKE_CXXFLAGS+="'"'"$CXXFLAGS $AUTO_FLAGS"'"'
 QARG="$QARG QMAKE_CPPFLAGS+="'"'"$CPPFLAGS $AUTO_FLAGS"'"'
-QARG="$QARG -o Makefile.qmake"
 
 # qmake environment variables
 if test -n "$QMAKESPEC" ; then
@@ -365,7 +364,8 @@ AC_CONFIG_COMMANDS([qmake_src], [
     ( cd src ; eval "$QMAKE_COMMAND1" )
 ],[
     read QMAKE_COMMAND1 <<QMAKE_COMMAND_EOF
-$QMAKE $QARG VPATH="$nsrcdir/src" djview.pro
+$QMAKE $QARG VPATH="$nsrcdir/src" -o - djview.pro \
+  | awk -f ${nsrcdir}/config/qmsilent.awk > Makefile.qmake
 QMAKE_COMMAND_EOF
 ] )
 
@@ -376,7 +376,8 @@ AC_CONFIG_COMMANDS([qmake_npdjvu], [
     ( cd npdjvu ; eval "$QMAKE_COMMAND2" )
 ],[
     read QMAKE_COMMAND2 <<QMAKE_COMMAND_EOF
-$QMAKE $QARG VPATH="$nsrcdir/src $nsrcdir/npdjvu" npdjvu.pro
+$QMAKE $QARG VPATH="$nsrcdir/src $nsrcdir/npdjvu" -o - npdjvu.pro \
+  | awk -f ${nsrcdir}/config/qmsilent.awk > Makefile.qmake
 QMAKE_COMMAND_EOF
 ] )
 fi
