@@ -352,7 +352,7 @@ QARG="$QARG QMAKE_LFLAGS+="'"'"$LDFLAGS"'"'
 QARG="$QARG QMAKE_CFLAGS+="'"'"$CFLAGS $AUTO_FLAGS"'"'
 QARG="$QARG QMAKE_CXXFLAGS+="'"'"$CXXFLAGS $AUTO_FLAGS"'"'
 QARG="$QARG QMAKE_CPPFLAGS+="'"'"$CPPFLAGS $AUTO_FLAGS"'"'
-QARG="$QARG MAKEFILE=Makefile.qmake"
+QARG="$QARG -o Makefile.qmake"
 
 # qmake environment variables
 if test -n "$QMAKESPEC" ; then
