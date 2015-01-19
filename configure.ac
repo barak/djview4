@@ -19,14 +19,24 @@
 # Initialization
 # ----------------------------------------
 
+m4_define([v_maj], [4])
+m4_define([v_min], [9])
+m4_define([v_ver], [v_maj.v_min])
+
+
 AC_PREREQ([2.67])
-AC_INIT([djview],[4.9])
+AC_INIT([djview],[v_ver])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([config])
 AC_CONFIG_SRCDIR([src/djview.cpp])
 AC_CONFIG_HEADER(config.h:config/config.h.in)
 AC_PREFIX_DEFAULT(/usr/local)
 AC_CANONICAL_HOST
+
+AM_INIT_AUTOMAKE([1.6 subdir-objects dist-bzip2 dist-xz])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+
 
 # Additional libraries
 AC_ARG_WITH(extra-includes,
@@ -84,26 +94,65 @@ AC_PROG_MAKE_SET
 
 # Programs
 AC_PROG_LN_S
+AC_PROG_MKDIR_P
+AC_PROG_SED
+AC_PROG_INSTALL
 AC_PATH_PROG(RM, rm)
+AC_PATH_PROG(RMDIR, rmdir)
 AC_PATH_PROG(TOUCH, touch)
 AC_PATH_PROG(MKDIR, mkdir)
-AC_PATH_PROG(RSVG, rsvg-convert, false)
-AC_PATH_PROG(CONVERT, convert, false)
-AC_PATH_PROG(INKSCAPE, inkscape, false)
-AC_PROG_INSTALL
+AC_PATH_PROG(AWK, awk)
+
+# tweak rm to make libtool happy
+AC_PATH_PROG(RM, rm) 
+RM="$RM -f"
 
 # Libtool & Compilers
 AC_PROG_CC
 AC_PROG_CXX
+AC_SUBST(LIBTOOL_DEPS)
+
+# C++
 AC_LANG(C++)
 AC_CXX_OPTIMIZE
 
 # Only nsdejavu needs libtool.
 # But some combinations of libtool and autoconf
 # break when libtool is in a conditional path.
-RM="$RM -f"
 AC_DISABLE_STATIC
 LT_INIT
+
+# SVG conversion tool
+conversion_tool=no
+AC_PATH_PROG([RSVG], [rsvg-convert], [no])
+if test "x${RSVG}" != "xno"; then
+    conversion_tool="rsvg"
+else
+    AC_PATH_PROG([INKSCAPE], [inkscape], [no])
+    if test "x${INKSCAPE}" != "xno" ; then
+        conversion_tool="inkscape"
+    else
+        AC_MSG_CHECKING([for convert])
+        # convert exists on Windows as system tool or as part of other projects
+        # so we check that it belongs to the ImageMagick project
+        AC_PATH_PROGS_FEATURE_CHECK([CONVERT], [convert], [[
+                    convertout=`eval $ac_path_CONVERT -version 2>&1 |
+                           sed -n 's/^Version: ImageMagick .*/ImageMagick/p '`
+                    test "x$convertout" = "xImageMagick" && \
+                        ac_cv_path_CONVERT=$ac_path_CONVERT ac_path_CONVERT_found=:
+                    ]], [CONVERT=no])
+        AC_MSG_RESULT(${CONVERT})
+        AC_SUBST([CONVERT])
+        if test "x${CONVERT}" != "xno" ; then
+            conversion_tool="convert"
+        fi
+    fi
+fi
+AM_CONDITIONAL([HAVE_CONVERSION_RSVG], [test "x${conversion_tool}" = x"rsvg"])
+AM_CONDITIONAL([HAVE_CONVERSION_CONVERT], [test "x${conversion_tool}" = x"convert"])
+AM_CONDITIONAL([HAVE_CONVERSION_INKSCAPE], [test "x${conversion_tool}" = x"inkscape"])
+AM_CONDITIONAL([HAVE_CONVERSION_TOOL], [! test "x${conversion_tool}" = x"no"])
+
 
 
 # ----------------------------------------
@@ -152,7 +201,8 @@ AC_PATH_TIFF([],[
 
 ac_nsdejavu=yes
 AC_ARG_ENABLE(nsdejavu,
-    AS_HELP_STRING([--disable-nsdejavu],[Do not compile the nsdejavu browser plugin.]),
+    AS_HELP_STRING([--disable-nsdejavu],
+        [Do not compile the nsdejavu browser plugin. @<:@default=enabled@:>@]),
     [ac_nsdejavu=$enableval])
 
 if test "$ac_nsdejavu" != no ; then
@@ -219,24 +269,9 @@ if test "$ac_nsdejavu" != no ; then
     esac
     AC_SUBST(NSDEJAVU_CFLAGS)
     AC_SUBST(NSDEJAVU_LIBS)
-    # nsdejavu install
-    if test -z "$INSTALL_SHLIB" ; then
-        INSTALL_SHLIB="${INSTALL_DATA}"
-        case "$host" in
-            *-cygwin* | *-mingw*)
-                INSTALL_SHLIB="cp"
-                ;;
-        esac
-    fi
-    AC_SUBST(INSTALL_SHLIB)
-    NSDEJAVU_YES=''
-    NSDEJAVU_NO='#'
-else
-    NSDEJAVU_YES='#'
-    NSDEJAVU_NO=''
 fi
-AC_SUBST(NSDEJAVU_YES)
-AC_SUBST(NSDEJAVU_NO)
+
+AM_CONDITIONAL([WANT_NSDEJAVU], [test "x${ac_nsdejavu}" != "no"])
 
 
 # ----------------------------------------
@@ -245,151 +280,69 @@ AC_SUBST(NSDEJAVU_NO)
 
 ac_npdjvu=no
 AC_ARG_ENABLE(npdjvu,
-    AS_HELP_STRING([--enable-npdjvu],[Compile the npdjvu browser plugin (experimental).]),
+    AS_HELP_STRING([--enable-npdjvu],
+        [Compile the npdjvu browser plugin (experimental). @<:@default=disabled@:>@]),
     [ac_npdjvu=$enableval])
 
-if test "$ac_npdjvu" != no ; then
-    NPDJVU_YES=''
-    NPDJVU_NO='#'
-    AC_MSG_NOTICE([Enabling compilation of the **experimental** plugin npdjvu,])
-else
-    NPDJVU_YES='#'
-    NPDJVU_NO=''
-fi
-AC_SUBST(NPDJVU_YES)
-AC_SUBST(NPDJVU_NO)
-
+AM_CONDITIONAL([WANT_NPDJVU], [test "x${ac_npdjvu}" != "xno"])
 
 # ----------------------------------------
 # Desktop files
 # ----------------------------------------
 
-ac_desktopfiles=yes
+ac_desktopfiles="yes"
 AC_ARG_ENABLE(desktopfiles,
-    AS_HELP_STRING([--disable-desktopfiles],[Do not install scripts to register icons and menus.]),
+    AS_HELP_STRING([--disable-desktopfiles], 
+        [Do not install icons and mime types. @<:@default=enabled@:>@]),
     [ac_desktopfiles=$enableval])
 
-# Check for xdg tools
-AC_PATH_PROG(XDG_MIME, xdg-mime)
-AC_PATH_PROG(XDG_ICON_RESOURCE, xdg-icon-resource)
-AC_PATH_PROG(XDG_DESKTOP_MENU, xdg-desktop-menu)
-if test -x ${XDG_MIME} && \
-   test -x ${XDG_ICON_RESOURCE} && \
-   test -x ${XDG_DESKTOP_MENU}
-then 
-  true
-elif test "$ac_desktopfiles" = yes ; then
-  ac_desktopfiles=no
-  AC_MSG_WARN([Cannot find the Xdg Portland tools.
---------------------------------------------------------
-*** The scripts to register icons and menus 
-*** ${datadir}/djvu/osi/desktop/register-djvu-mimetype, and
-*** ${datadir}/djvu/djview3/desktop/register-djview3-menu
-*** will not be installed.
---------------------------------------------------------])
-fi
-
-if test ${ac_desktopfiles} != no ; then
-  DESKTOP_YES=''
-  DESKTOP_NO='#'
-else
-  DESKTOP_YES='#'
-  DESKTOP_NO=''
-fi
-AC_SUBST(DESKTOP_YES)
-AC_SUBST(DESKTOP_NO)
-
-
+AM_CONDITIONAL([WANT_DESKTOPFILES], [test "x${ac_desktopfiles}" != "xno"])
 
 # ----------------------------------------
-# Paths
+# MISC
 # ----------------------------------------
 
-# Define installation paths and version string
-AC_DEFINE_INSTALL_PATHS
+# Define version string
+
 AC_DEFINE_VERSION([${PACKAGE_VERSION}])
 
 # ----------------------------------------
-# Run qmake
+# Prepare qmake arguments
 # ----------------------------------------
 
-# autoconf
-QARG="CONFIG+=autoconf"
-AUTO_LIBS="$DDJVUAPI_LIBS $TIFF_LIBS $LIBS"
-AUTO_FLAGS="-I.. $DDJVUAPI_CFLAGS $TIFF_CFLAGS"
-#    note: AUTO_FLAGS does not contain $OPTS
-#          because qmake determines itself
-#          its optimization flags...
+QMAKELIBS="$DDJVUAPI_LIBS $TIFF_LIBS $LIBS"
+QMAKEFLAGS="$DDJVUAPI_CFLAGS $TIFF_CFLAGS"
+AC_SUBST(QMAKELIBS)
+AC_SUBST(QMAKEFLAGS)
 
-# copy qmake files for out-of-tree build
-test -d src \
-  || mkdir src 
-cmp -s $srcdir/src/djview.pro src/djview.pro \
-  || cp $srcdir/src/djview.pro src/djview.pro
-test -d npdjvu \ 
-  || mkdir npdjvu 
-cmp -s $srcdir/npdjvu/npdjvu.pro npdjvu/npdjvu.pro \
-  || cp $srcdir/npdjvu/npdjvu.pro npdjvu/npdjvu.pro
+QMAKEARG="CONFIG+=autoconf"
 
-# patch relative srcdir
-nsrcdir="$srcdir"
-case "$srcdir" in .*) nsrcdir="../$srcdir" ;; esac
-AUTO_FLAGS="-I$nsrcdir/src $AUTO_FLAGS"
-
-# debug
 if test "$ac_debug" = yes ; then
-  QARG="$QARG CONFIG+=debug"
+  QMAKEARG="$QMAKEARG CONFIG+=debug"
 else
-  QARG="$QARG CONFIG+=release"
+  QMAKEARG="$QMAKEARG CONFIG+=release"
 fi
 
-# qmake arguments
-QARG="$QARG QMAKE_UIC="'"'"$UIC"'"'
-QARG="$QARG QMAKE_MOC="'"'"$MOC"'"'
-QARG="$QARG QMAKE_RCC="'"'"$RCC"'"'
-QARG="$QARG LIBS+="'"'"$AUTO_LIBS"'"'
-QARG="$QARG QMAKE_LFLAGS+="'"'"$LDFLAGS"'"'
-QARG="$QARG QMAKE_CFLAGS+="'"'"$CFLAGS $AUTO_FLAGS"'"'
-QARG="$QARG QMAKE_CXXFLAGS+="'"'"$CXXFLAGS $AUTO_FLAGS"'"'
-QARG="$QARG QMAKE_CPPFLAGS+="'"'"$CPPFLAGS $AUTO_FLAGS"'"'
-
-# qmake environment variables
 if test -n "$QMAKESPEC" ; then
-    QARG="-spec "'"'"$QMAKESPEC"'"'" $QARG"
+    QMAKEARG="-spec $QMAKESPEC $QMAKEARG"
 fi
 
-# config qmake command for djview
-AC_CONFIG_COMMANDS([qmake_src], [
-    echo "config.status: running $QMAKE_COMMAND1"
-    ( cd src ; eval "$QMAKE_COMMAND1" )
-],[
-    read QMAKE_COMMAND1 <<QMAKE_COMMAND_EOF
-$QMAKE $QARG VPATH="$nsrcdir/src" -o - djview.pro \
-  | awk -f ${nsrcdir}/config/qmsilent.awk > Makefile.qmake
-QMAKE_COMMAND_EOF
-] )
-
-# config qmake command for npdjvu
-if test "$ac_npdjvu" != "no" ; then
-AC_CONFIG_COMMANDS([qmake_npdjvu], [
-    echo "config.status (npdjvu) running $QMAKE_COMMAND2"
-    ( cd npdjvu ; eval "$QMAKE_COMMAND2" )
-],[
-    read QMAKE_COMMAND2 <<QMAKE_COMMAND_EOF
-$QMAKE $QARG VPATH="$nsrcdir/src $nsrcdir/npdjvu" -o - npdjvu.pro \
-  | awk -f ${nsrcdir}/config/qmsilent.awk > Makefile.qmake
-QMAKE_COMMAND_EOF
-] )
-fi
+AC_SUBST(QMAKEARG)
 
 
 # ----------------------------------------
 # Outputs
 # ----------------------------------------
 
-AC_CONFIG_FILES(Makefile)
-AC_CONFIG_FILES(nsdejavu/Makefile)
-AC_CONFIG_FILES(desktopfiles/Makefile)
+AC_CONFIG_FILES([
+Makefile
+src/Makefile
+nsdejavu/Makefile
+desktopfiles/Makefile
+npdjvu/Makefile
+])
+
+
 AC_OUTPUT
 
 # ----------------------------------------

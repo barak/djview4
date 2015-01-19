@@ -29,7 +29,7 @@
 nsdejavu \- DjVu browser plugin
 
 .SH SYNOPSIS
-.B LIBDIR/netscape/plugins/NSDEJAVUSO
+.B PLUGINSDIR/NSDEJAVUSO
 
 .SH DESCRIPTION
 The shared library

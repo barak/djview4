@@ -1,31 +1,14 @@
 #!/usr/bin/make -f
 
-override_dh_auto_configure:
-	dh_auto_configure -- --disable-desktopfiles
-
-icon=djvulibre-djview4
-iconbasedir=debian/tmp/usr/share/icons/hicolor
-
-plugsubdir=mozilla/plugins
-plug=$(plugsubdir)/nsdejavu.so
+plugindir=/usr/lib/mozilla/plugins
 
 override_dh_auto_install:
 	dh_auto_install -- \
-		plugindir=/usr/lib/$(plugsubdir) \
+		pluginsdir=$(plugindir) \
 		DESTDIR=$(CURDIR)/debian/tmp
-	@echo "flush djview links, handled with debian alternatives system"
-	rm debian/tmp/usr/bin/djview
-	rm debian/tmp/usr/share/man/man1/djview.*
-	@echo "install djview4 icons"
-	mkdir --parents $(iconbasedir)/scalable/apps
-	mkdir --parents $(iconbasedir)/32x32/apps
-	mkdir --parents $(iconbasedir)/64x64/apps
-	cp desktopfiles/hi-djview4.svgz \
-         $(iconbasedir)/scalable/apps/$(icon).svgz
-	pngtopnm < desktopfiles/hi32-djview4.png \
-	 | ppmtoxpm > $(iconbasedir)/32x32/apps/$(icon).xpm
-	pngtopnm < desktopfiles/hi64-djview4.png \
-	 | ppmtoxpm > $(iconbasedir)/64x64/apps/$(icon).xpm
+	@echo "rename djview as djview4 to allow debian alternatives"
+	mv debian/tmp/usr/bin/djview debian/tmp/usr/bin/djview4
+	mv debian/tmp/usr/share/man/man1/djview.1 debian/tmp/usr/share/man/man1/djview4.1
 
 override_dh_installchangelogs:
 	dh_installchangelogs NEWS

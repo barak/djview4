@@ -42,43 +42,11 @@ __eof__
 
 
 dnl -------------------------------------------------------
-dnl @synopsis AC_DEFINE_INSTALL_PATHS
-dnl Define various installation paths
-dnl -------------------------------------------------------
-AC_DEFUN([AC_DEFINE_INSTALL_PATHS],[
-  save_prefix="${prefix}"
-  save_exec_prefix="${exec_prefix}"
-  test "x$prefix" = xNONE && prefix="$ac_default_prefix"
-  test "x$exec_prefix" = xNONE && exec_prefix="$prefix"
-  DIR_PREFIX="`eval echo \"$prefix\"`"
-  AC_DEFINE_UNQUOTED(DIR_PREFIX,["${DIR_PREFIX}"],[directory "prefix"])
-  DIR_EXEC_PREFIX="`eval echo \"$exec_prefix\"`"
-  DIR_EXEC_PREFIX="`eval echo \"$DIR_EXEC_PREFIX\"`"
-  AC_DEFINE_UNQUOTED(DIR_EXEC_PREFIX,["${DIR_EXEC_PREFIX}"],[directory "exec_prefix"])
-  DIR_BINDIR="`eval echo \"$bindir\"`"
-  DIR_BINDIR="`eval echo \"$DIR_BINDIR\"`"
-  AC_DEFINE_UNQUOTED(DIR_BINDIR,["${DIR_BINDIR}"],[directory "bindir"])
-  DIR_LIBDIR="`eval echo \"$libdir\"`"
-  DIR_LIBDIR="`eval echo \"$DIR_LIBDIR\"`"
-  AC_DEFINE_UNQUOTED(DIR_LIBDIR,["${DIR_LIBDIR}"],[directory "libdir"])
-  DIR_DATADIR="`eval echo \"$datadir\"`"
-  DIR_DATADIR="`eval echo \"$DIR_DATADIR\"`"
-  AC_DEFINE_UNQUOTED(DIR_DATADIR,["${DIR_DATADIR}"],[directory "datadir"])
-  DIR_MANDIR="`eval echo \"$mandir\"`"
-  DIR_MANDIR="`eval echo \"$DIR_MANDIR\"`"
-  AC_DEFINE_UNQUOTED(DIR_MANDIR,["${DIR_MANDIR}"],[directory "mandir"])
-  prefix="${save_prefix}"
-  exec_prefix="${save_exec_prefix}"
-])
-
-
-
-dnl -------------------------------------------------------
 dnl @synopsis AC_CHECK_CXX_OPT(OPTION,
 dnl               ACTION-IF-OKAY,ACTION-IF-NOT-OKAY)
 dnl Check if compiler accepts option OPTION.
 dnl -------------------------------------------------------
-AC_DEFUN(AC_CHECK_CXX_OPT,[
+AC_DEFUN([AC_CHECK_CXX_OPT],[
  opt="$1"
  AC_MSG_CHECKING([if $CXX accepts $opt])
  echo 'void f(){}' > conftest.cc
@@ -99,7 +67,7 @@ dnl Setup option --enable-debug
 dnl Collects optimization/debug option in variable OPTS
 dnl Filter options from CFLAGS and CXXFLAGS
 dnl -------------------------------------------------------
-AC_DEFUN(AC_CXX_OPTIMIZE,[
+AC_DEFUN([AC_CXX_OPTIMIZE],[
    AC_ARG_ENABLE(debug,
         AC_HELP_STRING([--enable-debug],
                        [Compile with debugging options (default: no)]),
@@ -165,17 +133,23 @@ AC_DEFUN([AC_PATH_TIFF],
      CFLAGS="$CFLAGS $TIFF_CFLAGS"
      CXXFLAGS="$CXXFLAGS $TIFF_CFLAGS"
      LIBS="$LIBS $TIFF_LIBS"
-     AC_TRY_LINK([
+     AC_LINK_IFELSE(
+     [AC_LANG_PROGRAM(
+      [[
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include <stdio.h> 
+#include <stdio.h>
 #include <tiffio.h>
 #ifdef __cplusplus
 }
-#endif ],[
-TIFFOpen(0,0);],
-       [ac_tiff=yes], [ac_tiff=no] )
+#endif
+      ]],
+      [
+TIFFOpen(0,0);
+      ])],
+      [ac_tiff=yes],
+      [ac_tiff=no])
      CFLAGS="$save_CFLAGS"
      CXXFLAGS="$save_CXXFLAGS"
      LIBS="$save_LIBS"
