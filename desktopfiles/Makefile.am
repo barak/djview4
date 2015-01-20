@@ -1,5 +1,3 @@
-all: icons
-
 #icons
 
 SVGICONS = \
@@ -9,7 +7,15 @@ PNGICONS = \
 32x32/mimetypes/djvulibre-djview4.png \
 64x64/mimetypes/djvulibre-djview4.png 
 
-icons: $(PNGICONS) $(SVGICONS)
+iconsdir = $(datadir)/icons/hicolor
+
+nobase_icons_DATA = $(PNGICONS) $(SVGICONS)
+
+EXTRA_DIST = \
+  djvu.svg \
+  djview.svg \
+  prebuilt-hi32-djview4.png \
+  prebuilt-hi64-djview4.png
 
 if HAVE_CONVERSION_RSVG
 convert_icons_process = \
@@ -63,20 +69,10 @@ $(SVGICONS): djview.svg Makefile
 	$(AM_V_at)rm -f $@
 	$(svg_verbose)$(svg_process)
 
-iconsdir = $(datadir)/icons/hicolor
-nobase_icons_DATA = $(PNGICONS) $(SVGICONS)
-
 # install desktop file into application dir
 
 applicationsdir = $(datadir)/applications
 dist_applications_DATA = djvulibre-djview4.desktop
-
-# extra
-
-EXTRA_DIST = \
-djvu.svg \
-prebuilt-hi32-djview4.png \
-prebuilt-hi64-djview4.png
 
 # clean
 

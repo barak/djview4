@@ -1,15 +1,23 @@
 
+# plugin
+
 pluginsdir = ${libdir}/mozilla/plugins
 
 plugins_LTLIBRARIES = nsdejavu.la
 
-nsdejavu_la_SOURCES = nsdejavu.c
+nsdejavu_la_SOURCES = nsdejavu.c 
 nsdejavu_la_LDFLAGS = -module -rpath ${pluginsdir} -avoid-version
 nsdejavu_la_CPPFLAGS = -DDIR_BINDIR=\"$(bindir)\" -I${srcdir} -I${srcdir}/npsdk
 nsdejavu_la_CFLAGS = $(OPTS) $(NSDEJAVU_CFLAGS) ${GLIB_CFLAGS}
 nsdejavu_la_LIBADD = $(NSDEJAVU_LIBS)
 
+EXTRA_DIST = npsdk README COPYING
+
+# man page
+
 man1_MANS = nsdejavu.1
+
+EXTRA_DIST += nsdejavu.1.in
 
 sed_process = eval "nsdejavu=`cat nsdejavu.x`" && $(SED) \
  -e "s,PLUGINSDIR,${pluginsdir}," \
@@ -33,3 +41,5 @@ nsdejavu.x: nsdejavu.la
 nsdejavu.1: nsdejavu.1.in nsdejavu.x Makefile
 	$(AM_V_at)rm -f $@
 	$(man_verbose)$(sed_process)
+
+MOSTLYCLEANFILES = nsdejavu.1 nsdejavu.x
