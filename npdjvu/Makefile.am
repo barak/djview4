@@ -46,7 +46,6 @@ Makefile.qmake: ${srcdir}/npdjvu.pro Makefile
 		QMAKE_LFLAGS+='$(LDFLAGS)' \
 		QMAKE_CFLAGS+='$(CFLAGS) $(qmake_allflags)' \
 		QMAKE_CXXFLAGS+='$(CXXFLAGS) $(qmake_allflags)' \
-		QMAKE_CPPFLAGS+='$(CPPFLAGS) $(qmake_allflags)' \
 		LIBS+='$(QMAKELIBS)' \
 		VPATH='$(srcdir) $(top_srcdir)/src' -o - npdjvu.pro |\
 	  $(AWK) -f $(top_srcdir)/config/qmsilent.awk > $@
