@@ -5,7 +5,7 @@ Maintainer: Barak A. Pearlmutter <bap@debian.org>
 Build-Depends: debhelper (>= 9),
     dh-autoreconf,
     autotools-dev,
-    pkg-config, 
+    pkg-config, awk,
     libdjvulibre-dev (>= 3.5.20),
     x11proto-core-dev, libx11-dev, libxext-dev, 
     libxt-dev, libglib2.0-dev,
