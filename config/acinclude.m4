@@ -69,7 +69,7 @@ dnl Filter options from CFLAGS and CXXFLAGS
 dnl -------------------------------------------------------
 AC_DEFUN([AC_CXX_OPTIMIZE],[
    AC_ARG_ENABLE(debug,
-        AC_HELP_STRING([--enable-debug],
+        AS_HELP_STRING([--enable-debug],
                        [Compile with debugging options (default: no)]),
         [ac_debug=$enableval],[ac_debug=no])
    OPTS=
@@ -114,7 +114,7 @@ AC_DEFUN([AC_PATH_TIFF],
   AC_ARG_VAR(TIFF_CFLAGS, [Compilation flags for tiff])
   ac_tiff=no
   AC_ARG_WITH(tiff,
-     AC_HELP_STRING([--with-tiff=DIR],
+     AS_HELP_STRING([--with-tiff=DIR],
                     [where libtiff is located]),
      [ac_tiff=$withval], [ac_tiff=yes] )
   # Process specification
