@@ -1,38 +1,69 @@
 <html>
 <title>Test of nsdejavu scriptability features</title>
-<body onload="onLoad()">
+<body onload="detectPlugin()">
 
 
-<!-- The plugin window -->
 <p><hr><p>
+<!-- The plugin -->
   <style type="text/css"> 
     #myplugin {  width:  100%; height: 330px;  } 
   </style>
   <object id="myplugin" data="test.djvu" type="image/vnd.djvu">
     No plugin
   </object> 
-
-<!-- Information section -->
 <p><hr><p>
-  <div id="info">
-    No information
+<!-- The information section -->
+  <div id="info" onclick="detectPlugin()">
+    Plugin has not yet been detected.
   </div>
+<p><hr><p>
+<!-- The buttons -->
+  <button onclick="setDjVuOption('pageno','1')">FirstPage</button>&nbsp;
+  <button onclick="setDjVuOption('page','-1')">PrevPage</button>&nbsp;
+  <button onclick="setDjVuOption('page','+1')">NextPage</button>&nbsp;
+  <button onclick="setDjVuOption('pageno',getDjVuOption('pages'))">LastPage</button>&nbsp;
+<p><hr><p>
+  <table border=0 cellspacing=4>
+    <tr>
+      <td>Key:&nbsp;</td>
+      <td><input type="text" name="key" id="key"
+                 onchange="getButtonPressed()" value="page"></td>
+      <td><button onclick="getButtonPressed()">Get</button></td>
+    </tr>
+    <tr>
+      <td>Value:&nbsp;</td>
+      <td><input type="text" name="value" id="val"
+                 onchange="setButtonPressed()"></td>
+      <td><button onclick="setButtonPressed()">Set</button></td>
+    </tr>
+  </table>
+<p><hr><p>
 
 <!-- Javascript code -->
   <script>
-    var info = document.getElementById("info"); 
+
     var myplugin = document.getElementById("myplugin"); 
-    function getOption() {
-      var ekey = document.getElementById('key'); 
-      var eval = document.getElementById('val');
-      eval.value = myplugin.getdjvuopt(ekey.value);
+    var info = document.getElementById("info"); 
+    var fkey = document.getElementById("key"); 
+    var fval = document.getElementById("val");
+
+    function detectPlugin() {
+      if (myplugin && myplugin.version && ! myplugin.onchange) { 
+        myplugin.onchange = "showInfo()";
+        showInfo();
+      }
     }
-    function setOption() {
-      var ekey = document.getElementById('key');
-      var eval = document.getElementById('val');
-      myplugin.setdjvuopt(ekey.value,eval.value);
-      getOption();
+
+    function getDjVuOption(key) {
+      detectPlugin();
+      return myplugin.getdjvuopt(key);
     }
+
+    function setDjVuOption(key,val) {
+      detectPlugin();
+      myplugin.setdjvuopt(key,val);
+    }
+
     function showInfo() {
       info.innerHTML = 
       "page=" + myplugin.getdjvuopt('page') +
@@ -41,43 +72,22 @@
             "zoom=" + myplugin.getdjvuopt('zoom') + ", " +
             "rotate=" + myplugin.getdjvuopt('rotate') + ",<br>" +
             "version=" + myplugin.version + ", " +
+            "onchange=" + myplugin.onchange + ",<br>" +  
             "showposition=" + myplugin.getdjvuopt('showposition') + ".";
-       getOption();
+       getButtonPressed();
     }
-    function onLoad() {
-      if (myplugin && myplugin.version) {
-        myplugin.onchange = "showInfo()"; 
-        showInfo();
-      } else {
-        info.innerHTML="Plugin is not scriptable in this browser!";
-      }
+
+    function getButtonPressed() {
+      fval.value = getDjVuOption(fkey.value);
     }
+
+    function setButtonPressed() {
+      setDjVuOption(fkey.value,fval.value);
+      getButtonPressed();
+    }
+
   </script>
 
 <!-- Form -->
-<p><hr><p>
-  <button onclick="myplugin.setdjvuopt('pageno','1')">FirstPage</button>&nbsp;
-  <button onclick="myplugin.setdjvuopt('page','-1')">PrevPage</button>&nbsp;
-  <button onclick="myplugin.setdjvuopt('page','+1')">NextPage</button>&nbsp;
-  <button onclick="myplugin.setdjvuopt('pageno',myplugin.getdjvuopt('pages'))">
-    LastPage</button>&nbsp;
-
-<!-- Get/Set option -->
-<p><hr><p>
-  <table border=0 cellspacing=4>
-    <tr>
-      <td>Key:&nbsp;</td>
-      <td><input type="text" name="key" id="key"
-                 onchange="getOption()" value="page"></td>
-      <td><button onclick="getOption()">Get</button></td>
-    </tr>
-    <tr>
-      <td>Value:&nbsp;</td>
-      <td><input type="text" name="value" id="val"
-                 onchange="setOption()"></td>
-      <td><button onclick="setOption()">Set</button></td>
-    </tr>
-  </table>
-<p><hr><p>
 </body>
 </html>
