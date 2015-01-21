@@ -29,8 +29,9 @@ BEGIN {
 }
 
 {
-    tabs=gensub(/(^[[:space:]]*-?)(.*)$/,"\\1","g")
-    line=gensub(/(^[[:space:]]*-?)(.*)$/,"\\2","g")
+    match($0, /^[ \t]*-?/)
+    tabs=substr($0,1,RLENGTH)
+    line=substr($0,1+RLENGTH)
     if (escaped == 1) {
         print
     } else if (mayberule == 0) {
