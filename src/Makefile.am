@@ -113,25 +113,20 @@ Makefile.qmake: ${srcdir}/djview.pro Makefile
 
 # cleaning
 
-clean-local: clean-qmake clean-qm
+mostlyclean-local: mostlyclean-qmake mostlyclean-qm
 
-distclean-local: distclean-qmake clean-qm
+mostlyclean-qmake:
+	-test "${srcdir}" == "." || ${RM} djview.pro
+	-test -f Makefile.qmake && ${MAKE} -f Makefile.qmake clean
+	-$(RM) Makefile.qmake
 
-clean-qm:
+mostlyclean-qm:
 	-${RM} *.qm 
 	-${RMDIR} *.qm.tmp/*
 	-${RMDIR} *.qm.tmp
 
-clean-qmake:
-	-test "${srcdir}" == "." || ${RM} djview.pro
-	-test -f Makefile.qmake && ${MAKE} -f Makefile.qmake clean
 
-distclean-qmake: Makefile.qmake
-	-test "${srcdir}" == "." || ${RM} djview.pro
-	-test -f Makefile.qmake && ${MAKE} -f Makefile.qmake distclean
-	-$(RM) Makefile.qmake
-
-.PHONY: clean-qm clean-qmake distclean-qmake 
+.PHONY: mostlyclean-qmake mostlyclean-qm 
 
 MOSTLYCLEANFILES = djview
 

@@ -27,6 +27,9 @@ EXTRA_DIST = \
    qtnpapi.cpp \
    qtnpapi.h
 
+EXTRA_DIST += \
+   LICENSE.GPL README
+
 # invoke qmake
 
 qmake_verbose = $(qmake_verbose_@AM_V@)
@@ -52,23 +55,14 @@ Makefile.qmake: ${srcdir}/npdjvu.pro Makefile
 
 # cleaning
 
-clean-local: clean-qmake
+mostlyclean-local: mostlyclean-qmake
 
-distclean-local: distclean-qmake
-
-clean-qmake:
-	-test "${srcdir}" == "." || ${RM} npdjvu.pro
+mostlyclean-qmake:
+	-test "${srcdir}" == "." || ${RM} djview.pro
 	-test -f Makefile.qmake && ${MAKE} -f Makefile.qmake clean
-
-distclean-qmake: Makefile.qmake
-	-test "${srcdir}" == "." || ${RM} npdjvu.pro
-	-test -f Makefile.qmake && ${MAKE} -f Makefile.qmake distclean
 	-$(RM) Makefile.qmake
 
-.PHONY: clean-qmake distclean-qmake 
+.PHONY: mostlyclean-qmake
 
 MOSTLYCLEANFILES = libnpdjvu.so
 
-# misc
-
-EXTRA_DIST += LICENSE.GPL README
