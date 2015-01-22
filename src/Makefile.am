@@ -1,4 +1,11 @@
 
+# include data gathered from djview.pro file
+
+include djview.am
+
+djview.am: djview.pro
+	$(AWK) -f $(top_srcdir)/config/qmsources.awk < $< > $@
+
 # program djview
 # - can we do better than pretending djview is a script?
 
@@ -11,50 +18,7 @@ FORCE:
 
 .PHONY: FORCE
 
-EXTRA_DIST = \
-	images \
-	Doxyfile \
-	djview.pro \
-	djview.rc \
-	djview.plist \
-	djview.cpp\
-	djview.h\
-	qdjviewauthdialog.ui\
-	qdjview.cpp\
-	qdjviewdialogs.cpp\
-	qdjviewdialogs.h\
-	qdjviewerrordialog.ui\
-	qdjviewexportdialog.ui\
-	qdjviewexporters.cpp\
-	qdjviewexporters.h\
-	qdjviewexportprn.ui\
-	qdjviewexportps1.ui\
-	qdjviewexportps2.ui\
-	qdjviewexportps3.ui\
-	qdjviewexporttiff.ui\
-	qdjview.h\
-	qdjviewinfodialog.ui\
-	qdjviewmetadialog.ui\
-	qdjviewplugin.cpp\
-	qdjviewplugin.h\
-	qdjviewprefs.cpp\
-	qdjviewprefsdialog.ui\
-	qdjviewprefs.h\
-	qdjviewprintdialog.ui\
-	qdjview.qrc\
-	qdjviewsavedialog.ui\
-	qdjviewsidebar.cpp\
-	qdjviewsidebar.h\
-	qdjvu.cpp\
-	qdjvu.h\
-	qdjvunet.cpp\
-	qdjvunet.h\
-	qdjvuwidget.cpp\
-	qdjvuwidget.h\
-	qdjvuwidget.qrc\
-	tiff2pdf.c\
-	tiff2pdf.h\
-	version.h
+EXTRA_DIST = images Doxyfile djview.pro $(qmake_sources)
 
 # man page
 
@@ -65,29 +29,22 @@ dist_man1_MANS = djview.1
 #   the translation files in both djview.pro and Makefile.am
 
 translationsdir = $(datadir)/djvu
-
-translations_DATA = djview_cs.qm djview_de.qm djview_es.qm
-translations_DATA += djview_fr.qm djview_ru.qm djview_uk.qm
-translations_DATA += djview_zh_cn.qm djview_zh_tw.qm
-
-EXTRA_DIST += djview_cs.ts djview_de.ts djview_es.ts 
-EXTRA_DIST += djview_fr.ts djview_ru.ts djview_uk.ts
-EXTRA_DIST += djview_zh_cn.ts djview_zh_tw.ts
+translations_DATA = $(qmake_qm)
+EXTRA_DIST += $(qmake_ts)
 
 lrelease_verbose = $(lrelease_verbose_@AM_V@)
 lrelease_verbose_ = $(lrelease_verbose_@AM_DEFAULT_V@)
-lrelease_verbose_0 = @echo "  QM      " $@;
+lrelease_verbose_0 = @echo "  QM     " $@;
 
-lrelease_process = ( trap "$(RM) $@.tmp/* ; $(RMDIR) $@.tmp" 0; \
-  $(MKDIR) $@.tmp && cp $< $@.tmp && \
-  echo "TRANSLATIONS="`basename $<` > $@.tmp/trans.pro && \
-  ( cd $@.tmp && $(LRELEASE) trans.pro ) && \
-  ( cmp -s $@.tmp/$@ $@ || cp $@.tmp/$@ $@ ) )
+$(qmake_qm): qm.dir/lrelease-stamp
+	$(lrelease_verbose)cmp -s qm.dir/$@ $@ || cp qm.dir/$@ $@
 
-.ts.qm:
-	$(lrelease_verbose)$(lrelease_process)
-
-SUFFIXES = .qm .ts
+qm.dir/lrelease-stamp: $(qmake_ts) djview
+	@test -d qm.dir || $(MKDIR) qm.dir; \
+	 for ts in $(qmake_ts); do cp $(srcdir)/$$ts qm.dir; done ; \
+	 for ts in $(qmake_ts); do echo "TRANSLATIONS += $$ts" ; done > qm.dir/ts.pro
+	cd qm.dir && $(LRELEASE) ts.pro
+	@touch $@
 
 # invoke qmake
 
@@ -121,9 +78,8 @@ mostlyclean-qmake:
 	-$(RM) Makefile.qmake
 
 mostlyclean-qm:
-	-${RM} *.qm 
-	-${RMDIR} *.qm.tmp/*
-	-${RMDIR} *.qm.tmp
+	-${RM} *.qm qm.dir/*
+	-${RMDIR} qm.dir
 
 
 .PHONY: mostlyclean-qmake mostlyclean-qm 

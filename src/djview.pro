@@ -100,6 +100,7 @@ HEADERS += qdjviewdialogs.h
 HEADERS += qdjviewexporters.h
 HEADERS += qdjview.h
 HEADERS += djview.h
+HEADERS += version.h
 SOURCES += qdjviewprefs.cpp 
 SOURCES += qdjviewsidebar.cpp
 SOURCES += qdjviewdialogs.cpp

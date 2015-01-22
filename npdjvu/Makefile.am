@@ -1,3 +1,10 @@
+# include data gathered from npdjvu.pro file
+
+include npdjvu.am
+
+npdjvu.am: npdjvu.pro
+	$(AWK) -f $(top_srcdir)/config/qmsources.awk < $< > $@
+
 
 # libnpdjvu
 # - compile but do not install.
@@ -11,24 +18,7 @@ FORCE:
 
 .PHONY: FORCE
 
-EXTRA_DIST = \
-   npdjvu.pro \
-   npdjvu.plist \
-   npdjvu.rc \
-   npdjvu.r \
-   npdjvu.cpp \
-   npdjvu.h \
-   qtbrowserplugin.def \
-   qtbrowserplugin.h \
-   qtbrowserplugin_mac.cpp \
-   qtbrowserplugin_p.h \
-   qtbrowserplugin_win.cpp \
-   qtbrowserplugin_x11.cpp \
-   qtnpapi.cpp \
-   qtnpapi.h
-
-EXTRA_DIST += \
-   LICENSE.GPL README
+EXTRA_DIST = npdjvu.pro LICENSE.GPL README $(qmake_sources)
 
 # invoke qmake
 
