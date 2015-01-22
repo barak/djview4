@@ -44,7 +44,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-, root, root)
-%doc README* COPYRIGHT COPYING INSTALL NEWS
+%doc README* COPYRIGHT COPYING NEWS
 %{_bindir}
 %{_datadir}
 %{_mandir}
