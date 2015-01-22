@@ -29,22 +29,24 @@ dist_man1_MANS = djview.1
 #   the translation files in both djview.pro and Makefile.am
 
 translationsdir = $(datadir)/djvu
+
 translations_DATA = $(qmake_qm)
+
 EXTRA_DIST += $(qmake_ts)
 
 lrelease_verbose = $(lrelease_verbose_@AM_V@)
 lrelease_verbose_ = $(lrelease_verbose_@AM_DEFAULT_V@)
-lrelease_verbose_0 = @echo "  QM      " $@;
+lrelease_verbose_0 = @
 
 $(qmake_qm): qm.dir/lrelease-stamp
 	$(lrelease_verbose)cmp -s qm.dir/$@ $@ || cp qm.dir/$@ $@
 
 qm.dir/lrelease-stamp: $(qmake_ts) djview
-	@test -d qm.dir || $(MKDIR) qm.dir; \
+	$(lrelease_verbose)test -d qm.dir || $(MKDIR) qm.dir ; \
 	 for ts in $(qmake_ts); do cp $(srcdir)/$$ts qm.dir; done ; \
 	 for ts in $(qmake_ts); do echo "TRANSLATIONS += $$ts" ; done > qm.dir/ts.pro
-	cd qm.dir && $(LRELEASE) ts.pro
-	@touch $@
+	$(lrelease_verbose)cd qm.dir && $(LRELEASE) ts.pro
+	$(lrelease_verbose)touch $@
 
 # invoke qmake
 
