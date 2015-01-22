@@ -5,14 +5,13 @@ Maintainer: Barak A. Pearlmutter <bap@debian.org>
 Build-Depends: debhelper (>= 9),
     dh-autoreconf,
     autotools-dev,
-    pkg-config, awk,
+    pkg-config, gawk | awk,
     libdjvulibre-dev (>= 3.5.20),
     x11proto-core-dev, libx11-dev, libxext-dev, 
     libxt-dev, libglib2.0-dev,
     libqt4-dev (>= 4.4), libqt4-opengl-dev (>= 4.4),
     libtiff-dev,
-    netpbm,
-    librsvg2-bin, imagemagick
+    netpbm, librsvg2-bin, imagemagick
 Vcs-Git: git://anonscm.debian.org/collab-maint/djview4.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/djview4.git
 Homepage: http://djvu.sourceforge.net/
