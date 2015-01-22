@@ -34,7 +34,7 @@ EXTRA_DIST += $(qmake_ts)
 
 lrelease_verbose = $(lrelease_verbose_@AM_V@)
 lrelease_verbose_ = $(lrelease_verbose_@AM_DEFAULT_V@)
-lrelease_verbose_0 = @echo "  QM     " $@;
+lrelease_verbose_0 = @echo "  QM      " $@;
 
 $(qmake_qm): qm.dir/lrelease-stamp
 	$(lrelease_verbose)cmp -s qm.dir/$@ $@ || cp qm.dir/$@ $@

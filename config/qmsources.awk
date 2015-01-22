@@ -19,13 +19,12 @@ BEGIN {
         $1="qmake_sources"; 
         print
     } 
-}  
-
-/^[ \t]*(TRANSLATIONS)[ \t]*[+*]?=/ { 
-    gsub(/[+*]?=/," += "); 
-    $1="qmake_ts"; 
-    print;  
-    $1="qmake_qm"; 
-    for (i=3; i<=NF; i++) gsub(/[.]ts/,".qm", $i) ; 
-    print 
+    if ($1 == "TRANSLATIONS") {
+        gsub(/[+*]?=/," += "); 
+        $1="qmake_ts"; 
+        print;  
+        $1="qmake_qm"; 
+        for (i=3; i<=NF; i++) gsub(/[.]ts/,".qm", $i) ; 
+        print 
+    }
 }
