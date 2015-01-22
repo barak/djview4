@@ -1,9 +1,9 @@
 
 # include data gathered from djview.pro file
 
-include djview.am
+include $(srcdir)/djview.am
 
-djview.am: djview.pro
+$(srcdir)/djview.am: djview.pro
 	$(AWK) -f $(top_srcdir)/config/qmsources.awk < $< > $@
 
 # program djview

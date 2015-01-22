@@ -1,8 +1,8 @@
 # include data gathered from npdjvu.pro file
 
-include npdjvu.am
+include $(srcdir)/npdjvu.am
 
-npdjvu.am: npdjvu.pro
+$(srcdir)/npdjvu.am: npdjvu.pro
 	$(AWK) -f $(top_srcdir)/config/qmsources.awk < $< > $@
 
 
