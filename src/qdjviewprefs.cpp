@@ -150,6 +150,7 @@ QDjViewPrefs::QDjViewPrefs(void)
     mouseWheelZoom(false),
     restrictOverride(false),
     openGLAccel(false),
+    slideShowDelay(10),
     modifiersForLens(Qt::ControlModifier|Qt::ShiftModifier),
     modifiersForSelect(Qt::ControlModifier),
     modifiersForLinks(Qt::ShiftModifier),
@@ -166,9 +167,13 @@ QDjViewPrefs::QDjViewPrefs(void)
 {
   Options mss = (SHOW_MENUBAR|SHOW_STATUSBAR|SHOW_SIDEBAR);
   forFullScreen.options &= ~(mss|SHOW_SCROLLBARS|SHOW_TOOLBAR|SHOW_SIDEBAR);
+  forSlideShow = forFullScreen;
+  forSlideShow.zoom = QDjVuWidget::ZOOM_FITPAGE;
+  forSlideShow.remember = false;
   forFullPagePlugin.options &= ~(mss);
   forEmbeddedPlugin.options &= ~(mss|SHOW_TOOLBAR);
   forEmbeddedPlugin.remember = false;
+  forEmbeddedPlugin.zoom = 100;
 }
 
 
@@ -333,6 +338,7 @@ QDjViewPrefs::load()
   loadGroup(s, "forFullPagePlugin", forFullPagePlugin);
   loadGroup(s, "forStandalone", forStandalone);
   loadGroup(s, "forFullScreen", forFullScreen);
+  loadGroup(s, "forSlideShow", forSlideShow);
   if (s.contains("windowSize"))
     windowSize = s.value("windowSize").toSize();
   if (s.contains("windowMaximized"))
@@ -375,6 +381,8 @@ QDjViewPrefs::load()
     restrictOverride = s.value("restrictOverride").toBool();
   if (s.contains("openGLAccel"))
     openGLAccel = s.value("openGLAccel").toBool();
+  if (s.contains("slideShowDelay"))
+    slideShowDelay = s.value("slideShowDelay").toInt();
   if (s.contains("modifiersForLens"))
     modifiersForLens 
       = stringToModifiers(s.value("modifiersForLens").toString());
@@ -458,6 +466,8 @@ QDjViewPrefs::saveRemembered(void)
     saveGroup(s, "forStandalone", forStandalone);
   if (forFullScreen.remember)
     saveGroup(s, "forFullScreen", forFullScreen);
+  if (forSlideShow.remember)
+    saveGroup(s, "forSlideShow", forSlideShow);
 
   s.setValue("windowSize", windowSize);
   s.setValue("windowMaximized", windowMaximized);
@@ -493,6 +503,8 @@ QDjViewPrefs::save(void)
     saveGroup(s, "forStandalone", forStandalone);
   if (! forFullScreen.remember)
     saveGroup(s, "forFullScreen", forFullScreen);
+  if (! forSlideShow.remember)
+    saveGroup(s, "forSlideShow", forSlideShow);
   s.setValue("tools", toolsToString(tools));
   s.setValue("gamma", gamma);
   s.setValue("white", white.name());
@@ -514,6 +526,7 @@ QDjViewPrefs::save(void)
   s.setValue("language", languageOverride);
   s.setValue("restrictOverride", restrictOverride);
   s.setValue("openGLAccel", openGLAccel);
+  s.setValue("slideShowDelay", slideShowDelay);
   s.setValue("printerGamma", printerGamma);
 }
 
@@ -770,7 +783,8 @@ struct QDjViewPrefsDialog::Private
 {
   QDjVuContext          *context;
   Ui::QDjViewPrefsDialog ui;
-  QDjViewPrefs::Saved    saved[4];
+  QDjViewPrefs::Saved    saved[5];
+  int                    slideShowDelay;
   int                    currentSaved;
 };
 
@@ -927,20 +941,29 @@ QDjViewPrefsDialog::load(QDjView *djview)
   d->ui.resolutionSpinBox->setValue((res>0) ? res : logicalDpiY());
   d->ui.invertLuminanceCheckBox->setChecked(prefs->invertLuminance);
   // 2- interface tab
+  QComboBox *cb = d->ui.modeComboBox;
+  cb->clear();
   d->saved[0] = prefs->forStandalone;
+  cb->addItem(tr("Standalone Viewer"), 
+              QDjView::STANDALONE);
   d->saved[1] = prefs->forFullScreen;
-  d->saved[2] = prefs->forFullPagePlugin;
-  d->saved[3] = prefs->forEmbeddedPlugin;
+  cb->addItem(tr("Standalone Viewer (Full Screen mode)"), 
+              QDjView::STANDALONE_FULLSCREEN);
+  d->saved[2] = prefs->forSlideShow;
+  cb->addItem(tr("Standalone Viewer (Slideshow mode)"), 
+              QDjView::STANDALONE_SLIDESHOW);
+  d->saved[3] = prefs->forFullPagePlugin;
+  cb->addItem(tr("Full Page Plugin"),
+              QDjView::FULLPAGE_PLUGIN);
+  d->saved[4] = prefs->forEmbeddedPlugin;
+  cb->addItem(tr("Embedded Plugin"),
+              QDjView::EMBEDDED_PLUGIN);
+  d->slideShowDelay = prefs->slideShowDelay;
   djview->fillZoomCombo(d->ui.zoomCombo);
-  int n = 0;
-  if (djview->getViewerMode() == QDjView::EMBEDDED_PLUGIN)
-    n = 3;
-  else if (djview->getViewerMode() == QDjView::FULLPAGE_PLUGIN)
-    n = 2;
-  else if (djview->getFullScreen()) 
-    n = 1;
+  int n = qMax(0, cb->findData(djview->getViewerMode()));
+  if (n == 0 && djview->getFullScreen())  n = 1; //temporary
   modeComboChanged(n);
-  d->ui.modeComboBox->setCurrentIndex(n);
+  cb->setCurrentIndex(n);
   // 3- keys tab
   d->ui.keysForLensCombo->setValue(prefs->modifiersForLens);
   d->ui.keysForSelectCombo->setValue(prefs->modifiersForSelect);
@@ -1043,12 +1066,23 @@ QDjViewPrefsDialog::apply()
     prefs->resolution = d->ui.resolutionSpinBox->value();
   prefs->invertLuminance = d->ui.invertLuminanceCheckBox->isChecked();
   // 2- interface tab
-  int n = d->ui.modeComboBox->currentIndex();
+  QComboBox *cb = d->ui.modeComboBox;
+  int n = cb->currentIndex();
   modeComboChanged(n);
-  prefs->forStandalone = d->saved[0];
-  prefs->forFullScreen = d->saved[1];
-  prefs->forFullPagePlugin = d->saved[2];
-  prefs->forEmbeddedPlugin = d->saved[3];
+  for (int i=0; i<5; i++) 
+    switch (cb->itemData(i).toInt()) 
+      {
+      case QDjView::STANDALONE:
+        prefs->forStandalone = d->saved[i]; break;
+      case QDjView::STANDALONE_SLIDESHOW:
+        prefs->forSlideShow = d->saved[i]; break;
+      case QDjView::STANDALONE_FULLSCREEN:
+        prefs->forFullScreen = d->saved[i]; break;
+      case QDjView::EMBEDDED_PLUGIN:
+        prefs->forEmbeddedPlugin = d->saved[i]; break;
+      case QDjView::FULLPAGE_PLUGIN:
+        prefs->forFullPagePlugin = d->saved[i]; break;
+      }
   // 3- keys
   prefs->modifiersForLens = d->ui.keysForLensCombo->value();
   prefs->modifiersForSelect = d->ui.keysForSelectCombo->value();
@@ -1107,14 +1141,30 @@ QDjViewPrefsDialog::reset()
                                   QDjViewPrefs::SHOW_SIDEBAR);
   QDjViewPrefs::Options optS = QDjViewPrefs::SHOW_SCROLLBARS;
   QDjViewPrefs::Options optT = QDjViewPrefs::SHOW_TOOLBAR;
-  d->saved[0] = defsaved;
-  d->saved[1] = defsaved;
-  d->saved[1].options &= ~(optMSS|optS|optT);
-  d->saved[2] = defsaved;
-  d->saved[2].options &= ~(optMSS);
-  d->saved[3] = defsaved;
-  d->saved[3].options &= ~(optMSS|optT);
-  d->saved[3].remember = false;
+  QComboBox *cb = d->ui.modeComboBox;
+  for (int i=0; i<5; i++) 
+    {
+      d->saved[i] = defsaved;
+      switch (cb->itemData(i).toInt()) 
+        {
+        case QDjView::STANDALONE_SLIDESHOW:
+          d->saved[i].remember = false;
+          d->saved[i].zoom = QDjVuWidget::ZOOM_FITPAGE;
+        case QDjView::STANDALONE_FULLSCREEN:
+          d->saved[i].options &= ~(optMSS|optS|optT);
+        case QDjView::STANDALONE:
+          break;
+        case QDjView::EMBEDDED_PLUGIN:
+          d->saved[i].remember = false;
+          d->saved[i].options &= ~(optMSS|optT);
+          d->saved[i].zoom = 100;
+          break;
+        case QDjView::FULLPAGE_PLUGIN:
+          d->saved[i].options &= ~(optMSS);
+          break;
+        }
+    }    
+  d->slideShowDelay = 10;
   d->currentSaved = -1;
   modeComboChanged(d->ui.modeComboBox->currentIndex());
   // 3- keys tab
@@ -1178,7 +1228,8 @@ set_reset(QFlags<T> &x, T y, bool plus, bool minus=true)
 void 
 QDjViewPrefsDialog::modeComboChanged(int n)
 {
-  if (d->currentSaved >=0 && d->currentSaved <4)
+  QComboBox *cb = d->ui.modeComboBox;
+  if (d->currentSaved >=0 && d->currentSaved <5)
     {
       // save ui values
       QDjViewPrefs::Saved &saved = d->saved[d->currentSaved];
@@ -1214,9 +1265,12 @@ QDjViewPrefsDialog::modeComboChanged(int n)
         saved.zoom = zoom;
       else if (zoomIndex >= 0)
         saved.zoom = d->ui.zoomCombo->itemData(zoomIndex).toInt();
+      // delay
+      if (cb->itemData(d->currentSaved) == QDjView::STANDALONE_SLIDESHOW)
+        d->slideShowDelay = d->ui.slideShowSpinBox->value();
     }
   d->currentSaved = n;
-  if (d->currentSaved >=0 && d->currentSaved <4)
+  if (d->currentSaved >=0 && d->currentSaved <5)
     {
       // save modified flag
       bool modified = isWindowModified();
@@ -1245,6 +1299,10 @@ QDjViewPrefsDialog::modeComboChanged(int n)
         d->ui.zoomCombo->setEditText(QString("%1%").arg(saved.zoom));
       else if (zoomIndex >= 0)
         d->ui.zoomCombo->setEditText(d->ui.zoomCombo->itemText(zoomIndex));
+      // delay
+      d->ui.slideShowSpinBox->setValue(d->slideShowDelay);
+      d->ui.slideShowSpinBox->setVisible(d->currentSaved == 2);
+      d->ui.slideShowLabel->setVisible(d->currentSaved == 2);
       // reset modified flag
       setWindowModified(modified);
     }

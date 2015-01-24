@@ -123,6 +123,7 @@ public:
   Saved      forFullPagePlugin; //!< Prefs for the full page plugin mode.
   Saved      forStandalone;     //!< Prefs for the standalone viewer mode.
   Saved      forFullScreen;     //!< Prefs for the full screen mode.
+  Saved      forSlideShow;      //!< Prefs for the slideshow mode.
   QSize      windowSize;        //!< Size of the standalone window.
   bool       windowMaximized;   //!< Window was maximized.
 
@@ -145,6 +146,7 @@ public:
   QString    languageOverride;  //!< Language settings
   bool       restrictOverride;  //!< Override noprint/nosave
   bool       openGLAccel;       //!< Use opengl acceleration
+  int        slideShowDelay;    //!< Delay between page switches
   Qt::KeyboardModifiers modifiersForLens;   //!< Keys for the lens. 
   Qt::KeyboardModifiers modifiersForSelect; //!< Keys for selecting.
   Qt::KeyboardModifiers modifiersForLinks;  //!< Keys for showing the links.

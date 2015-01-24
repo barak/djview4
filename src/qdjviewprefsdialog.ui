@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>509</width>
-    <height>388</height>
+    <width>622</width>
+    <height>437</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -298,28 +298,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="modeComboBox">
-           <item>
-            <property name="text">
-             <string>Standalone Viewer</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Full Screen Standalone Viewer</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Full Page Plugin</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Embedded Plugin</string>
-            </property>
-           </item>
-          </widget>
+          <widget class="QComboBox" name="modeComboBox"/>
          </item>
          <item>
           <spacer>
@@ -386,41 +365,8 @@
               </property>
              </widget>
             </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="modeGroupBox">
-           <property name="title">
-            <string>Display</string>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout">
-              <item>
-               <widget class="QLabel" name="label22">
-                <property name="text">
-                 <string>&amp;Zoom: </string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-                <property name="buddy">
-                 <cstring>zoomCombo</cstring>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="zoomCombo">
-                <property name="editable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <spacer name="verticalSpacer_5">
+             <spacer name="verticalSpacer_11">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
@@ -432,34 +378,77 @@
               </property>
              </spacer>
             </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="modeGroupBox">
+           <property name="title">
+            <string>Display</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
-             <widget class="QFrame" name="frame">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::HLine</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
-              </property>
-              <property name="lineWidth">
-               <number>3</number>
-              </property>
-             </widget>
+             <layout class="QGridLayout" name="gridLayout">
+              <item row="0" column="0">
+               <widget class="QLabel" name="zoomLabel">
+                <property name="text">
+                 <string>&amp;Zoom: </string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <property name="buddy">
+                 <cstring>zoomCombo</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QComboBox" name="zoomCombo">
+                <property name="editable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="slideShowLabel">
+                <property name="text">
+                 <string>Slideshow:  </string>
+                </property>
+                <property name="buddy">
+                 <cstring>slideShowSpinBox</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QSpinBox" name="slideShowSpinBox">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="suffix">
+                 <string> secs</string>
+                </property>
+                <property name="maximum">
+                 <number>3600</number>
+                </property>
+                <property name="value">
+                 <number>10</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
             <item>
-             <spacer name="verticalSpacer_2">
+             <spacer name="verticalSpacer">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Preferred</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
-                <height>40</height>
+                <height>9</height>
                </size>
               </property>
              </spacer>
@@ -491,19 +480,6 @@
               </property>
              </spacer>
             </item>
-            <item>
-             <spacer name="verticalSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>5</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
            </layout>
           </widget>
          </item>
@@ -521,46 +497,17 @@
              </widget>
             </item>
             <item>
-             <spacer name="verticalSpacer_7">
+             <spacer name="verticalSpacer_2">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Preferred</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QFrame" name="frame_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::HLine</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
-              </property>
-              <property name="lineWidth">
-               <number>3</number>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="verticalSpacer_4">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
+                <height>9</height>
                </size>
               </property>
              </spacer>
@@ -583,11 +530,11 @@
                  <enum>Qt::Horizontal</enum>
                 </property>
                 <property name="sizeType">
-                 <enum>QSizePolicy::MinimumExpanding</enum>
+                 <enum>QSizePolicy::Fixed</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>16</width>
+                  <width>9</width>
                   <height>20</height>
                  </size>
                 </property>
@@ -610,6 +557,19 @@
                  </widget>
                 </item>
                </layout>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
              </layout>
             </item>
@@ -1300,6 +1260,7 @@
   <tabstop>statusBarCheckBox</tabstop>
   <tabstop>sideBarCheckBox</tabstop>
   <tabstop>zoomCombo</tabstop>
+  <tabstop>slideShowSpinBox</tabstop>
   <tabstop>frameCheckBox</tabstop>
   <tabstop>mapAreasCheckBox</tabstop>
   <tabstop>continuousCheckBox</tabstop>
@@ -1345,8 +1306,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>397</x>
-     <y>342</y>
+     <x>530</x>
+     <y>426</y>
     </hint>
     <hint type="destinationlabel">
      <x>96</x>
@@ -1361,8 +1322,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>478</x>
-     <y>342</y>
+     <x>611</x>
+     <y>426</y>
     </hint>
     <hint type="destinationlabel">
      <x>179</x>
@@ -1377,12 +1338,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>80</x>
-     <y>63</y>
+     <x>91</x>
+     <y>47</y>
     </hint>
     <hint type="destinationlabel">
      <x>101</x>
-     <y>104</y>
+     <y>53</y>
     </hint>
    </hints>
   </connection>
@@ -1393,12 +1354,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>213</x>
-     <y>230</y>
+     <x>119</x>
+     <y>86</y>
     </hint>
     <hint type="destinationlabel">
-     <x>364</x>
-     <y>231</y>
+     <x>119</x>
+     <y>86</y>
     </hint>
    </hints>
   </connection>
@@ -1409,12 +1370,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>204</x>
-     <y>266</y>
+     <x>227</x>
+     <y>309</y>
     </hint>
     <hint type="destinationlabel">
-     <x>388</x>
-     <y>266</y>
+     <x>503</x>
+     <y>309</y>
     </hint>
    </hints>
   </connection>
@@ -1441,8 +1402,8 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>386</x>
-     <y>196</y>
+     <x>589</x>
+     <y>225</y>
     </hint>
     <hint type="destinationlabel">
      <x>472</x>
@@ -1493,8 +1454,8 @@
      <y>86</y>
     </hint>
     <hint type="destinationlabel">
-     <x>351</x>
-     <y>118</y>
+     <x>600</x>
+     <y>215</y>
     </hint>
    </hints>
   </connection>
@@ -1505,12 +1466,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>137</x>
-     <y>81</y>
+     <x>119</x>
+     <y>77</y>
     </hint>
     <hint type="destinationlabel">
-     <x>405</x>
-     <y>94</y>
+     <x>119</x>
+     <y>77</y>
     </hint>
    </hints>
   </connection>
@@ -1521,12 +1482,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>157</x>
-     <y>81</y>
+     <x>119</x>
+     <y>77</y>
     </hint>
     <hint type="destinationlabel">
-     <x>168</x>
-     <y>100</y>
+     <x>119</x>
+     <y>77</y>
     </hint>
    </hints>
   </connection>

@@ -245,7 +245,7 @@ QDjView::fillToolBar(QToolBar *toolBar)
   pageCombo->hide();
   zoomCombo->hide();
   // Use options to compose toolbar
-  if (viewerMode == STANDALONE) 
+  if (viewerMode >= STANDALONE) 
     {
       if (tools & QDjViewPrefs::TOOL_NEW)
         toolBar->addAction(actionNew);
@@ -815,7 +815,7 @@ QDjView::createMenus()
 {
   // Layout main menu
   QMenu *fileMenu = menuBar->addMenu(tr("&File", "File|"));
-  if (viewerMode == STANDALONE)
+  if (viewerMode >= STANDALONE)
     {
       fileMenu->addAction(actionNew);
       fileMenu->addAction(actionOpen);
@@ -828,7 +828,7 @@ QDjView::createMenus()
   fileMenu->addAction(actionSave);
   fileMenu->addAction(actionExport);
   fileMenu->addAction(actionPrint);
-  if (viewerMode == STANDALONE)
+  if (viewerMode >= STANDALONE)
     {
       fileMenu->addSeparator();
       fileMenu->addAction(actionClose);
@@ -882,9 +882,9 @@ QDjView::createMenus()
   viewMenu->addSeparator();
   viewMenu->addAction(actionInformation);
   viewMenu->addAction(actionMetadata);
-  if (viewerMode == STANDALONE)
+  if (viewerMode >= STANDALONE)
     viewMenu->addSeparator();
-  if (viewerMode == STANDALONE)
+  if (viewerMode >= STANDALONE)
     viewMenu->addAction(actionViewFullScreen);
   QMenu *gotoMenu = menuBar->addMenu(tr("&Go", "Go|"));
   gotoMenu->addAction(actionNavFirst);
@@ -986,13 +986,13 @@ QDjView::updateActions()
   actionPrint->setEnabled(printingAllowed || prefs->restrictOverride);
   
   // Some actions are only available in standalone mode
-  actionNew->setVisible(viewerMode == STANDALONE);
-  actionOpen->setVisible(viewerMode == STANDALONE);
-  actionOpenLocation->setVisible(viewerMode == STANDALONE);
-  actionClose->setVisible(viewerMode == STANDALONE);
-  actionQuit->setVisible(viewerMode == STANDALONE);
-  actionViewFullScreen->setVisible(viewerMode == STANDALONE);  
-  setAcceptDrops(viewerMode == STANDALONE);
+  actionNew->setVisible(viewerMode >= STANDALONE);
+  actionOpen->setVisible(viewerMode >= STANDALONE);
+  actionOpenLocation->setVisible(viewerMode >= STANDALONE);
+  actionClose->setVisible(viewerMode >= STANDALONE);
+  actionQuit->setVisible(viewerMode >= STANDALONE);
+  actionViewFullScreen->setVisible(viewerMode >= STANDALONE);  
+  setAcceptDrops(viewerMode >= STANDALONE);
 
   // Zoom combo and actions
   int zoom = widget->zoom();
@@ -1105,7 +1105,7 @@ QDjView::updateActions()
   updateActionsScheduled = false;
 
   // Notify plugin
-  if (viewerMode != STANDALONE)  
+  if (viewerMode < STANDALONE)  
     emit pluginOnChange();
 }
 
@@ -1739,7 +1739,7 @@ QDjView::parseArgument(QString key, QString value)
   
   if (key == "fullscreen" || key == "fs")
     {
-      if (viewerMode != STANDALONE)
+      if (viewerMode < STANDALONE)
         errors << tr("Option '%1' requires a standalone viewer.").arg(key);
       if (parse_boolean(key, value, errors, okay))
         if (actionViewFullScreen->isChecked() != okay)
@@ -2132,7 +2132,7 @@ QDjView::getArgument(QString key)
   else if (key == "pageno")
     return QString::number(widget->page()+1);
   else if (key == "fullscreen" || key == "fs") 
-    return get_boolean((viewerMode == STANDALONE) && 
+    return get_boolean((viewerMode >= STANDALONE) && 
                        actionViewFullScreen->isChecked());    
   else if (key == "scrollbars")
     return get_boolean(widget->horizontalScrollBarPolicy() != 
@@ -2332,7 +2332,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
 #endif
 
   // Determine unique object name
-  if (mode == STANDALONE) 
+  if (mode >= STANDALONE) 
     {
       QWidgetList wl = QApplication::topLevelWidgets();
       static int num = 0;
@@ -2364,14 +2364,14 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   QString envOpenGL = QString::fromLocal8Bit(::getenv("DJVIEW_OPENGL"));
   useOpenGL |= string_is_on(envOpenGL);
   useOpenGL &= !string_is_off(envOpenGL);
-  if (viewerMode != STANDALONE)
+  if (viewerMode < STANDALONE)
     useOpenGL = false; // GLWidget/XEmbed has focus issues
   
   // Create djvu widget
   QWidget *central = new QWidget(this);
   widget = new QDjVuWidget(useOpenGL, central);
   widget->setFrameShape(QFrame::NoFrame);
-  if (viewerMode == STANDALONE)
+  if (viewerMode >= STANDALONE)
     widget->setFrameShadow(QFrame::Sunken);
 
   widget->viewport()->installEventFilter(this);
@@ -2540,7 +2540,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   updateActions();
 
   // Remembered geometry (before the window is shown)
-  if (viewerMode == STANDALONE)
+  if (viewerMode >= STANDALONE)
     {
       if (! (prefs->windowSize.isNull()))
         resize(prefs->windowSize);
@@ -2558,7 +2558,7 @@ QDjView::closeDocument()
 {
   // remember recent document
   QDjVuDocument *doc = document;
-  if (doc && viewerMode == STANDALONE)
+  if (doc && viewerMode >= STANDALONE)
     {
       if (documentPages.size() > 0)
         addRecent(getDecoratedUrl());
@@ -2721,7 +2721,7 @@ QDjView::reloadDocument()
 {
   QDjVuDocument *doc = document;
   QUrl url = getDecoratedUrl();
-  if (doc && viewerMode==STANDALONE && url.isValid())
+  if (doc && viewerMode >= STANDALONE && url.isValid())
     {
       closeDocument();
       ddjvu_cache_clear(djvuContext);
@@ -3313,7 +3313,7 @@ QDjView::getShortFileName()
 bool
 QDjView::getFullScreen()
 {
-  if (viewerMode == STANDALONE)
+  if (viewerMode >= STANDALONE)
     return actionViewFullScreen->isChecked();
   return false;
 }
@@ -3658,7 +3658,7 @@ QDjView::closeEvent(QCloseEvent *event)
 void 
 QDjView::dragEnterEvent(QDragEnterEvent *event)
 {
-  if (viewerMode == STANDALONE)
+  if (viewerMode >= STANDALONE)
     {
       const QMimeData *data = event->mimeData();
       if (data->hasUrls() && data->urls().size()==1)
@@ -3685,7 +3685,7 @@ QDjView::dragMoveEvent(QDragMoveEvent *event)
 void 
 QDjView::dropEvent(QDropEvent *event)
 {
-  if (viewerMode == STANDALONE)
+  if (viewerMode >= STANDALONE)
     {
       const QMimeData *data = event->mimeData();
       if (data->hasUrls() && data->urls().size()==1)
@@ -4040,7 +4040,7 @@ QDjView::goToLink(QString link, QString target, int fromPage)
           goToPage(name, fromPage);
           return;
         }
-      if (viewerMode == STANDALONE)
+      if (viewerMode >= STANDALONE)
         {
           QDjView *other = copyWindow();
           other->goToPage(name, fromPage);
@@ -4064,7 +4064,7 @@ QDjView::goToLink(QString link, QString target, int fromPage)
             parseArgument(opt);
           return;
         }
-      if (viewerMode == STANDALONE)
+      if (viewerMode >= STANDALONE)
         {
           QDjView *other = copyWindow();
           foreach(QString opt, link.mid(1).split("&"))
@@ -4100,7 +4100,7 @@ QDjView::goToLink(QString link, QString target, int fromPage)
       return;
     }
   // Signal browser
-  if (viewerMode != STANDALONE)
+  if (viewerMode < STANDALONE)
     {
       emit pluginGetUrl(url, target);
       return;
@@ -4350,7 +4350,7 @@ QDjView::performAbout(void)
 void
 QDjView::performNew(void)
 {
-  if (viewerMode != STANDALONE)
+  if (viewerMode < STANDALONE) 
     return;
   QDjView *other = copyWindow(false);
   other->show();
@@ -4360,7 +4360,7 @@ QDjView::performNew(void)
 void
 QDjView::performOpen(void)
 {
-  if (viewerMode != STANDALONE)
+  if (viewerMode < STANDALONE)
     return;
   QString filters;
   filters += tr("DjVu files") + " (*.djvu *.djv);;";
@@ -4380,7 +4380,7 @@ QDjView::performOpen(void)
 void
 QDjView::performOpenLocation(void)
 {
-  if (viewerMode != STANDALONE)
+  if (viewerMode < STANDALONE)
     return;
   QString caption = tr("Open Location - DjView", "dialog caption");
   QString label = tr("Enter the URL of a DjVu document:");
@@ -4465,7 +4465,7 @@ QDjView::performSelect(bool checked)
 void 
 QDjView::performViewFullScreen(bool checked)
 {
-  if (viewerMode != STANDALONE)
+  if (viewerMode < STANDALONE)
     return;
   if (checked)
     {
@@ -4605,7 +4605,7 @@ void
 QDjView::openRecent()
 {
   QAction *action = qobject_cast<QAction*>(sender());
-  if (action && viewerMode == STANDALONE)
+  if (action && viewerMode >= STANDALONE)
     {
       QUrl url = action->data().toUrl();
       QFileInfo file = url.toLocalFile();

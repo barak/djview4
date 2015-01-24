@@ -87,9 +87,11 @@ class QDjView : public QMainWindow
   
   
   enum ViewerMode {
-    EMBEDDED_PLUGIN = 0,
-    FULLPAGE_PLUGIN = 1,
-    STANDALONE      = 2
+    EMBEDDED_PLUGIN       = 0,
+    FULLPAGE_PLUGIN       = 1,
+    STANDALONE            = 2,
+    STANDALONE_FULLSCREEN = 3,
+    STANDALONE_SLIDESHOW  = 4
   };
   
   QDjView(QDjVuContext &context, 
