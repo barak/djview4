@@ -107,9 +107,8 @@ class QDjView : public QMainWindow
   QString             getDocumentFileName() { return documentFileName; }
   QUrl                getDocumentUrl()      { return documentUrl; }
   QUrl                getDecoratedUrl();
-  ViewerMode          getViewerMode()       { return viewerMode; }
   QString             getShortFileName();
-  bool                getFullScreen();
+  ViewerMode          getViewerMode()       { return viewerMode; }
 
   QString      getArgument(QString key);
   QStringList  parseArgument(QString key, QString val);
@@ -156,6 +155,8 @@ public slots:
   void  find(QString find = QString());
   void  saveSession(QSettings *s);
   void  restoreSession(QSettings *s);
+  bool  setViewerMode(ViewerMode);
+  void  setSlideShowDelay(int delay);
   
 signals:
   void  documentClosed(QDjVuDocument *doc);
@@ -180,6 +181,7 @@ protected:
   void     createMenus(void);
   void     createWhatsThis(void);
   Saved   *getSavedPrefs(void);
+  Saved   *getSavedConfig(ViewerMode mode);
   void     enableContextMenu(bool);
   void     enableScrollBars(bool);
   void     applyOptions(bool remember=true);
@@ -232,6 +234,7 @@ protected slots:
   void performZoom(void);
   void performSelect(bool);
   void performViewFullScreen(bool);
+  void performViewSlideShow(bool);
   void performEscape();
   void performGoPage();
   void addRecent(QUrl);
@@ -251,7 +254,7 @@ protected slots:
 
 protected:
   // mode
-  const ViewerMode   viewerMode;
+  ViewerMode   viewerMode;
   // preferences
   QDjViewPrefs  *prefs;
   Options        options;
@@ -360,6 +363,7 @@ protected:
   QAction *actionViewSideBar;
   QAction *actionViewStatusBar;
   QAction *actionViewFullScreen;
+  QAction *actionViewSlideShow;
   QAction *actionLayoutContinuous;
   QAction *actionLayoutSideBySide;
   QAction *actionLayoutCoverPage;
@@ -372,10 +376,10 @@ protected:
   // permission
   bool printingAllowed;
   bool savingAllowed;
-  // fullscreen stuff
+  // mode changes
   Saved fsSavedNormal;
   Saved fsSavedFullScreen;
-  Qt::WindowStates fsWindowState;
+  Saved fsSavedSlideShow;
   QByteArray savedDockState;
   // undo/redo
   class UndoRedo 

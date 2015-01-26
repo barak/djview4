@@ -961,7 +961,6 @@ QDjViewPrefsDialog::load(QDjView *djview)
   d->slideShowDelay = prefs->slideShowDelay;
   djview->fillZoomCombo(d->ui.zoomCombo);
   int n = qMax(0, cb->findData(djview->getViewerMode()));
-  if (n == 0 && djview->getFullScreen())  n = 1; //temporary
   modeComboChanged(n);
   cb->setCurrentIndex(n);
   // 3- keys tab

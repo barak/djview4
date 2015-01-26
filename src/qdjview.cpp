@@ -748,12 +748,19 @@ QDjView::createActions()
     << Trigger(this, SLOT(updateActionsLater()));
 
   actionViewFullScreen 
-    = makeAction(tr("F&ull Screen","View|"), false)
+    = makeAction(tr("&Full Screen","View|"), false)
     << QKeySequence(tr("Ctrl+F11","View|FullScreen"))
     << QKeySequence(tr("F11","View|FullScreen"))
     << QIcon(":/images/icon_fullscreen.png")
     << tr("Toggle full screen mode.")
     << Trigger(this, SLOT(performViewFullScreen(bool)));
+
+  actionViewSlideShow
+    = makeAction(tr("&Slide Show","View|"), false)
+    << QKeySequence(tr("Shift+F11","View|Slideshow"))
+    << QIcon(":/images/icon_fullscreen.png")
+    << tr("Toggle slide show mode.")
+    << Trigger(this, SLOT(performViewSlideShow(bool)));
 
   actionLayoutContinuous = makeAction(tr("&Continuous", "Layout|"), false)
     << QIcon(":/images/icon_continuous.png")
@@ -886,6 +893,8 @@ QDjView::createMenus()
     viewMenu->addSeparator();
   if (viewerMode >= STANDALONE)
     viewMenu->addAction(actionViewFullScreen);
+  if (viewerMode >= STANDALONE)
+    viewMenu->addAction(actionViewSlideShow);
   QMenu *gotoMenu = menuBar->addMenu(tr("&Go", "Go|"));
   gotoMenu->addAction(actionNavFirst);
   gotoMenu->addAction(actionNavPrev);
@@ -955,6 +964,7 @@ QDjView::createMenus()
   contextMenu->addAction(actionViewSideBar);
   contextMenu->addAction(actionViewToolBar);
   contextMenu->addAction(actionViewFullScreen);
+  contextMenu->addAction(actionViewSlideShow);
   contextMenu->addSeparator();
   contextMenu->addAction(actionPreferences);
   contextMenu->addSeparator();
@@ -992,6 +1002,7 @@ QDjView::updateActions()
   actionClose->setVisible(viewerMode >= STANDALONE);
   actionQuit->setVisible(viewerMode >= STANDALONE);
   actionViewFullScreen->setVisible(viewerMode >= STANDALONE);  
+  actionViewSlideShow->setVisible(viewerMode >= STANDALONE);  
   setAcceptDrops(viewerMode >= STANDALONE);
 
   // Zoom combo and actions
@@ -1080,7 +1091,9 @@ QDjView::updateActions()
   actionCopyOutline->setEnabled(pagenum > 0);
   actionCopyAnnotation->setEnabled(pagenum > 0);
   actionViewSideBar->setChecked(hiddenSideBarTabs() == 0);
-  
+  actionViewSlideShow->setChecked(viewerMode == STANDALONE_SLIDESHOW);
+  actionViewFullScreen->setChecked(viewerMode == STANDALONE_FULLSCREEN);
+
   // Disable almost everything when document==0
   if (! document)
     {
@@ -1096,6 +1109,7 @@ QDjView::updateActions()
               action != actionViewStatusBar &&
               action != actionViewSideBar &&
               action != actionViewFullScreen &&
+              action != actionViewSlideShow &&
               action != actionWhatsThis &&
               action != actionAbout )
             action->setEnabled(false);
@@ -1243,18 +1257,29 @@ QDjView::createWhatsThis()
 // APPLY PREFERENCES
 
 
+QDjViewPrefs::Saved *
+QDjView::getSavedConfig(ViewerMode mode)
+{
+  if (mode == STANDALONE_FULLSCREEN)
+    return &fsSavedFullScreen;
+  else if (mode == STANDALONE_SLIDESHOW)
+    return &fsSavedSlideShow;
+  return &fsSavedNormal;
+}
+
 
 QDjViewPrefs::Saved *
 QDjView::getSavedPrefs(void)
 {
   if (viewerMode==EMBEDDED_PLUGIN)
     return &prefs->forEmbeddedPlugin;
-  if (viewerMode==FULLPAGE_PLUGIN)
+  else if (viewerMode==FULLPAGE_PLUGIN)
     return &prefs->forFullPagePlugin;
-  if (actionViewFullScreen->isChecked())
+  else if (viewerMode==STANDALONE_FULLSCREEN)
     return &prefs->forFullScreen;
-  else
-    return &prefs->forStandalone;
+  else if (viewerMode==STANDALONE_SLIDESHOW)
+    return &prefs->forSlideShow;
+  return &prefs->forStandalone;
 }
 
 
@@ -1450,9 +1475,10 @@ QDjView::applyPreferences(void)
       widget->setBorderSize(0);
     }
   
-  // Preload full screen prefs.
+  // Preload mode change prefs.
   fsSavedNormal = prefs->forStandalone;
   fsSavedFullScreen = prefs->forFullScreen;
+  fsSavedSlideShow = prefs->forSlideShow;
 }
 
 
@@ -1742,8 +1768,19 @@ QDjView::parseArgument(QString key, QString value)
       if (viewerMode < STANDALONE)
         errors << tr("Option '%1' requires a standalone viewer.").arg(key);
       if (parse_boolean(key, value, errors, okay))
-        if (actionViewFullScreen->isChecked() != okay)
-          actionViewFullScreen->activate(QAction::Trigger);
+        setViewerMode(okay ? STANDALONE_FULLSCREEN : STANDALONE);
+    }
+  if (key == "slideshow")
+    {
+      if (viewerMode < STANDALONE)
+        errors << tr("Option '%1' requires a standalone viewer.").arg(key);
+      int delay = value.toInt(&okay);
+      if (okay && delay < 0)
+        okay = false;
+      if (okay || parse_boolean(key, value, errors, okay))
+        setViewerMode(okay ? STANDALONE_SLIDESHOW : STANDALONE);
+      if (delay > 0)
+        setSlideShowDelay(delay);
     }
   else if (key == "toolbar")
     {
@@ -2132,8 +2169,9 @@ QDjView::getArgument(QString key)
   else if (key == "pageno")
     return QString::number(widget->page()+1);
   else if (key == "fullscreen" || key == "fs") 
-    return get_boolean((viewerMode >= STANDALONE) && 
-                       actionViewFullScreen->isChecked());    
+    return get_boolean(viewerMode == STANDALONE_FULLSCREEN);
+  else if (key == "slideshow")
+    return get_boolean(viewerMode == STANDALONE_SLIDESHOW);
   else if (key == "scrollbars")
     return get_boolean(widget->horizontalScrollBarPolicy() != 
                        Qt::ScrollBarAlwaysOff );
@@ -2314,7 +2352,7 @@ QDjView::~QDjView()
 
 QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   : QMainWindow(parent),
-    viewerMode(mode),
+    viewerMode(mode < STANDALONE ? mode : STANDALONE),
     djvuContext(context),
     document(0),
     hasNumericalPageTitle(true),
@@ -2352,7 +2390,6 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   options = QDjViewPrefs::defaultOptions;
   tools = prefs->tools;
   toolsCached = 0;
-  fsWindowState = 0;
   
   // Create dialogs
   errorDialog = new QDjViewErrorDialog(this);
@@ -2539,15 +2576,16 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   applyPreferences();
   updateActions();
 
-  // Remembered geometry (before the window is shown)
-  if (viewerMode >= STANDALONE)
-    {
-      if (! (prefs->windowSize.isNull()))
-        resize(prefs->windowSize);
-      if (prefs->windowMaximized)
-        setWindowState(Qt::WindowMaximized);
-    }
-  
+  // Remember geometry and fix viewerMode
+  if (mode >= STANDALONE)
+    if (! (prefs->windowSize.isNull()))
+      resize(prefs->windowSize);
+  if (mode >= STANDALONE)
+    if (prefs->windowMaximized)
+      setWindowState(Qt::WindowMaximized);
+  if (mode > STANDALONE)
+    setViewerMode(mode);
+
   // Options set so far have default priority
   widget->reduceOptionsToPriority(QDjVuWidget::PRIORITY_DEFAULT);
 }
@@ -3306,16 +3344,6 @@ QDjView::getShortFileName()
   else if (! documentUrl.isEmpty())
     return documentUrl.path().section('/', -1);
   return QString();
-}
-
-
-/*! Return true if full screen mode is active */
-bool
-QDjView::getFullScreen()
-{
-  if (viewerMode >= STANDALONE)
-    return actionViewFullScreen->isChecked();
-  return false;
 }
 
 
@@ -4462,42 +4490,69 @@ QDjView::performSelect(bool checked)
 }
 
 
+bool
+QDjView::setViewerMode(ViewerMode mode)
+{
+  Saved *savedPrefs;
+  Saved *savedConfig;
+  if (viewerMode == mode)
+    return true;
+  if (viewerMode < STANDALONE || mode < STANDALONE)
+    return false;
+  savedPrefs = getSavedPrefs();
+  savedConfig = getSavedConfig(viewerMode);
+  savedConfig->remember = true;
+  updateSaved(savedConfig);
+  updateSaved(savedPrefs);
+  Qt::WindowStates wstate = windowState();
+  wstate &= ~unusualWindowStates;
+  if (mode > STANDALONE)
+    wstate |= Qt::WindowFullScreen;
+  if (mode > STANDALONE)
+    setUnifiedTitleAndToolBarOnMac(false);
+  savedConfig = getSavedConfig(mode);
+  setWindowState(wstate);
+  applySaved(savedConfig);
+  viewerMode = mode;
+  // make sure fs and ss actions are available
+  if (mode == STANDALONE)
+    removeAction(actionViewFullScreen);
+  else if (!actions().contains(actionViewFullScreen))
+    addAction(actionViewFullScreen);
+  if (mode == STANDALONE)
+    removeAction(actionViewSlideShow);
+  else if (!actions().contains(actionViewSlideShow))
+    addAction(actionViewSlideShow);
+  // slideshow delay
+  if (mode == STANDALONE_SLIDESHOW)
+    setSlideShowDelay(prefs->slideShowDelay);
+  // make sure checkboxes are set right.
+  updateActionsLater();
+  return true;
+}
+
+void
+QDjView::setSlideShowDelay(int)
+{
+  // nothing for now
+}
+
 void 
 QDjView::performViewFullScreen(bool checked)
 {
-  if (viewerMode < STANDALONE)
-    return;
   if (checked)
-    {
-      fsSavedNormal.remember = true;
-      updateSaved(&fsSavedNormal);
-      updateSaved(&prefs->forStandalone);
-      Qt::WindowStates wstate = windowState();
-      fsWindowState = wstate;
-      wstate &= ~unusualWindowStates;
-      wstate |= Qt::WindowFullScreen;
-      setUnifiedTitleAndToolBarOnMac(false);
-      setWindowState(wstate);
-      applySaved(&fsSavedFullScreen);
-      // Make sure full screen action remains accessible (F11)
-      if (! actions().contains(actionViewFullScreen))
-        addAction(actionViewFullScreen);
-    }
+    setViewerMode(STANDALONE_FULLSCREEN);
   else
-    {
-      fsSavedFullScreen.remember = true;
-      updateSaved(&fsSavedFullScreen);
-      updateSaved(&prefs->forFullScreen);
-      Qt::WindowStates wstate = windowState();
-      wstate &= ~unusualWindowStates;
-      wstate |= fsWindowState & unusualWindowStates;
-      wstate &= ~Qt::WindowFullScreen;
-      setWindowState(wstate);
-      applySaved(&fsSavedNormal);
-      // Demote full screen action
-      if (actions().contains(actionViewFullScreen))
-        removeAction(actionViewFullScreen);
-    }
+    setViewerMode(STANDALONE);
+}
+
+void 
+QDjView::performViewSlideShow(bool checked)
+{
+  if (checked)
+    setViewerMode(STANDALONE_SLIDESHOW);
+  else
+    setViewerMode(STANDALONE);
 }
 
 
@@ -4506,8 +4561,8 @@ QDjView::performEscape()
 {
   if (actionViewSideBar->isChecked())
     actionViewSideBar->activate(QAction::Trigger);
-  else if (actionViewFullScreen->isChecked())
-    actionViewFullScreen->activate(QAction::Trigger);
+  else if (viewerMode > STANDALONE)
+    setViewerMode(STANDALONE);
 }
 
 
