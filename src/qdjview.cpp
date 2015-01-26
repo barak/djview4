@@ -758,7 +758,7 @@ QDjView::createActions()
   actionViewSlideShow
     = makeAction(tr("&Slide Show","View|"), false)
     << QKeySequence(tr("Shift+F11","View|Slideshow"))
-    << QIcon(":/images/icon_fullscreen.png")
+    << QIcon(":/images/icon_slideshow.png")
     << tr("Toggle slide show mode.")
     << Trigger(this, SLOT(performViewSlideShow(bool)));
 
@@ -1109,7 +1109,6 @@ QDjView::updateActions()
               action != actionViewStatusBar &&
               action != actionViewSideBar &&
               action != actionViewFullScreen &&
-              action != actionViewSlideShow &&
               action != actionWhatsThis &&
               action != actionAbout )
             action->setEnabled(false);
