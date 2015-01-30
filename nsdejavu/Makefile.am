@@ -8,7 +8,7 @@ plugins_LTLIBRARIES = nsdejavu.la
 nsdejavu_la_SOURCES = nsdejavu.c 
 nsdejavu_la_LDFLAGS = -module -rpath ${pluginsdir} -avoid-version
 nsdejavu_la_CPPFLAGS = -DDIR_BINDIR=\"$(bindir)\" -I${srcdir} -I${srcdir}/npsdk
-nsdejavu_la_CFLAGS = $(OPTS) $(NSDEJAVU_CFLAGS) ${GLIB_CFLAGS}
+nsdejavu_la_CFLAGS = $(OPTS) $(NSDEJAVU_CFLAGS)
 nsdejavu_la_LIBADD = $(NSDEJAVU_LIBS)
 
 EXTRA_DIST = npsdk README COPYING
