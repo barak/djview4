@@ -3011,7 +3011,7 @@ QDjVuWidget::setHourGlassRatio(double ratio)
       priv->hourGlassRatio = ratio;
       QRect rect = priv->hourGlassRect();
       if (!rect.isEmpty())
-        viewport()->update(rect);
+        viewport()->update(rect.adjusted(-2,-2,2,2));
     }
 }
 
@@ -4576,7 +4576,8 @@ QDjVuPrivate::paintAll(QPainter &paint, const QRegion &paintRegion)
         {
           paint.setBrush(QColor(128,128,192,64));
           paint.setPen(QPen(QColor(64,64,96,255), 1));
-          paint.drawPie(rect, 0, hourGlassRatio*360*16);
+          const int tp = 360*16;
+          paint.drawPie(rect, tp/4, (int)(tp*hourGlassRatio));
         }
     }
 }
