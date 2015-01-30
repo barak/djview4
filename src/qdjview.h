@@ -250,7 +250,7 @@ protected slots:
   void maybeReloadDocument();
   void sslWhiteList(QString why, bool &okay);
   void authRequired(QString why, QString &user, QString &pass);
-
+  void slideShowTimeout(bool reset=false);
 
 protected:
   // mode
@@ -381,6 +381,9 @@ protected:
   Saved fsSavedFullScreen;
   Saved fsSavedSlideShow;
   QByteArray savedDockState;
+  QTimer *slideShowTimer;
+  int    slideShowDelay;
+  int    slideShowCounter;
   // undo/redo
   class UndoRedo 
   {

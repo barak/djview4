@@ -93,6 +93,8 @@ class QDjVuWidget : public QAbstractScrollArea
              READ lensPower WRITE setLensPower)
   Q_PROPERTY(int lensSize 
              READ lensSize WRITE setLensSize)
+  Q_PROPERTY(double hourGlassRatio
+             READ hourGlassRatio WRITE setHourGlassRatio)
   Q_PROPERTY(QDjVuDocument* document 
              READ document WRITE setDocument)
   Q_PROPERTY(QMenu* contextMenu 
@@ -203,6 +205,7 @@ public:
   bool mouseWheelZoom(void) const;
   int lensPower(void) const;
   int lensSize(void) const;
+  double hourGlassRatio(void) const;
   Qt::KeyboardModifiers modifiersForLens() const;
   Qt::KeyboardModifiers modifiersForSelect() const;
   Qt::KeyboardModifiers modifiersForLinks() const;
@@ -240,6 +243,7 @@ public slots:
   void setMouseWheelZoom(bool);
   void setLensPower(int);
   void setLensSize(int);
+  void setHourGlassRatio(double ratio);
   void setModifiersForLens(Qt::KeyboardModifiers);
   void setModifiersForSelect(Qt::KeyboardModifiers);
   void setModifiersForLinks(Qt::KeyboardModifiers);

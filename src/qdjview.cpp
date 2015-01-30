@@ -1117,6 +1117,9 @@ QDjView::updateActions()
   // Finished
   updateActionsScheduled = false;
 
+  // Reset slide show timeout
+  slideShowTimeout(true);
+
   // Notify plugin
   if (viewerMode < STANDALONE)  
     emit pluginOnChange();
@@ -2559,11 +2562,14 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   shortcutGoPage = new QShortcut(QKeySequence("Ctrl+G"), this);
   connect(shortcutGoPage, SIGNAL(activated()), this, SLOT(performGoPage()));
 
-  // Create undoTimer.
+  // Create misc timers
   undoTimer = new QTimer(this);
   undoTimer->setSingleShot(true);
   connect(undoTimer,SIGNAL(timeout()), this, SLOT(saveUndoData()));
-
+  slideShowTimer = new QTimer(this);
+  slideShowTimer->setSingleShot(true);
+  connect(slideShowTimer, SIGNAL(timeout()), this, SLOT(slideShowTimeout()));
+  
   // Actions
   createActions();
   createMenus();
@@ -4531,9 +4537,29 @@ QDjView::setViewerMode(ViewerMode mode)
 }
 
 void
-QDjView::setSlideShowDelay(int)
+QDjView::setSlideShowDelay(int delay)
 {
-  // nothing for now
+  slideShowCounter = 0;
+  slideShowDelay = delay;
+  slideShowTimeout(true);
+}
+
+void
+QDjView::slideShowTimeout(bool reset)
+{
+  double ratio = 0;
+  bool ssmode = (viewerMode == STANDALONE_SLIDESHOW) && (slideShowDelay>0);
+  bool active = ssmode && (widget->page() < pageNum()-1);
+  bool newpage = (slideShowCounter >= slideShowDelay-1);
+  slideShowCounter = (reset||newpage||!active) ? 0 : slideShowCounter+1;
+  if (newpage && active)
+    widget->nextPage();
+  if (active)
+    ratio = 1.0 - (double)slideShowCounter / slideShowDelay;
+  widget->setHourGlassRatio(ratio);
+  slideShowTimer->stop();
+  if (ssmode)
+    slideShowTimer->start(1000);
 }
 
 void 

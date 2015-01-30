@@ -825,6 +825,7 @@ public:
   QDjVuLens  *lens;             // lens (only while lensing)
   int         lensMag;          // lens maginification
   int         lensSize;         // lens size
+  double      hourGlassRatio;   // hour glass timer ratio
   int         lineStep;         // pixels moved by arrow keys
   Qt::MouseButtons      buttons;            // current mouse buttons
   Qt::KeyboardModifiers modifiers;          // current modifiers
@@ -892,6 +893,7 @@ public:
   void changeDisplay(void);
   void changeHAlign(void);
   void changeVAlign(void);
+  QRect hourGlassRect(void) const;
 
 public slots:
   void makeLayout();
@@ -965,6 +967,7 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   lens = 0;
   lensMag = 3;
   lensSize = 300;
+  hourGlassRatio = 0;
   animationTimer = new QTimer(this);
   animationTimer->setSingleShot(false);
   connect(animationTimer, SIGNAL(timeout()), this, SLOT(animate()));
@@ -1539,6 +1542,8 @@ QDjVuPrivate::makeLayout()
           selectedRect.translate(dx, dy);
           // Tooltips mess things up during scrolls
           QToolTip::showText(QPoint(),QString());
+          // hourGlass messes things up too
+          widget->setHourGlassRatio(0);
           // Attention: scroll can generate a paintEvent
           // and call makeLayout again. This is why we
           // do these four things before.
@@ -2970,6 +2975,44 @@ void
 QDjVuWidget::setLensSize(int size)
 {
   priv->lensSize = qBound(0,size,500);
+}
+
+
+/*! \property QDjVuWidget::hourGlassRatio
+  Setups the hour glass timer indicator.
+  Nothing is displayed when value is zero.
+  Otherwise it indicates that one should
+  display the specified fraction of time
+  before switching page in slideshow more. */
+
+double
+QDjVuWidget::hourGlassRatio() const
+{
+  return priv->hourGlassRatio;
+}
+
+QRect
+QDjVuPrivate::hourGlassRect() const
+{
+  int bs = qBound(4, borderSize / 2, 16);
+  int hs = qBound(16, borderSize * 6, 64);
+  int w = widget->viewport()->width();
+  int h = widget->viewport()->height();
+  if (w > hs+bs+bs && h > hs+bs+bs)
+    return QRect(w-bs-hs,h-bs-hs,hs,hs);
+  return QRect();
+}
+
+void
+QDjVuWidget::setHourGlassRatio(double ratio)
+{
+  if (ratio != priv->hourGlassRatio && ratio>=0 && ratio<=1)
+    {
+      priv->hourGlassRatio = ratio;
+      QRect rect = priv->hourGlassRect();
+      if (!rect.isEmpty())
+        viewport()->update(rect);
+    }
 }
 
 /*! \property QDjVuWidget::modifiersForLens
@@ -4524,6 +4567,17 @@ QDjVuPrivate::paintAll(QPainter &paint, const QRegion &paintRegion)
       paint.setBrush(QColor(128,128,192,64));
       paint.setPen(QPen(QColor(64,64,96,255), 1));
       paint.drawRect(selectedRect.adjusted(0,0,-1,-1));
+    }
+  // Paint hour glass
+  if (hourGlassRatio > 0)
+    {
+      QRect rect = hourGlassRect();
+      if (! rect.isEmpty())
+        {
+          paint.setBrush(QColor(128,128,192,64));
+          paint.setPen(QPen(QColor(64,64,96,255), 1));
+          paint.drawPie(rect, 0, hourGlassRatio*360*16);
+        }
     }
 }
 
