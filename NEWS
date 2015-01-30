@@ -5,6 +5,7 @@ NEWER
 - Layout annotations are honored in multipage mode
 - Experimental OpenGL rendering 
 - Bug fixes: layout, usability, preferences, locale selection
+- Added slideshow mode
 
 
 NEW IN VERSION 4.9
