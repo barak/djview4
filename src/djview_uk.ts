@@ -362,7 +362,7 @@
         <location filename="qdjview.cpp" line="759"/>
         <source>&amp;Slide Show</source>
         <comment>View|</comment>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Показ слайдів</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="760"/>
@@ -373,7 +373,7 @@
     <message>
         <location filename="qdjview.cpp" line="762"/>
         <source>Toggle slide show mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Увімкнути або вимкнути режим показу слайлів.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="769"/>
@@ -2698,7 +2698,7 @@ Do you want to replace it?</source>
         <location filename="qdjviewprefsdialog.ui" line="428"/>
         <source> s</source>
         <oldsource> secs</oldsource>
-        <translation type="unfinished">.c</translation>
+        <translation> c</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="459"/>
@@ -2845,7 +2845,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="415"/>
         <source>Timer:  </source>
-        <translation type="unfinished"></translation>
+        <translation>Таймер: </translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1021"/>
@@ -2872,7 +2872,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1091"/>
         <source>Render with openGL when available</source>
-        <translation type="unfinished"></translation>
+        <translation>Використовувати openGL, якщо можна</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1101"/>
@@ -2933,12 +2933,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefs.cpp" line="950"/>
         <source>Standalone Viewer (Full Screen mode)</source>
-        <translation type="unfinished"></translation>
+        <translation>Окремий засіб перегляду (повноекранний режим)</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="953"/>
         <source>Standalone Viewer (Slideshow mode)</source>
-        <translation type="unfinished"></translation>
+        <translation>Окремий засіб перегляду (режим показу слайдів)</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="844"/>
