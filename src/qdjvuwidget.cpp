@@ -4574,9 +4574,9 @@ QDjVuPrivate::paintAll(QPainter &paint, const QRegion &paintRegion)
       QRect rect = hourGlassRect();
       if (! rect.isEmpty())
         {
-          paint.setBrush(QColor(128,128,192,64));
-          paint.setPen(QPen(QColor(64,64,96,255), 1));
           const int tp = 360*16;
+          paint.setPen(QPen());
+          paint.setBrush(QColor(128,128,192,128));
           paint.drawPie(rect, tp/4, (int)(tp*hourGlassRatio));
         }
     }

@@ -1434,6 +1434,9 @@ QDjView::updateSaved(Saved *saved)
           else if (! (wstate & unusualWindowStates))
             prefs->windowSize = size();
         }
+      // non-saved
+      saved->nsBorderBrush = widget->borderBrush();
+      saved->nsBorderSize = widget->borderSize();
     }
 }
 
@@ -1471,11 +1474,7 @@ QDjView::applyPreferences(void)
 
   // Special preferences for embedded plugins
   if (viewerMode == EMBEDDED_PLUGIN)
-    {
-      setMinimumSize(QSize(8,8));
-      widget->setBorderBrush(QBrush(Qt::white));
-      widget->setBorderSize(0);
-    }
+    setMinimumSize(QSize(8,8));
   
   // Preload mode change prefs.
   fsSavedNormal = prefs->forStandalone;
@@ -1913,7 +1912,13 @@ QDjView::parseArgument(QString key, QString value)
       QColor color;
       color.setNamedColor((value[0] == '#') ? value : "#" + value);
       if (color.isValid())
-        widget->setBorderBrush(color);
+        {
+          QBrush brush = QBrush(color);
+          widget->setBorderBrush(brush);
+          fsSavedNormal.nsBorderBrush = brush;
+          fsSavedFullScreen.nsBorderBrush = brush;
+          fsSavedSlideShow.nsBorderBrush = brush;
+        }
       else
         illegal_value(key, value, errors);
     }
@@ -2576,11 +2581,6 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   createWhatsThis();
   enableContextMenu(true);
   
-  // Preferences
-  connect(prefs, SIGNAL(updated()), this, SLOT(preferencesChanged()));
-  applyPreferences();
-  updateActions();
-
   // Remember geometry and fix viewerMode
   if (mode >= STANDALONE)
     if (! (prefs->windowSize.isNull()))
@@ -2590,6 +2590,11 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
       setWindowState(Qt::WindowMaximized);
   if (mode > STANDALONE)
     setViewerMode(mode);
+
+  // Preferences
+  connect(prefs, SIGNAL(updated()), this, SLOT(preferencesChanged()));
+  applyPreferences();
+  updateActions();
 
   // Options set so far have default priority
   widget->reduceOptionsToPriority(QDjVuWidget::PRIORITY_DEFAULT);
@@ -4518,6 +4523,8 @@ QDjView::setViewerMode(ViewerMode mode)
   savedConfig = getSavedConfig(mode);
   setWindowState(wstate);
   applySaved(savedConfig);
+  widget->setBorderBrush(savedConfig->nsBorderBrush);
+  widget->setBorderSize(savedConfig->nsBorderSize);
   viewerMode = mode;
   // make sure fs and ss actions are available
   if (mode == STANDALONE)

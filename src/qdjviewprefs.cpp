@@ -126,7 +126,9 @@ QDjViewPrefs::instance(void)
 QDjViewPrefs::Saved::Saved(void)
   : remember(true),
     options(defaultOptions),
-    zoom(QDjVuWidget::ZOOM_FITWIDTH)
+    zoom(QDjVuWidget::ZOOM_FITWIDTH),
+    nsBorderBrush(QBrush(Qt::lightGray)),
+    nsBorderSize(8)
 {
 }
 
@@ -170,10 +172,13 @@ QDjViewPrefs::QDjViewPrefs(void)
   forSlideShow = forFullScreen;
   forSlideShow.zoom = QDjVuWidget::ZOOM_FITPAGE;
   forSlideShow.remember = false;
+  forSlideShow.nsBorderBrush = QBrush(Qt::black);
   forFullPagePlugin.options &= ~(mss);
   forEmbeddedPlugin.options &= ~(mss|SHOW_TOOLBAR);
   forEmbeddedPlugin.remember = false;
   forEmbeddedPlugin.zoom = 100;
+  forEmbeddedPlugin.nsBorderBrush = QBrush(Qt::white);
+  forEmbeddedPlugin.nsBorderSize = 0;
 }
 
 

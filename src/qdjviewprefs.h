@@ -116,6 +116,8 @@ public:
     Options    options;         //!< Miscellaneous flags.
     int        zoom;            //!< Zoom factor.
     QByteArray state;           //!< Toolbar and sidebar geometry.
+    QBrush     nsBorderBrush;   //!< Border brush (not saved)
+    int        nsBorderSize;    //!< Border size (not saved)
   };
 
   // Preferences remembered between program invocations.
