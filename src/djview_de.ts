@@ -665,7 +665,7 @@
     <message>
         <location filename="qdjview.cpp" line="723"/>
         <source>Invert image luminance while preserving hue.</source>
-        <translation>Invertiert die Bildhelligkeit unter Erhaltung der Farbnuancierung .</translation>
+        <translation>Invertiert die Bildhelligkeit unter Erhaltung der Farbnuancierung.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="727"/>
@@ -756,7 +756,7 @@
         <location filename="qdjview.cpp" line="759"/>
         <source>&amp;Slide Show</source>
         <comment>View|</comment>
-        <translation type="unfinished"></translation>
+        <translation>Prä&amp;sentation</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="760"/>
@@ -767,7 +767,7 @@
     <message>
         <location filename="qdjview.cpp" line="762"/>
         <source>Toggle slide show mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wechselt Präsentation und normaler Anzeige.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="765"/>
@@ -2838,7 +2838,7 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="415"/>
         <source>Timer:  </source>
-        <translation type="unfinished"></translation>
+        <translation>Timer:</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1021"/>
@@ -2865,7 +2865,7 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1091"/>
         <source>Render with openGL when available</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwende openGL (falls verfügbar)</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1101"/>
@@ -2927,12 +2927,12 @@ Soll die Datei überschrieben werden?</translation>
     <message>
         <location filename="qdjviewprefs.cpp" line="950"/>
         <source>Standalone Viewer (Full Screen mode)</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigenständiges Fenster (Vollbild)</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="953"/>
         <source>Standalone Viewer (Slideshow mode)</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigenständiges Programm (Präsentation)</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="844"/>
