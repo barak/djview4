@@ -1771,7 +1771,7 @@ QDjView::parseArgument(QString key, QString value)
       if (parse_boolean(key, value, errors, okay))
         setViewerMode(okay ? STANDALONE_FULLSCREEN : STANDALONE);
     }
-  if (key == "slideshow")
+  else if (key == "slideshow")
     {
       if (viewerMode < STANDALONE)
         errors << tr("Option '%1' requires a standalone viewer.").arg(key);
@@ -2183,9 +2183,9 @@ QDjView::getArgument(QString key)
     return get_boolean(widget->horizontalScrollBarPolicy() != 
                        Qt::ScrollBarAlwaysOff );
   else if (key == "menubar")
-    return get_boolean(menuBar->isVisible());
+    return get_boolean(menuBar->isVisibleTo(this));
   else if (key == "statusbar")
-    return get_boolean(statusBar->isVisible());
+    return get_boolean(statusBar->isVisibleTo(this));
   else if (key == "continuous")
     return get_boolean(widget->continuous());
   else if (key == "side_by_side" || key == "sidebyside")
@@ -2290,9 +2290,9 @@ QDjView::getArgument(QString key)
   else if (key == "passive" || key == "passivestretch")
     {
       if (widget->horizontalScrollBarPolicy() == Qt::ScrollBarAlwaysOff 
-          && !menuBar->isVisible() && !statusBar->isVisible()
-          && !thumbnailDock->isVisible() && !outlineDock->isVisible()
-          && !findDock->isVisible() && !toolBar->isVisible()
+          && !menuBar->isVisibleTo(this) && !statusBar->isVisibleTo(this)
+          && !thumbnailDock->isVisibleTo(this) && !outlineDock->isVisibleTo(this)
+          && !findDock->isVisibleTo(this) && !toolBar->isVisibleTo(this)
           && !widget->continuous() && !widget->sideBySide()
           && !widget->keyboardEnabled() && !widget->mouseEnabled() 
           && widget->contextMenu() == 0 )
@@ -2308,11 +2308,11 @@ QDjView::getArgument(QString key)
   else if (key == "sidebar")
     { // without position 
       QStringList what;
-      if (thumbnailDock->isVisible())
+      if (thumbnailDock->isVisibleTo(this))
         what << "thumbnails";
-      if (outlineDock->isVisible())
+      if (outlineDock->isVisibleTo(this))
         what << "outline";
-      if (findDock->isVisible())
+      if (findDock->isVisibleTo(this))
         what << "find";
       if (what.size() > 0)
         return QString("yes,") + what.join(",");
@@ -2321,7 +2321,7 @@ QDjView::getArgument(QString key)
     }
   else if (key == "toolbar")
     { // Currently without toolbar content
-      return get_boolean(toolBar->isVisible());
+      return get_boolean(toolBar->isVisibleTo(this));
     }
   else if (key == "highlight")
     { // Currently not working
@@ -3964,7 +3964,7 @@ QDjView::pointerPosition(const Position &pos, const PageInfo &info)
     }
   setPageLabelText(p);
   setMouseLabelText(m);
-  if (textLabel->isVisible())
+  if (textLabel->isVisibleTo(this))
     {
       textLabelRect = info.selected;
       textLabelTimer->start(25);
@@ -3978,7 +3978,7 @@ QDjView::updateTextLabel()
   textLabel->clear();
   textLabel->setWordWrap(false);
   textLabel->setTextFormat(Qt::PlainText);
-  if (document && textLabel->isVisible())
+  if (document && textLabel->isVisibleTo(this))
     {
       QString text;
       QFontMetrics m(textLabel->font());
@@ -4526,15 +4526,6 @@ QDjView::setViewerMode(ViewerMode mode)
   widget->setBorderBrush(savedConfig->nsBorderBrush);
   widget->setBorderSize(savedConfig->nsBorderSize);
   viewerMode = mode;
-  // make sure fs and ss actions are available
-  if (mode == STANDALONE)
-    removeAction(actionViewFullScreen);
-  else if (!actions().contains(actionViewFullScreen))
-    addAction(actionViewFullScreen);
-  if (mode == STANDALONE)
-    removeAction(actionViewSlideShow);
-  else if (!actions().contains(actionViewSlideShow))
-    addAction(actionViewSlideShow);
   // slideshow delay
   if (mode == STANDALONE_SLIDESHOW)
     setSlideShowDelay(prefs->slideShowDelay);
@@ -4593,7 +4584,7 @@ QDjView::performEscape()
 {
   if (actionViewSideBar->isChecked())
     actionViewSideBar->activate(QAction::Trigger);
-  else if (viewerMode > STANDALONE)
+  else if (viewerMode > STANDALONE && widget->keyboardEnabled())
     setViewerMode(STANDALONE);
 }
 
@@ -4601,12 +4592,13 @@ QDjView::performEscape()
 void 
 QDjView::performGoPage()
 {
-  if (pageCombo)
-    {
-      toolBar->show();
-      pageCombo->setFocus();
-      QTimer::singleShot(0, pageCombo->lineEdit(), SLOT(selectAll()));
-    }
+  if (toolBar->isVisibleTo(this) || widget->keyboardEnabled())
+    if (toolsCached & QDjViewPrefs::TOOL_PAGECOMBO)
+      {
+        toolBar->show();
+        pageCombo->setFocus();
+        QTimer::singleShot(0, pageCombo->lineEdit(), SLOT(selectAll()));
+      }
 }
 
 

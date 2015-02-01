@@ -624,7 +624,13 @@ Enable or disable the pop-up menu.
 .TP
 .BI "-keyboard=(yes|no)"
 Enable or disable the DjVu plugin keyboard shortcuts.
-The default is yes (enabled).
+The default is yes (enabled). 
+Note that disabling the keyboard handling 
+does not disable the shortcuts associated
+with active menus (see options 
+.BR "-menu" " and " "-menubar" "),"
+visible toolbars and sidebars (see options
+.BR "-toolbar" " and " "-sidebar" ")." 
 
 .TP
 .BI "-mouse=(yes|no)"
