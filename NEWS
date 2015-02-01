@@ -1,11 +1,12 @@
 
-NEWER
------
+NEW IN VERSION 4.10
+-------------------
+- Bug fixes: layout, usability, preferences, locale selection
 - Works with both Qt4 and Qt5
+- Build uses automake/qmake hybrid (instead of autoconf/qmake).
 - Layout annotations are honored in multipage mode
 - Experimental OpenGL rendering 
-- Bug fixes: layout, usability, preferences, locale selection
-- Added slideshow mode
+- Slideshow mode
 
 
 NEW IN VERSION 4.9

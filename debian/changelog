@@ -1,3 +1,9 @@
+djview4 (4.10-0pre1) UNRELEASED; urgency=medium
+
+  * temporary entry to be deleted at Barak's convenience
+
+ -- Leon Bottou <leonb@users.sf.net>  Sun, 01 Feb 2015 13:25:13 -0500
+
 djview4 (4.9-7) unstable; urgency=medium
 
   * bump debian standards version
