@@ -784,7 +784,7 @@
         <location filename="qdjview.cpp" line="759"/>
         <source>&amp;Slide Show</source>
         <comment>View|</comment>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mostrar Diapositiva</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="760"/>
@@ -795,7 +795,7 @@
     <message>
         <location filename="qdjview.cpp" line="762"/>
         <source>Toggle slide show mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Selección modo diapositiva.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="765"/>
@@ -2698,7 +2698,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="415"/>
         <source>Timer:  </source>
-        <translation type="unfinished"></translation>
+        <translation>Avanzar cada: </translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="428"/>
@@ -2990,12 +2990,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefs.cpp" line="950"/>
         <source>Standalone Viewer (Full Screen mode)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista autónoma (modo Pantalla Completa)</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="953"/>
         <source>Standalone Viewer (Slideshow mode)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista autónoma (modo Diapositiva)</translation>
     </message>
 </context>
 <context>
