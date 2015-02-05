@@ -28,7 +28,7 @@ dist_man1_MANS = djview.1
 # - Maybe we should do them all at once and avoid listing 
 #   the translation files in both djview.pro and Makefile.am
 
-translationsdir = $(datadir)/djvu
+translationsdir = $(datadir)/djvu/djview4
 
 translations_DATA = $(qmake_qm)
 
