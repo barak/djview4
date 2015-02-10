@@ -161,8 +161,6 @@ TIFFOpen(0,0);
       ifelse([$2],,:,[$2])
    else
       AC_DEFINE(HAVE_TIFF,1,[Define if you have libtiff.])
-      AC_MSG_RESULT([setting TIFF_CFLAGS=$TIFF_CFLAGS])
-      AC_MSG_RESULT([setting TIFF_LIBS=$TIFF_LIBS])
       ifelse([$1],,:,[$1])
    fi
 ])
@@ -214,9 +212,7 @@ AC_DEFUN([AC_PATH_DDJVUAPI],
        ac_ddjvuapi=yes
        AC_MSG_RESULT([found])
        DDJVUAPI_LIBS=`$PKG_CONFIG --libs ddjvuapi`
-       AC_MSG_RESULT([setting DDJVUAPI_LIBS=$DDJVUAPI_LIBS])
        DDJVUAPI_CFLAGS=`$PKG_CONFIG --cflags ddjvuapi`
-       AC_MSG_RESULT([setting DDJVUAPI_CFLAGS=$DDJVUAPI_CFLAGS])
        AC_DEFINE(HAVE_DDJVUAPI,1,[Define if you have ddjvuapi.])
        ifelse([$1],,:,[$1])
     else
@@ -250,9 +246,7 @@ AC_DEFUN([AC_PATH_GLIB],
        ac_glib=yes
        AC_MSG_RESULT([found])
        GLIB_LIBS=`$PKG_CONFIG --libs glib-2.0`
-       AC_MSG_RESULT([setting GLIB_LIBS=$GLIB_LIBS])
        GLIB_CFLAGS=`$PKG_CONFIG --cflags glib-2.0`
-       AC_MSG_RESULT([setting GLIB_CFLAGS=$GLIB_CFLAGS])
        AC_DEFINE(HAVE_GLIB,1,[Define if you have glib-2.0.])
        ifelse([$1],,:,[$1])
     else
@@ -330,64 +324,38 @@ EOF
 Please define variable QMAKE to a working qmake.
 If you define QMAKESPEC, make sure it is correct.])
   fi
+  AC_MSG_CHECKING([Qt version])
   case "$QT_VERSION" in
     4.*)
-      AC_MSG_RESULT([Program qmake reports Qt version $QT_VERSION.]) 
+      AC_MSG_RESULT([qt4 ($QT_VERSION)]) 
       qtversion=qt4
       ;;
     5.*)
-      AC_MSG_RESULT([Program qmake reports Qt version $QT_VERSION.]) 
+      AC_MSG_RESULT([qt5 ($QT_VERSION)]) 
       qtversion=qt5
       ;;
     *)
-      AC_MSG_ERROR([Qt version $QT_VERSION is insufficient.
-Please define variable QMAKE to a suitable qmake.])
+      AC_MSG_RESULT([$QT_VERSION]) 
+      AC_MSG_ERROR([Unrecognized Qt version. Please define variable QMAKE.])
       ;;
   esac
-  if test -z "$QTDIR" && 
-     test -n "$QT_INSTALL_DATA" &&
-     test -d "$QT_INSTALL_DATA/bin" ; then
-    QTDIR="$QT_INSTALL_DATA"
-    AC_MSG_RESULT([Defining QTDIR=$QTDIR])
-  fi
+  test -z "$QTDIR" && test -n "$QT_INSTALL_DATA" && \
+    test -d "$QT_INSTALL_DATA/bin" && QTDIR="$QT_INSTALL_DATA"
   path=$PATH
-  if test -n "$QTDIR" && test -d "$QTDIR/bin" ; then
-    path=$QTDIR/bin:$path
-  fi
-  if test -d "$QT_INSTALL_BINS" ; then
-    path=$QT_INSTALL_BINS:$path
-  fi
-  if test -z "$MOC" ; then
-    if test -x "$QMAKE_MOC" ; then
-      MOC=$QMAKE_MOC
-      AC_MSG_RESULT([Defining MOC=$MOC])
-    elif test -d "$QTDIR" && test -d "$QTDIR/bin" && test -x "$QTDIR/bin/moc" ; then
-      MOC="$QTDIR/bin/moc"
-      AC_MSG_RESULT([Defining MOC=$MOC])
-    else
-      AC_PATH_PROGS([MOC], [moc-${qtversion-qt4} moc], [], [$path])
-    fi
-  fi
-  if test -z "$UIC" ; then
-    if test -x "$QMAKE_UIC" ; then
-      UIC=$QMAKE_UIC
-      AC_MSG_RESULT([Defining UIC=$UIC])
-    elif test -d "$QTDIR" && test -d "$QTDIR/bin" && test -x "$QTDIR/bin/uic" ; then
-      UIC="$QTDIR/bin/uic"
-      AC_MSG_RESULT([Defining UIC=$UIC])
-    else
-      AC_PATH_PROGS([UIC], [uic-${qtversion-qt4} uic], [], [$path])
-    fi
-  fi
-  if test -z "$RCC" ; then
-    AC_PATH_PROGS([RCC], [rcc-${qtversion-qt4} rcc], [], [$path])
-  fi
-  if test -z "$LUPDATE" ; then
-    AC_PATH_PROGS([LUPDATE], [lupdate-${qtversion-qt4} lupdate], [], [$path])
-  fi
-  if test -z "$LRELEASE" ; then
-    AC_PATH_PROGS([LRELEASE], [lrelease-${qtversion-qt4} lrelease], [], [$path])
-  fi
+  test -n "$QTDIR" && test -d "$QTDIR/bin" && path=$QTDIR/bin:$path
+  test -d "$QT_INSTALL_BINS" && path=$QT_INSTALL_BINS:$path
+  altmoc="moc-${qtversion}"
+  test -x "$QMAKE_MOC" && pathmoc=`dirname "$QMAKE_MOC"`: && altmoc=
+  AC_PATH_PROGS([MOC], [${altmoc} moc], [], [$pathmoc$path])
+  altuic="uic-${qtversion}"
+  test -x "$QMAKE_UIC" && pathuic=`dirname "$QMAKE_UIC"`: && altuic=
+  AC_PATH_PROGS([UIC], [$altuic uic], [], [$pathuic$path])
+  test -x $QT_INSTALL_BINS/rcc || altrcc="rcc-${qtversion}"
+  AC_PATH_PROGS([RCC], [$altrcc rcc], [], [$path])
+  test -x $QT_INSTALL_BINS/lupdate || altlupdate="lupdate-${qtversion}"
+  AC_PATH_PROGS([LUPDATE], [${altlupdate} lupdate], [], [$path])
+  test -x $QT_INSTALL_BINS/lrelease || altlrelease="lupdate-${qtversion}"
+  AC_PATH_PROGS([LRELEASE], [${altlrelease} lrelease], [], [$path])
   PATH=$path
 ])
 

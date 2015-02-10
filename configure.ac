@@ -123,36 +123,21 @@ AC_DISABLE_STATIC
 LT_INIT
 
 # SVG conversion tool
+AC_PATH_PROG([RSVG], [rsvg-convert], [false])
+AC_PATH_PROG([INKSCAPE], [inkscape], [false])
+AC_PATH_PROG([CONVERT], [convert], [false])
 conversion_tool=no
-AC_PATH_PROG([RSVG], [rsvg-convert], [no])
-if test "x${RSVG}" != "xno"; then
-    conversion_tool="rsvg"
-else
-    AC_PATH_PROG([INKSCAPE], [inkscape], [no])
-    if test "x${INKSCAPE}" != "xno" ; then
-        conversion_tool="inkscape"
-    else
-        AC_MSG_CHECKING([for convert])
-        # convert exists on Windows as system tool or as part of other projects
-        # so we check that it belongs to the ImageMagick project
-        AC_PATH_PROGS_FEATURE_CHECK([CONVERT], [convert], [[
-                    convertout=`eval $ac_path_CONVERT -version 2>&1 |
-                           sed -n 's/^Version: ImageMagick .*/ImageMagick/p '`
-                    test "x$convertout" = "xImageMagick" && \
-                        ac_cv_path_CONVERT=$ac_path_CONVERT ac_path_CONVERT_found=:
-                    ]], [CONVERT=no])
-        AC_MSG_RESULT(${CONVERT})
-        AC_SUBST([CONVERT])
-        if test "x${CONVERT}" != "xno" ; then
-            conversion_tool="convert"
-        fi
-    fi
+if test "x${RSVG}" != xfalse ; then
+  conversion_tool=rsvg
+elif test "x${INKSCAPE}" != xfalse ; then
+  conversion_tool=inkscape
+elif test "x${CONVERT}" != xfalse ; then
+  ( ${CONVERT} --version 2>&1 | grep -q ImageMagick ) && conversion_tool=convert
 fi
-AM_CONDITIONAL([HAVE_CONVERSION_RSVG], [test "x${conversion_tool}" = x"rsvg"])
-AM_CONDITIONAL([HAVE_CONVERSION_CONVERT], [test "x${conversion_tool}" = x"convert"])
-AM_CONDITIONAL([HAVE_CONVERSION_INKSCAPE], [test "x${conversion_tool}" = x"inkscape"])
-AM_CONDITIONAL([HAVE_CONVERSION_TOOL], [! test "x${conversion_tool}" = x"no"])
-
+AM_CONDITIONAL([HAVE_CONVERSION_RSVG], [test x${conversion_tool} = xrsvg])
+AM_CONDITIONAL([HAVE_CONVERSION_INKSCAPE], [test x${conversion_tool} = xinkscape])
+AM_CONDITIONAL([HAVE_CONVERSION_CONVERT], [test x${conversion_tool} = xconvert])
+AM_CONDITIONAL([HAVE_CONVERSION_TOOL], [test x${conversion_tool} != xno])
 
 
 # ----------------------------------------
@@ -349,9 +334,23 @@ AC_OUTPUT
 # Fin
 # ----------------------------------------
 
-echo ""
-echo "Configuration is done."
-echo "Compile with command:"
-echo "    $ make"
-echo "Then install the binaries in $prefix with command:"
-echo "    # make install"
+# Final message
+
+echo
+echo "$PACKAGE $VERSION"
+echo
+echo "Configuration Options Summary:"
+echo
+echo "  OS...................: ${host_os}"
+echo "  Qt version...........: ${qtversion} (${QT_VERSION})"
+echo "  TIFF support.........: ${ac_tiff}"
+echo "  Desktop files........: ${ac_desktopfiles}"
+echo "  Icon generation......: ${conversion_tool}"
+echo "  NSDEJAVU plugin......: ${ac_nsdejavu}"
+echo "  NPDJVU plugin........: ${ac_npdjvu}"
+echo
+echo "Compilation............: make (or gmake)"
+echo "Installation...........: make install (as root if needed, with 'su' or 'sudo')"
+echo "  prefix...............: $prefix"
+echo
+
