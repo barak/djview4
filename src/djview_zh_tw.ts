@@ -784,7 +784,7 @@
         <location filename="qdjview.cpp" line="759"/>
         <source>&amp;Slide Show</source>
         <comment>View|</comment>
-        <translation type="unfinished"></translation>
+        <translation>播放幻燈片(&amp;S）</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="760"/>
@@ -795,7 +795,7 @@
     <message>
         <location filename="qdjview.cpp" line="762"/>
         <source>Toggle slide show mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>切換幻燈片播放模式。</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="765"/>
@@ -2697,7 +2697,7 @@ Do you want to replace it?</source>
         <location filename="qdjviewprefsdialog.ui" line="428"/>
         <source> s</source>
         <oldsource> secs</oldsource>
-        <translation type="unfinished">.秒</translation>
+        <translation>.秒</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="459"/>
@@ -2899,7 +2899,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="415"/>
         <source>Timer:  </source>
-        <translation type="unfinished"></translation>
+        <translation>定時器: </translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1075"/>
@@ -2914,7 +2914,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1091"/>
         <source>Render with openGL when available</source>
-        <translation type="unfinished"></translation>
+        <translation>openGL可用時用其渲染</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1101"/>
@@ -2990,12 +2990,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefs.cpp" line="950"/>
         <source>Standalone Viewer (Full Screen mode)</source>
-        <translation type="unfinished"></translation>
+        <translation>單獨察看 (全螢幕模式)</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="953"/>
         <source>Standalone Viewer (Slideshow mode)</source>
-        <translation type="unfinished"></translation>
+        <translation>單獨察看 (幻燈模式)</translation>
     </message>
 </context>
 <context>
