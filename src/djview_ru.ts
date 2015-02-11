@@ -1273,7 +1273,7 @@ Filename &apos;%1&apos; has no suffix.</source>
         <location filename="qdjview.cpp" line="759"/>
         <source>&amp;Slide Show</source>
         <comment>View|</comment>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Слайд-шоу</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="760"/>
@@ -1284,7 +1284,7 @@ Filename &apos;%1&apos; has no suffix.</source>
     <message>
         <location filename="qdjview.cpp" line="762"/>
         <source>Toggle slide show mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Слайд-шоу режим.</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="802"/>
@@ -2620,7 +2620,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="415"/>
         <source>Timer:  </source>
-        <translation type="unfinished"></translation>
+        <translation>Задержка страниц: </translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="978"/>
@@ -2640,7 +2640,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1091"/>
         <source>Render with openGL when available</source>
-        <translation type="unfinished"></translation>
+        <translation>Нарисуйте с OpenGL при наличии</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1101"/>
@@ -2737,12 +2737,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefs.cpp" line="950"/>
         <source>Standalone Viewer (Full Screen mode)</source>
-        <translation type="unfinished"></translation>
+        <translation>автономный просмотр (полноэкранный режим)</translation>
     </message>
     <message>
         <location filename="qdjviewprefs.cpp" line="953"/>
         <source>Standalone Viewer (Slideshow mode)</source>
-        <translation type="unfinished"></translation>
+        <translation>автономный просмотр (слайд-шоу режим)</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="53"/>
@@ -2764,7 +2764,7 @@ Do you want to replace it?</source>
         <location filename="qdjviewprefsdialog.ui" line="428"/>
         <source> s</source>
         <oldsource> secs</oldsource>
-        <translation type="unfinished">.c</translation>
+        <translation> c</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="598"/>
@@ -2891,7 +2891,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefs.cpp" line="947"/>
         <source>Standalone Viewer</source>
-        <translation>самостоятельного приложения</translation>
+        <translation>автономный просмотр</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="357"/>
@@ -2951,7 +2951,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1015"/>
         <source>&amp;Advanced</source>
-        <translation>&amp;Продвинутые</translation>
+        <translation>&amp;Дополнительные</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="949"/>
