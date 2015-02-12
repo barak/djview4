@@ -1,15 +1,16 @@
-djview4 (4.10-0pre1) UNRELEASED; urgency=medium
-
-  * temporary entry to be deleted at Barak's convenience
-
- -- Leon Bottou <leonb@users.sf.net>  Sun, 01 Feb 2015 13:25:13 -0500
-
-djview4 (4.9-7) unstable; urgency=medium
+djview4 (4.10-1) unstable; urgency=medium
 
   * bump debian standards version
-  * merge upstream changes
+  * new upstream release
+    - Bug fixes: layout, usability, preferences, locale selection
+    - Works with both Qt4 and Qt5
+    - Build uses automake/qmake hybrid (instead of autoconf/qmake).
+    - Layout annotations are honored in multipage mode
+    - Experimental OpenGL rendering
+    - Slideshow mode
+  * switch to qt5
 
- -- Barak A. Pearlmutter <bap@debian.org>  Tue, 06 Jan 2015 06:50:00 -0500
+ -- Barak A. Pearlmutter <bap@debian.org>  Thu, 12 Feb 2015 22:52:34 +0000
 
 djview4 (4.9-6) unstable; urgency=medium
 
