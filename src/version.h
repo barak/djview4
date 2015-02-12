@@ -11,7 +11,7 @@
 # define DJVIEW_APP "DjView"
 #endif
 #ifndef DJVIEW_VERSION
-# define DJVIEW_VERSION 0x41000
+# define DJVIEW_VERSION 0x40a00
 # define DJVIEW_VERSION_STR "4.10"
 # define RC_VERSION 4,10,0,0
 # define RC_VERSION_STR "4,10,0,0\0"
