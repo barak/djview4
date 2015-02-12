@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+export QT_SELECT = 5
+
 plugindir=/usr/lib/mozilla/plugins
 
 override_dh_auto_install:
