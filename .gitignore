@@ -1,9 +1,14 @@
 .libs/
 /.pc/
 /BUILD*
-/Makefile
+/INSTALL
+/aclocal.m4
 /autom4te.cache/
 /config.h
 /config.log
 /config.status
+/configure
 /libtool
+/stamp-h1
+Makefile
+Makefile.in
