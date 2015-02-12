@@ -305,8 +305,8 @@ Defining QTDIR can help although it is deprecated.])
   mkdir conftest.d
   cat > conftest.d/conftest.pro <<\EOF
 changequote(<<, >>)dnl
-message(QMAKE_UIC="$$QMAKE_UIC")
-message(QMAKE_MOC="$$QMAKE_MOC")
+message(QMAKE_UIC="$$QMAKE_UIC")dnl qt4 only
+message(QMAKE_MOC="$$QMAKE_MOC")dnl qt4 only
 message(QT_VERSION="$$[QT_VERSION]")
 message(QT_INSTALL_PREFIX="$$[QT_INSTALL_PREFIX]")
 message(QT_INSTALL_DATA="$$[QT_INSTALL_DATA]")
@@ -324,6 +324,9 @@ EOF
 Please define variable QMAKE to a working qmake.
 If you define QMAKESPEC, make sure it is correct.])
   fi
+  AC_MSG_CHECKING([for real qmake path])
+  test -x "$QT_INSTALL_BINS/qmake" && QMAKE="$QT_INSTALL_BINS/qmake"
+  AC_MSG_RESULT([$QMAKE])
   AC_MSG_CHECKING([Qt version])
   case "$QT_VERSION" in
     4.*)
