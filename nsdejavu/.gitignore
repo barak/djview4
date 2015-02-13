@@ -1,6 +1,6 @@
-/Makefile
 /nsdejavu.1
 /nsdejavu.la
 /nsdejavu.lo
 /nsdejavu.x
+/nsdejavu_la-nsdejavu.lo
 /test.djvu
