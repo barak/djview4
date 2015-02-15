@@ -1,3 +1,9 @@
+djview4 (4.10-3) unstable; urgency=medium
+
+  * gzip --no-name option for build reproducibility (closes: #778432)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Sun, 15 Feb 2015 14:11:45 +0000
+
 djview4 (4.10-2) unstable; urgency=medium
 
   * build dependency for lrelease executable
