@@ -57,8 +57,7 @@ else
 	  cp ${top_srcdir}/desktopfiles/prebuilt-hi$${s}-djview4.png $@
 endif
 
-svg_process =\
-cat $< | gzip >$@
+svg_process = gzip --no-name <$< >$@
 
 svg_verbose = $(svg_verbose_@AM_V@)
 svg_verbose_ = $(svg_verbose_@AM_DEFAULT_V@)
