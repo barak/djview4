@@ -36,17 +36,14 @@ EXTRA_DIST += $(qmake_ts)
 
 lrelease_verbose = $(lrelease_verbose_@AM_V@)
 lrelease_verbose_ = $(lrelease_verbose_@AM_DEFAULT_V@)
-lrelease_verbose_0 = @
+lrelease_verbose_0 = @echo "  LRELEASE" $@;
 
-$(qmake_qm): qm.dir/lrelease-stamp
-	$(lrelease_verbose)cmp -s qm.dir/$@ $@ || cp qm.dir/$@ $@
+$(qmake_qm): djview
 
-qm.dir/lrelease-stamp: $(qmake_ts) djview
-	$(lrelease_verbose)test -d qm.dir || $(MKDIR) qm.dir ; \
-	 for ts in $(qmake_ts); do cp $(srcdir)/$$ts qm.dir; done ; \
-	 for ts in $(qmake_ts); do echo "TRANSLATIONS += $$ts" ; done > qm.dir/ts.pro
-	$(lrelease_verbose)cd qm.dir && $(LRELEASE) ts.pro
-	$(lrelease_verbose)touch $@
+SUFFIXES=.ts .qm
+
+.ts.qm:
+	$(lrelease_verbose)$(LRELEASE) -silent $< -qm $@
 
 # invoke qmake
 
@@ -72,20 +69,15 @@ Makefile.qmake: ${srcdir}/djview.pro Makefile
 
 # cleaning
 
-mostlyclean-local: mostlyclean-qmake mostlyclean-qm
+mostlyclean-local: mostlyclean-qmake
 
 mostlyclean-qmake:
 	-test "${srcdir}" == "." || ${RM} djview.pro
 	-test -f Makefile.qmake && ${MAKE} -f Makefile.qmake clean
 	-$(RM) Makefile.qmake
 
-mostlyclean-qm:
-	-${RM} *.qm qm.dir/*
-	-${RMDIR} qm.dir
-
-
 .PHONY: mostlyclean-qmake mostlyclean-qm 
 
-MOSTLYCLEANFILES = djview
+MOSTLYCLEANFILES = djview $(qmake_qm)
 
 
