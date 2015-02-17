@@ -40,7 +40,7 @@ BEGIN {
         printf("%s$(vUIC)%s\n", tabs, line)
     } else if ( $1 ~ /.*\/rcc/ || $1 == "$(RCC)" || $1 == "${RCC}") {
         printf("%s$(vRCC)%s\n", tabs, line)
-    } else if ( $1 ~ /.*\/moc/ || $1 == "$(moc)" || $1 == "${MOC}") {
+    } else if ( $1 ~ /.*\/moc/ || $1 == "$(MOC)" || $1 == "${MOC}") {
         printf("%s$(vMOC)%s\n", tabs, line)
     } else if ( $1 == "$(CXX)" || $1 == "${CXX}") {
         printf("%s$(vCXX)%s\n", tabs, line)
