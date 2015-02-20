@@ -1169,18 +1169,19 @@ QDjVuPrivate::makeLayout()
           foreach(p, pageLayout)
             {
               QSize size;
-              if (p->width <= 0 || p->height <= 0) 
+              if (p->width <= 0 || p->height <= 0) {
                 size = unknownSize;
-              else if (p->dpi <= 0) 
+              } else if (p->dpi <= 0) {
                 size = (zoom <= 0) ? unknownSize :
                   scale_size(p->width, p->height, zoom*sdpi, 10000, r);
-              else if (layoutChange & CHANGE_SCALE_PASS2)
+              } else if (layoutChange & CHANGE_SCALE_PASS2) {
                 size = scale_size(p->width, p->height, sdpi, p->dpi, r);
-              else if (zoom == ZOOM_ONE2ONE) 
+              } else if (zoom == ZOOM_ONE2ONE) {
                 size = scale_size(p->width, p->height, p->dpi, p->dpi, r);
-              else if (zoom == ZOOM_STRETCH) 
-                size = QSize(vpw, vph);
-              else if (zoom == ZOOM_FITWIDTH) {
+              } else if (zoom == ZOOM_STRETCH) {
+                int v2pw = (sideBySide) ? (vpw-separatorSize)/2 : vpw;
+                size = QSize(v2pw, vph);
+              } else if (zoom == ZOOM_FITWIDTH) {
                 int pgw = (r&1) ? p->height : p->width;
                 size = scale_size(p->width, p->height, vpw, pgw, r);
                 zoomFactor = (vpw * p->dpi * 100) / (pgw * sdpi);
