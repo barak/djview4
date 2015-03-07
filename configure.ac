@@ -69,7 +69,12 @@ fi
 # Special cases
 case "$host" in
   *-darwin* | *-macos10*)
-     if test -d /opt/local ; then
+     if test -d /usr/local ; then
+       CFLAGS="$CFLAGS -I/usr/local/include"
+       CXXFLAGS="$CXXFLAGS -I/usr/local/include"
+       CPPFLAGS="$CPPFLAGS -I/usr/local/include"
+       LDFLAGS="$LDFLAGS -L/usr/local/lib"
+     elif test -d /opt/local ; then
        CFLAGS="$CFLAGS -I/opt/local/include"
        CXXFLAGS="$CXXFLAGS -I/opt/local/include"
        CPPFLAGS="$CPPFLAGS -I/opt/local/include"
@@ -256,7 +261,7 @@ if test "$ac_nsdejavu" != no ; then
     AC_SUBST(NSDEJAVU_LIBS)
 fi
 
-AM_CONDITIONAL([WANT_NSDEJAVU], [test "x${ac_nsdejavu}" != "no"])
+AM_CONDITIONAL([WANT_NSDEJAVU], [test "x${ac_nsdejavu}" != "xno"])
 
 
 # ----------------------------------------

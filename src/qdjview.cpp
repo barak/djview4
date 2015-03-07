@@ -501,7 +501,6 @@ QDjView::createActions()
     << Trigger(this, SLOT(showFind()));
 
   actionFindNext = makeAction(tr("Find &Next", "Edit|"))
-    << QKeySequence(tr("Ctrl+F3", "Edit|Find Next"))
     << QKeySequence(tr("F3", "Edit|Find Next"))
     << tr("Find next occurence of search text in the document.")
     << Trigger(findWidget, SLOT(findNext()));
@@ -512,7 +511,6 @@ QDjView::createActions()
     << Trigger(findWidget, SLOT(findPrev()));
 
   actionSelect = makeAction(tr("&Select", "Edit|"), false)
-    << QKeySequence(tr("Ctrl+F2", "Edit|Select"))
     << QKeySequence(tr("F2", "Edit|Select"))
     << QIcon(":/images/icon_select.png")
     << tr("Select a rectangle in the document.")
@@ -764,7 +762,6 @@ QDjView::createActions()
 
   actionLayoutContinuous = makeAction(tr("&Continuous", "Layout|"), false)
     << QIcon(":/images/icon_continuous.png")
-    << QKeySequence(tr("Ctrl+F4", "Layout|Continuous"))
     << QKeySequence(tr("F4", "Layout|Continuous"))
     << tr("Toggle continuous layout mode.")
     << Trigger(widget, SLOT(setContinuous(bool)))
@@ -772,7 +769,6 @@ QDjView::createActions()
 
   actionLayoutSideBySide = makeAction(tr("Side &by Side", "Layout|"), false)
     << QIcon(":/images/icon_sidebyside.png")
-    << QKeySequence(tr("Ctrl+F5", "Layout|SideBySide"))
     << QKeySequence(tr("F5", "Layout|SideBySide"))
     << tr("Toggle side-by-side layout mode.")
     << Trigger(widget, SLOT(setSideBySide(bool)))
@@ -782,7 +778,6 @@ QDjView::createActions()
 #ifdef Q_OS_DARWIN
     << QIcon(":/images/icon_coverpage.png")
 #endif
-    << QKeySequence(tr("Ctrl+F6", "Layout|CoverPage"))
     << QKeySequence(tr("F6", "Layout|CoverPage"))
     << tr("Show the cover page alone in side-by-side mode.")
     << Trigger(widget, SLOT(setCoverPage(bool)))
