@@ -395,11 +395,7 @@ static inline QAction *
 operator<<(QAction *action, QKeySequence shortcut)
 {
   QList<QKeySequence> shortcuts = action->shortcuts();
-#ifdef Q_OS_DARWIN
-  shortcuts.append(shortcut);
-#else
   shortcuts.prepend(shortcut);
-#endif
   action->setShortcuts(shortcuts);
   return action;
 }
@@ -728,15 +724,19 @@ QDjView::createActions()
     << Trigger(this, SLOT(performPreferences()));
 
   actionViewSideBar = makeAction(tr("Show &Sidebar", "Settings|"), true)
-    << QKeySequence(tr("Ctrl+F9", "Settings|Show sidebar"))
     << QKeySequence(tr("F9", "Settings|Show sidebar"))
+#ifdef Q_OS_DARWIN
+    << QKeySequence(tr("Ctrl+F9", "Settings|Show sidebar"))
+#endif
     << tr("Show/hide the side bar.")
     << Trigger(this, SLOT(showSideBar(bool)));
 
   actionViewToolBar = toolBar->toggleViewAction()
     << tr("Show &Toolbar", "Settings|")
-    << QKeySequence(tr("Ctrl+F10", "Settings|Show toolbar"))
     << QKeySequence(tr("F10", "Settings|Show toolbar"))
+#ifdef Q_OS_DARWIN
+    << QKeySequence(tr("Ctrl+F10", "Settings|Show toolbar"))
+#endif
     << tr("Show/hide the standard tool bar.")
     << Trigger(this, SLOT(updateActionsLater()));
 
@@ -747,8 +747,10 @@ QDjView::createActions()
 
   actionViewFullScreen 
     = makeAction(tr("&Full Screen","View|"), false)
-    << QKeySequence(tr("Ctrl+F11","View|FullScreen"))
     << QKeySequence(tr("F11","View|FullScreen"))
+#ifdef Q_OS_DARWIN
+    << QKeySequence(tr("Ctrl+F11","View|FullScreen"))
+#endif
     << QIcon(":/images/icon_fullscreen.png")
     << tr("Toggle full screen mode.")
     << Trigger(this, SLOT(performViewFullScreen(bool)));

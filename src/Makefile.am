@@ -12,7 +12,7 @@ $(srcdir)/djview.am: djview.pro
 bin_SCRIPTS = djview
 
 djview: Makefile.qmake FORCE
-	${MAKE} -f Makefile.qmake djview
+	${MAKE} -f Makefile.qmake
 
 FORCE: 
 
