@@ -64,8 +64,8 @@ Makefile.qmake: ${srcdir}/djview.pro Makefile
 		QMAKE_CXXFLAGS+='$(CXXFLAGS) $(qmake_allflags)' \
 		QMAKE_CPPFLAGS+='$(CPPFLAGS) $(qmake_allflags)' \
 		LIBS+='$(QMAKELIBS)' \
-		VPATH='$(srcdir)' -o - djview.pro |\
-	  $(AWK) -f $(top_srcdir)/config/qmsilent.awk > $@
+		VPATH='$(srcdir)' -o $@0 djview.pro
+	$(AWK) -f $(top_srcdir)/config/qmsilent.awk < $@0 > $@ && ${RM} $@0
 
 # cleaning
 
