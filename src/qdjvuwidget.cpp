@@ -2010,6 +2010,10 @@ QDjVuPrivate::initWidget(bool opengl)
   widget->setFocusPolicy(Qt::StrongFocus);
   widget->setSizePolicy(QSizePolicy::MinimumExpanding, 
                         QSizePolicy::MinimumExpanding);
+  // bug workaround
+#if QT_VERSION == 0x50401 && defined(Q_OS_DARWIN) 
+  opengl = 1;
+#endif
   // set opengl acceleration
 #if QT_VERSION >= 0x040400
   if (opengl)
