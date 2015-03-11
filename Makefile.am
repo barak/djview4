@@ -14,6 +14,10 @@ if WANT_DESKTOPFILES
 SUBDIRS += desktopfiles
 endif
 
+if WANT_MAC
+SUBDIRS += mac
+endif
+
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status libtool
 
