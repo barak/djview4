@@ -284,10 +284,10 @@ AM_CONDITIONAL([WANT_NPDJVU], [test "x${ac_npdjvu}" != "xno"])
 # mac
 # ----------------------------------------
 
-ac_mac=yes
+ac_mac=no
 AC_ARG_ENABLE(mac,
-    AS_HELP_STRING([--disable-mac],
-        [Compile MacOS X specific tools @<:@default=enabled@:>@]),
+    AS_HELP_STRING([--enable-mac],
+        [Compile MacOS X specific tools @<:@default=disabled@:>@]),
     [ac_mac=$enableval])
 
 if test x$ac_mac != xno && test x$ismac != xyes ; then

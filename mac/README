@@ -1,0 +1,26 @@
+
+This directory contains mac specific tools.
+
+* Directory "mdimporter_src" contains the source code of the DjVu
+  spotlight plugin contributed by Jeff Sickel years ago. The resulting
+  binary module must be inserted into the template bundle
+  "skel/Library/Spotlight/DjVu.mdimporter".
+
+* Directory "qlgenerator_src" contains the source code of the DjVu
+  quicklook plugin contributed by Jeff Sickel years ago. The resulting
+  binary module must be inserted into the template bundle
+  "skel/Library/QuickLook/DjVu.qlgenerator".  This code depends on the
+  presence of the "ddjvu" executable in the DjView application bundle.
+
+* Shell script "make_djview_bundle.sh" creates a djview application
+  bundle by taking the bundle template "skel", inserting the
+  executable compiled in directory "src", adding the spotlight and
+  quicklook plugins, adding a copy of the djvulibre command line tools
+  and supporting files, and copying all the required Qt and Homebrew
+  libraries. The final step patches all these executables and
+  libraries in order to let them find each other without relying on
+  anything not found in the bundle.
+
+* Shell script "make_djview_dmg.sh" creates a disk image suitable
+  for binary distribution.
+

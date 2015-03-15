@@ -127,53 +127,40 @@ Once the compilation is successful, install the binaries with
 2.3 COMPILATION HINTS FOR MAC OS X
 ----------------------------------
 
-In general you can compile the standalone 
-viewer djview4 on non unix platforms.
-However the browser plugin capability 
-is currently not working on non X11 systems.
-You will need to compile DjVuLibre.
-You will need the appropriate version of Qt.
+In general you can compile the standalone viewer djview4 on non unix platforms.
+However the browser plugin capability is currently not working on non X11 systems.
 
-There are two options under Mac OS X.
+We recommend the following procedure to compile on the Mac.
 
-* Installing the X11 system and its development files.
-  First install the X11 version of Qt4.
-  Proceding as for normal Unix systems.
-  Please refer to section 2 for details.      
+1) Install the Qt 5.x SDK.
 
-* Installing the native Mac OS X version of Qt4.
-  First install the native Mac version of Qt4 or Qt5.
+2) Install Homebrew with the following packages
+     $ brew install autoconf automake libtool pkg-config
+     $ brew install jpeg libtiff git
 
-  We recommend that you first install macports or homebrew and make 
-  sure that libraries zlib, libpng, jpeg, and tiff are available. 
-  You must also install (or compile) Qt and djvulibre.
+4) Install the djvulibre Homebrew package
+     $ brew install djvulibre
 
-  Here are examples of configure commands that have worked:
+   Advanced: If you want to compile a fresh version of djvulibre,
+   you can use the instructions found in the djvulibre tarball.
+   An interesting alternative is to install the current djvulibre
+   development version using the Homebrew command,
+    $ brew install --HEAD djvulibre
+   but you might find that the brew recipe is out of date.
 
-    $ ./configure --disable-nsdejavu --disable-desktopfiles \
-        PKG_CONFIG_PATH=/usr/local/lib/pkgconfig \
-        QMAKE=/Developer/Tools/Qt/qmake \
-        QMAKESPEC=macx-g++
-
-    $ ./configure --disable-nsdejavu --disable-desktopfiles \
-        PKG_CONFIG_PATH=/usr/local/lib/pkgconfig \
-        QMAKE=/Users/sombody/Qt/5.3/clang_64/bin/qmake \
-        DDJVUAPI_LIBS="/usr/local/lib/libdjvulibre.a /usr/local/lib/libjpeg.a" \
-        DDJVUAPI_CFLAGS=-I/usr/local/include \
-        --with-tiff=no 
-
-  Then compile with
-  
+5) Get the djview source from the git repository
+    $ git clone git://git.code.sf.net/p/djvu/djview-git djvulibre-djview
+    $ cd djvulibre-djview
+   Configure with command
+    $ ./autogen.sh --enable-mac QMAKE=<path-to-qt-qmake-executable>
+   Then compile with command
     $ make
 
-  This procedure generates a nice application bundle.
-  However the binaries inside the bundle may depend on 
-  shared libraries located elsewhere. To produce a distributable
-  application bundle, you must copy the libraries inside the bundle
-  and use command install_name_tool to make sure that the executable
-  finds the included copy of the libraries. This is explained in post 
-  <http://sourceforge.net/p/djvu/discussion/103286/thread/d50b1c32/#614e/e4f9>.
-  See also the Qt documentation about the deployment of Mac applications.
+6) Prepare the djview.app bundle and the dmg file
+    $ cd mac
+    $ ./make_djview_bundle.sh
+    $ ./make_djview_dmg.sh
+
 
 
 2.4 COMPILATION HINTS FOR WINDOWS
