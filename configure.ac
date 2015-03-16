@@ -117,6 +117,7 @@ RM="$RM -f"
 # Libtool & Compilers
 AC_PROG_CC
 AC_PROG_CXX
+AC_PROG_OBJC
 AC_SUBST(LIBTOOL_DEPS)
 
 # C++
@@ -293,9 +294,6 @@ AC_ARG_ENABLE(mac,
 if test x$ac_mac != xno && test x$ismac != xyes ; then
     AC_MSG_WARN([Disabling mac support (not a mac).)])
     ac_mac=no
-fi
-if test x$ac_mac != xno ; then
-    AC_PROG_OBJC
 fi
 
 AM_CONDITIONAL([WANT_MAC], [test "x${ac_mac}" != "xno"])
