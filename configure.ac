@@ -24,7 +24,7 @@ m4_define([v_min], [10])
 m4_define([v_ver], [v_maj.v_min])
 
 
-AC_PREREQ([2.67])
+AC_PREREQ([2.65])
 AC_INIT([djview],[v_ver])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([config])
