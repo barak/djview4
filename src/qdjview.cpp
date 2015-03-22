@@ -2564,6 +2564,12 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   shortcutGoPage = new QShortcut(QKeySequence("Ctrl+G"), this);
   connect(shortcutGoPage, SIGNAL(activated()), this, SLOT(performGoPage()));
 
+  // Create MacOS shortcut for minimizing current window
+#ifdef Q_OS_DARWIN
+  QShortcut *shortcutMinimize = new QShortcut(QKeySequence("Ctrl+M"),this);
+  connect(shortcutMinimize, SIGNAL(activated()), this, SLOT(showMinimized()));
+#endif
+
   // Create misc timers
   undoTimer = new QTimer(this);
   undoTimer->setSingleShot(true);
