@@ -296,6 +296,12 @@ if test x$ac_mac != xno && test x$ismac != xyes ; then
     ac_mac=no
 fi
 
+if test x$ac_mac != xno && test x$ismac = xyes ; then
+    # hack to avoid redistributing avx specific binaries.						  
+    AC_CHECK_CXX_OPT([-mno-avx],[MORE_CFLAGS="$MORE_CFLAGS -mno-avx"])
+fi
+
+						      
 AM_CONDITIONAL([WANT_MAC], [test "x${ac_mac}" != "xno"])
 
 # ----------------------------------------
@@ -324,7 +330,7 @@ AC_DEFINE_VERSION([${PACKAGE_VERSION}])
 # ----------------------------------------
 
 QMAKELIBS="$DDJVUAPI_LIBS $TIFF_LIBS $LIBS"
-QMAKEFLAGS="$DDJVUAPI_CFLAGS $TIFF_CFLAGS"
+QMAKEFLAGS="$DDJVUAPI_CFLAGS $TIFF_CFLAGS $MORE_CFLAGS"
 AC_SUBST(QMAKELIBS)
 AC_SUBST(QMAKEFLAGS)
 
