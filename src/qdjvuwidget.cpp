@@ -53,6 +53,9 @@
 #include <QVector>
 #include <QWheelEvent>
 #include <QWidget>
+#if QT_VERSION >= 0x040600
+#include <QGesture>
+#endif
 #ifdef QT_OPENGL_LIB
 # include <QGLWidget>
 # include <QGLFormat>
@@ -2048,6 +2051,10 @@ QDjVuPrivate::initWidget(bool opengl)
   vp->setAttribute(Qt::WA_StaticContents);
   vp->setAttribute(Qt::WA_NativeWindow);
   vp->setMouseTracking(true);
+#if QT_VERSION >= 0x040600
+  // Handle pinch gesture to adjust zoom
+  vp->grabGesture(Qt::PinchGesture);
+#endif
 }
 
 /*! Construct a \a QDjVuWidget instance.
@@ -4652,6 +4659,13 @@ QDjVuWidget::viewportEvent(QEvent *event)
       // Uncheck any active map area
       priv->checkCurrentMapArea(true);
       break;
+#if QT_VERSION >= 0x040600
+    case QEvent::Gesture:
+      gestureEvent(event);
+      if (event->isAccepted())
+        return true;
+      break;
+#endif
     default:
       break;
     }
@@ -5204,6 +5218,27 @@ QDjVuWidget::wheelEvent (QWheelEvent *event)
 }
 
 
+/*! New virtual function. */
+void
+QDjVuWidget::gestureEvent(QEvent *e)
+{
+#if QT_VERSION >= 0x040600
+  if (e->type() == QEvent::Gesture)
+    {
+      QGestureEvent *g = (QGestureEvent*)(e);
+      QPinchGesture *p = (QPinchGesture*)(g->gesture(Qt::PinchGesture));
+      if (p)
+        {
+          int z = zoomFactor();
+          if (p->changeFlags() & QPinchGesture::ScaleFactorChanged)
+            setZoom(qBound((int)ZOOM_MIN,(int)(z*p->scaleFactor()),(int)ZOOM_MAX));
+          return;
+        }
+    }
+#endif
+  e->ignore();
+}
+ 
 bool
 QDjVuPrivate::computeAnimation(const Position &pos, const QPoint &p)
 {
