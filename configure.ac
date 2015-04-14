@@ -248,7 +248,7 @@ fi
 if test "$ac_nsdejavu" != no ; then
     # prepare flags
     NSDEJAVU_LIBS=
-    NSDEJAVU_CFLAGS=${GLIB_CFLAGS} ${X_CFLAGS}
+    NSDEJAVU_CFLAGS="${GLIB_CFLAGS} ${X_CFLAGS}"
     XT_LIBS=
     if test "$ac_xt" = yes ; then
         XT_LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS"
