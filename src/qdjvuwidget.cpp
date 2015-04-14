@@ -797,6 +797,7 @@ public:
   QRect           deskRect;     // desk rectangle (0,0,w,h)
   QRect           visibleRect;  // visible rectangle (desk coordinates)
   int             zoomFactor;   // effective zoom level
+  int             savedFactor;  // temporary factor used for gestures
   int        estimatedWidth;    // median of known page widths
   int        estimatedHeight;   // median of known page heights
   QSize    unknownSize;         // displayed page size when unknown (pixels)
@@ -5197,18 +5198,30 @@ QDjVuWidget::wheelEvent (QWheelEvent *event)
         zoom = ! zoom;
       if (zoom)
         {
-          priv->updateCurrentPoint(priv->cursorPos);
-          if (event->delta() > 0)
-            zoomIn();
-          else
-            zoomOut();
+	  static int zWheel = 0;
+	  zWheel += event->delta();
+	  if (qAbs(zWheel) >= 120)
+	    {
+	      priv->updateCurrentPoint(priv->cursorPos);
+	      if (zWheel > 0)
+		zoomIn();
+	      else
+		zoomOut();
+	      zWheel = 0;
+	    }
         }
       else if (!priv->continuous && !verticalScrollBar()->isVisible())
         {
-          if (event->delta() > 0)
-            prevPage();
-          else
-            nextPage();
+	  static int zPage = 0;
+	  zPage += event->delta();
+	  if (qAbs(zPage) >= 120)
+	    {
+	      if (zPage > 0)
+		prevPage();
+	      else
+		nextPage();
+	      zPage = 0;
+	    }
         }
       else
         {
@@ -5228,15 +5241,24 @@ QDjVuWidget::gestureEvent(QEvent *e)
       QGestureEvent *g = (QGestureEvent*)(e);
       QPinchGesture *p = (QPinchGesture*)(g->gesture(Qt::PinchGesture));
       if (p)
-        {
-          int z = zoomFactor();
-          if (p->changeFlags() & QPinchGesture::ScaleFactorChanged)
-            setZoom(qBound((int)ZOOM_MIN,(int)(z*p->scaleFactor()),(int)ZOOM_MAX));
-          return;
-        }
+	{
+	  g->accept(p);
+	  if (p->state() == Qt::GestureStarted)
+	    priv->savedFactor = priv->zoomFactor;
+	  if (p->state() == Qt::GestureCanceled)
+	    setZoom(priv->savedFactor);
+	  else if (p->changeFlags() & QPinchGesture::ScaleFactorChanged)
+	    {
+	      qreal z = priv->savedFactor * p->scaleFactor();
+	      setZoom(qBound((int)ZOOM_MIN, (int)z, (int)ZOOM_MAX));
+	    }
+	}
+      else
+	{
+	  e->ignore();
+	}
     }
 #endif
-  e->ignore();
 }
  
 bool
