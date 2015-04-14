@@ -5191,7 +5191,7 @@ QDjVuWidget::contextMenuEvent (QContextMenuEvent *event)
 void 
 QDjVuWidget::wheelEvent (QWheelEvent *event)
 {
-  if (priv->mouseEnabled)
+  if (priv->mouseEnabled && event->orientation() == Qt::Vertical)
     {
       bool zoom = priv->mouseWheelZoom;
       if (event->modifiers() == Qt::ControlModifier)
@@ -5209,25 +5209,10 @@ QDjVuWidget::wheelEvent (QWheelEvent *event)
 		zoomOut();
 	      zWheel = 0;
 	    }
-        }
-      else if (!priv->continuous && !verticalScrollBar()->isVisible())
-        {
-	  static int zPage = 0;
-	  zPage += event->delta();
-	  if (qAbs(zPage) >= 120)
-	    {
-	      if (zPage > 0)
-		prevPage();
-	      else
-		nextPage();
-	      zPage = 0;
-	    }
-        }
-      else
-        {
-          QAbstractScrollArea::wheelEvent(event);
+	  return;
         }
     }
+  QAbstractScrollArea::wheelEvent(event);
 }
 
 
@@ -5252,13 +5237,11 @@ QDjVuWidget::gestureEvent(QEvent *e)
 	      qreal z = priv->savedFactor * p->scaleFactor();
 	      setZoom(qBound((int)ZOOM_MIN, (int)z, (int)ZOOM_MAX));
 	    }
-	}
-      else
-	{
-	  e->ignore();
+	  return;
 	}
     }
 #endif
+  e->ignore();
 }
  
 bool
