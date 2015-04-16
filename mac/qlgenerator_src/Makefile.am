@@ -5,7 +5,7 @@ mactools_LTLIBRARIES = qlgenerator.la
 
 qlgenerator_la_SOURCES = \
   GeneratePreviewForURL.m GenerateThumbnailForURL.m \
-  ddjvuRef.c main.c 
+  ddjvuRef.h ddjvuRef.c main.c 
 
 qlgenerator_la_OBJCFLAGS = -w
 
