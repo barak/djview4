@@ -54,6 +54,7 @@ CONFIG(release,debug|release) {
 # -- mac stuff
 macx {
   ICON = images/DjVuApp.icns
+  VERSION = $$PACKAGE_VERSION
   RESOURCES.path = Contents/Resources
   RESOURCES.files = images/DjVu.icns
   QMAKE_BUNDLE_DATA += RESOURCES

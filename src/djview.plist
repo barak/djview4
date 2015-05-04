@@ -19,6 +19,11 @@
     <string>org.djvu.DjView</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
+    <key>CFBundleShortVersionString</key>
+    <string>@SHORT_VERSION@</string>
+    <key>CFBundleVersion</key>
+    <string>@SHORT_VERSION@</string>
+
     <key>CFBundleDocumentTypes</key>
     <array>
       <dict>
