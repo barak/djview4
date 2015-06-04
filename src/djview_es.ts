@@ -693,7 +693,7 @@
         <location filename="qdjview.cpp" line="727"/>
         <source>Prefere&amp;nces...</source>
         <comment>Settings|</comment>
-        <translation>Prefere&amp;rencias...</translation>
+        <translation>Prefe&amp;rencias...</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="729"/>

@@ -24,7 +24,7 @@ m4_define([v_min], [10])
 m4_define([v_ver], [v_maj.v_min])
 
 
-AC_PREREQ([2.67])
+AC_PREREQ([2.65])
 AC_INIT([djview],[v_ver])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([config])
@@ -67,9 +67,16 @@ if test -d $curwd/gnu/lib ; then
 fi
 
 # Special cases
+ismac=no
 case "$host" in
   *-darwin* | *-macos10*)
-     if test -d /opt/local ; then
+     ismac=yes
+     if test -d /usr/local ; then
+       CFLAGS="$CFLAGS -I/usr/local/include"
+       CXXFLAGS="$CXXFLAGS -I/usr/local/include"
+       CPPFLAGS="$CPPFLAGS -I/usr/local/include"
+       LDFLAGS="$LDFLAGS -L/usr/local/lib"
+     elif test -d /opt/local ; then
        CFLAGS="$CFLAGS -I/opt/local/include"
        CXXFLAGS="$CXXFLAGS -I/opt/local/include"
        CPPFLAGS="$CPPFLAGS -I/opt/local/include"
@@ -110,6 +117,7 @@ RM="$RM -f"
 # Libtool & Compilers
 AC_PROG_CC
 AC_PROG_CXX
+AC_PROG_OBJC
 AC_SUBST(LIBTOOL_DEPS)
 
 # C++
@@ -197,6 +205,9 @@ if test "$ac_nsdejavu" != no ; then
         ac_nsdejavu=no
         AC_MSG_WARN([Disabling plugin compilation (missing X11 include files).])
     fi
+fi
+
+if test "$ac_nsdejavu" != no ; then
     ac_xt=yes
     ac_glib=yes
     AC_PATH_GLIB([],[ac_glib=no])
@@ -210,12 +221,11 @@ if test "$ac_nsdejavu" != no ; then
         if test "$ac_glib" = no ; then
             AC_MSG_WARN([GLib not found. Compiling plugin without XEmbed.])
         fi
-    else
+    elif test "$ac_glib" != no ; then
         AC_MSG_WARN([Xt not found. Compiling plugin with XEmbed only.])
-        if test "$ac_glib" = no ; then
-            ac_nsdejavu=no
-            AC_MSG_WARN([Disabling plugin compilation (need Xt and/or Glib2.)])
-        fi
+    else
+        ac_nsdejavu=no
+        AC_MSG_WARN([Disabling plugin compilation (need Xt and/or Glib2.)])
     fi
 fi
 
@@ -238,7 +248,7 @@ fi
 if test "$ac_nsdejavu" != no ; then
     # prepare flags
     NSDEJAVU_LIBS=
-    NSDEJAVU_CFLAGS=${GLIB_CFLAGS} ${X_CFLAGS}
+    NSDEJAVU_CFLAGS="${GLIB_CFLAGS} ${X_CFLAGS}"
     XT_LIBS=
     if test "$ac_xt" = yes ; then
         XT_LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS"
@@ -256,7 +266,7 @@ if test "$ac_nsdejavu" != no ; then
     AC_SUBST(NSDEJAVU_LIBS)
 fi
 
-AM_CONDITIONAL([WANT_NSDEJAVU], [test "x${ac_nsdejavu}" != "no"])
+AM_CONDITIONAL([WANT_NSDEJAVU], [test "x${ac_nsdejavu}" != "xno"])
 
 
 # ----------------------------------------
@@ -272,13 +282,37 @@ AC_ARG_ENABLE(npdjvu,
 AM_CONDITIONAL([WANT_NPDJVU], [test "x${ac_npdjvu}" != "xno"])
 
 # ----------------------------------------
+# mac
+# ----------------------------------------
+
+ac_mac=no
+AC_ARG_ENABLE(mac,
+    AS_HELP_STRING([--enable-mac],
+        [Compile MacOS X specific tools @<:@default=disabled@:>@]),
+    [ac_mac=$enableval])
+
+if test x$ac_mac != xno && test x$ismac != xyes ; then
+    AC_MSG_WARN([Disabling mac support (not a mac).)])
+    ac_mac=no
+fi
+
+if test x$ac_mac != xno && test x$ismac = xyes ; then
+    # hack to avoid redistributing avx specific binaries.						  
+    AC_CHECK_CXX_OPT([-mno-avx],[MORE_CFLAGS="$MORE_CFLAGS -mno-avx"])
+fi
+
+						      
+AM_CONDITIONAL([WANT_MAC], [test "x${ac_mac}" != "xno"])
+
+# ----------------------------------------
 # Desktop files
 # ----------------------------------------
 
-ac_desktopfiles="yes"
+ac_desktopfiles=yes
+test x$ismac = xyes && ac_desktopfiles=no
 AC_ARG_ENABLE(desktopfiles,
     AS_HELP_STRING([--disable-desktopfiles], 
-        [Do not install icons and mime types. @<:@default=enabled@:>@]),
+        [Do not install icons and mime types. @<:@kefault=enabled@:>@]),
     [ac_desktopfiles=$enableval])
 
 AM_CONDITIONAL([WANT_DESKTOPFILES], [test "x${ac_desktopfiles}" != "xno"])
@@ -296,7 +330,7 @@ AC_DEFINE_VERSION([${PACKAGE_VERSION}])
 # ----------------------------------------
 
 QMAKELIBS="$DDJVUAPI_LIBS $TIFF_LIBS $LIBS"
-QMAKEFLAGS="$DDJVUAPI_CFLAGS $TIFF_CFLAGS"
+QMAKEFLAGS="$DDJVUAPI_CFLAGS $TIFF_CFLAGS $MORE_CFLAGS"
 AC_SUBST(QMAKELIBS)
 AC_SUBST(QMAKEFLAGS)
 
@@ -325,6 +359,9 @@ src/Makefile
 nsdejavu/Makefile
 desktopfiles/Makefile
 npdjvu/Makefile
+mac/Makefile
+mac/mdimporter_src/Makefile
+mac/qlgenerator_src/Makefile
 ])
 
 
@@ -346,6 +383,7 @@ echo "  Qt version...........: ${qtversion} (${QT_VERSION})"
 echo "  TIFF support.........: ${ac_tiff}"
 echo "  Desktop files........: ${ac_desktopfiles}"
 echo "  Icon generation......: ${conversion_tool}"
+echo "  Mac specific tools...: ${ac_mac}"
 echo "  NSDEJAVU plugin......: ${ac_nsdejavu}"
 echo "  NPDJVU plugin........: ${ac_npdjvu}"
 echo

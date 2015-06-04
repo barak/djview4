@@ -53,6 +53,9 @@
 #include <QVector>
 #include <QWheelEvent>
 #include <QWidget>
+#if QT_VERSION >= 0x040600
+#include <QGesture>
+#endif
 #ifdef QT_OPENGL_LIB
 # include <QGLWidget>
 # include <QGLFormat>
@@ -794,6 +797,7 @@ public:
   QRect           deskRect;     // desk rectangle (0,0,w,h)
   QRect           visibleRect;  // visible rectangle (desk coordinates)
   int             zoomFactor;   // effective zoom level
+  int             savedFactor;  // temporary factor used for gestures
   int        estimatedWidth;    // median of known page widths
   int        estimatedHeight;   // median of known page heights
   QSize    unknownSize;         // displayed page size when unknown (pixels)
@@ -1169,18 +1173,19 @@ QDjVuPrivate::makeLayout()
           foreach(p, pageLayout)
             {
               QSize size;
-              if (p->width <= 0 || p->height <= 0) 
+              if (p->width <= 0 || p->height <= 0) {
                 size = unknownSize;
-              else if (p->dpi <= 0) 
+              } else if (p->dpi <= 0) {
                 size = (zoom <= 0) ? unknownSize :
                   scale_size(p->width, p->height, zoom*sdpi, 10000, r);
-              else if (layoutChange & CHANGE_SCALE_PASS2)
+              } else if (layoutChange & CHANGE_SCALE_PASS2) {
                 size = scale_size(p->width, p->height, sdpi, p->dpi, r);
-              else if (zoom == ZOOM_ONE2ONE) 
+              } else if (zoom == ZOOM_ONE2ONE) {
                 size = scale_size(p->width, p->height, p->dpi, p->dpi, r);
-              else if (zoom == ZOOM_STRETCH) 
-                size = QSize(vpw, vph);
-              else if (zoom == ZOOM_FITWIDTH) {
+              } else if (zoom == ZOOM_STRETCH) {
+                int v2pw = (sideBySide) ? (vpw-separatorSize)/2 : vpw;
+                size = QSize(v2pw, vph);
+              } else if (zoom == ZOOM_FITWIDTH) {
                 int pgw = (r&1) ? p->height : p->width;
                 size = scale_size(p->width, p->height, vpw, pgw, r);
                 zoomFactor = (vpw * p->dpi * 100) / (pgw * sdpi);
@@ -2045,7 +2050,12 @@ QDjVuPrivate::initWidget(bool opengl)
 #endif
   vp->setAttribute(Qt::WA_NoSystemBackground);
   vp->setAttribute(Qt::WA_StaticContents);
+  vp->setAttribute(Qt::WA_NativeWindow);
   vp->setMouseTracking(true);
+#if QT_VERSION >= 0x040600
+  // Handle pinch gesture to adjust zoom
+  vp->grabGesture(Qt::PinchGesture);
+#endif
 }
 
 /*! Construct a \a QDjVuWidget instance.
@@ -4650,6 +4660,13 @@ QDjVuWidget::viewportEvent(QEvent *event)
       // Uncheck any active map area
       priv->checkCurrentMapArea(true);
       break;
+#if QT_VERSION >= 0x040600
+    case QEvent::Gesture:
+      gestureEvent(event);
+      if (event->isAccepted())
+        return true;
+      break;
+#endif
     default:
       break;
     }
@@ -5174,34 +5191,59 @@ QDjVuWidget::contextMenuEvent (QContextMenuEvent *event)
 void 
 QDjVuWidget::wheelEvent (QWheelEvent *event)
 {
-  if (priv->mouseEnabled)
+  if (priv->mouseEnabled && event->orientation() == Qt::Vertical)
     {
       bool zoom = priv->mouseWheelZoom;
       if (event->modifiers() == Qt::ControlModifier)
         zoom = ! zoom;
       if (zoom)
         {
-          priv->updateCurrentPoint(priv->cursorPos);
-          if (event->delta() > 0)
-            zoomIn();
-          else
-            zoomOut();
-        }
-      else if (!priv->continuous && !verticalScrollBar()->isVisible())
-        {
-          if (event->delta() > 0)
-            prevPage();
-          else
-            nextPage();
-        }
-      else
-        {
-          QAbstractScrollArea::wheelEvent(event);
+	  static int zWheel = 0;
+	  zWheel += event->delta();
+	  if (qAbs(zWheel) >= 120)
+	    {
+	      priv->updateCurrentPoint(priv->cursorPos);
+	      if (zWheel > 0)
+		zoomIn();
+	      else
+		zoomOut();
+	      zWheel = 0;
+	    }
+	  return;
         }
     }
+  QAbstractScrollArea::wheelEvent(event);
 }
 
 
+/*! New virtual function. */
+void
+QDjVuWidget::gestureEvent(QEvent *e)
+{
+#if QT_VERSION >= 0x040600
+  if (e->type() == QEvent::Gesture)
+    {
+      QGestureEvent *g = (QGestureEvent*)(e);
+      QPinchGesture *p = (QPinchGesture*)(g->gesture(Qt::PinchGesture));
+      if (p)
+	{
+	  g->accept(p);
+	  if (p->state() == Qt::GestureStarted)
+	    priv->savedFactor = priv->zoomFactor;
+	  if (p->state() == Qt::GestureCanceled)
+	    setZoom(priv->savedFactor);
+	  else if (p->changeFlags() & QPinchGesture::ScaleFactorChanged)
+	    {
+	      qreal z = priv->savedFactor * p->scaleFactor();
+	      setZoom(qBound((int)ZOOM_MIN, (int)z, (int)ZOOM_MAX));
+	    }
+	  return;
+	}
+    }
+#endif
+  e->ignore();
+}
+ 
 bool
 QDjVuPrivate::computeAnimation(const Position &pos, const QPoint &p)
 {

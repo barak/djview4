@@ -295,7 +295,7 @@ Unsetting them is better than setting them wrong.])
     path=$QTDIR/bin:$PATH
   fi
   if test -z "$QMAKE" ; then
-    AC_PATH_PROGS([QMAKE], [qmake make-qt4 qmake-qt5], [], [$path])
+    AC_PATH_PROGS([QMAKE], [qmake], [], [$path])
   fi
   if test -z "$QMAKE" ; then
     AC_MSG_ERROR([Cannot find the Qt program qmake. 
@@ -324,9 +324,6 @@ EOF
 Please define variable QMAKE to a working qmake.
 If you define QMAKESPEC, make sure it is correct.])
   fi
-  AC_MSG_CHECKING([for real qmake path])
-  test -x "$QT_INSTALL_BINS/qmake" && QMAKE="$QT_INSTALL_BINS/qmake"
-  AC_MSG_RESULT([$QMAKE])
   AC_MSG_CHECKING([Qt version])
   case "$QT_VERSION" in
     4.*)
@@ -347,17 +344,23 @@ If you define QMAKESPEC, make sure it is correct.])
   path=$PATH
   test -n "$QTDIR" && test -d "$QTDIR/bin" && path=$QTDIR/bin:$path
   test -d "$QT_INSTALL_BINS" && path=$QT_INSTALL_BINS:$path
-  altmoc="moc-${qtversion}"
-  test -x "$QMAKE_MOC" && pathmoc=`dirname "$QMAKE_MOC"`: && altmoc=
-  AC_PATH_PROGS([MOC], [${altmoc} moc], [], [$pathmoc$path])
-  altuic="uic-${qtversion}"
-  test -x "$QMAKE_UIC" && pathuic=`dirname "$QMAKE_UIC"`: && altuic=
-  AC_PATH_PROGS([UIC], [$altuic uic], [], [$pathuic$path])
-  test -x $QT_INSTALL_BINS/rcc || altrcc="rcc-${qtversion}"
+  if test `basename "$QMAKE"` = qmake-$qtversion ; then
+    altmoc="moc-${qtversion}"
+    altuic="uic-${qtversion}"
+    altrcc="rcc-${qtversion}"
+    altlupdate="lupdate-${qtversion}"
+    altlrelease="lrelease-${qtversion}"
+  else
+    AC_MSG_CHECKING([for real qmake path])
+    test -x "$QT_INSTALL_BINS/qmake" && QMAKE="$QT_INSTALL_BINS/qmake"
+    AC_MSG_RESULT([$QMAKE])
+  fi
+  test -x "$QMAKE_MOC" && test -z "$MOC" && MOC="$QMAKE_MOC"
+  test -x "$QMAKE_UIC" && test -z "$UIC" && UIC="$QMAKE_UIC"
+  AC_PATH_PROGS([MOC], [$altmoc moc], [], [$path])
+  AC_PATH_PROGS([UIC], [$altuic uic], [], [$path])
   AC_PATH_PROGS([RCC], [$altrcc rcc], [], [$path])
-  test -x $QT_INSTALL_BINS/lupdate || altlupdate="lupdate-${qtversion}"
   AC_PATH_PROGS([LUPDATE], [${altlupdate} lupdate], [], [$path])
-  test -x $QT_INSTALL_BINS/lrelease || altlrelease="lupdate-${qtversion}"
   AC_PATH_PROGS([LRELEASE], [${altlrelease} lrelease], [], [$path])
   PATH=$path
 ])

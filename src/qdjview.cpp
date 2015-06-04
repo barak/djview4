@@ -395,11 +395,7 @@ static inline QAction *
 operator<<(QAction *action, QKeySequence shortcut)
 {
   QList<QKeySequence> shortcuts = action->shortcuts();
-#ifdef Q_OS_DARWIN
-  shortcuts.append(shortcut);
-#else
   shortcuts.prepend(shortcut);
-#endif
   action->setShortcuts(shortcuts);
   return action;
 }
@@ -501,7 +497,6 @@ QDjView::createActions()
     << Trigger(this, SLOT(showFind()));
 
   actionFindNext = makeAction(tr("Find &Next", "Edit|"))
-    << QKeySequence(tr("Ctrl+F3", "Edit|Find Next"))
     << QKeySequence(tr("F3", "Edit|Find Next"))
     << tr("Find next occurence of search text in the document.")
     << Trigger(findWidget, SLOT(findNext()));
@@ -512,7 +507,6 @@ QDjView::createActions()
     << Trigger(findWidget, SLOT(findPrev()));
 
   actionSelect = makeAction(tr("&Select", "Edit|"), false)
-    << QKeySequence(tr("Ctrl+F2", "Edit|Select"))
     << QKeySequence(tr("F2", "Edit|Select"))
     << QIcon(":/images/icon_select.png")
     << tr("Select a rectangle in the document.")
@@ -730,15 +724,19 @@ QDjView::createActions()
     << Trigger(this, SLOT(performPreferences()));
 
   actionViewSideBar = makeAction(tr("Show &Sidebar", "Settings|"), true)
-    << QKeySequence(tr("Ctrl+F9", "Settings|Show sidebar"))
     << QKeySequence(tr("F9", "Settings|Show sidebar"))
+#ifdef Q_OS_DARWIN
+    << QKeySequence(tr("Ctrl+F9", "Settings|Show sidebar"))
+#endif
     << tr("Show/hide the side bar.")
     << Trigger(this, SLOT(showSideBar(bool)));
 
   actionViewToolBar = toolBar->toggleViewAction()
     << tr("Show &Toolbar", "Settings|")
-    << QKeySequence(tr("Ctrl+F10", "Settings|Show toolbar"))
     << QKeySequence(tr("F10", "Settings|Show toolbar"))
+#ifdef Q_OS_DARWIN
+    << QKeySequence(tr("Ctrl+F10", "Settings|Show toolbar"))
+#endif
     << tr("Show/hide the standard tool bar.")
     << Trigger(this, SLOT(updateActionsLater()));
 
@@ -749,8 +747,10 @@ QDjView::createActions()
 
   actionViewFullScreen 
     = makeAction(tr("&Full Screen","View|"), false)
-    << QKeySequence(tr("Ctrl+F11","View|FullScreen"))
     << QKeySequence(tr("F11","View|FullScreen"))
+#ifdef Q_OS_DARWIN
+    << QKeySequence(tr("Ctrl+F11","View|FullScreen"))
+#endif
     << QIcon(":/images/icon_fullscreen.png")
     << tr("Toggle full screen mode.")
     << Trigger(this, SLOT(performViewFullScreen(bool)));
@@ -764,7 +764,6 @@ QDjView::createActions()
 
   actionLayoutContinuous = makeAction(tr("&Continuous", "Layout|"), false)
     << QIcon(":/images/icon_continuous.png")
-    << QKeySequence(tr("Ctrl+F4", "Layout|Continuous"))
     << QKeySequence(tr("F4", "Layout|Continuous"))
     << tr("Toggle continuous layout mode.")
     << Trigger(widget, SLOT(setContinuous(bool)))
@@ -772,7 +771,6 @@ QDjView::createActions()
 
   actionLayoutSideBySide = makeAction(tr("Side &by Side", "Layout|"), false)
     << QIcon(":/images/icon_sidebyside.png")
-    << QKeySequence(tr("Ctrl+F5", "Layout|SideBySide"))
     << QKeySequence(tr("F5", "Layout|SideBySide"))
     << tr("Toggle side-by-side layout mode.")
     << Trigger(widget, SLOT(setSideBySide(bool)))
@@ -782,7 +780,6 @@ QDjView::createActions()
 #ifdef Q_OS_DARWIN
     << QIcon(":/images/icon_coverpage.png")
 #endif
-    << QKeySequence(tr("Ctrl+F6", "Layout|CoverPage"))
     << QKeySequence(tr("F6", "Layout|CoverPage"))
     << tr("Show the cover page alone in side-by-side mode.")
     << Trigger(widget, SLOT(setCoverPage(bool)))
@@ -2566,6 +2563,12 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   // Create escape shortcut for activating page dialog
   shortcutGoPage = new QShortcut(QKeySequence("Ctrl+G"), this);
   connect(shortcutGoPage, SIGNAL(activated()), this, SLOT(performGoPage()));
+
+  // Create MacOS shortcut for minimizing current window
+#ifdef Q_OS_DARWIN
+  QShortcut *shortcutMinimize = new QShortcut(QKeySequence("Ctrl+M"),this);
+  connect(shortcutMinimize, SIGNAL(activated()), this, SLOT(showMinimized()));
+#endif
 
   // Create misc timers
   undoTimer = new QTimer(this);

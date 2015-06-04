@@ -58,6 +58,7 @@ macx {
   RESOURCES.files = images/DjVu.icns
   QMAKE_BUNDLE_DATA += RESOURCES
   QMAKE_INFO_PLIST = djview.plist
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.6
 } 
 
 # --- windows stuff

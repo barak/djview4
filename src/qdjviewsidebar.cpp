@@ -204,6 +204,8 @@ QDjViewOutline::pageNumber(const char *link)
 }
 
 
+static const QRegExp spaces("\\s+");
+
 void 
 QDjViewOutline::fillItems(QTreeWidgetItem *root, miniexp_t expr)
 {
@@ -222,8 +224,9 @@ QDjViewOutline::fillItems(QTreeWidgetItem *root, miniexp_t expr)
           int pageno = pageNumber(link);
           QString pagename = (pageno>=0)?djview->pageName(pageno):QString();
           QTreeWidgetItem *item = new QTreeWidgetItem(root);
+          QString text = QString::fromUtf8(name);
           if (name && name[0])
-            item->setText(0, QString::fromUtf8(name));
+            item->setText(0, text.replace(spaces," "));
           else if (! pagename.isEmpty())
             item->setText(0, tr("Page %1").arg(pagename));
           item->setFlags(0);
