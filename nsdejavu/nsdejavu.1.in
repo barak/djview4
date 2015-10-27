@@ -196,7 +196,6 @@ from the JavaScript
 function before calling any other method.
 .Sh SEE ALSO
 .Xr ddjvu 1 ,
-.Xr djview3 1 ,
 .Xr djview4 1 ,
 .Xr djvu 1
 .Sh AUTHORS
