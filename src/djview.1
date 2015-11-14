@@ -1,7 +1,6 @@
 .\" t
 .\"
-.\" Copyright (c) 2001-2003 Leon Bottou, Yann Le Cun, Patrick Haffner,
-.\" Copyright (c) 2001 AT&T Corp., and Lizardtech, Inc.
+.\" Copyright (c) 2007- Leon Bottou
 .\"
 .\" This is free documentation; you can redistribute it and/or
 .\" modify it under the terms of the GNU General Public License as
@@ -21,680 +20,849 @@
 .\" You should have received a copy of the GNU General Public
 .\" License along with this manual. Otherwise check the web site
 .\" of the Free Software Foundation at http://www.fsf.org.
-.Dd September 24, 2015
-.Dt DJVIEW4 1
-.Os
-.Sh NAME
-.Nm djview4
-.Nd standalone DjVu viewer
-.Sh SYNOPSIS
-.Nm djview4
-.Op options
-.Op Ar
-.Sh DESCRIPTION
-.Nm
-is a standalone viewer for DjVu files.
-Features include navigating documents, zooming and panning page images,
-producing and displaying thumbnails, displaying document outlines,
+.TH DJVIEW4 1 "10/11/2001" "DjVuLibre" "DjVuLibre"
+.de SS
+.SH \\0\\0\\0\\$*
+..
+.SH NAME
+djview4 \- Standalone DjVu viewer
+
+.SH SYNOPSIS
+.BI "djview4 [" "options" "] [" "argument" "]"
+
+.SH DESCRIPTION
+Standalone viewer for DjVu files.  
+Features include navigating documents,
+zooming and panning page images, 
+producing and displaying thumbnails,
+displaying document outlines,
 searching documents for particular words in the hidden text layer,
 copying hidden text to the clipboard,
-saving pages and documents as bundled or indirect multi-page files,
-and printing pages and documents.
+saving pages and documents
+as bundled or indirect multi-page files, 
+and printing page and documents.
 The viewer can simultaneously display several pages
 using a side-by-side or a continuous layout.
-.\" COMMAND LINE ARGUMENT AND OPTIONS
-.Pp
-This program can run as a standalone program
-or as a slave process for the DjVu browser plugin
-.Xr nsdejavu 1 .
-When running as a standalone program, the command line argument can be:
-.Bl -bullet
-.It
-a filename of a valid DjVu document
-.It
-a URL of a local or remote DjVu document of the form
-.Dl Lk http://.../file.djvu?djvuopts&keyword=value
-The optional
-.Dq djvuopts
-can specify various options using a syntax similar to that of CGI arguments.
-This is useful for a browser plugin as there are no command line arguments.
+
+.SH COMMAND LINE ARGUMENT AND OPTIONS
+This program
+can run as a standalone program or 
+as a slave process for the DjVu browser plugin
+.BR nsdejavu .
+When running as a standalone program,
+the command line argument
+.I argument
+can be:
+.IP "*" 3
+The filename of a valid DjVu document.
+.IP "*" 3
+A local DjVu document 
+.SM URL
+of the form:
+.IP "" 5
+.BI "file:///" path "/" name.djvu "[?djvuopts&" keyword = value "&...]"
+.IP "" 3
+The square brackets delimit the optional components of the 
+.SM URL.
+Various options can be specified using a syntax
+similar to that of
+.SM CGI
+arguments.
+Specifying options in this manner is very useful 
+for a browser plugin because there are no 
+command line arguments.
 In the case of a standalone viewer,
-the options can be specified as command line arguments.
+all options can be specified as command line arguments.
+.IP "*" 3
+An remote DjVu document 
+.SM URL
+of the form:
+.IP "" 5
+.BI http:// host / path "/" name.djvu "[?djvuopts&" keyword = value "&...]"
+.IP "" 5
+.BI https:// host / path "/" name.djvu "[?djvuopts&" keyword = value "&...]"
+.IP "" 3
 Browsing remote DjVu documents with the standalone viewer
-is less efficient than using the browser plugin:
-the standalone viewer does not benefit from the browser
+is less efficient than using the browser plugin.
+The standalone viewer does not benefit from the browser
 caching strategies and proxy settings.
 Proxy settings for the standalone viewer can be set
 independently with the preferences dialog.
-.El
-.Pp
-An extensive list of options are recognized and described in
-.Xr nsdejavu 1 .
-Most options can be specified as command line arguments
-to the standalone viewer, starting with the customary dash character,
-or using the syntax of CGI arguments in the document URL.
-Some options however are only meaningful as command line arguments;
-other options are only recognized when running the X11 version of
-.Nm .
-.Pp
-The command line options are as follows:
-.Bl -tag -width Ds
-.It Fl help
-Display a brief help message and exit.
-.It Fl verbose
+.PP
+
+An extensive list of options are recognized.
+Most options can be specified as command line argument starting
+with the customary dash character
+.BR "" "(" "-" ")"
+or using the syntax of
+.SM CGI
+arguments in the document 
+.SM URL.
+Some options however are only meaningful 
+as command line arguments.
+Other options are only recognized when
+running the 
+.SM X11
+version of the 
+.BR djview4
+program.
+
+.SH COMMAND LINE OPTIONS
+The following options are only meaningful
+when specified on the command line.
+
+.TP
+.B "-help"
+Display a brief help message.
+
+.TP
+.B "-verbose"
 Prints informational messages on the console.
 This option is very useful because it displays
-messages about unrecognized constructs
+messages about the unrecognized constructs
 in the DjVu annotation and hyperlink layers.
-.It Fl fs , fullscreen
-Start
-.Nm
+
+.TP
+.BI "-fullscreen, -fs "
+Start 
+.B djview4 
 in full screen mode.
-Use the ESC key to exit the full screen mode.
-.It Fl slideshow Ns Op = Ns Ar arg
-Start
-.Nm
+Use the key
+.B ESC
+to exit the full screen mode.
+
+.TP
+.BI "-slideshow[=" arg "]
+Start 
+.B djview4 
 in slide show mode.
-The optional numerical argument
-.Ar arg
-specifies the number of seconds before turning each page.
-Use the ESC key to exit the slide show mode.
-.It Fl style Ns = Ns Ar stylename
+The optional numerical argument 
+.I arg
+specifies the number of seconds
+before turning each page.
+Use the key
+.B ESC
+to exit the slide show mode.
+
+
+.TP
+.BI "-style=" "stylename"
 Specify the graphical user interface style.
-The recognized values of
-.Ar stylename
+The recognized values for
+.I stylename
 depend on the installed version of the Qt toolkit.
 Common style names include
-.Cm cde ,
-.Cm motif ,
-.Cm plastique ,
-.Cm platinum ,
+.BR cde ,
+.BR motif ,
+.BR plastique ,
+.BR platinum ,
 and
-.Cm windows .
-.El
-.\" X11 Options
-.Pp
-The following command line options are recognized by the X11 version of
-.Nm .
-Unlike most
-.Nm
-options, the X11 options that demand an argument
-do not use the
-.Sq =
-character to introduce their argument.
-.Bl -tag -width Ds
-.It Fl display Ar displayname
-Let
-.Nm
-windows appear on the X11 display
-.Ar displayname .
-.It Fl geometry Ar W Ns x Ns Ar H Ns + Ns Ar X Ns + Ns Ar Y
+.BR windows .
+
+
+.SH X11 OPTIONS
+The following command line options are recognized by the
+.SM X11
+version of the 
+.B djview4
+program.
+Unlike most 
+.B djview4 options, 
+X11 options that demand an argument
+do not use the equal character 
+to introduce their argument.
+.TP
+.BI "-display " "displayname"
+Specify that the 
+.B djview4
+windows should appear on the X11 display 
+.IR displayname .
+
+.TP
+.BI "-geometry " W x H + X + Y
 Specify the initial size and position of the first window
 using the traditional X11 geometry specification syntax.
-The integer arguments
-.Ar W
-and
-.Ar H
+The numerical arguments 
+.IR W " and " H
 represent the initial window width and height.
-The numerical arguments
-.Ar X
-and
-.Ar Y
-indicate the window position relative to the top left corner of the screen.
-.It Fl name Ar name
+The numerical arguments 
+.IR X " and " Y
+indicate the window position relative to the 
+top left corner of the screen.
+
+.TP
+.BI "-name " "name"
 Set the application name.
-.It Fl title Ar title
+
+.TP
+.BI "-title " "title"
 Set the title of the first window.
-.It Fl fn Ar fontname , Fl font Ar fontname
-Specify the default font used for buttons and menus.
-The font should be specified using a X logical font description string.
-.It Fl bg Ar color , Fl background Ar color
-Specify the default background color used for interface elements.
+
+.TP
+.BI "-fn " "fontname" ", -font " "fontname"
+Specify the name of the default font 
+used for buttons and menus.
+The font should be specified using 
+a X logical font description string.
+.TP
+.BI "-bg " "color" ", -background " "color"
+Specify the default background color for 
+graphical user interface elements.
 The color should be given as a standard X11 color name.
-.It Fl fg Ar color , Fl foreground Ar color
-Specify the default foreground color used for interface elements.
+
+.TP
+.BI "-fg " "color" ", -foreground " "color"
+Specify the default foreground color for 
+graphical user interface elements.
 The color should be given as a standard X11 color name.
-.It Fl btn Ar color
+
+.TP
+.BI "-btn " "color"
 Specify the default button color.
 The color should be given as a standard X11 color name.
-.It Fl ncols Ar count
-Limit the number of colors allocated on a 8 bit display.
+
+.TP
+.BI "-ncols " "count"
+Limit the number of colors allocated on a 8 bit display. 
 The default color cube contains 216 distinct colors.
-.It Fl cmap
+.TP
+.B "-cmap"
 Force the allocation of a private color map on a 8-bit display.
 This might increase the color quality but cause flashing
 when the viewer window gets activated.
-.El
-.\" GENERAL OPTIONS
-.Pp
+
+.SH GENERAL OPTIONS
 The following options can be specified as command line options
-or can be passed by augmenting the document URL as described above.
-The keywords are derived from the option names by removing the initial dashes.
-.Bl -tag -width Ds
-.It Fl page Ar pagename
+or can be passed by augmenting the document 
+.SM URL
+using a syntax similar to that of
+.SM CGI
+arguments
+.IP "" 3
+.BI "http://.../file.djvu?djvuopts&" "key=value" "&" "key=value" "&" "..."
+.PP
+In order to separate real
+.SM CGI 
+arguments from these options,
+the viewer only recognizes keywords 
+that appear after the word
+.BR djvuopts .
+The keywords
+.I key
+are derived from the option names 
+by removing the initial dashes. 
+
+.TP
+.BI "-page=" "pagename"
 Display a specific document page.
-The viewer first searches a page whose identifier matches the argument
-.Ar pagename .
-Otherwise, if
-.Ar pagename
-is a number preceded by either
-.Sq +
-or
-.Sq - ,
+The viewer first searches a page 
+whose identifier matches the argument
+.IR pagename .
+Otherwise, if 
+.I pagename
+is a number preceded by character 
+.BR "+" " or " "-" ","
 the viewer performs a displacement relative to the current page.
-Otherwise, starting from the current page and wrapping around
-it searches for a page whose title matches
-.Ar pagename .
-Otherwise, if
-.Ar pagename
-is numerical, it is interpreted as an ordinal page number.
-Otherwise, and finally, the viewer searches a page whose name matches
-.Ar pagename .
-.\" FIXME how is a page 'identifier' different from a page 'name'
-.It Fl pageno Ar pagenumber
-The page searching algorithm for
-.Fl page
-can cause ambiguities when page titles can be interpreted as numbers.
-The
-.Ar pagenumber
-argument
+Otherwise, starting from the current page
+and wrapping around, it searches for a page
+whose title matches the argument
+.IR pagename .
+Otherwise, if 
+.I pagename
+is numerical, it is interpreted as 
+an ordinal page number.
+Otherwise, and finally, the viewer searches a page
+whose name matches
+.IR pagename .
+.TP
+.BI "-pageno=" "pagenumber"
+The page searching algorithm for option
+.B "page"
+can cause ambiguities when page titles can
+be interpreted as numbers.
+The argument of option
+.B "pageno"
 is always interpreted as an ordinal page number.
 This option is less portable than
-.Fl page ,
-because it is not recognized by earlier versions of the djvu plugin.
-When using this option is necessary, it is advisable to use both the
-.Fl page
-and
-.Fl pageno
+.B "page"
+because it is not recognized by earlier 
+versions of the djvu plugin. 
+When using this option is necessary,
+it is advisable to use both the
+.B "page" 
+and 
+.B "pageno"
 options.
-.It Fl zoom Ar zoomfactor
+.TP
+.BI "-zoom=" zoomfactor
 Specify the initial zoom factor.
 Unless the toolbar, pop-up menu and keyboard are disabled,
 the user will be able to change the zoom factor.
-Legal values of
-.Ar zoomfactor
-are:
-.Pp
-.Bl -hang -compact -width one2one
-.It Cm number
-Magnification factor in the range from 10% to 999%.
-.It Cm one2one
-Select the
-.Dq one-to-one
-mode.
-.It Cm width
-Select the
-.Dq fit width
-mode.
-.It Cm page
-Select the
-.Dq fit page
-mode.
-.It Cm stretch
-Stretch the image to the plugin window size.
-.El
-.It Fl showposition Ns = Ns Ar px , Ns Ar py
-Specify a point in the current page that should be as close as possible
-to the center of the window.
-The horizontal and vertical positions
-.Ar px
-and
-.Ar py
-in the current page are given as fractions in the range from 0 to 1.
+Legal values for
+.I zoomfactor
+are shown in the below:
+.br
+.TS
+center,box;
+lfI l
+lfB l
+lfB l
+lfB l
+lfB l
+.
+number	Magnification factor in range 10% to 999%.
+one2one	Select the "one-to-one" mode.
+width	Select the "fit width" mode.
+page	Select the "fit page" mode.
+stretch	Stretch the image to the plugin window size.
+.TE
+.PP
+
+.TP
+.BI "-showposition=" px "," py
+Specify a point in the current page that should be
+as close as possible to the center of the window.
+The horizontal and vertical positions 
+.IB  px "," py 
+in the current page are given as fractions in range 0 to 1. 
 For instance,
-.Dq 0,0
+.B 0,0
 designates the upper left corner of the page,
-.Dq 0.5,0.5
-is the center, and
-.Dq 1,1
+.B 0.5,0.5
+is the center, and 
+.B 1,1 
 is the lower right corner.
-.It Fl mode Ns = Ns Ar modespec
+
+.TP
+.BI "-mode=" modespec
 Specify the initial display mode.
 Unless the toolbar and pop-up menu are disabled,
 the user will be able to change it.
-Legal values of
-.Ar modespec
-are:
-.Pp
-.Bl -hang -compact -width color
-.It Cm color
-Display the color image.
-.It Cm bw
-Display the foreground mask only.
-.It Cm fore
-Display the foreground only.
-.It Cm back
-Display the background only.
-.It Cm text
-Overlay the hidden text over the color image.
-.El
-.It Fl hor_align Ns = Ns Ar keyword , Fl halign Ns = Ns Ar keyword
+Legal values for
+.I modespec
+are shown in the below:
+.br
+.TS
+center,box;
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+.
+color	Display the color image.
+bw	Display the foreground mask only.
+fore	Display the foreground only.
+back	Display the background only.
+text	Overlay the hidden text over the color image.
+.TE
+.PP
+
+.TP
+.BI "-hor_align=" keyword ", -halign=" keyword
 Specify the horizontal position of the page in the viewer window.
-This does not specify what part of the page will be shown, but rather
-how margins will be laid out around the page in the plugin window.
-Legal values of
-.Ar keyword
-are
-.Cm left ,
-.Cm center ,
-and
-.Cm right .
-.It Fl ver_align Ns = Ns Ar keyword , Fl valign Ns = Ns Ar keyword
-Specify the vertical position of the page in the viewer window.
-This does not specify what part of the page will be shown, but rather
-how margins will be laid out around the page in the plugin window.
-Legal values of
-.Ar keyword
-are
-.Cm top ,
-.Cm center ,
-and
-.Cm bottom .
-.It Fl cache Ns = Ns Cm yes Ns | Ns Cm no
-Enable or disable the caching of fully decoded pages of the document.
-Caching is on by default for documents whose URL contains a
-.Pa djvu
+(This does not specify what part of the page will be shown, but rather
+how margins will be laid out around the page in the plugin window.)
+Argument
+.I keyword
+must be
+.BR left ,
+.BR center ,
 or
-.Pa djv
-extension.
-.It Fl continuous Ns = Ns Cm yes Ns | Ns Cm no
-Enable or disable the continuous layout of multipage documents.
-.It Xo
-.Fl sidebyside Ns = Ns Cm yes Ns | Ns Cm no ,
-.Fl side_by_side Ns = Ns Cm yes Ns | Ns Cm no
-.Xc
-Enable or disable the side-by-side layout of multipage documents.
-.It Fl coverpage Ns = Ns Cm yes Ns | Ns Cm no
+.BR right .
+
+.TP
+.BI "-ver_align=" keyword ", -valign=" keyword
+Specify the vertical position of the page in the viewer window.
+(This does not specify what part of the page will be shown, but rather
+how margins will be laid out around the page in the plugin window.)
+Argument
+.I keyword
+must be
+.BR top ,
+.BR center ,
+or
+.BR bottom .
+
+.TP
+.BI "-cache=(yes|no)"
+Enable or disable the caching of fully decoded pages of the document.
+Caching is on by default.  
+Caching of documents whose
+.SM URL
+does not contain an extension
+.BR .djvu " or " .djv
+is off by default.
+
+.TP
+.BI "-continuous=(yes|no)"
+Enable or disable the continuous layout of
+multipage documents.
+
+.TP
+.BI "-sidebyside=(yes|no), -side_by_side=(yes|no)"
+Enable or disable the side-by-side layout of
+multipage documents.
+
+.TP
+.BI "-coverpage=(yes|no)"
 Specify whether the cover page must be displayed alone
 when multipage documents are shown in side-by-side layout.
-.It Fl righttoleft Ns = Ns Cm yes Ns | Ns Cm no
+
+.TP
+.BI "-righttoleft=(yes|no)"
 Specify whether pages should be arranged right-to-left
 when multipage documents are shown in side-by-side layout.
-.It Fl layout Ns = Ns Ar keyword Ns Op , Ns Ar keyword Ns Op , Ns ...
-Specify the layout settings using a single list of comma-separated keywords.
+
+.TP
+.BI "-layout=" keyword "{," keyword "}"
+Specify the layout settings using a single list
+of comma-separated keywords.
 The following keywords are recognized:
-.Pp
-.Bl -hang -compact -width coverxxxnocover
-.It Cm single
-Disable the side-by-side and continuous modes.
-.It Cm double
-Enable the side-by-side mode.
-.It Cm continuous
-Enable the continuous mode.
-.It Cm cover , nocover
-First page treatment in side-by-side mode.
-.It Cm ltor , rtol
-Layout direction for side-by-side mode.
-.It Cm gap , nogap
-Specify whether there is a gap between pages.
-.El
-.It Fl scrollbars Ns = Ns Cm yes Ns | Ns Cm no
-Enable or disable the presence of scroll bars
-when the full image size exceeds the plugin window size.
+.br
+.TS
+center,box;
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+.
+single	Disable the side-by-side and continuous modes.
+double	Enable the side-by-side mode.
+continuous	Enable the continuous mode.
+cover,nocover	First page treatment in side-by-side mode.
+ltor,rtol	Layout direction for side-by-side mode.
+gap,nogap	Specify whether there is a gap between pages.
+.TE
+
+.TP
+.BI "-scrollbars=(yes|no)"
+Enable or disable the presence of scroll bars when the full
+image size exceeds the plugin window size. 
 The default is yes.
-.It Fl frame Ns = Ns Cm yes Ns | Ns Cm no
-Enable or disable the display
-of a thin frame and shadow around the DjVu images.
+
+.TP
+.BI "-frame=(yes|no)"
+Enable or disable the display of a thin frame 
+and shadow around the DjVu images.
 Frames are enabled by default.
-.It Fl background Ns = Ns Ar color
-Specify the
-.Ar color
-of the background border displayed around the document
-in hexadecimal as either
-.Ar RRGGBB
+
+.TP
+.BI "-background=" color
+Specify the color of the background border
+displayed around the document. The color
+.I color
+must be given in hexadecimal
+.SM RRGGBB
 or
-.Pf # Ar RRGGBB .
-.It Fl toolbar Ns = Ns Ar keyword Ns Op (,|+|-) Ns Ar keyword Ns Op Ns ...
+.SM #RRGGBB
+format.
+
+.TP
+.BI "-toolbar=" keyword "{(,|+|-)" keyword "}"
 Controls the appearance and the contents of the toolbar.
-The argument is composed of a number of keywords
-separated by characters comma, plus or minus.
+The argument of option
+.B toolbar
+is composed of a number of keywords separated
+by characters comma, plus or minus.
 The appearance of the toolbar is controlled by keywords
-placed before the first plus or minus.
-The following keywords are recognized in this context:
-.Pp
-.Bl -hang -compact -width bottom
-.It Cm no
-Disable toolbar.
-.It Cm always
-Displays the toolbar.
-.It Cm auto
-Enable toolbar autohide mode (not implemented).
-.It Cm top
-Place toolbar along the top edge.
-.It Cm bottom
-Place toolbar along the bottom edge.
-.El
-.Pp
-The content of the toolbar is controlled
-by keywords placed after the first plus or minus.
+placed before the first occurrence of a character plus
+or minus. The following keywords are recognized in
+this context:
+.br
+.TS
+center,box;
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+.
+no	Disable toolbar.
+always	Displays the toolbar.
+auto	Enable toolbar "autohide" mode (not implemented).
+top	Place toolbar along the top edge.
+bottom	Place toolbar along the bottom edge.
+.TE
+.IP ""
+The contents of the toolbar is controlled by keywords
+placed after the first occurrence of a
+character plus or minus.
 Each keyword adds (after a plus) or removes (after a minus)
 a particular toolbar button or group of buttons.
-The initial content of the toolbar is determined by the first plus or minus.
-When this is a plus, the toolbar is initially empty.
-When this is a minus, the toolbar initially contains
+The initial content of the toolbar is determined
+by the first occurrence of a character plus or minus.
+When this is a plus,
+the toolbar is initially empty.
+When this is a minus,
+the toolbar initially contains 
 the default selection of buttons.
+
 The following keywords are recognized:
-.Pp
-.Bl -hang -compact -width pagecombo
-.It Cm modecombo
-the display mode selection tool.
-.It Cm zoomcombo
-the zoom selection tool.
-.It Cm zoom
-the zoom buttons.
-.It Cm select
-the selection button.
-.It Cm rotate
-the image rotation buttons.
-.It Cm find
-the text search button.
-.It Cm new
-the new window button.
-.It Cm open
-the open new document button.
-.It Cm save
-the save button.
-.It Cm print
-the print button.
-.It Cm layout
-the page layout buttons.
-.It Cm pagecombo
-the page selection tool.
-.It Cm firstlast
-the first-page and last-page buttons.
-.It Cm prevnext
-the previous- and next-page buttons.
-.It Cm backforw
-the back and forward buttons.
-.It Cm help
-the contextual help button.
-.El
-.Pp
+.br
+.TS
+center,box;
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+.
+modecombo	for the display mode selection tool.
+zoomcombo	for the zoom selection tool.
+zoom	for the zoom buttons.
+select	for the selection button.
+rotate	for the image rotation buttons.
+find	for the text search button.
+new	for the new window button.
+open	for the open new document button.
+save	for the save button.
+print	for the print button.
+layout	for the page layout buttons.
+pagecombo	for the page selection tool.
+firstlast	for the first-page and last-page buttons.
+prevnext	for the previous- and next-page buttons.
+backforw	reserved for the back and forward buttons.
+help	for the contextual help button.
+.TE
+.PP
 For the sake of backward compatibility,
 the keywords
-.Cm fore ,
-.Cm fore_button ,
-.Cm back ,
-.Cm back_button ,
-.Cm bw ,
-.Cm bw_button ,
-.Cm color ,
+.BR fore , 
+.BR fore_button ,
+.BR back ,
+.BR back_button ,
+.BR bw ,
+.BR bw_button ,
+.BR color ,
 and
-.Cm color_button
-are interpreted as
-.Cm modecombo ;
+.BR color_button
+are interpreted like keyword
+.BR modecombo ;
 the keyword
-.Cm rescombo
-is a synonym of
-.Cm zoomcombo ;
+.BR rescombo
+is a synonym of 
+.BR zoomcombo ;
 the keywords
-.Cm pan ,
-.Cm zoomsel ,
+.BR pan , 
+.BR zoomsel ,
 and
-.Cm textsel
-are interpreted as
-.Cm select ;
-and the keyword
-.Cm doublepage
-is interpreted as
-.Cm layout .
+.BR textsel 
+are interpreted like keyword
+.BR select ;
+and the keyword 
+.BR doublepage
+is interpreted like keyword
+.BR layout .
 All other keywords are ignored.
-.It Fl menubar Ns = Ns Cm yes Ns | Ns Cm no
+.PP
+
+.TP
+.BI "-menubar=(yes|no)"
 Enable or disable the presence of the menu bar
 located on top of the window.
-.It Fl statusbar Ns = Ns Cm yes Ns | Ns Cm no
+
+.TP
+.BI "-statusbar=(yes|no)"
 Enable or disable the presence of the status bar
 located at the bottom of the window.
-.It Fl sidebar Ns = Ns Ar keyword Ns Op , Ns Ar keyword Ns Op , Ns Ar ...
+
+.TP
+.BI "-sidebar=" keyword "{," keyword "}"
 Control the dockable panels.
 The argument is a comma separated list of keywords.
 A first group of keywords selects which panels are affected.
 Omitting these keywords selects all panels.
-.Pp
-.Bl -hang -compact -width outlinexxbookmarks
-.It Cm thumbnails
-the thumbnail panel.
-.It Cm outline , bookmarks
-the outline panel.
-.It Cm search , find
-the search panel.
-.El
-.Pp
-A second group of keywords then controls the visibility
-and the position of the selected panels.
-.Pp
-.Bl -hang -compact -width outlinexxbookmarks
-.It Cm yes , true
-Show the specified panels (default).
-.It Cm no , false
-Hide the specified panels.
-.It Cm left
-Dock specified panels on the left side.
-.It Cm right
-Dock specified panels on the right side.
-.It Cm top
-Dock specified panels on the top side.
-.It Cm bottom
-Dock specified panels on the bottom side.
-.El
-.It Fl thumbnails Ns = Ns Ar keyword Ns Op , Ns Ar keyword Ns Op , Ns ...
-Compatibility alias for
-.Fl sidebar Ns = Ns Cm thumbnails
-.It Fl outline Ns = Ns Ar keyword Ns Op , Ns Ar keyword Ns Op , Ns ...
-Compatibility alias for
-.Fl sidebar Ns = Ns Cm outline
-.It Fl menu Ns = Ns Cm yes Ns | Ns Cm no
+A second group of keywords then controls the visibility and 
+the position of the selected panels.
+.br
+.TS
+center,box;
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+.
+thumbnails	specify the thumbnail panel.
+outline,bookmarks	specify the outline panel.
+search,find	specify the search panel.
+=
+yes,true	show the specified panels (default).
+no,false	hide the specified panels.
+left	dock specified panels on the left side.
+right	dock specified panels on the right side.
+top	dock specified panels on the top side.
+bottom	dock specified panels on the bottom side.
+.TE
+.PP
+.TP
+.BI "-thumbnails=" keyword "{," keyword "}"
+Compatibility alias for 
+.BI "-sidebar=" keyword "{," keyword "},thumbnails."
+.TP
+.BI "-outline=" keyword "{," keyword "}"
+Compatibility alias for 
+.BI "-sidebar=" keyword "{," keyword "},outline."
+.TP
+.BI "-menu=(yes|no)"
 Enable or disable the pop-up menu.
-.It Fl keyboard Ns = Ns Cm yes Ns | Ns Cm no
+
+.TP
+.BI "-keyboard=(yes|no)"
 Enable or disable the DjVu plugin keyboard shortcuts.
-The default is
-.Cm yes
-(enabled).
-Note that disabling the keyboard handling
-does not disable the shortcuts associated with active menus,
-visible toolbars and sidebars; see
-.Fl menu ,
-.Fl menubar ,
-.Fl toolbar ,
-and
-.Fl sidebar .
-.It Fl mouse Ns = Ns Cm yes Ns | Ns Cm no
+The default is yes (enabled). 
+Note that disabling the keyboard handling 
+does not disable the shortcuts associated
+with active menus (see options 
+.BR "-menu" " and " "-menubar" "),"
+visible toolbars and sidebars (see options
+.BR "-toolbar" " and " "-sidebar" ")." 
+
+.TP
+.BI "-mouse=(yes|no)"
 Enable or disable mouse interaction for panning and selecting.
-The default is
-.Cm yes
-(enabled).
-.It Fl links Ns = Ns Cm yes Ns | Ns Cm no
+The default is yes (enabled).
+
+.TP
+.BI "-links=(yes|no)"
 Enable or disable hyper-links in the DjVu image.
 Hyper-links are enabled by default.
-.It Xo
-.Sm off
-.Fl highlight No =
-.Ar x , y , w , h
-.Op , Ar color
-.Sm on
-.Xc
-Display a highlighted rectangle at the specified coordinates
-in the current page and with the specified color.
-The coordinates
-.Ar x ,
-.Ar y ,
-.Ar w
-and
-.Ar h
+
+.TP
+.BI "-highlight=" x "," y "," w "," h "[," color "]"
+Display a highlighted rectangle at the specified coordinates in
+the current page and with the specified color.  Coordinates
+.IR x ", " y ", " w ", and " h
 are measured in document image coordinates (not screen coordinates).
-The origin is set at the bottom left corner of the image.
-Specify the
-.Ar color
-in hexadecimal as either
-.Ar RRGGBB
+The origin is set at the bottom left corner of the image.  The color
+.I color
+must be given in hexadecimal
+.SM RRGGBB
 or
-.Pf # Ar RRGGBB .
-Multiple highlighted zones can be specified
+.SM #RRGGBB
+format.
+Multiple highlighted zone can be specified 
 and can be interspersed with multiple
-.Fl page
-options.
-.It Fl find Ns = Ns Ar string
-Highlight occurrences of the given
-.Ar string .
-This option works when the document contains a hidden text layer.
-It can be used in conjunction with
-.Fl sidebar Ns = Ns Cm find
+.BI "-page=" "pagename"
+options. 
+.TP
+.BI "-find=" text
+Highlight occurrences of the given string 
+.IR text .
+This option works when the document contains a hidden
+text layer. It can be used in conjunction with
+.BR "-sidebar=find" 
 to display the text searching interface.
-The
-.Ar string
-can be terminated by a slash
-.Pq Sq /
+
+String 
+.I text
+can be terminated by slash
+.BR "" "(" "/" ")"
 followed by letters specifying search options.
-The following letters are recognized:
-.Pp
-.Bl -hang -compact -width RR
-.It Cm c
-Case-sensitive search.
-.It Cm C
-Case-insensitive search (default).
-.It Cm w
-Search hits start on word boundaries (default).
-.It Cm W
-Ignore word boundaries.
-.It Cm r
-Regular expression search.
-.It Cm R
-String search (default).
-.El
-.It Fl rotate Ns = Ns Cm 0 Ns | Ns Cm 90 Ns | Ns Cm 180 Ns | Ns Cm 270
-Rotate the image counter-clockwise by the specified angle.
-.It Fl print Ns = Ns Cm yes Ns | Ns Cm no
+The following letters are recognized
+.br
+.TS
+center,box;
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+lfB l
+.
+c	Case-sensitive search.
+C	Case-insensitive search (default).
+w	Search hits start on word boundaries (default).
+W	Ignore word boundaries.
+r	Regular expression search.
+R	String search (default).
+.TE
+.PP
+
+.TP
+.BI "-rotate=(0|90|180|270)"
+Rotate the djvu image by the specified angle expressed
+in degrees counter-clockwise.
+
+.TP
+.BI "-print=(yes|no)"
 Enable or disable printing the DjVu document.
 Printing is enabled by default.
-.It Fl save Ns = Ns Cm yes Ns | Ns Cm no
+
+.TP
+.BI "-save=(yes|no)"
 Enable or disable saving the DjVu document.
 Saving is enabled by default.
-.It Fl passive
-Cause the DjVu image to be displayed in a manner
-similar to an ordinary web image.
-The default zoom factor is changed to
-.Cm page .
-The toolbar, the status bar, the scrollbars,
+
+.TP
+.BI "-passive"
+Cause the DjVu image to be displayed in a manner similar 
+to an ordinary web image.
+The default zoom factor is changed to 
+.BR page . 
+The toolbar, the status bar, the scrollbars, 
 the menus, and the keyboard shortcuts are disabled.
-.It Fl passivestretch
-Cause the DjVu image to be displayed in a manner
-similar to an ordinary web image.
-The default zoom factor is changed to
-.Cm stretch .
-The toolbar, the status bar, the scrollbars,
+
+.TP
+.BI "-passivestretch"
+Cause the DjVu image to be displayed in a manner similar 
+to an ordinary web image.
+The default zoom factor is changed to 
+.BR stretch .
+The toolbar, the status bar, the scrollbars, 
 the menus, and the keyboard shortcuts are disabled.
-.It Fl nomenu , notoolbar , noscrollbars
-These options were recognized by some versions of the DjVu viewers
-and are honored for the sake of backward compatibility.
-A warning message is printed when
-.Fl verbose
+
+.TP
+.BI "-nomenu, -notoolbar, -noscrollbars"
+These options were recognized by some versions
+of the DjVu viewers and are honored for the sake
+of backward compatibility. 
+A warning message is printed
+when option 
+.BR -verbose
 is active.
-.It Fl logo , textsel , search
-These options were recognized by some versions of the DjVu viewers
-but are currently not implemented by
-.Nm .
-A warning message is printed when
-.Fl verbose
+
+.TP
+.BI "-logo, -textsel, -search"
+These options were recognized by some versions
+of the DjVu viewers but are currently 
+not implemented by
+.BR djview4 .
+A warning message is printed
+when option 
+.BR -verbose
 is active.
-.El
-.Ss Usage
-Most features can be accessed using the menus, the toolbar,
-the side bar or the pop-up menu shown when the right mouse button
-is pressed over a DjVu image.
-Detailled help can be accessed by clicking the contextual help icon
-from the toolbar and then clicking on various section
-of the djview user interface.
+
+
+.SH USAGE
+
+Most features can be accessed using the menus, 
+the toolbar, the side bar or the pop-up menu
+shown when the right mouse button is depressed over a DjVu image.  
+Detailled help can be accessed by clicking the contextual 
+help icon from the toolbar and then clicking on various 
+section of the djview user interface.
+
 The following table lists some useful key combinations
 recognized when the djvu document is active:
-.Pp
-.Bl -hang -compact -width UpxxDownxxLeftxxRight
-.It Cm SHIFT+F1
-Activate the contextual help.
-.It Cm 1 , 2 , 3
-Change zoom to 100%, 200% and 300%.
-.It Cm Up , Down , Left , Right
-Scroll the image in the given direction.
-.It Cm Home
-Display top left corner of the image.
-.It Cm End
-Display bottom right corner of the image.
-.It Cm Control+Home
-Go to the beginning of the document.
-.It Cm Control+End
-Go to the end of the document.
-.It Cm Space , Return
-Scroll down or go to next page.
-.It Cm Backspace
-Scroll up or go to previous page.
-.It Cm Page Down
-Go to the next page.
-.It Cm Page Up
-Go to the previous page.
-.It Cm + , -
-Zoom in and out.
-.It Cm \&,
-Rotate image.
-.It Cm W
-Select the
-.Dq fit width
-zooming mode.
-.It Cm P
-Select the
-.Dq fit page
-zooming mode.
-.It Cm CTRL+F , F3
-Search the hidden text layer.
-.It Cm CTRL+G
-Go to a specific page by name or by number.
-.El
-.Pp
+.PP
+.TS
+center,box;
+lfB lfB
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+.
+Key	Action
+=
+SHIFT+F1	Activate the contextual help.
+1,2, and 3	Change zoom to to 100%, 200% and 300%.
+Up, Down, Left, Right	Scroll the image in the given direction.
+Home	Display top left corner of the image.
+End	Display bottom right corner of the image.
+Control+Home	Go to the beginning of the document.
+Control+End	Go to the end of the document.
+Space, Return	Scroll down or go to next page.
+Backspace	Scroll up or go to previous page.
+Page Down	Go to the next page.
+Page Up	Go to the previous page.
++, -	Zoom in and out.
+[, ]	Rotate image.
+W	Select the "Fit Width" zooming mode.
+P	Select the "Fit Page" zooming mode.
+CTRL+F, F3	Search the hidden text layer.
+CTRL+G	Go to a specific page by name or by number.
+.TE
+.PP
 Handy effects can be achieved by holding modifier keys.
-The following table lists the default assignments;
-these keys are configurable from the preference dialog.
-.Pp
-.Bl -hang -compact -width CTRL+SHIFT
-.It Cm CTRL+SHIFT
-Hold these keys to show the magnification lens.
-.It Cm CTRL
-Hold this key to select an area with the mouse.
-.It Cm SHIFT
-Hold this key to display all hyperlinks.
-.El
-.Sh ENVIRONMENT
-Setting
-.Ev DJVIEW_VERBOSE
-to a nonzero value is equivalent to calling
-.Nm
-with
-.Fl verbose .
-Setting
-.Ev DJVIEW_OPENGL
-to values 0 or 1 overrides the preference settings regarding OpenGL rendering.
-.Pp
-When the user clicks on a djvu hyperlink pointing to a web page,
-.Nm
-first tries to execute the web browser programs whose names are listed
-in the colon separated environment variable
-.Ev BROWSER ,
+Although these keys are configurable from the preference dialog,
+the following table lists the default assignments
+.PP
+.TS
+center,box;
+lfB lfB
+l l
+l l
+l l
+.
+Key	Action
+=
+CTRL+SHIFT	Hold these keys to show the magnification lens.
+CTRL	Hold this key to select an area with the mouse.
+SHIFT	Hold this key to display all hyperlinks.
+.TE
+.PP
+
+
+.SH ENVIRONMENT
+Setting environment variable 
+.BR DJVIEW_VERBOSE
+to a nonzero value is equivalent to calling 
+.BR djview
+with option 
+.BR -verbose .
+Setting environment variable
+.BR DJVIEW_OPENGL
+to values 0 or 1 overrides the preference
+settings regarding OpenGL rendering.
+
+When the user clicks on a djvu hyperlink pointing to a web page, the program
+first tries to execute the web browser programs whose names are listed in the
+colon separated environment variable
+.BR BROWSER ,
 then tries sensible platform dependent defaults.
-.Pp
-The user interface language is determined
-by first trying to find a complete set of translation files
-for the language specified in the preference dialog,
-then for the ISO 639 languages specified in the colon separated
-environment variable
-.Ev LANGUAGE ,
+
+The user interface language is determined by first trying
+to find a complete set of translation files for the 
+language specified in the preference dialog, then
+for the ISO 639 languages specified in the colon separated
+environment variable 
+.BR LANGUAGE ,
 and finally the language specified by the system locale.
 If all these searches fail, the user interface language
 reverts to the english default.
-.Sh SEE ALSO
-.Xr ddjvu 1 ,
-.Xr djvu 1 ,
-.Xr nsdejavu 1 ,
-.Xr tiff2pdf 1
-.Sh AUTHORS
-.An Leon Bottou Aq Mt leonb@users.sf.net ,
-using code written for
-.Xr tiff2pdf 1
-by
-.An Ross Finlayson .
+
+.SH CREDITS
+This program was written by L\('eon Bottou <leonb@users.sf.net>
+and is distributed under the GNU General Public License.
+This program includes code derived from program
+.BR tiff2pdf ,
+written by Ross Finlayson and 
+released under a BSD license.
+
+
+.SH SEE ALSO
+.BR djvu (1),
+.BR ddjvu (1),
+.BR nsdejavu (1),
+.BR tiff2pdf (1)
