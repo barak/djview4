@@ -951,7 +951,6 @@ QDjViewPlugin::cmdAttachWindow()
           QObject::connect(shell, SIGNAL(destroyed()),
                            forwarder, SLOT(containerClosed()) );
           shell->setObjectName("djvu_shell");
-          shell->setGeometry(0, 0, width, height);
           QWindow *dwindow = djview->windowHandle();
           instance->containerwin = dwindow;
           dwindow->setParent(QWindow::fromWinId(window));
