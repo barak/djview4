@@ -1672,16 +1672,18 @@ Resize(void *id)
   if (inst->xembed_mode)
     return 1;
 #if USE_XT
-  else if (inst->widget)
+  else if (inst->widget && inst->window)
     {
-      Dimension width, height;
-      XtVaGetValues(inst->widget, XtNwidth, &width, XtNheight, &height, NULL);
+      XWindowAttributes attr;
+      Display *displ = XtDisplay(inst->widget);
+      if (! XGetWindowAttributes(displ, inst->window, &attr))
+        return 1;
       if (! IsConnectionOK(TRUE))
         return -1;
       if ( (WriteInteger(pipe_write, CMD_RESIZE) <= 0) ||
            (WritePointer(pipe_write, id) <= 0) ||
-           (WriteInteger(pipe_write, width) <= 0) ||
-           (WriteInteger(pipe_write, height) <= 0) ||
+           (WriteInteger(pipe_write, attr.width) <= 0) ||
+           (WriteInteger(pipe_write, attr.height) <= 0) ||
            (ReadResult(pipe_read, rev_pipe, check_requests) <= 0) )
         return -1;
     }

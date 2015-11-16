@@ -1038,19 +1038,6 @@ QDjViewPlugin::cmdResize()
   Instance *instance = (Instance*) readPointer(pipeRead);
   int width = readInteger(pipeRead);
   int height = readInteger(pipeRead);
-#if HAVE_X11
-  if (instance->containerid)
-    { 
-      // the plugin lies sometimes (why?)
-      int x, y; unsigned int w, h, b, d; Window r;
-      if (XGetGeometry(QX11Info::display(), (Window)(instance->containerid), 
-                       &r, &x, &y, &w, &h, &b, &d))
-        { 
-          width = qMin(width, (int)w);
-          height = qMin(height, (int)h);
-        }
-    }
-#endif
   if (instances.contains(instance) && width>0 && height>0)
     if (instance->shell && application)
       instance->shell->resize(width, height);
