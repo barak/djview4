@@ -2045,17 +2045,20 @@ QDjVuPrivate::initWidget(bool opengl)
 #endif
   // setup viewport
   QWidget *vp = widget->viewport();
-#if QT_VERSION >= 0x040100
+#if QT_VERSION >= 0x50000
   vp->setAttribute(Qt::WA_OpaquePaintEvent);
-#endif
-  vp->setAttribute(Qt::WA_NoSystemBackground);
-  vp->setAttribute(Qt::WA_StaticContents);
+#elif QT_VERSION >= 0x040100
+  vp->setAttribute(Qt::WA_OpaquePaintEvent);
   vp->setAttribute(Qt::WA_NativeWindow);
-  vp->setMouseTracking(true);
+#else
+  vp->setAttribute(Qt::WA_StaticContents);
+  vp->setAttribute(Qt::WA_NoSystemBackground);
+  vp->setAttribute(Qt::WA_NativeWindow);
+#endif
 #if QT_VERSION >= 0x040600
-  // Handle pinch gesture to adjust zoom
   vp->grabGesture(Qt::PinchGesture);
 #endif
+  vp->setMouseTracking(true);
 }
 
 /*! Construct a \a QDjVuWidget instance.
