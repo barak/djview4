@@ -4539,11 +4539,10 @@ QDjVuPrivate::paintAll(QPainter &paint, const QRegion &paintRegion)
     }
   // Document ready.
   Page *p;
-  QRect viewportRect = widget->viewport()->rect();
   foreach(p, pageVisible)
     {
       // Paint page
-      QRegion region = paintRegion & viewportRect & p->viewRect;
+      QRegion region = paintRegion & p->viewRect;
       if (! paintPage(paint, p, region))
         {
           // Cannot paint page yet
@@ -4609,7 +4608,7 @@ QDjVuWidget::paintEvent(QPaintEvent *event)
     }
   // paint everything
   QPainter paint(viewport());
-  QRegion region = event->region();
+  QRegion region = event->region() & viewport()->rect();
   priv->paintAll(paint, region);
   // debugging code
 #ifdef DEBUG_SHOW_PAINTED_AREAS
@@ -5581,11 +5580,7 @@ QDjVuLens::moveEvent(QMoveEvent *event)
   refocus();
   QPoint delta = event->pos() - event->oldPos();
   QRect r = rect().adjusted(1,1,-1,-1);
-#if defined(Q_OS_DARWIN) && QT_VERSION<0x50000
-  repaint(r);  // bug hopefully fixed in qt5
-#else
   scroll(-mag*delta.x(), -mag*delta.y(), r);
-#endif
 }
 
 void 
