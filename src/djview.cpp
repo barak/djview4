@@ -47,6 +47,11 @@
 #include <QStringList>
 #include <QTranslator>
 
+#if defined(Q_OS_WIN32)
+# include <mbctype.h>
+#endif
+
+
 #ifdef QT_NO_DEBUG
 static bool verbose = false;
 #else
@@ -122,7 +127,11 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   ::setlocale(LC_NUMERIC, "C");
 # endif
 #endif
-  
+
+  // Parse arguments using OEM code page under windows.
+#if defined(Q_OS_WIN32)
+  _setmbcp(_MB_CP_OEM);
+#endif
   // Mac/Cocoa bug workaround
 #if defined(Q_OS_DARWIN) && defined(QT_MAC_USE_COCOA) && QT_VERSION<0x40503
   extern void qt_mac_set_native_menubar(bool);
