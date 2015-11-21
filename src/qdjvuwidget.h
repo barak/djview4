@@ -271,6 +271,7 @@ public:
                     QColor color, bool rc=false);
   
 protected:
+  virtual bool event(QEvent *event);
   virtual bool viewportEvent (QEvent *event);
   virtual void scrollContentsBy(int dx, int dy);
   virtual void resizeEvent(QResizeEvent *event);

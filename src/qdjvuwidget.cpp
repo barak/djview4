@@ -788,6 +788,7 @@ public:
   QBrush      borderBrush;
   // layout
   int          layoutChange;    // scheduled changes
+  int          layoutLoop;      // loop avoidance counter
   QPoint       movePoint;       // desired viewport point (CHANGE_VIEW)
   Position     movePos;         // desired page point (CHANGE_VIEW)
   QVector<Page>   pageData;     // all pages
@@ -978,6 +979,7 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   connect(animationTimer, SIGNAL(timeout()), this, SLOT(animate()));
   // scheduled changes
   layoutChange = 0;
+  layoutLoop = 0;
   pageRequestDelay = 250;
   pageRequestTimer = new QTimer(this);
   pageRequestTimer->setSingleShot(true);
@@ -1034,6 +1036,7 @@ QDjVuPrivate::changeLayout(int change, int delay)
 {
   int oldChange = layoutChange;
   layoutChange = oldChange | change | SCHEDULED;
+  layoutLoop = 0;
   if (! (oldChange & SCHEDULED))
     QTimer::singleShot(delay, this, SLOT(makeLayout()));
 }
@@ -1338,15 +1341,15 @@ QDjVuPrivate::makeLayout()
         {
           Page *p;
           // compute usable viewport size (minus margins and separators)
-          int vw = widget->viewport()->width() - 2*borderSize;
-          int vh = widget->viewport()->height() - 2*borderSize;
+          int vw = widget->viewport()->width() - 2*borderSize - 2;
+          int vh = widget->viewport()->height() - 2*borderSize - 2;
           if (sideBySide && pageLayout.size()>1)
             vw = vw - separatorSize;
           vw = qMax(64, vw);
           vh = qMax(64, vh);
           // compute target size for zoom 100%
           int dw = deskRect.width() - 2*borderSize;
-          int dh = deskRect.height() + 2*borderSize;
+          int dh = deskRect.height() - 2*borderSize;
           if (sideBySide && pageLayout.size()>1)
             dw = dw - separatorSize;
           if (continuous)
@@ -1454,37 +1457,31 @@ QDjVuPrivate::makeLayout()
       else if (layoutChange & CHANGE_SCROLLBARS)
         {
           QRect &rv = visibleRect;
-          QRect &rd = deskRect;
+          QRect rd = deskRect.united(rv);
           QScrollBar *hBar = widget->horizontalScrollBar();
           QScrollBar *vBar = widget->verticalScrollBar();
-          int vw = rv.width();
-          int vh = rv.height();
-          int hStep = qMin(vw, rd.width());
-          int vStep = qMin(vh, rd.height());
-          int vcorr = 0;
-          int hcorr = 0;
-          if (widget->horizontalScrollBarPolicy() == Qt::ScrollBarAsNeeded)
-            { // prevent hbar loops
-              if (zoom == ZOOM_FITWIDTH || zoom == ZOOM_FITPAGE)
-                hcorr = hStep - rd.width(); // force hbar off
+          int vmin = rd.top();
+          int vmax = rd.bottom() + 1 - rv.height();
+          int hmin = rd.left();
+          int hmax = rd.right() + 1 - rv.width();
+          // loop prevention
+          if (++layoutLoop >= 4)
+            {
+              if (hBar->isVisible() && hmax <= hmin)
+                hmax = hmin + 1;
+              if (vBar->isVisible() && vmax <= vmin)
+                vmax = vmin + 1;
             }
-          if (widget->verticalScrollBarPolicy() == Qt::ScrollBarAsNeeded)
-            { // prevent vbar loops
-              if (zoom == ZOOM_FITPAGE && rd.height() <= vh)
-                vcorr = vStep - rd.height(); // force vbar off
-              if (zoom == ZOOM_FITWIDTH && vBar->isVisible() && rd.height() <= vh)
-                if (scale_int(rd.height(), vw + vBar->width(), vw) > rv.height())
-                  vcorr = 1;  // force vbar on
-            }
+          // set scrollbars
           changingSBars = true;
-          vBar->setMinimum(rd.top());
-          vBar->setMaximum(rd.top()+rd.height()-vStep+vcorr);
-          vBar->setPageStep(vStep);
+          vBar->setMinimum(vmin);
+          vBar->setMaximum(vmax);
+          vBar->setPageStep(rv.height());
           vBar->setSingleStep(lineStep * 2);
           vBar->setValue(rv.top());
-          hBar->setMinimum(rd.left());
-          hBar->setMaximum(rd.left()+rd.width()-hStep+hcorr);
-          hBar->setPageStep(hStep);
+          hBar->setMinimum(hmin);
+          hBar->setMaximum(hmax);
+          hBar->setPageStep(rv.width());
           hBar->setSingleStep(lineStep * 2);
           hBar->setValue(rv.left());
           changingSBars = false;
@@ -4659,6 +4656,17 @@ QDjVuWidget::scrollContentsBy(int, int)
 
 /*! Overridden \a QAbstractScrollArea virtual function. */
 bool 
+QDjVuWidget::event(QEvent *event)
+{
+  // Actual widget resize instead of viewport.
+  if (event->type() == QEvent::Resize)
+    priv->layoutLoop = 0;
+  // Default function
+  return QAbstractScrollArea::event(event);
+}
+
+/*! Overridden \a QAbstractScrollArea virtual function. */
+bool 
 QDjVuWidget::viewportEvent(QEvent *event)
 {
   switch (event->type())
@@ -4702,10 +4710,11 @@ QDjVuWidget::resizeEvent(QResizeEvent *event)
       priv->zoom == ZOOM_FITPAGE ||
       priv->zoom == ZOOM_STRETCH )
     change |= CHANGE_SCALE;
-  priv->changeLayout(change);
+  // Do not reset loop counter
   // Update layout immediately because Qt40 gets confused 
   // by asynchronous mixes of scrolls and resizes.
-  // Also note that WA_StaticContents is set.
+  // Also we do not want to reset the loop counter!
+  priv->layoutChange |= change;
   priv->makeLayout();
 }
 
