@@ -898,6 +898,7 @@ public:
   void changeHAlign(void);
   void changeVAlign(void);
   QRect hourGlassRect(void) const;
+  void pageinfoPage(QDjVuPage*, Page*);
 
 public slots:
   void makeLayout();
@@ -1683,6 +1684,10 @@ QDjVuPrivate::requestPage(Page *p)
               this, SLOT(info(QString)) );
       if (! p->page->isValid())
         emit widget->errorCondition(p->pageno);
+      // decoded page found in the cache (needed with djvulibre <= 3.5.27)
+      if (ddjvu_page_decoding_status(*(p->page)) >= DDJVU_JOB_OK)
+        pageinfoPage(p->page, p);
+      // schedule redisplay
       p->redisplay = true;
       changeLayout(REFRESH_PAGES);
       result = true;
@@ -1904,12 +1909,21 @@ QDjVuPrivate::pageinfoPage()
 {
   QObject *send = sender();
   QDjVuPage *page = qobject_cast<QDjVuPage*>(send);
-  if (page) 
+  Page *p = 0;
+  if (page)
     {
-      Page *p = 0;
       int pageno = page->pageNo();
       if (pageMap.contains(pageno))
         p = pageMap[pageno];
+    }
+  pageinfoPage(page, p);
+}
+
+void 
+QDjVuPrivate::pageinfoPage(QDjVuPage *page, Page *p)
+{
+  if (page) 
+    {
       switch(ddjvu_page_decoding_status(*page))
         {
         case DDJVU_JOB_OK:
