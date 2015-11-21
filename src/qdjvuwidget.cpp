@@ -1882,7 +1882,7 @@ QDjVuPrivate::docinfo()
       changeLayout(CHANGE_PAGES|UPDATE_ALL);
       // request first page immediately
       if (numPages > 0)
-        requestPage(&pageData[0]);
+        requestPage((pageMap[0] = &pageData[0]));
     }
   else if (status == DDJVU_JOB_STOPPED && !docStopped)
     {
