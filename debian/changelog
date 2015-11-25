@@ -1,8 +1,13 @@
-djview4 (4.10.4-1) none; urgency=medium
+djview4 (4.10.4-1) unstable; urgency=medium
 
+  [ Leon Bottou ]
   * new upstream release
 
- -- Leon Bottou <bap@debian.org>  Fri, 20 Nov 2015 22:24:00 +0500
+  [ Barak A. Pearlmutter ]
+  * add Leon to debian/control uploaders
+  * target to unstable
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Wed, 25 Nov 2015 09:17:18 +0000
 
 djview4 (4.10.3-1) unstable; urgency=medium
 
