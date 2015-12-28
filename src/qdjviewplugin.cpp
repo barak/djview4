@@ -947,6 +947,7 @@ QDjViewPlugin::cmdAttachWindow()
         {
           djview = new QDjView(*context, instance->viewerMode, 0);
           djview->setAttribute(Qt::WA_NativeWindow, true);
+          djview->winId();
           shell = djview;
           QObject::connect(shell, SIGNAL(destroyed()),
                            forwarder, SLOT(containerClosed()) );
