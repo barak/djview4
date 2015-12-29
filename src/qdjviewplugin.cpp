@@ -984,13 +984,14 @@ QDjViewPlugin::cmdAttachWindow()
           djview = new QDjView(*context, instance->viewerMode, shell);
           djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
           djview->setAttribute(Qt::WA_DeleteOnClose, false);
-#if QT_VERSION >= 0x40400
-          djview->setAttribute(Qt::WA_NativeWindow, true);
-#endif
 #if HAVE_X11
           instance->containerid = window;
           Display *dpy = QX11Info::display();
           XReparentWindow(dpy, shell->winId(), (Window)window, 0,0);
+#elif HAVE_QT5EMBED
+          shell->winId();
+          QWindow *dwindow = shell->windowHandle();
+          dwindow->setParent(QWindow::fromWinId(window));
 #else
           qWarning("djview: unable to embed the djview window.");
 #endif
