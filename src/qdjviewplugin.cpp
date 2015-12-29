@@ -946,7 +946,6 @@ QDjViewPlugin::cmdAttachWindow()
       if (xembedFlag)
         {
           djview = new QDjView(*context, instance->viewerMode, 0);
-          djview->setAttribute(Qt::WA_NativeWindow, true);
           djview->winId();
           shell = djview;
           QObject::connect(shell, SIGNAL(destroyed()),
@@ -969,9 +968,6 @@ QDjViewPlugin::cmdAttachWindow()
           djview = new QDjView(*context, instance->viewerMode, shell);
           djview->setWindowFlags(djview->windowFlags() & ~Qt::Window);
           djview->setAttribute(Qt::WA_DeleteOnClose, false);
-#if QT_VERSION >= 0x40400
-          djview->setAttribute(Qt::WA_NativeWindow, true);
-#endif
           instance->containerid = window;
           embed->embedInto(window);
         }
