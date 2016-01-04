@@ -35,6 +35,7 @@
 #include <QSocketNotifier>
 #include <QString>
 #include <QTimer>
+#include <QTimerEvent>
 #include <QUrl>
 #include <QWidget>
 
@@ -54,26 +55,18 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#if QT_VERSION >= 0x50000
-# include <QWindow>
-# if QT_X11EXTRAS_LIB
-#  define HAVE_XCB 1
-#  include <QX11Info>
-# endif
-#endif
-
 #if QT_VERSION < 0x50000
 # if defined(Q_WS_X11)
 #  include <QX11Info>
 #  include <QX11EmbedWidget>
+#  define HAVE_QX11EMBED 1
 # endif
 #endif
 
 #if QT_VERSION >= 0x50000
+# include <QWindow>
+# include <QAbstractNativeEventFilter>
 # define HAVE_QT5EMBED 1
-#endif
-#if QT_VERSION < 0x50000 && defined(Q_WS_X11)
-# define HAVE_QX11EMBED 1
 #endif
 
 #if WITH_X11
@@ -98,7 +91,6 @@
 #  undef CursorShape
 # endif
 #endif
-
 
 
 
@@ -180,11 +172,85 @@ struct QDjViewPlugin::Instance
   void save(QDjVuWidget*);
   void restore(QDjVuWidget*);
 };
-  
+
 
 
 // ========================================
-// FIXING TRANSIENT WINDOW PROPERTIES
+// WORKAROUND QT55 XEMBED BUG
+// ========================================
+
+
+#if QT_VERSION >= 0x50500 /* && QT_VERSION < 0x50XXX */
+# define WORKAROUND_QT55_XEMBED_BUG 1
+#endif
+
+#if WORKAROUND_QT55_XEMBED_BUG
+
+struct my_xcb_configure_notify_event_t 
+{
+  quint8      response_type, pad0, pad1, pad2;
+  quint32     pad3, window, pad4;
+  quint16     x, y, width, height;
+};
+
+class my_timer_object_t : public QObject 
+{
+  Q_OBJECT
+  quint32 wid;
+  quint16 w,h;
+public:
+  my_timer_object_t(quint32, quint16, quint16);
+  void timerEvent(QTimerEvent*);
+};
+
+struct my_event_filter_t : public QAbstractNativeEventFilter
+{
+  QMap<quint32,QDjViewPlugin::Instance*> instances;
+  virtual bool nativeEventFilter(const QByteArray &type, void *msg, long*);
+};
+
+static my_event_filter_t *my_event_filter()
+{
+  static my_event_filter_t *filter = 0;
+  if (! filter) filter = new my_event_filter_t;
+  return filter;
+}
+
+my_timer_object_t::my_timer_object_t(quint32 wid, quint16 w, quint16 h)
+  : wid(wid), w(w), h(h) 
+{
+  startTimer(1);
+}
+
+void my_timer_object_t::timerEvent(QTimerEvent *ev)
+{
+  QDjViewPlugin::Instance *instance = my_event_filter()->instances.value(wid,0);
+  if (instance && instance->shell) // test for resizing bug
+    if (instance->shell->width() != w || instance->shell->height() != h )
+      instance->shell->resize((int)w, (int)h);
+  killTimer(ev->timerId());
+  deleteLater();
+  wid = 0;
+}
+
+bool my_event_filter_t::nativeEventFilter(const QByteArray &type, void *msg, long*)
+{
+  if (type == "xcb_generic_event_t")
+    {
+      my_xcb_configure_notify_event_t *ev = (my_xcb_configure_notify_event_t*)msg;
+      if (ev->response_type == 22 && instances.contains(ev->window) )
+        new my_timer_object_t(ev->window, ev->width, ev->height);
+    }
+  return false;
+}
+
+#endif
+
+
+
+
+// ========================================
+// FIXING TRANSIENT WINDOW PROPERTIES (QT4)
 // ========================================
 
 #if HAVE_X11
@@ -523,10 +589,13 @@ QDjViewPlugin::Instance::destroy()
     {
 #if HAVE_QT5EMBED
       QWindow *window = shell->windowHandle();
-      if (window)
+      if (window) {
         window->setVisible(false);
-      if (window)
         window->setParent(0);
+# if WORKAROUND_QT55_XEMBED_BUG
+        my_event_filter()->instances.remove((quint32)shell->winId());
+# endif
+      }
 #elif HAVE_X11
       Display *dpy = QX11Info::display();
       XUnmapWindow(dpy, shell->winId());  
@@ -921,6 +990,9 @@ QDjViewPlugin::cmdAttachWindow()
       application->setEventFilter(x11EventFilter);
       application->installEventFilter(forwarder);
 #endif
+#if WORKAROUND_QT55_XEMBED_BUG
+      application->installNativeEventFilter(my_event_filter());
+#endif
       QObject::connect(application, SIGNAL(lastWindowClosed()), 
                        forwarder, SLOT(lastViewerClosed()));
       notifier = new QSocketNotifier(pipeRead, QSocketNotifier::Read); 
@@ -952,8 +1024,12 @@ QDjViewPlugin::cmdAttachWindow()
                            forwarder, SLOT(containerClosed()) );
           shell->setObjectName("djvu_shell");
           QWindow *dwindow = djview->windowHandle();
-          instance->containerwin = dwindow;
-          dwindow->setParent(QWindow::fromWinId(window));
+          QWindow *cwindow = QWindow::fromWinId(window);
+          instance->containerwin = cwindow;
+          dwindow->setParent(cwindow);
+# if WORKAROUND_QT55_XEMBED_BUG
+          my_event_filter()->instances.insert((quint32)shell->winId(), instance);
+# endif
         }
       else
 #elif HAVE_QX11EMBED
@@ -987,7 +1063,9 @@ QDjViewPlugin::cmdAttachWindow()
 #elif HAVE_QT5EMBED
           shell->winId();
           QWindow *dwindow = shell->windowHandle();
-          dwindow->setParent(QWindow::fromWinId(window));
+          QWindow *cwindow = QWindow::fromWinId(window);
+          instance->containerwin = cwindow;
+          dwindow->setParent(cwindow);
 #else
           qWarning("djview: unable to embed the djview window.");
 #endif

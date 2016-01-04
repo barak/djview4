@@ -52,6 +52,11 @@ public:
   void exit(int retcode);
   void quit();
 
+  class  Document;
+  class  Forwarder;
+  struct Instance;
+  struct Stream;
+
 private:
   void  write(int fd, const char *buffer, int size);
   void  read(int fd, char *buffer, int size);
@@ -84,11 +89,6 @@ private:
   void cmdGetDjVuOpt();
   void cmdOnChange();
   
-  class  Document;
-  class  Forwarder;
-  struct Instance;
-  struct Stream;
-
   void reportError(int err);
   void streamCreated(Stream *s);
   void streamDestroyed(Stream *s);
