@@ -503,7 +503,7 @@ Filename &apos;%1&apos; has no suffix.</source>
     </message>
     <message>
         <location filename="qdjview.cpp" line="506"/>
-        <source>Find next occurence of search text in the document.</source>
+        <source>Find next occurrence of search text in the document.</source>
         <translation>Найти следующее вхождение текста в документе.</translation>
     </message>
     <message>
@@ -514,7 +514,7 @@ Filename &apos;%1&apos; has no suffix.</source>
     </message>
     <message>
         <location filename="qdjview.cpp" line="511"/>
-        <source>Find previous occurence of search text in the document.</source>
+        <source>Find previous occurrence of search text in the document.</source>
         <translation>Найти предыдущее вхождение текста в документе.</translation>
     </message>
     <message>

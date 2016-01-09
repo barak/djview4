@@ -271,7 +271,7 @@
     </message>
     <message>
         <location filename="qdjview.cpp" line="506"/>
-        <source>Find next occurence of search text in the document.</source>
+        <source>Find next occurrence of search text in the document.</source>
         <translation>Zeigt die nächste Fundstelle des Suchtextes im Dokument.</translation>
     </message>
     <message>
@@ -288,7 +288,7 @@
     </message>
     <message>
         <location filename="qdjview.cpp" line="511"/>
-        <source>Find previous occurence of search text in the document.</source>
+        <source>Find previous occurrence of search text in the document.</source>
         <translation>Zeigt die vorherige Fundstelle des Suchtextes im Dokument.</translation>
     </message>
     <message>

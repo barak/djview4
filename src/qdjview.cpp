@@ -498,12 +498,12 @@ QDjView::createActions()
 
   actionFindNext = makeAction(tr("Find &Next", "Edit|"))
     << QKeySequence(tr("F3", "Edit|Find Next"))
-    << tr("Find next occurence of search text in the document.")
+    << tr("Find next occurrence of search text in the document.")
     << Trigger(findWidget, SLOT(findNext()));
 
   actionFindPrev = makeAction(tr("Find &Previous", "Edit|"))
     << QKeySequence(tr("Shift+F3", "Edit|Find Previous"))
-    << tr("Find previous occurence of search text in the document.")
+    << tr("Find previous occurrence of search text in the document.")
     << Trigger(findWidget, SLOT(findPrev()));
 
   actionSelect = makeAction(tr("&Select", "Edit|"), false)

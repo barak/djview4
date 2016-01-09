@@ -282,7 +282,7 @@
     </message>
     <message>
         <location filename="qdjview.cpp" line="506"/>
-        <source>Find next occurence of search text in the document.</source>
+        <source>Find next occurrence of search text in the document.</source>
         <translation>在文档中查找文本的下一个实例。</translation>
     </message>
     <message>
@@ -299,7 +299,7 @@
     </message>
     <message>
         <location filename="qdjview.cpp" line="511"/>
-        <source>Find previous occurence of search text in the document.</source>
+        <source>Find previous occurrence of search text in the document.</source>
         <translation>在文档中查找文本的前一个实例。</translation>
     </message>
     <message>
