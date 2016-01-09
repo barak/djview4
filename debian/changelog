@@ -1,8 +1,12 @@
 djview4 (4.10.5-1) unstable; urgency=medium
 
-  * workaround qt55 xembed bug
+  [ Leon Bottou ]
+  * workaround qt55 xembed bug (closes: #804888)
 
- -- Leon Bottou <leonb@users.sf.net>  Mon, 01 Jan 2016 16:12:00 +0500
+  [ Barak A. Pearlmutter ]
+  * new upstream release, which works around qt5 bug
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Sat, 09 Jan 2016 17:37:16 +0000
 
 djview4 (4.10.4-1) unstable; urgency=medium
 
