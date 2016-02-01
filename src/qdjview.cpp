@@ -726,7 +726,7 @@ QDjView::createActions()
   actionViewSideBar = makeAction(tr("Show &Sidebar", "Settings|"), true)
     << QKeySequence(tr("F9", "Settings|Show sidebar"))
 #ifdef Q_OS_DARWIN
-    << QKeySequence(tr("Ctrl+F9", "Settings|Show sidebar"))
+    << QKeySequence(tr("Alt+Ctrl+S", "Settings|Show sidebar"))
 #endif
     << tr("Show/hide the side bar.")
     << Trigger(this, SLOT(showSideBar(bool)));
@@ -735,7 +735,7 @@ QDjView::createActions()
     << tr("Show &Toolbar", "Settings|")
     << QKeySequence(tr("F10", "Settings|Show toolbar"))
 #ifdef Q_OS_DARWIN
-    << QKeySequence(tr("Ctrl+F10", "Settings|Show toolbar"))
+    << QKeySequence(tr("Alt+Ctrl+T", "Settings|Show toolbar"))
 #endif
     << tr("Show/hide the standard tool bar.")
     << Trigger(this, SLOT(updateActionsLater()));
@@ -749,7 +749,7 @@ QDjView::createActions()
     = makeAction(tr("&Full Screen","View|"), false)
     << QKeySequence(tr("F11","View|FullScreen"))
 #ifdef Q_OS_DARWIN
-    << QKeySequence(tr("Ctrl+F11","View|FullScreen"))
+    << QKeySequence(tr("Meta+Ctrl+F","View|FullScreen"))
 #endif
     << QIcon(":/images/icon_fullscreen.png")
     << tr("Toggle full screen mode.")
@@ -758,6 +758,9 @@ QDjView::createActions()
   actionViewSlideShow
     = makeAction(tr("&Slide Show","View|"), false)
     << QKeySequence(tr("Shift+F11","View|Slideshow"))
+#ifdef Q_OS_DARWIN
+    << QKeySequence(tr("Shift+Ctrl+F", "Settings|Show toolbar"))
+#endif
     << QIcon(":/images/icon_slideshow.png")
     << tr("Toggle slide show mode.")
     << Trigger(this, SLOT(performViewSlideShow(bool)));
@@ -789,7 +792,6 @@ QDjView::createActions()
 #ifdef Q_OS_DARWIN
     << QIcon(":/images/icon_righttoleft.png")
 #endif
-    << QKeySequence(tr("Ctrl+Shift+F6", "Layout|RightToLeft"))
     << QKeySequence(tr("Shift+F6", "Layout|RightToLeft"))
     << tr("Show pages right-to-left in side-by-side mode.")
     << Trigger(widget, SLOT(setRightToLeft(bool)))
