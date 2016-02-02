@@ -74,6 +74,7 @@ mostlyclean-local: mostlyclean-qmake
 mostlyclean-qmake:
 	-test "${srcdir}" == "." || ${RM} djview.pro
 	-test -f Makefile.qmake && ${MAKE} -f Makefile.qmake clean
+	-$(RM) Makefile.qmake0
 	-$(RM) Makefile.qmake
 
 .PHONY: mostlyclean-qmake mostlyclean-qm 
