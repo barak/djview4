@@ -168,8 +168,6 @@ QDjViewPrefs::QDjViewPrefs(void)
     printCollate(true)
 {
   Options mss = (SHOW_MENUBAR|SHOW_STATUSBAR|SHOW_SIDEBAR);
-  forStandalone.options |= LAYOUT_CONTINUOUS;
-  forFullScreen.options |= LAYOUT_CONTINUOUS;
   forFullScreen.options &= ~(mss|SHOW_SCROLLBARS|SHOW_TOOLBAR|SHOW_SIDEBAR);
   forSlideShow = forFullScreen;
   forSlideShow.zoom = QDjVuWidget::ZOOM_FITPAGE;
@@ -181,6 +179,8 @@ QDjViewPrefs::QDjViewPrefs(void)
   forEmbeddedPlugin.zoom = 100;
   forEmbeddedPlugin.nsBorderBrush = QBrush(Qt::white);
   forEmbeddedPlugin.nsBorderSize = 0;
+  forStandalone.options |= LAYOUT_CONTINUOUS;
+  forFullScreen.options |= LAYOUT_CONTINUOUS;
 }
 
 
