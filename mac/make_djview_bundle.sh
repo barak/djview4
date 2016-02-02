@@ -69,10 +69,11 @@ done
     run ln -s "$target"  "$bundle/$d" || exit
 done
 
-# merge MacOS and bin directories
+# merge MacOS, bin, and plugins directories
 run mv $bundle/bin/* $bundle/MacOS || exit
 run rmdir $bundle/bin || exit
 run ln -s ./MacOS $bundle/bin || exit
+run ln -s ./MacOS $bundle/plugins || exit
 
 # copy needed homebrew libraries
 for lib in $(otool -L $bundle/MacOS/ddjvu | awk '/^\t/{print $1}') ; do
@@ -80,18 +81,6 @@ for lib in $(otool -L $bundle/MacOS/ddjvu | awk '/^\t/{print $1}') ; do
     $BREWDIR/*) 
         libname=$(basename "$lib")
         test -r "./$bundle/lib/$libname" || \
-	    run cp "$lib" "./$bundle/lib/$libname" || exit ;;
-  esac
-done
-for lib in $(otool -L $bundle/MacOS/djview | awk '/^\t/{print $1}') ; do
-  case "$lib" in 
-    $BREWDIR/*) 
-        libname=$(basename "$lib")
-	test -r "./$bundle/lib/$libname" || \
-	    run cp "$lib" "./$bundle/lib/$libname" || exit ;;
-    $QTDIR/*)
-        libname=$(basename "$lib")
-	test -r "./$bundle/lib/$libname" || \
 	    run cp "$lib" "./$bundle/lib/$libname" || exit ;;
   esac
 done
@@ -104,7 +93,29 @@ while read plugin ; do
   run mkdir -p $bundle/$(dirname "$plugin") || exit
   run cp "$QTDIR/$plugin" $bundle/"$plugin" || exit
 done
-  
+
+# copy needed libraries  
+for lib in \
+    $(otool -L $bundle/MacOS/djview | awk '/^\t/{print $1}') \
+    $(otool -L $bundle/MacOS/platforms/libqcocoa.dylib | awk '/^\t/{print $1}') 
+do
+  case "$lib" in 
+    $BREWDIR/*) 
+        libname=$(basename "$lib")
+	test -r "./$bundle/lib/$libname" || \
+	    run cp "$lib" "./$bundle/lib/$libname" || exit ;;
+    @rpath/*)
+        libname=$(basename "$lib")
+        lib="$QTDIR/lib${lib/#@rpath//}"
+	test -r "./$bundle/lib/$libname" || \
+	    run cp "$lib" "./$bundle/lib/$libname" || exit ;;
+    $QTDIR/*)
+        libname=$(basename "$lib")
+	test -r "./$bundle/lib/$libname" || \
+	    run cp "$lib" "./$bundle/lib/$libname" || exit ;;
+  esac
+done
+
 # copy translations
 languages=$(ls -1 ../src/*.qm | sed -e 's/^[^_]*_//' -e 's/\.qm$//')
 run rm $bundle/Resources/empty.lproj
