@@ -742,6 +742,9 @@ QDjView::createActions()
 
   actionViewStatusBar = makeAction(tr("Show Stat&usbar", "Settings|"), true)
     << tr("Show/hide the status bar.")
+#ifdef Q_OS_DARWIN
+    << QKeySequence(tr("Alt+Ctrl+/", "Settings|Show toolbar"))
+#endif
     << Trigger(statusBar,SLOT(setVisible(bool)))
     << Trigger(this, SLOT(updateActionsLater()));
 
