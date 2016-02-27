@@ -129,9 +129,16 @@ rect_to_qrect(const ddjvu_rect_t &rect, QRect &qrect)
 }
 
 static inline void
-qrect_to_rect(const QRect &qrect, ddjvu_rect_t &rect)
+qrect_to_rect(const QRect &qrect, ddjvu_rect_t &rect, int scale=1)
 {
   qrect.getRect(&rect.x, &rect.y, (int*)&rect.w, (int*)&rect.h);
+  if (scale > 1) 
+    {
+      rect.x *= scale;
+      rect.y *= scale;
+      rect.w *= scale;
+      rect.h *= scale;
+    }
 }
 
 static inline int 
@@ -817,6 +824,7 @@ public:
   int         sdpi;             // screen dpi
   ddjvu_format_t *renderFormat; // ddjvu format
   QList<Cache>    pixelCache;   // pixel cache
+  int         devicePixelRatio; // device pixel ratio for cached images
   // gui
   bool        keyboardEnabled;  // obey keyboard commands
   bool        mouseEnabled;     // obey mouse commands
@@ -1007,6 +1015,7 @@ QDjVuPrivate::QDjVuPrivate(QDjVuWidget *widget)
   currentLinkDisplayed = false;
   allLinksDisplayed = false;
   pixelCacheSize = 256 * 1024;
+  devicePixelRatio = 1;
   // cursors
   cursHandOpen = qcursor_by_name(":/images/cursor_hand_open.png");
   cursHandClosed = qcursor_by_name(":/images/cursor_hand_closed.png");
@@ -4436,6 +4445,15 @@ QDjVuPrivate::paintPage(QPainter &paint, Page *p, const QRegion &region)
     return true;
   if (p->dpi<=0 || p->page==0)
     return false;
+  // invalidate cache when device pixel ratio changes
+#if QT_VERSION >= 0x50200
+  int dpr = paint.device()->devicePixelRatio();
+  if (devicePixelRatio != dpr)
+    pixelCache.clear();
+  devicePixelRatio = dpr;
+#else
+  int dpr = 1;
+#endif
   // caching
   QList<Cache*> cachelist;
   QRegion remainder = region;
@@ -4479,6 +4497,8 @@ QDjVuPrivate::paintPage(QPainter &paint, Page *p, const QRegion &region)
       QRect d = dr.boundingRect();
       displayed += d;
       QRect s = d.translated(-r.topLeft());
+      if (dpr > 1) 
+        s.setRect(s.left()*dpr, s.top()*dpr, s.width()*dpr, s.height()*dpr);
 #if QDJVUWIDGET_PIXMAP_CACHE
       if (hastransient)
         paint.drawImage(d.topLeft(), img, s, Qt::ThresholdDither);
@@ -4503,10 +4523,13 @@ QDjVuPrivate::paintPage(QPainter &paint, Page *p, const QRegion &region)
       int rot;
       ddjvu_rect_t pr, rr;
       QRect r = rects[i].translated(visibleRect.topLeft());
-      QImage img(r.width(), r.height(), QImage::Format_RGB32);
+      QImage img(r.width()*dpr, r.height()*dpr, QImage::Format_RGB32);
+#if QT_VERSION >= 0x50200
+      img.setDevicePixelRatio(dpr);
+#endif
       QDjVuPage *dp = p->page;
-      qrect_to_rect(r, rr);
-      qrect_to_rect(p->rect, pr);
+      qrect_to_rect(r, rr, dpr);
+      qrect_to_rect(p->rect, pr, dpr);
 #if DDJVUAPI_VERSION < 18
       p->initialRot = ddjvu_page_get_initial_rotation(*dp);
 #endif
@@ -4527,6 +4550,8 @@ QDjVuPrivate::paintPage(QPainter &paint, Page *p, const QRegion &region)
       QRect d = dr.boundingRect();
       displayed += d;
       QRect s = d.translated(-r.topLeft());
+      if (dpr > 1) 
+        s.setRect(s.left()*dpr, s.top()*dpr, s.width()*dpr, s.height()*dpr);
       paint.drawImage(d.topLeft(), img, s, Qt::ThresholdDither);
     }
   return true;
@@ -5598,8 +5623,13 @@ void
 QDjVuLens::moveEvent(QMoveEvent *event)
 {
   refocus();
+#if QT_VERSION >= 0x50200
+  int dpr = devicePixelRatio();
+#else
+  int dpr = 1;
+#endif
   QPoint delta = event->pos() - event->oldPos();
-  QRect r = rect().adjusted(1,1,-1,-1);
+  QRect r = rect().adjusted(dpr,dpr,-dpr,-dpr);
   scroll(-mag*delta.x(), -mag*delta.y(), r);
 }
 
@@ -5633,6 +5663,11 @@ QDjVuLens::paintEvent(QPaintEvent *event)
     mode = DDJVU_RENDER_BACKGROUND;
   else if (priv->display == DISPLAY_FG)
     mode = DDJVU_RENDER_FOREGROUND;
+#if QT_VERSION >= 0x50200
+  int dpr = devicePixelRatio();
+#else
+  int dpr = 1;
+#endif
   foreach(p, priv->pageVisible)
     {
       QRect prect = mapper.mapped(p->viewRect);
@@ -5650,9 +5685,12 @@ QDjVuLens::paintEvent(QPaintEvent *event)
               ddjvu_rect_t pr, rr;
               QDjVuPage *dp = p->page;
               QRect &r = rects[i];
-              qrect_to_rect(prect, pr);
-              qrect_to_rect(r, rr);
-              QImage img(r.width(), r.height(), QImage::Format_RGB32);
+              QImage img(r.width()*dpr, r.height()*dpr, QImage::Format_RGB32);
+#if QT_VERSION >= 0x50200
+              img.setDevicePixelRatio(dpr);
+#endif
+              qrect_to_rect(prect, pr, dpr);
+              qrect_to_rect(r, rr, dpr);
               rot = p->initialRot + priv->rotation;
               ddjvu_page_set_rotation(*dp,(ddjvu_page_rotation_t)(rot & 0x3));
               if (ddjvu_page_render(*dp, mode, &pr, &rr, priv->renderFormat,
