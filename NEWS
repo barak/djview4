@@ -1,4 +1,13 @@
 
+NEW SINCE VERSION 4.10
+-------------------
+- Support for pinch gestures
+- New shortcuts on mac
+- Support for high dpi displays
+- Spanish translations
+- Bug fixes
+- Workaround for qt5.5 embed bug
+
 NEW IN VERSION 4.10
 -------------------
 - Bug fixes: layout, usability, preferences, locale selection

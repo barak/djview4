@@ -1,3 +1,9 @@
+djview4 (4.10.6-1) UNRELEASED; urgency=medium
+
+  * high dpi display support
+
+ -- Leon Bottou <leonb@users.sourceforge.org>  Mon, 29 Feb 2016 06:55:16 +0500
+
 djview4 (4.10.5-1) unstable; urgency=medium
 
   [ Leon Bottou ]
