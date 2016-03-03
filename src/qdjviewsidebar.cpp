@@ -603,9 +603,14 @@ QDjViewThumbnails::Model::makeIcon(int pageno) const
   if (doc)
     {
       // render thumbnail
-      int w = size;
-      int h = size;
-      QImage img(size, size, QImage::Format_RGB32);
+#if QT_VERSION >= 0x50200
+      int dpr = djview->devicePixelRatio();
+#else
+      int dpr = 1;
+#endif
+      int w = size * dpr;
+      int h = size * dpr;
+      QImage img(size*dpr, size*dpr, QImage::Format_RGB32);
       int status = ddjvu_thumbnail_status(*doc, pageno, 0);
       if (status == DDJVU_JOB_NOTSTARTED)
         {
@@ -614,9 +619,9 @@ QDjViewThumbnails::Model::makeIcon(int pageno) const
       else if (ddjvu_thumbnail_render(*doc, pageno, &w, &h, format, 
                                       img.bytesPerLine(), (char*)img.bits() ))
         {
-          QPixmap pixmap(size,size);
+          QPixmap pixmap(size*dpr,size*dpr);
           pixmap.fill();
-          QPoint dst((size-w)/2, (size-h)/2);
+          QPoint dst((size*dpr-w)/2, (size*dpr-h)/2);
           QRect src(0,0,w,h);
           QPainter painter;
           painter.begin(&pixmap);
@@ -625,6 +630,9 @@ QDjViewThumbnails::Model::makeIcon(int pageno) const
           painter.setPen(Qt::darkGray);
           painter.drawRect(dst.x(), dst.y(), w-1, h-1);
           painter.end();
+#if QT_VERSION >= 0x50200
+          pixmap.setDevicePixelRatio(dpr);
+#endif
           return QIcon(pixmap);
         }
     }

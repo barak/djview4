@@ -137,7 +137,12 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
   extern void qt_mac_set_native_menubar(bool);
   qt_mac_set_native_menubar(false);
 #endif
-
+  
+  // Enable highdpi pixmaps
+#if QT_VERSION >= 0x50200
+  setAttribute(Qt::AA_UseHighDpiPixmaps, true);
+#endif
+  
   // Wire session management signals
   connect(this, SIGNAL(saveStateRequest(QSessionManager&)),
           this, SLOT(saveSessionState(QSessionManager&)) );
