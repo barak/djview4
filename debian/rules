@@ -2,6 +2,8 @@
 
 export QT_SELECT = 5
 
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
 plugindir=/usr/lib/mozilla/plugins
 
 override_dh_auto_install:
