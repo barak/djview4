@@ -1,8 +1,14 @@
-djview4 (4.10.6-1) UNRELEASED; urgency=medium
+djview4 (4.10.6-1) unstable; urgency=medium
 
+  [ Leon Bottou ]
   * high dpi display support
 
- -- Leon Bottou <leonb@users.sourceforge.org>  Mon, 29 Feb 2016 06:55:16 +0500
+  [ Barak A. Pearlmutter ]
+  * new upstream version
+  * trivial debian/control updates
+  * enable hardening in debian/rules
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Mon, 13 Jun 2016 16:21:43 +0100
 
 djview4 (4.10.5-1) unstable; urgency=medium
 
