@@ -213,7 +213,7 @@ tag:
 .SH INTERFACING THE DJVIEW PLUGIN WITH JAVASCRIPT
 Recent versions of the 
 .B djview4
-plugin can be controlled from the JavaScript intepreter of 
+plugin can be controlled from the JavaScript interpreter of 
 browsers implementing the Mozilla NPRuntime API.
 To access the plugin object,
 include the attribute
