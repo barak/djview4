@@ -8,5 +8,9 @@
  */
 
 #include <CoreFoundation/CFBundle.h>
+#include <CoreFoundation/CoreFoundation.h>
+#include <ApplicationServices/ApplicationServices.h>
 
 char *ddjvuPath(CFBundleRef bundle);
+
+void ddjvuLimitSize(CGSize *size);

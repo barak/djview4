@@ -70,7 +70,8 @@ GenerateThumbnailForURL(void *thisInterface,
                 int page = 1;
                 NSString *source = (NSString *)CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
                 NSString *dest = [tmpPath stringByAppendingPathComponent:[[source lastPathComponent] stringByAppendingFormat:@"_t_p%d.tiff", page]];
-                [fmgr createDirectoryAtPath:tmpPath attributes:nil];            
+                [fmgr createDirectoryAtPath:tmpPath attributes:nil];
+		ddjvuLimitSize(&maxSize);
                 cmdRef = CFStringCreateWithFormat(NULL, NULL, 
 						  CFSTR("\"%s\" -format=tiff -page=%d -size=%dx%d \"%s\" \"%s\""), 
 						  ddjvu, page, (int)maxSize.width, (int)maxSize.height, 
