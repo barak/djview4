@@ -76,22 +76,3 @@ ddjvuPath(CFBundleRef bundle)
         ans = ddjvuPathNoCache(bundle);
     return ans;
 }
-
-
-void ddjvuLimitSize(CGSize *s)
-{
-  const CGFloat maxwidth = 612;
-  const CGFloat maxheight = 792;
-
-  if (s->width > maxwidth) {
-    s->height = s->height * maxwidth / s->width;
-    s->width = maxwidth;
-  }
-  
-  if (s->height > maxheight) {
-    s->width = s->width * maxheight / s->height;
-    s->height = maxheight;
-  }
-  
-}
-

@@ -53,8 +53,9 @@ GeneratePreviewForURL(void *thisInterface,
             int page = 0;
             int pages = 1;
             int maxpages = 5;
-            CGSize size = CGSizeMake(612,792);
-	    int width, height;
+            int width = 612;    // default 8.5x11 in points
+            int height = 792;
+            CGSize size;
             MDItemRef mditem = NULL;
             NSString *source = (NSString *)CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
             NSString *dest = nil;
@@ -71,29 +72,25 @@ GeneratePreviewForURL(void *thisInterface,
                 }
                 ref = MDItemCopyAttribute(mditem, kMDItemPageWidth);
                 if (ref) {
-                    CFNumberGetValue(ref, kCFNumberCGFloatType, &size.width);
+                    CFNumberGetValue(ref, kCFNumberIntType, &width);
                     CFRelease(ref);
                 }
                 ref = MDItemCopyAttribute(mditem, kMDItemPageHeight);
                 if (ref) {
-                    CFNumberGetValue(ref, kCFNumberCGFloatType, &size.height);
+                    CFNumberGetValue(ref, kCFNumberIntType, &height);
                     CFRelease(ref);
                 }
                 CFRelease(mditem);                
             }
-
-	    ddjvuLimitSize(&size);
-	    width = (int)size.width;
-	    height = (int)size.height;
             
             if (domain && [domain objectForKey:@"previewpages"])
                 maxpages = [[domain objectForKey:@"previewpages"] intValue];
             
             if (debug) {
-	      NSLog(@"metadata: pages=%d, width=%d, height=%d", pages, width, height);
+                NSLog(@"metadata: pages=%d, width=%d, height=%d", pages, width, height);
                 NSLog(@"maxpages=%d", maxpages);                
             }
-	    
+                        
             CGRect rect = CGRectMake(0, 0, width, height);
             CGContextRef c;
             c = QLPreviewRequestCreatePDFContext(preview, &rect, NULL, NULL);
