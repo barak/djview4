@@ -20,7 +20,7 @@
 	<key>CFBundleExecutable</key>
 	<string>djvu</string>
 	<key>CFBundleGetInfoString</key>
-	<string>1.2, Copyright 2007, 2009 Corpus Callosum Corporation</string>
+	<string>1.3, Copyright 2016 Leon Bottou</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.djvu.qlgenerator</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -28,9 +28,9 @@
 	<key>CFBundleName</key>
 	<string>djvu</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.2</string>
+	<string>1.3</string>
 	<key>CFBundleVersion</key>
-	<string>1.2</string>
+	<string>1.3</string>
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
 	<key>CFPlugInDynamicRegistration</key>
