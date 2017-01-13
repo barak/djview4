@@ -1,9 +1,43 @@
+
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreServices/CoreServices.h>
 #include <QuickLook/QuickLook.h>
+
+#import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
 
-#include "ddjvuRef.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+
+#include "libdjvu/ddjvuapi.h"
+
+
+/* handle ddjvu messages */
+
+static void
+handle(ddjvu_context_t *ctx, int wait)
+{
+  const ddjvu_message_t *msg;
+  if (!ctx)
+    return;
+  if (wait)
+    msg = ddjvu_message_wait(ctx);
+  while ((msg = ddjvu_message_peek(ctx)))
+    {
+      switch(msg->m_any.tag)
+        {
+	case DDJVU_ERROR:
+	  NSLog(@"%s", msg->m_error.message);
+	  if (msg->m_error.filename)
+	    NSLog(@"'%s:%d'",
+		  msg->m_error.filename, msg->m_error.lineno);
+	default:
+	  break;
+        }
+      ddjvu_message_pop(ctx);
+    }
+}
 
 /* -----------------------------------------------------------------------------
    Generate a preview for file
@@ -16,150 +50,176 @@ GeneratePreviewForURL(void *thisInterface,
                       QLPreviewRequestRef preview,
                       CFURLRef url,
                       CFStringRef contentTypeUTI,
-                      CFDictionaryRef options)
+                      CFDictionaryRef cfOptions)
 {
-    CFBundleRef bundle = QLPreviewRequestGetGeneratorBundle(preview);
-    char *ddjvu = ddjvuPath(bundle);
-    if (ddjvu != NULL) {
-        NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];        
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSDictionary *domain = [defaults persistentDomainForName:@"org.djvu.qlgenerator"];
-        CFUUIDRef uuid = NULL;
-        CFStringRef uuidString;
-        BOOL debug = FALSE;
-        NSString *tmpPath = nil;
-        
-        if (domain && [domain objectForKey:@"previewpages"])
-            if ([[domain objectForKey:@"previewpages"] intValue] == 0)
-                goto poppool;
-
-        if (domain && [domain objectForKey:@"debug"]) {
-            debug = [[domain objectForKey:@"debug"] boolValue];
-        }
-        
-        uuid = CFUUIDCreate(kCFAllocatorDefault);
-        if (uuid) {
-            uuidString = CFUUIDCreateString(kCFAllocatorDefault, uuid);
-            if (uuidString) {
-                tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:
-                           [NSString stringWithFormat:@"djvuql-%@", uuidString]];
-                CFRelease(uuidString);
-            }
-            CFRelease(uuid);
-        }
-        if (tmpPath) {
-            const char *cmd = NULL;
-            CFStringRef cmdRef;
-            int page = 0;
-            int pages = 1;
-            int maxpages = 5;
-            int width = 612;    // default 8.5x11 in points
-            int height = 792;
-            CGSize size;
-            MDItemRef mditem = NULL;
-            NSString *source = (NSString *)CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
-            NSString *dest = nil;
-            NSFileManager *fmgr = [NSFileManager defaultManager];
-            [fmgr createDirectoryAtPath:tmpPath attributes:nil];
-            
-            mditem = MDItemCreate(kCFAllocatorDefault, (CFStringRef)source);
-            if (mditem) {
-                CFTypeRef ref = NULL;
-                ref = MDItemCopyAttribute(mditem, kMDItemNumberOfPages);
-                if (ref) {
-                    CFNumberGetValue(ref, kCFNumberIntType, &pages);
-                    CFRelease(ref);
-                }
-                ref = MDItemCopyAttribute(mditem, kMDItemPageWidth);
-                if (ref) {
-                    CFNumberGetValue(ref, kCFNumberIntType, &width);
-                    CFRelease(ref);
-                }
-                ref = MDItemCopyAttribute(mditem, kMDItemPageHeight);
-                if (ref) {
-                    CFNumberGetValue(ref, kCFNumberIntType, &height);
-                    CFRelease(ref);
-                }
-                CFRelease(mditem);                
-            }
-            
-            if (domain && [domain objectForKey:@"previewpages"])
-                maxpages = [[domain objectForKey:@"previewpages"] intValue];
-            
-            if (debug) {
-                NSLog(@"metadata: pages=%d, width=%d, height=%d", pages, width, height);
-                NSLog(@"maxpages=%d", maxpages);                
-            }
-                        
-            CGRect rect = CGRectMake(0, 0, width, height);
-            CGContextRef c;
-            c = QLPreviewRequestCreatePDFContext(preview, &rect, NULL, NULL);
-            
-            page = 0;
-            do {
-                page++;
-                dest = [tmpPath stringByAppendingPathComponent:[[source lastPathComponent] stringByAppendingFormat:@"_t_p%04d.tiff", page]];
-                size = CGSizeMake(width, height);
-                cmdRef = CFStringCreateWithFormat(NULL, NULL, 
-						  CFSTR("\"%s\" -format=tiff -page=%d -size=%dx%d \"%s\" \"%s\""), 
-						  ddjvu, page, width, height, 
-						  [source fileSystemRepresentation], [dest fileSystemRepresentation]);
-                cmd = CFStringGetCStringPtr(cmdRef, CFStringGetSystemEncoding());
-                if (cmd != NULL) {
-                    if (debug)
-                        NSLog(@"%s", cmd);
-                    if ((system(cmd) == 0) && ([fmgr fileExistsAtPath:dest])) {
-                        NSURL *durl = [NSURL fileURLWithPath:dest];
-                        CGImageSourceRef  sourceRef;
-                        
-                        sourceRef = CGImageSourceCreateWithURL((CFURLRef)durl, NULL);
-                        if(sourceRef) {
-                            CGImageRef imageRef = NULL;
-                            imageRef = CGImageSourceCreateImageAtIndex(sourceRef, 0, NULL);
-                            if (imageRef) {
-                                CGFloat offset = height * (page-1);
-                                CGRectOffset(rect, 0.0, offset);
-                                CGPDFContextBeginPage(c, NULL);
-                                CGContextSaveGState(c);
-                                CGContextDrawImage(c, rect, imageRef);
-                                if (page == maxpages && maxpages < pages) {
-                                    CGAffineTransform m;
-                                    CFURLRef more = CFBundleCopyResourceURL(bundle, CFSTR("more_pages"), CFSTR("pdf"), NULL);
-                                    CGPDFDocumentRef doc = CGPDFDocumentCreateWithURL(more);
-                                    CGPDFPageRef pdf = CGPDFDocumentGetPage(doc, 1);
-                                    CGFloat offset = height * page;
-                                    CGRectOffset(rect, 0.0, offset);
-                                    CGContextSaveGState(c);
-                                    m = CGPDFPageGetDrawingTransform(pdf, kCGPDFMediaBox, rect, 0, true);
-                                    CGContextConcatCTM(c, m);
-                                    CGContextDrawPDFPage(c, pdf);
-                                    CGContextRestoreGState(c);
-                                    CFRelease(doc);
-                                }
-                                CGContextRestoreGState(c);
-                                CGPDFContextEndPage(c);
-                                CFRelease(imageRef);
-                            }
-                            CFRelease(sourceRef);
-                        }
-                    }
-                }
-                CFRelease(cmdRef);
-            } while (page < pages && page < maxpages);
-
-            CGPDFContextClose(c);
-            QLPreviewRequestFlushContext(preview, c);
-            CFRelease(c);
-            [fmgr removeFileAtPath:tmpPath handler:nil];
-            [source release];
-        }
-    poppool:
-        [pool release];
+  ddjvu_context_t *ctx = 0;
+  ddjvu_document_t *doc = 0;
+  ddjvu_format_t *fmt = 0;
+  ddjvu_page_t *pag = 0;
+  CGContextRef *cg = 0;
+  
+  @autoreleasepool {
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *domain = [defaults persistentDomainForName:@"org.djvu.qlgenerator"];
+    NSString *path = [(NSString *)CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle) autorelease];
+    int width, height;
+    int npages, page, maxpages = 5;
+    
+    /* Defaults */
+    if (domain && [domain objectForKey:@"previewpages"])
+      maxpages = [[domain objectForKey:@"previewpages"] intValue];
+    if (maxpages <= 0)
+      goto pop;
+    
+    /* Create context and document */
+    if (! (ctx = ddjvu_context_create([[[NSProcessInfo processInfo] processName]
+					cStringUsingEncoding:NSASCIIStringEncoding]))) {
+      NSLog(@"Cannot create djvu context for '%@'.", path);
+      goto pop;
     }
-    return noErr;
+    if (! (doc = ddjvu_document_create_by_filename(ctx, [path fileSystemRepresentation], TRUE))) {
+      NSLog(@"Cannot open djvu document '%@'.", path);
+      goto pop;
+    }
+    while (! ddjvu_document_decoding_done(doc))
+      handle(ctx, TRUE);
+    if (ddjvu_document_decoding_error(doc)) {
+      NSLog(@"Djvu document decoding error '%@'.", path);
+      goto pop;
+    }
+    
+    /* Loop on pages */
+    fmt = ddjvu_format_create(DDJVU_FORMAT_RGB24, 0, NULL);
+    ddjvu_format_set_row_order(fmt, TRUE);
+    npages = ddjvu_document_get_pagenum(doc);
+    for (page=0; page<npages && page<maxpages; page++)
+      {
+	int pw, ph, dpi, status;
+	ddjvu_rect_t rrect;
+	NSBitmapImageRep *bitmap;
+	NSDictionary *dict;
+	NSData *data;
+	CGRect cgrect;
+	CGImageRef cgimg;
+
+	/* Decode page */
+	pag = ddjvu_page_create_by_pageno(doc, page);
+	while (! ddjvu_page_decoding_done(pag))
+	  handle(ctx, TRUE);
+	if (ddjvu_page_decoding_error(pag)) {
+	  NSLog(@"Djvu page decoding error '%@' (page %d).", path, page);
+	  goto pop;
+	}
+	
+	/* Obtain page size at 100 dpi */
+	pw = ddjvu_page_get_width(pag);
+	ph = ddjvu_page_get_height(pag);
+	dpi = ddjvu_page_get_resolution(pag);
+	if (pw <= 0 || ph <= 0 || dpi <= 0) {
+	  NSLog(@"Djvu page decoding error '%@' (page %d).", path, page);
+	  goto pop;
+	}
+	rrect.x = rrect.y = 0;
+	rrect.w = pw * 300 / dpi;
+	rrect.h = ph * 300 / dpi;
+	
+	/* Render page */
+	bitmap = [NSBitmapImageRep alloc];
+	bitmap = [bitmap initWithBitmapDataPlanes:NULL
+				       pixelsWide:rrect.w
+				       pixelsHigh:rrect.h
+				    bitsPerSample:8
+				  samplesPerPixel:3
+					 hasAlpha:FALSE
+					 isPlanar:NO
+				   colorSpaceName:NSCalibratedRGBColorSpace
+				      bytesPerRow:rrect.w * 3
+				     bitsPerPixel:24 ];
+	status = ddjvu_page_render(pag, DDJVU_RENDER_COLOR,
+				   &rrect, &rrect, fmt, rrect.w * 3,
+				   [bitmap bitmapData]);
+
+	/* Draw bitmap into CG */
+	cgrect.origin.x = cgrect.origin.y = 0;
+	cgrect.size.width = rrect.w;
+	cgrect.size.height = rrect.h;
+	[bitmap setSize:cgrect.size];
+	if (! cg)
+	  cg = QLPreviewRequestCreatePDFContext(preview, &cgrect, NULL, NULL);
+	data = [NSData dataWithBytes:&cgrect length:sizeof(cgrect)];
+	dict = [NSDictionary dictionaryWithObject:data forKey:kCGPDFContextMediaBox];
+	CGPDFContextBeginPage(cg, (CFDictionaryRef)dict);
+	cgimg = [bitmap CGImage];
+	CGContextDrawImage(cg, cgrect, cgimg);
+	CGPDFContextEndPage(cg);
+	ddjvu_page_release(pag);
+	pag = 0;
+      }
+    /* Flush */
+    if (cg)
+      {
+	CGPDFContextClose(cg);
+	QLPreviewRequestFlushContext(preview, cg);	
+      }
+  }
+  /* Cleanup */
+ pop:
+  if (cg)
+    CFRelease(cg);
+  if (pag)
+    ddjvu_page_release(pag);
+  if (fmt)
+    ddjvu_format_release(fmt);
+  if (doc)
+    ddjvu_document_release(doc);
+  if (ctx)
+    ddjvu_context_release(ctx);
+  return noErr;
 }
+
 
 void CancelPreviewGeneration(void* thisInterface, QLPreviewRequestRef preview)
 {
     // implement only if supported
 }
+
+
+
+/*****  
+
+-  CGRect rect = CGRectMake(0, 0, width, height);
+-  CGContextRef c;
+-  c = QLPreviewRequestCreatePDFContext(preview, &rect, NULL, NULL);
+-  
+-                                CGPDFContextBeginPage(c, NULL);
+-                                CGContextSaveGState(c);
+-                                CGContextDrawImage(c, rect, imageRef);
+-                                if (page == maxpages && maxpages < pages) {
+-                                    CGAffineTransform m;
+-                                    CFURLRef more = CFBundleCopyResourceURL(bundle, CFSTR("more_pages"), CFSTR("pdf"), NULL);
+-                                    CGPDFDocumentRef doc = CGPDFDocumentCreateWithURL(more);
+-                                    CGPDFPageRef pdf = CGPDFDocumentGetPage(doc, 1);
+-                                    CGFloat offset = height * page;
+-                                    CGRectOffset(rect, 0.0, offset);
+-                                    CGContextSaveGState(c);
+-                                    m = CGPDFPageGetDrawingTransform(pdf, kCGPDFMediaBox, rect, 0, true);
+-                                    CGContextConcatCTM(c, m);
+-                                    CGContextDrawPDFPage(c, pdf);
+-                                    CGContextRestoreGState(c);
+-                                    CFRelease(doc);
+-                                }
+-                                CGContextRestoreGState(c);
+-                                CGPDFContextEndPage(c);
+-                                CFRelease(imageRef);
+-                            }
+-                            CFRelease(sourceRef);
+-                        }
+-                    }
+-                }
+-                CFRelease(cmdRef);
+-            } while (page < pages && page < maxpages);
+-            CGPDFContextClose(c);
+-            QLPreviewRequestFlushContext(preview, c);
+-            CFRelease(c);
+*/  
