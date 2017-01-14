@@ -157,13 +157,12 @@ GeneratePreviewForURL(void *thisInterface,
         /* More pages (from the old qlgenerator) */
         if (page+1 == maxpages && page+1 < npages) {
           CGAffineTransform m;
-          CFURLRef more = CFBundleCopyResourceURL(bundle, CFSTR("more_pages"), CFSTR("pdf"), NULL);
+          CFBundleRef bundle = QLPreviewRequestGetGeneratorBundle(preview);
+          CFURLRef more = CFBundleCopyResourceURL(bundle,CFSTR("more_pages"),CFSTR("pdf"),NULL);
           CGPDFDocumentRef doc = CGPDFDocumentCreateWithURL(more);
           CGPDFPageRef pdf = CGPDFDocumentGetPage(doc, 1);
-          CGFloat offset = height * page;
-          CGRectOffset(rect, 0.0, offset);
           CGContextSaveGState(c);
-          m = CGPDFPageGetDrawingTransform(pdf, kCGPDFMediaBox, rect, 0, true);
+          m = CGPDFPageGetDrawingTransform(pdf, kCGPDFMediaBox, cgrect, 0, true);
           CGContextConcatCTM(c, m);
           CGContextDrawPDFPage(c, pdf);
           CGContextRestoreGState(c);
