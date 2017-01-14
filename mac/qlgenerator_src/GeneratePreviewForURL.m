@@ -152,6 +152,25 @@ GeneratePreviewForURL(void *thisInterface,
 	CGPDFContextBeginPage(cg, (CFDictionaryRef)dict);
 	cgimg = [bitmap CGImage];
 	CGContextDrawImage(cg, cgrect, cgimg);
+        [bitmap release];
+#if 0
+        /* More pages (from the old qlgenerator) */
+        if (page+1 == maxpages && page+1 < npages) {
+          CGAffineTransform m;
+          CFURLRef more = CFBundleCopyResourceURL(bundle, CFSTR("more_pages"), CFSTR("pdf"), NULL);
+          CGPDFDocumentRef doc = CGPDFDocumentCreateWithURL(more);
+          CGPDFPageRef pdf = CGPDFDocumentGetPage(doc, 1);
+          CGFloat offset = height * page;
+          CGRectOffset(rect, 0.0, offset);
+          CGContextSaveGState(c);
+          m = CGPDFPageGetDrawingTransform(pdf, kCGPDFMediaBox, rect, 0, true);
+          CGContextConcatCTM(c, m);
+          CGContextDrawPDFPage(c, pdf);
+          CGContextRestoreGState(c);
+          CFRelease(doc);
+        }
+#endif
+        /* Cleanup */
 	CGPDFContextEndPage(cg);
 	ddjvu_page_release(pag);
 	pag = 0;
@@ -185,41 +204,3 @@ void CancelPreviewGeneration(void* thisInterface, QLPreviewRequestRef preview)
 }
 
 
-
-/*****  
-
--  CGRect rect = CGRectMake(0, 0, width, height);
--  CGContextRef c;
--  c = QLPreviewRequestCreatePDFContext(preview, &rect, NULL, NULL);
--  
--                                CGPDFContextBeginPage(c, NULL);
--                                CGContextSaveGState(c);
--                                CGContextDrawImage(c, rect, imageRef);
--                                if (page == maxpages && maxpages < pages) {
--                                    CGAffineTransform m;
--                                    CFURLRef more = CFBundleCopyResourceURL(bundle, CFSTR("more_pages"), CFSTR("pdf"), NULL);
--                                    CGPDFDocumentRef doc = CGPDFDocumentCreateWithURL(more);
--                                    CGPDFPageRef pdf = CGPDFDocumentGetPage(doc, 1);
--                                    CGFloat offset = height * page;
--                                    CGRectOffset(rect, 0.0, offset);
--                                    CGContextSaveGState(c);
--                                    m = CGPDFPageGetDrawingTransform(pdf, kCGPDFMediaBox, rect, 0, true);
--                                    CGContextConcatCTM(c, m);
--                                    CGContextDrawPDFPage(c, pdf);
--                                    CGContextRestoreGState(c);
--                                    CFRelease(doc);
--                                }
--                                CGContextRestoreGState(c);
--                                CGPDFContextEndPage(c);
--                                CFRelease(imageRef);
--                            }
--                            CFRelease(sourceRef);
--                        }
--                    }
--                }
--                CFRelease(cmdRef);
--            } while (page < pages && page < maxpages);
--            CGPDFContextClose(c);
--            QLPreviewRequestFlushContext(preview, c);
--            CFRelease(c);
-*/  
