@@ -95,92 +95,96 @@ GeneratePreviewForURL(void *thisInterface,
     npages = ddjvu_document_get_pagenum(doc);
     for (page=0; page<npages && page<maxpages; page++)
       {
-	int pw, ph, dpi, status;
-	ddjvu_rect_t rrect;
-	NSBitmapImageRep *bitmap;
-	NSDictionary *dict;
-	NSData *data;
-	CGRect cgrect;
-	CGImageRef cgimg;
+        int pw, ph, dpi;
+        ddjvu_rect_t rrect;
+        NSBitmapImageRep *bitmap;
+        NSDictionary *dict;
+        NSData *data;
+        CGRect cgrect;
+        CGImageRef cgimg;
 
-	/* Decode page */
-	pag = ddjvu_page_create_by_pageno(doc, page);
-	while (! ddjvu_page_decoding_done(pag))
-	  handle(ctx, TRUE);
-	if (ddjvu_page_decoding_error(pag)) {
-	  NSLog(@"Djvu page decoding error '%@' (page %d).", path, page);
-	  goto pop;
-	}
-	
-	/* Obtain page size at 100 dpi */
-	pw = ddjvu_page_get_width(pag);
-	ph = ddjvu_page_get_height(pag);
-	dpi = ddjvu_page_get_resolution(pag);
-	if (pw <= 0 || ph <= 0 || dpi <= 0) {
-	  NSLog(@"Djvu page decoding error '%@' (page %d).", path, page);
-	  goto pop;
-	}
-	rrect.x = rrect.y = 0;
-	rrect.w = pw * 300 / dpi;
-	rrect.h = ph * 300 / dpi;
-	
-	/* Render page */
-	bitmap = [NSBitmapImageRep alloc];
-	bitmap = [bitmap initWithBitmapDataPlanes:NULL
-				       pixelsWide:rrect.w
-				       pixelsHigh:rrect.h
-				    bitsPerSample:8
-				  samplesPerPixel:3
-					 hasAlpha:FALSE
-					 isPlanar:NO
-				   colorSpaceName:NSCalibratedRGBColorSpace
-				      bytesPerRow:rrect.w * 3
-				     bitsPerPixel:24 ];
-	status = ddjvu_page_render(pag, DDJVU_RENDER_COLOR,
-				   &rrect, &rrect, fmt, rrect.w * 3,
-				   [bitmap bitmapData]);
+        @autoreleasepool {
+          
+          /* Decode page */
+          pag = ddjvu_page_create_by_pageno(doc, page);
+          while (! ddjvu_page_decoding_done(pag))
+            handle(ctx, TRUE);
+          if (ddjvu_page_decoding_error(pag)) {
+            NSLog(@"Djvu page decoding error '%@' (page %d).", path, page);
+            goto pop;
+          }
+          
+          /* Obtain page size at 100 dpi */
+          pw = ddjvu_page_get_width(pag);
+          ph = ddjvu_page_get_height(pag);
+          dpi = ddjvu_page_get_resolution(pag);
+          if (pw <= 0 || ph <= 0 || dpi <= 0) {
+            NSLog(@"Djvu page decoding error '%@' (page %d).", path, page);
+            goto pop;
+          }
+          rrect.x = rrect.y = 0;
+          rrect.w = pw * 300 / dpi;
+          rrect.h = ph * 300 / dpi;
+          
+          /* Render page */
+          bitmap = [[NSBitmapImageRep alloc] autorelease];
+          bitmap = [bitmap initWithBitmapDataPlanes:NULL
+                                         pixelsWide:rrect.w
+                                         pixelsHigh:rrect.h
+                                      bitsPerSample:8
+                                    samplesPerPixel:3
+                                           hasAlpha:FALSE
+                                           isPlanar:NO
+                                     colorSpaceName:NSCalibratedRGBColorSpace
+                                        bytesPerRow:rrect.w * 3
+                                       bitsPerPixel:24 ];
+          if (! ddjvu_page_render(pag, DDJVU_RENDER_COLOR, &rrect, &rrect,
+                                  fmt, rrect.w * 3, [bitmap bitmapData]) ) {
+            NSLog(@"Djvu page rendering error '%@' (page %d).", path, page);
+            goto pop;
+          }
 
-	/* Draw bitmap into CG */
-	cgrect.origin.x = cgrect.origin.y = 0;
-	cgrect.size.width = rrect.w;
-	cgrect.size.height = rrect.h;
-	[bitmap setSize:cgrect.size];
-	if (! cg)
-	  cg = QLPreviewRequestCreatePDFContext(preview, &cgrect, NULL, NULL);
-	data = [NSData dataWithBytes:&cgrect length:sizeof(cgrect)];
-	dict = [NSDictionary dictionaryWithObject:data forKey:kCGPDFContextMediaBox];
-	CGPDFContextBeginPage(cg, (CFDictionaryRef)dict);
-	cgimg = [bitmap CGImage];
-	CGContextDrawImage(cg, cgrect, cgimg);
-        [bitmap release];
-#if 0
-        /* More pages (from the old qlgenerator) */
-        if (page+1 == maxpages && page+1 < npages) {
-          CGAffineTransform m;
-          CFBundleRef bundle = QLPreviewRequestGetGeneratorBundle(preview);
-          CFURLRef more = CFBundleCopyResourceURL(bundle,CFSTR("more_pages"),CFSTR("pdf"),NULL);
-          CGPDFDocumentRef doc = CGPDFDocumentCreateWithURL(more);
-          CGPDFPageRef pdf = CGPDFDocumentGetPage(doc, 1);
-          CGContextSaveGState(c);
-          m = CGPDFPageGetDrawingTransform(pdf, kCGPDFMediaBox, cgrect, 0, true);
-          CGContextConcatCTM(c, m);
-          CGContextDrawPDFPage(c, pdf);
-          CGContextRestoreGState(c);
-          CFRelease(doc);
-        }
-#endif
-        /* Cleanup */
-	CGPDFContextEndPage(cg);
-	ddjvu_page_release(pag);
-	pag = 0;
+          /* Draw bitmap into CG */
+          cgrect.origin.x = cgrect.origin.y = 0;
+          cgrect.size.width = rrect.w;
+          cgrect.size.height = rrect.h;
+          [bitmap setSize:cgrect.size];
+          if (! cg)
+            cg = QLPreviewRequestCreatePDFContext(preview, &cgrect, NULL, NULL);
+          data = [NSData dataWithBytes:&cgrect length:sizeof(cgrect)];
+          dict = [NSDictionary dictionaryWithObject:data forKey:kCGPDFContextMediaBox];
+          CGPDFContextBeginPage(cg, (CFDictionaryRef)dict);
+          cgimg = [bitmap CGImage];
+          CGContextDrawImage(cg, cgrect, cgimg);
+
+          /* Show when there are more pages (old qlgenerator) */
+          if (page+1 == maxpages && page+1 < npages) {
+            CGAffineTransform m;
+            CFBundleRef bundle = QLPreviewRequestGetGeneratorBundle(preview);
+            CFURLRef more = CFBundleCopyResourceURL(bundle,CFSTR("more_pages"),CFSTR("pdf"),NULL);
+            CGPDFDocumentRef doc = CGPDFDocumentCreateWithURL(more);
+            CGPDFPageRef pdf = CGPDFDocumentGetPage(doc, 1);
+            CGContextSaveGState(c);
+            m = CGPDFPageGetDrawingTransform(pdf, kCGPDFMediaBox, cgrect, 0, true);
+            CGContextConcatCTM(c, m);
+            CGContextDrawPDFPage(c, pdf);
+            CGContextRestoreGState(c);
+            CFRelease(doc);
+          }
+
+          /* Cleanup */
+          CGPDFContextEndPage(cg);
+          ddjvu_page_release(pag);
+          pag = 0;
+        }  /* @autoreleasepool */
       }
-    /* Flush */
+    /* Flush pdf context */
     if (cg)
       {
-	CGPDFContextClose(cg);
+        CGPDFContextClose(cg);
 	QLPreviewRequestFlushContext(preview, cg);	
       }
-  }
+  } /* @autoreleasepool */
   /* Cleanup */
  pop:
   if (cg)
