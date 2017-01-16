@@ -123,27 +123,27 @@ GeneratePreviewForURL(void *thisInterface,
             goto pop;
           }
           rrect.x = rrect.y = 0;
-          rrect.w = pw * 300 / dpi;
-          rrect.h = ph * 300 / dpi;
+          rrect.w = pw * 150 / dpi;
+          rrect.h = ph * 150 / dpi;
           
           /* Render page */
-          bitmap = [[NSBitmapImageRep alloc] autorelease];
-          bitmap = [bitmap initWithBitmapDataPlanes:NULL
-                                         pixelsWide:rrect.w
-                                         pixelsHigh:rrect.h
-                                      bitsPerSample:8
-                                    samplesPerPixel:3
-                                           hasAlpha:FALSE
-                                           isPlanar:NO
-                                     colorSpaceName:NSCalibratedRGBColorSpace
-                                        bytesPerRow:rrect.w * 3
-                                       bitsPerPixel:24 ];
-          if (! ddjvu_page_render(pag, DDJVU_RENDER_COLOR, &rrect, &rrect,
+	  bitmap = [[NSBitmapImageRep alloc] autorelease];
+	  bitmap = [bitmap initWithBitmapDataPlanes:NULL
+					 pixelsWide:rrect.w
+					 pixelsHigh:rrect.h
+				      bitsPerSample:8
+				    samplesPerPixel:3
+					   hasAlpha:FALSE
+					   isPlanar:NO
+				     colorSpaceName:NSCalibratedRGBColorSpace
+					bytesPerRow:rrect.w * 3
+				       bitsPerPixel:24 ];
+	if (! ddjvu_page_render(pag, DDJVU_RENDER_COLOR, &rrect, &rrect,
                                   fmt, rrect.w * 3, [bitmap bitmapData]) ) {
             NSLog(@"Djvu page rendering error '%@' (page %d).", path, page);
             goto pop;
           }
-
+	  
           /* Draw bitmap into CG */
           cgrect.origin.x = cgrect.origin.y = 0;
           cgrect.size.width = rrect.w;
@@ -164,11 +164,11 @@ GeneratePreviewForURL(void *thisInterface,
             CFURLRef more = CFBundleCopyResourceURL(bundle,CFSTR("more_pages"),CFSTR("pdf"),NULL);
             CGPDFDocumentRef doc = CGPDFDocumentCreateWithURL(more);
             CGPDFPageRef pdf = CGPDFDocumentGetPage(doc, 1);
-            CGContextSaveGState(c);
+            CGContextSaveGState(cg);
             m = CGPDFPageGetDrawingTransform(pdf, kCGPDFMediaBox, cgrect, 0, true);
-            CGContextConcatCTM(c, m);
-            CGContextDrawPDFPage(c, pdf);
-            CGContextRestoreGState(c);
+            CGContextConcatCTM(cg, m);
+            CGContextDrawPDFPage(cg, pdf);
+            CGContextRestoreGState(cg);
             CFRelease(doc);
           }
 
