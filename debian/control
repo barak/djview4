@@ -14,7 +14,7 @@ Build-Depends: debhelper (>= 10),
 Vcs-Git: https://anonscm.debian.org/collab-maint/djview4.git
 Vcs-Browser: https://anonscm.debian.org/gitweb/?p=collab-maint/djview4.git
 Homepage: http://djvu.sourceforge.net/
-Standards-Version: 3.9.8
+Standards-Version: 4.1.0
 
 Package: djview4
 Architecture: any
