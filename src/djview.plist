@@ -51,7 +51,9 @@
         <true/>
 	<key>LSItemContentTypes</key>
 	<array>
+	  <string>org.djvuzone.djvulibre.djvu</string>
 	  <string>com.lizardtech.djvu</string>
+	  <string>public.djvu</string>
 	</array>
       </dict>
     </array>
