@@ -2334,7 +2334,7 @@ Voulez-vous le remplacer?</translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="324"/>
-        <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailled information in the &lt;tt&gt;File&lt;/tt&gt; tab. Double click a component file to show the corresponding page in the main window. &lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailed information in the &lt;tt&gt;File&lt;/tt&gt; tab. Double click a component file to show the corresponding page in the main window. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Information sur le document&lt;/b&gt;&lt;br&gt;Ce panneau montre les informations sur le document et les fichiers qui le composent. Sélectionnez un nom de fichier pour afficher ses informations sous l&apos;index &lt;tt&gt;Fichier&lt;/tt&gt;. Double-cliquez un nom de fichier pour montrer la page correspondante &lt;/html&gt;</translation>
     </message>
     <message>
