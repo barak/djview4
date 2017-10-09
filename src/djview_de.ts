@@ -2251,7 +2251,7 @@ Soll die Datei überschrieben werden?</translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="324"/>
-        <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailled information in the &lt;tt&gt;File&lt;/tt&gt; tab. Double click a component file to show the corresponding page in the main window. &lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailed information in the &lt;tt&gt;File&lt;/tt&gt; tab. Double click a component file to show the corresponding page in the main window. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Dokument Informationen&lt;/b&gt;&lt;br&gt;Diese Seite zeigt Informationen über das Dokument und seine abhängigen Dateien. Die Detailinformationen zu der jeweils ausgewählten Datei findet man im &lt;tt&gt;Datei&lt;/tt&gt; tab. Durch einen Doppelklick wird die jeweilige Seite im Hauptfenster dargestellt. &lt;/html&gt;</translation>
     </message>
     <message>
