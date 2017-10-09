@@ -76,7 +76,7 @@ GenerateThumbnailForURL(void *thisInterface,
       NSLog(@"Cannot create djvu context for '%@'.", path);
       goto pop;
     }
-    if (! (doc = ddjvu_document_create_by_filename(ctx, [path fileSystemRepresentation], TRUE))) {
+    if (! (doc = ddjvu_document_create_by_filename_utf8(ctx, [path fileSystemRepresentation], TRUE))) {
       NSLog(@"Cannot open djvu document '%@'.", path);
       goto pop;
     }
