@@ -1,0 +1,10 @@
+/*.debhelper
+/*.log
+/*.substvars
+/autoreconf.after
+/autoreconf.before
+/djview-plugin/
+/djview4/
+/djvulibre-plugin/
+/files
+/tmp/

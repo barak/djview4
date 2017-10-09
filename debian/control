@@ -1,0 +1,50 @@
+Source: djview4
+Section: graphics
+Priority: optional
+Maintainer: Barak A. Pearlmutter <bap@debian.org>
+Uploaders: Leon Bottou <leonb@bottou.org>
+Build-Depends: debhelper (>= 10),
+    pkg-config, gawk | awk,
+    libdjvulibre-dev (>= 3.5.20),
+    x11proto-core-dev, libx11-dev, libxext-dev, 
+    libxt-dev, libglib2.0-dev,
+    qtbase5-dev, qt5-qmake, libqt5opengl5-dev, qttools5-dev-tools,
+    libtiff-dev,
+    netpbm, librsvg2-bin, imagemagick
+Vcs-Git: https://anonscm.debian.org/collab-maint/djview4.git
+Vcs-Browser: https://anonscm.debian.org/gitweb/?p=collab-maint/djview4.git
+Homepage: http://djvu.sourceforge.net/
+Standards-Version: 4.1.0
+
+Package: djview4
+Architecture: any
+Provides: djvu-viewer
+Conflicts: djview (<= 3.5.20-5)
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: djvulibre-desktop
+Suggests: djvulibre-bin, djview-plugin
+Description: Viewer for the DjVu image format
+ DjVu viewer djview.
+
+Package: djview-plugin
+Section: web
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, djview4 | djview3
+Provides: djvulibre-plugin
+Enhances: chromium-browser,
+	  mozilla-browser, mozilla, firefox, iceweasel, iceape-browser,
+	  konqueror, rekonq, galeon
+Recommends: chromium-browser
+	    | mozilla-browser | mozilla | firefox | iceweasel | iceape-browser
+	    | konqueror | galeon
+Suggests: mime-support
+Conflicts: djvulibre-bin (<< 3.5.19), djvulibre-plugin (<= 3.5.23-4)
+Description: Browser plugin for the DjVu image format
+ DjVu browser plugin.
+
+Package: djvulibre-plugin
+Section: web
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, djview-plugin
+Description: Transition package, djvulibre-plugin to djview-plugin
+ Dummy dependency package to transition from djvulibre-plugin to djview-plugin.

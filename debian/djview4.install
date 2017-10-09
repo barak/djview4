@@ -1,0 +1,6 @@
+usr/bin/djview4
+usr/share/man/*/djview4.*
+usr/share/djvu
+usr/share/icons
+usr/share/applications
+debian/djvulibre-djview4.xpm usr/share/icons/hicolor/32x32/apps/

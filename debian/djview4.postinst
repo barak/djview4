@@ -1,0 +1,15 @@
+#! /bin/sh
+
+set -e
+
+case "$1" in
+    configure)
+	update-alternatives --quiet \
+	    --install /usr/bin/djview djview /usr/bin/djview4 40 \
+	    --slave \
+	    /usr/share/man/man1/djview.1.gz djview.1.gz \
+	    /usr/share/man/man1/djview4.1.gz
+	;;
+esac
+
+#DEBHELPER#

@@ -1,0 +1,3 @@
+image/vnd.djvu; /usr/bin/djview4 '%s'; test=test -n "$DISPLAY"; description=DjVu file; nametemplate='%s.djvu'; priority=6
+image/x.djvu; /usr/bin/djview4 '%s'; test=test -n "$DISPLAY"; description=DjVu file; nametemplate='%s.djvu'; priority=6
+image/x-djvu; /usr/bin/djview4 '%s'; test=test -n "$DISPLAY"; description=DjVu file; nametemplate='%s.djvu'; priority=6
