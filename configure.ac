@@ -164,6 +164,7 @@ AC_CHECK_HEADERS(unistd.h string.h strings.h getopt.h)
 # ----------------------------------------
 
 AC_FUNC_FORK
+AC_FUNC_FSEEKO
 AC_CHECK_FUNCS(sigaction strerror waitpid wait3)
 
 
