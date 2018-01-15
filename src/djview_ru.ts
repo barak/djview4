@@ -2251,7 +2251,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="324"/>
-        <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailled information in the &lt;tt&gt;File&lt;/tt&gt; tab. Double click a component file to show the corresponding page in the main window. &lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailed information in the &lt;tt&gt;File&lt;/tt&gt; tab. Double click a component file to show the corresponding page in the main window. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Информация о документе&lt;/b&gt;&lt;br&gt;Эта панель показывает информацию о документе и его файлах-компонентах. Выберите файл для просмотра подробной информации во вкладке &lt;tt&gt;Файл&lt;/tt&gt;. Вы можете перейти к странице двойным щелчком по соответствующей строке. &lt;/html&gt;</translation>
     </message>
     <message>

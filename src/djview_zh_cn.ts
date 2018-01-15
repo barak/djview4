@@ -2245,7 +2245,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="324"/>
-        <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailled information in the &lt;tt&gt;File&lt;/tt&gt; tab. Double click a component file to show the corresponding page in the main window. &lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailed information in the &lt;tt&gt;File&lt;/tt&gt; tab. Double click a component file to show the corresponding page in the main window. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;文档信息&lt;/b&gt;&lt;br&gt;此面板显示文档及其组成文件的信息。 选中组成文件可显示其详细信息于 &lt;tt&gt;文件&lt;/tt&gt; 页中。 双击组成文件可在主窗口中显示其页面。 &lt;/html&gt;</translation>
     </message>
     <message>

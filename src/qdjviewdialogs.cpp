@@ -324,7 +324,7 @@ QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
   wd->setWhatsThis(tr("<html><b>Document information</b><br>"
                       "This panel shows information about the document and "
                       "its component files. Select a component file "
-                      "to display detailled information in the <tt>File</tt> "
+                      "to display detailed information in the <tt>File</tt> "
                       "tab. Double click a component file to show "
                       "the corresponding page in the main window. "
                       "</html>"));

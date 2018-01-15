@@ -2239,7 +2239,7 @@ Chcete jej nahradit?</translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="324"/>
-        <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailled information in the &lt;tt&gt;File&lt;/tt&gt; tab. Double click a component file to show the corresponding page in the main window. &lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;b&gt;Document information&lt;/b&gt;&lt;br&gt;This panel shows information about the document and its component files. Select a component file to display detailed information in the &lt;tt&gt;File&lt;/tt&gt; tab. Double click a component file to show the corresponding page in the main window. &lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Informace o dokumentu&lt;/b&gt;&lt;br/&gt;Tento panel zobrazuje informace o dokumentu a jeho souborech, z kterých se skládá. Na záložce &lt;tt&gt;Soubor&lt;/tt&gt; uvidíte informace o souboru vybraném v seznamu podílových souborů. Dvojklikem na podílový soubor zobrazíte odpovídající stránku v hlavním okně.&lt;/html&gt;</translation>
     </message>
     <message>
