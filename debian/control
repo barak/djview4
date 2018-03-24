@@ -6,7 +6,7 @@ Uploaders: Leon Bottou <leonb@bottou.org>
 Build-Depends: debhelper (>= 11),
     pkg-config, gawk | awk,
     libdjvulibre-dev (>= 3.5.20),
-    x11proto-core-dev, libx11-dev, libxext-dev, 
+    x11proto-core-dev, libx11-dev, libxext-dev,
     libxt-dev, libglib2.0-dev,
     qtbase5-dev, qt5-qmake, libqt5opengl5-dev, qttools5-dev-tools,
     libtiff-dev,

@@ -227,7 +227,7 @@ djview4 (4.5-4) unstable; urgency=low
 
   * Build dependency on libwmf-bin for wmf2eps (closes: #556813)
     or libmagickcore2-extra to allow convert to do the job
-  
+
  -- Barak A. Pearlmutter <bap@debian.org>  Mon, 30 Nov 2009 21:09:05 +0000
 
 djview4 (4.5-3) unstable; urgency=low
@@ -249,7 +249,7 @@ djview4 (4.5-1) unstable; urgency=low
   * Upstream release 4.5
   * Man page typos (closes: #526091) thanks to "A. Costa" <agcosta@gis.net>
   * Ack upstream fix, open dialog allows un-narrowed list (closes: #504281)
-  
+
  -- Barak A. Pearlmutter <bap@debian.org>  Wed, 29 Apr 2009 09:36:07 +0100
 
 djview4 (4.4-1) unstable; urgency=low
@@ -293,7 +293,7 @@ djview4 (4.3-3) unstable; urgency=low
 
   * Conflict with old djview containing /usr/bin/djview (closes: #473341)
   * Raise version number of qt4 needed for build (closes: #475021)
-  
+
  -- Barak A. Pearlmutter <bap@debian.org>  Mon, 07 Apr 2008 23:53:08 -0700
 
 djview4 (4.3-2) unstable; urgency=low
