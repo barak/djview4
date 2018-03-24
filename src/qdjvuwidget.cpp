@@ -692,7 +692,7 @@ struct MapArea
   bool contains(const QPoint &p);
   void maybeRotate(struct Page *p);
   QPainterPath contour(QRectMapper &m, QPoint &offset);
-  void update(QWidget *w, QRectMapper &m, QPoint offset, bool clicked=false);
+  void update(QWidget *w, QRectMapper &m, QPoint offset, bool permanent=false);
   void paintBorder(QPaintDevice *w, QRectMapper &m, QPoint offset, bool allLinks=false);
   void paintPermanent(QPaintDevice *w, QRectMapper &m, QPoint o, double z=100);
   void paintTransient(QPaintDevice *w, QRectMapper &m, QPoint o, bool allLinks=false);
@@ -3404,10 +3404,12 @@ bool
 MapArea::hasTransient(bool allLinks)
 {
   Keywords &k = *keywords();
-  if (areaType == miniexp_nil || borderAlwaysVisible)
+  if (areaType == miniexp_nil)
     return false;
   if (allLinks && miniexp_stringp(url))
     return true;
+  if (borderAlwaysVisible)
+    return false;
   if (borderType == k.none || borderType == miniexp_nil)
     return false;
   return true;
@@ -3482,16 +3484,28 @@ MapArea::contains(const QPoint &p)
 }
 
 void 
-MapArea::update(QWidget *w, QRectMapper &m, QPoint offset, bool clicked)
+MapArea::update(QWidget *w, QRectMapper &m, QPoint offset, bool permanent)
 {
   // The mapper <m> maps page coordinates to 
   // widget coordinates translated by <offset>.
   Keywords &k = *keywords();
   int bw = borderWidth;
   QRect rect = m.mapped(areaRect).translated(-offset);
-  if (! rect.intersects(w->rect())) 
-    return;
-  if (areaType == k.oval || areaType == k.poly)
+  if (! rect.intersects(w->rect()))
+    {
+      return;
+    }
+  else if (permanent && hiliteColor.isValid() && hiliteOpacity>0)
+    {
+      int bw2 = (bw / 2) + 1;
+      w->update(rect.adjusted(-bw2-1, -bw2-1, bw2+1, bw2+1));
+    }
+  else if (permanent && (areaType == k.text || areaType == k.pushpin))
+    {
+      int bw2 = (bw / 2) + 1;
+      w->update(rect.adjusted(-bw2-1, -bw2-1, bw2+1, bw2+1));
+    }
+  else if (areaType == k.oval || areaType == k.poly)
     {
       int bw2 = (bw / 2) + 1;
       QPainterPath path = contour(m, offset);
@@ -3506,11 +3520,6 @@ MapArea::update(QWidget *w, QRectMapper &m, QPoint offset, bool clicked)
       QRegion region(bm);
       region.translate(rect.topLeft());
       w->update(region);
-    }
-  else if (clicked && (areaType == k.text || areaType == k.pushpin))
-    {
-      int bw2 = (bw / 2) + 1;
-      w->update(rect.adjusted(-bw2-1, -bw2-1, bw2+1, bw2+1));
     }
   else
     {
@@ -3824,7 +3833,7 @@ QDjVuPrivate::showTransientMapAreas(bool b)
           {
             MapArea &area = p->mapAreas[i];
             area.maybeRotate(p);
-            if (area.hasTransient(allLinksDisplayed))
+            if (area.hasTransient(true))
               area.update(widget->viewport(), p->mapper, 
                           visibleRect.topLeft() );
           }
@@ -3848,7 +3857,7 @@ QDjVuWidget::clearHighlights(int pageno)
           {
             MapArea &area = p->mapAreas[j];
             if (priv->pageMap.contains(pageno) && p->dpi>0)
-              area.update(viewport(), p->mapper, priv->visibleRect.topLeft());
+              area.update(viewport(), p->mapper, priv->visibleRect.topLeft(), true);
             priv->pixelCache.clear();
             p->mapAreas.removeAt(j);
           }
@@ -3882,7 +3891,7 @@ QDjVuWidget::addHighlight(int pageno, int x, int y, int w, int h,
       p->mapAreas << area;
       priv->pixelCache.clear();
       if (priv->pageMap.contains(pageno) && p->dpi>0)
-        area.update(viewport(), p->mapper, priv->visibleRect.topLeft());
+        area.update(viewport(), p->mapper, priv->visibleRect.topLeft(), true);
     }
 }
 
