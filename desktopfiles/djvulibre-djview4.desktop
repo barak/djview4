@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Categories=Qt;Graphics;Viewer;
-MimeType=image/x-djvu;image/x.djvu;image/vnd.djvu;
+MimeType=image/x-djvu;image/x.djvu;image/vnd.djvu;image/vnd.djvu+multipage;image/vnd.djvu+singlepage
 Name=DjView4
 Exec=djview4 %f
 Terminal=false
