@@ -3298,7 +3298,7 @@ MapArea::parse(miniexp_t full, int pageno)
             error("Only for rectangle maparea", pageno, q);
           else if (! miniexp_get_int(a, itmp))
             return error("Integer expected", pageno, q);
-          hiliteOpacity = qBound(0, itmp, 100);
+          hiliteOpacity = qBound(0, itmp, 200);
         }
       // line stuff
       else if (s == k.arrow)
@@ -3329,7 +3329,7 @@ MapArea::parse(miniexp_t full, int pageno)
             error("Only for text maparea", pageno, q);
           if (! miniexp_get_color(a, hiliteColor))
             return error("Color expected", pageno, q);
-          hiliteOpacity = 100;
+          hiliteOpacity = 200;
         }
       else if (s == k.textclr)
         {
@@ -3628,7 +3628,7 @@ MapArea::paintPermanent(QPaintDevice *w, QRectMapper &m,
       if (hiliteColor.isValid() && hiliteOpacity>0)
         {
           QColor color = hiliteColor;
-          color.setAlpha(hiliteOpacity*hiliteOpacity*255/10000);
+          color.setAlpha(hiliteOpacity*255/200);
           paint.fillRect(rect, color);
         }
       if (areaType == k.line)
@@ -3884,7 +3884,7 @@ QDjVuWidget::addHighlight(int pageno, int x, int y, int w, int h,
       area.areaRect = QRect(x,y,w,h);
       area.hiliteColor = color;
       area.hiliteColor.setAlpha(255);
-      area.hiliteOpacity = (int)floor(sqrt(color.alpha()/255.0)*100);
+      area.hiliteOpacity = color.alpha() * 200 / 255;
       area.borderType = miniexp_nil;
       area.rectNeedsRotation = rc;
       area.maybeRotate(p);
