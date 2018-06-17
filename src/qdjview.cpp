@@ -2710,13 +2710,78 @@ QDjView::open(QString filename)
 }
 
 
-/*! Open the djvu document available at url \a url.
-  Only the \a http: and \a file: protocols are supported. */
+/* Helper class to open remote documents */
+
+class QDjView::NetOpen : public QObject
+{
+  Q_OBJECT
+private:
+  QDjView *q;
+  QDjVuNetDocument *doc;
+  QUrl url;
+  bool inNewWindow;
+  bool maybeInBrowser;
+  bool startedBrowser;
+public:
+  ~NetOpen() {
+    if (doc) {
+      doc->deref();
+      if (! startedBrowser) {
+        q->addToErrorDialog(tr("Cannot open URL '%1'.").arg(url.toString()));
+        q->raiseErrorDialog(QMessageBox::Critical, tr("Opening DjVu document"));
+      }
+    }
+  }
+  NetOpen(QDjView *q, QDjVuNetDocument *d, QUrl u, bool n, bool b)
+    : QObject(q),
+      q(q), doc(d), url(u),
+      inNewWindow(n), maybeInBrowser(b),
+      startedBrowser(false) {
+    doc->ref();
+    connect(doc, SIGNAL(docinfo()),
+            this, SLOT(docinfo()) );
+    connect(doc, SIGNAL(gotContentType(QString,bool&)),
+            this, SLOT(gotContentType(QString,bool&)) );
+  }
+public slots:
+  void docinfo() {
+    int status = ddjvu_document_decoding_status(*doc);
+    if (status == DDJVU_JOB_OK) {
+      disconnect(doc,0,this,0);
+      if (inNewWindow) {
+        QDjView *other = q->copyWindow();
+        other->open(url);
+        other->show();
+      } else {
+        q->open(doc,url);
+      }
+      doc = 0;
+    }
+    if (status >= DDJVU_JOB_OK)
+      deleteLater();
+  }
+  void gotContentType(QString type, bool &okay) {
+    QRegExp re("image/(x[.]|vnd[.-]|)(djvu|dejavu|iw44)(;.*)?");
+    okay = re.exactMatch(type);
+    if (maybeInBrowser && !okay) {
+      startedBrowser = q->startBrowser(url);
+      if (startedBrowser) {
+        disconnect(doc,0,this,0);
+        deleteLater();
+      } else {
+        QString msg = tr("Cannot spawn a browser for url '%1'").arg(url.toString());
+        qWarning("%s",(const char*)msg.toLocal8Bit());
+      }
+    }
+  }
+};
+
+
+/*! Open the djvu document available at url \a url. */
 
 bool
-QDjView::open(QUrl url)
+QDjView::open(QUrl url, bool inNewWindow, bool maybeInBrowser)
 {
-  closeDocument();
   QDjVuNetDocument *doc = new QDjVuNetDocument(true);
   connect(doc, SIGNAL(error(QString,QString,int)),
           errorDialog, SLOT(error(QString,QString,int)));
@@ -2726,14 +2791,14 @@ QDjView::open(QUrl url)
           this, SLOT(sslWhiteList(QString,bool&)) );
   QUrl docurl = removeDjVuCgiArguments(url);
   doc->setUrl(&djvuContext, docurl);
-  if (!doc->isValid())
+  if (! (url.isValid() && doc->isValid()))
     {
       delete doc;
       addToErrorDialog(tr("Cannot open URL '%1'.").arg(url.toString()));
       raiseErrorDialog(QMessageBox::Critical, tr("Opening DjVu document"));
       return false;
     }
-  open(doc, url);
+  new NetOpen(this, doc, url, inNewWindow, maybeInBrowser);
   return true;
 }
 
@@ -4151,27 +4216,8 @@ QDjView::goToLink(QString link, QString target, int fromPage)
       emit pluginGetUrl(url, target);
       return;
     }
-  // Standalone can open djvu documents
-  QFileInfo file = url.toLocalFile();
-  QString suffix = file.suffix().toLower();
-  if (file.exists() && (suffix=="djvu" || suffix=="djv"))
-    {
-      if (inPlace)
-        open(url);
-      else
-        {
-          QDjView *other = copyWindow();
-          other->open(url);
-          other->show();
-        }
-      return;
-    }
-  // Open a browser
-  if (! startBrowser(url))
-    {
-      QString msg = tr("Cannot spawn a browser for url '%1'").arg(link);
-      qWarning("%s",(const char*)msg.toLocal8Bit());
-    }
+  // Standalone only: call open(QUrl,...) with adequate flags
+  open(url, !inPlace, true);
 }
 
 
@@ -4956,6 +5002,11 @@ QDjView::performCopyAnnotation()
     }
 }
 
+
+// ----------------------------------------
+// MOC
+
+#include "qdjview.moc"
 
 
 /* -------------------------------------------------------------

@@ -42,6 +42,7 @@ protected:
 signals:
   void authRequired(QString why, QString &user, QString &pass);
   void sslWhiteList(QString why, bool &okay);
+  void gotContentType(QString type, bool &okay);
 private:
   class Private;
   Private *p;
