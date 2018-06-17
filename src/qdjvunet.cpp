@@ -133,7 +133,8 @@ QDjVuNetDocument::Private::doHeaders(QNetworkReply *reply, int streamid)
         }
       // broadcast content type
       bool okay = !type.startsWith("text/");
-      emit q->gotContentType(type, okay);
+      if (! type.isEmpty())
+        emit q->gotContentType(type, okay);
       if (! okay) 
         {
           reqid[reply] = -1;
