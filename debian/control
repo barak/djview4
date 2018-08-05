@@ -20,7 +20,7 @@ Package: djview4
 Architecture: any
 Provides: djvu-viewer
 Conflicts: djview (<= 3.5.20-5)
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, sensible-utils
 Recommends: djvulibre-desktop
 Suggests: djvulibre-bin, djview-plugin
 Description: Viewer for the DjVu image format
