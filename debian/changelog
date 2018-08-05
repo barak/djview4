@@ -1,3 +1,11 @@
+djview4 (4.10.6-6) unstable; urgency=medium
+
+  * merge upstream mods
+  * bump policy version
+  * djview4 run-time dependency on sensible-utils, for sensible-browser
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Sun, 05 Aug 2018 21:49:22 +0200
+
 djview4 (4.10.6-5) unstable; urgency=medium
 
   * swizzle packaging repo
