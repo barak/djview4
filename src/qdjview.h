@@ -131,7 +131,7 @@ class QDjView : public QMainWindow
 
 public slots:
   bool  open(QString filename);
-  bool  open(QUrl url);
+  bool  open(QUrl url, bool inNewWindow=false, bool maybeInBrowser=false);
   void  open(QDjVuDocument *document, QUrl url = QUrl());
   void  closeDocument();
   void  reloadDocument();
@@ -404,6 +404,8 @@ protected:
   QTimer *undoTimer;
   QList<UndoRedo> undoList;
   QList<UndoRedo> redoList;
+  // netopen
+  class NetOpen;
 };
 
 #endif

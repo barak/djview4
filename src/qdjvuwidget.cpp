@@ -2220,7 +2220,8 @@ QDjVuWidget::setDocument(QDjVuDocument *d)
                   priv, SLOT(info(QString)));
           connect(priv->doc, SIGNAL(idle()),
                   priv, SLOT(makePageRequests()));
-          priv->docinfo();
+          // the document may already be ready
+          QTimer::singleShot(0, priv, SLOT(docinfo()));
         }
       // update
       priv->estimatedWidth = 0;

@@ -64,8 +64,7 @@ public slots:
   void proxyAuthenticationRequired (const QNetworkProxy &proxy, QAuthenticator *auth);
 
 private:
-  void doRead(QNetworkReply *reply, int streamid);
-  void doError(QNetworkReply *reply, int streamid);
+  bool doHeaders(QNetworkReply *reply, int streamid);
   bool doAuth(QString why, QAuthenticator *auth);
 };
 
@@ -82,86 +81,75 @@ QDjVuNetDocument::Private::Private(QDjVuNetDocument *q)
 
 QDjVuNetDocument::Private::~Private()
 {
-  QMap<QNetworkReply*,int>::iterator it;
-  for(it = reqid.begin(); it != reqid.end(); ++it)
+  while (! reqid.isEmpty())
     {
+      QMap<QNetworkReply*,int>::iterator it = reqid.begin();
       QNetworkReply *reply = it.key();
       int streamid = it.value();
       if (streamid >= 0)
         ddjvu_stream_close(*q, streamid, true);
       reply->abort();
       reply->deleteLater();
+      reqid.remove(reply);
     }
   reqid.clear();
   reqok.clear();
 }
 
-void
-QDjVuNetDocument::Private::doRead(QNetworkReply *reply, int streamid)
+bool
+QDjVuNetDocument::Private::doHeaders(QNetworkReply *reply, int streamid)
 {
-  QByteArray b = reply->readAll();
-  if (streamid >= 0 && b.size() > 0)
+  if (streamid >= 0 && !reqok.value(reply, false))
     {
-      if (! reqok.value(reply, false))
+      int status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+      QUrl location = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
+      QByteArray type = reply->header(QNetworkRequest::ContentTypeHeader).toByteArray();
+      // check redirection
+      if (location.isValid())
         {
-          int status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-          QUrl location = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
-          QByteArray type = reply->header(QNetworkRequest::ContentTypeHeader).toByteArray();
-          // check redirection
-          if (location.isValid())
-            {
-              reqid[reply] = -1;
-              QUrl nurl = reply->url().resolved(location);
-              if (streamid > 0 || status == 307)
-                { 
-                  q->newstream(streamid, QString(), nurl);
-                  return;
-                }
-              // Permanent redirect on main stream changes the base url.
-              ddjvu_stream_close(*q, streamid, false);
-              q->setUrl(ctx, nurl, cache);
-              if (q->isValid())
-                return;
-            }
-          // check status code
-          if (status != 200 && status != 203 && status != 0)
-            {
-              QString msg = tr("Received http status %1 while retrieving %2.",
-                               "%1 is an http status code")
-                .arg(status)
-                .arg(reply->url().toString());
-              emit q->error(msg, __FILE__, __LINE__);
-              return;
-            }
-          // check content type
-          if (type.startsWith("text/"))
-            {
-              QString msg = tr("Received <%1> data while retrieving %2.", 
-                               "%1 is a mime type")
-                .arg(QString::fromLatin1(type))
-                .arg(reply->url().toString());
-              emit q->error(msg, __FILE__, __LINE__);
-            }
-          reqok[reply] = true;
+          reqid[reply] = -1;
+          QUrl nurl = reply->url().resolved(location);
+          if (streamid > 0 || status == 307) {
+            q->newstream(streamid, QString(), nurl);
+          } else {
+            // Permanent redirect on main stream changes the base url.
+            ddjvu_document_set_user_data(*q, 0);
+            ddjvu_stream_close(*q, streamid, true);
+            q->setUrl(ctx, nurl, cache);
+          }
+          return false;
         }
-      // process data
-      ddjvu_stream_write(*q, streamid, b.data(), b.size());
+      // check status code
+      if (status != 200 && status != 203 && status != 0)
+        {
+          reqid[reply] = -1;
+          ddjvu_stream_close(*q, streamid, false);
+          QString msg = tr("Received http status %1 while retrieving %2.",
+                           "%1 is an http status code")
+            .arg(status)
+            .arg(reply->url().toString());
+          emit q->error(msg, __FILE__, __LINE__);
+          return false;
+        }
+      // broadcast content type
+      bool okay = !type.startsWith("text/");
+      if (! type.isEmpty())
+        emit q->gotContentType(type, okay);
+      if (! okay) 
+        {
+          reqid[reply] = -1;
+          ddjvu_stream_close(*q, streamid, false);
+          QString msg = tr("Received <%1> data while retrieving %2.", 
+                           "%1 is a mime type")
+            .arg(QString::fromLatin1(type))
+            .arg(reply->url().toString());
+          emit q->error(msg, __FILE__, __LINE__);
+          return false;
+        }
+      reqok[reply] = true;
+      return true;
     }
-}
-
-void
-QDjVuNetDocument::Private::doError(QNetworkReply *reply, int streamid)
-{
-  QNetworkReply::NetworkError code = reply->error();
-  if (streamid >= 0 && code != QNetworkReply::NoError)
-    {
-      QString msg = tr("%1 while retrieving '%2'.")
-        .arg(reply->errorString())
-        .arg(reply->url().toString());
-      emit q->error(msg , __FILE__, __LINE__);
-      ddjvu_stream_close(*q, streamid, false);
-      reqid[reply] = -1;
-    }
+  return false;
 }
 
 void 
@@ -171,11 +159,37 @@ QDjVuNetDocument::Private::readyRead()
   if (reply) 
     {
       int streamid = reqid.value(reply, -1);
-      if (streamid >= 0)
-        doRead(reply, streamid);
+      bool okay = reqok.value(reply, false);
+      if (streamid >= 0 && !okay)
+        okay = doHeaders(reply, streamid);
+      if (streamid >= 0 && okay)
+        {
+          QByteArray b = reply->readAll();
+          if (b.size() > 0)
+            ddjvu_stream_write(*q, streamid, b.data(), b.size());
+        }
     }
 }
- 
+
+void 
+QDjVuNetDocument::Private::error(QNetworkReply::NetworkError code)
+{
+  QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
+  if (reply) 
+    {
+      int streamid = reqid.value(reply, -1);
+      if (streamid >= 0 && code != QNetworkReply::NoError)
+        {
+          reqid[reply] = -1;
+          ddjvu_stream_close(*q, streamid, false);
+          QString msg = tr("%1 while retrieving '%2'.")
+            .arg(reply->errorString())
+            .arg(reply->url().toString());
+          emit q->error(msg , __FILE__, __LINE__);
+        }
+    }
+}
+
 void 
 QDjVuNetDocument::Private::finished()
 {
@@ -183,31 +197,18 @@ QDjVuNetDocument::Private::finished()
   if (reply)
     {
       int streamid = reqid.value(reply, -1);
-      if (streamid >= 0)
+      bool okay = reqok.value(reply, false);
+      if (streamid >= 0 && !okay)
+        okay = doHeaders(reply, streamid);
+      if (streamid >= 0 && okay)
         {
-          if (reply->bytesAvailable() > 0)
-            doRead(reply, streamid);
-          if (reply->error() != QNetworkReply::NoError)
-            doError(reply, streamid);
-          else
-            ddjvu_stream_close(*q, streamid, false);
+          ddjvu_stream_close(*q, streamid, false);
+          reqid[reply] = -1;
         }
     }
   reqid.remove(reply);
   reqok.remove(reply);
   reply->deleteLater();
-}
-
-void 
-QDjVuNetDocument::Private::error(QNetworkReply::NetworkError)
-{
-  QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
-  if (reply) 
-    {
-      int streamid = reqid.value(reply, -1);
-      if (streamid >= 0)
-        doError(reply, streamid);
-    }
 }
 
 void 

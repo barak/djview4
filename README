@@ -74,8 +74,14 @@ the variabled DDJVUAPI_CFLAGS and DDJVUAPI_LIBS.
 2.2 COMPILING AND INSTALLING UNDER UNIX
 ---------------------------------------
 
+First run the script 'configure' (or 'autogen.sh' as 
+explained above) to generate the makefiles.
 
-First run the script 'configure' to generate the makefiles.
+Note that there will be no configure file if you obtain the djvulibre 
+source using git clone. Instead there is a script 'autogen.sh' that 
+uses automake to generate and call the actual configure script.
+Since all autogen.sh arguments will be passed to configure,
+you can simply treat autogen.sh as a replacement for configure.
 
 Command 'configure --help' list options and environment 
 variables that affect the generation of makefile.

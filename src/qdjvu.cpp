@@ -561,7 +561,7 @@ QDjVuDocument::streamClose(int streamid, bool stop)
 
 /*! Processes DDJVUAPI messages for this document. 
     The default implementation emits signals for
-    the \a m_error, \a m_info, \a m_docinfo, \a m_pageingo
+    the \a m_error, \a m_info, \a m_docinfo, \a m_pageinfo
     and \a m_thumbnail messsages. It also calls
     the virtual function \a newstream when processing
     a \m newstream message. The return value is a boolean indicating
