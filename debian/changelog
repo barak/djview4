@@ -1,3 +1,9 @@
+djview4 (4.11.0-1) unstable; urgency=medium
+
+  * release 4.11
+
+  -- Leon Bottou <leonb@sf.net> Mon, 06 Aug 2018 18:02:00 +0500
+
 djview4 (4.10.6-4) unstable; urgency=medium
 
   * bump to debhelper 11
