@@ -1156,8 +1156,10 @@ QDjViewPrefsDialog::reset()
         case QDjView::STANDALONE_SLIDESHOW:
           d->saved[i].remember = false;
           d->saved[i].zoom = QDjVuWidget::ZOOM_FITPAGE;
+          /* FALLTHRU */
         case QDjView::STANDALONE_FULLSCREEN:
           d->saved[i].options &= ~(optMSS|optS|optT);
+          /* FALLTHRU */
         case QDjView::STANDALONE:
           break;
         case QDjView::EMBEDDED_PLUGIN:

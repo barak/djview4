@@ -1932,7 +1932,7 @@ QDjVuPrivate::pageinfoPage(QDjVuPage *page)
         case DDJVU_JOB_OK:
           if (p)
             getAnnotationsAndText(p);
-          // no break!
+          /* FALLTHRU */
         case DDJVU_JOB_STARTED:
           if (p && p->dpi <= 0)
             {
@@ -4374,12 +4374,14 @@ QDjVuPrivate::paintHiddenText(QImage &img, Page *p, const QRect &drect,
                     case 2:
                       paint.translate(dw, dh);
                       paint.rotate(180);
+                      /* FALLTHRU */
                     default:
                       paint.scale(dw/bw, dh/bh);
                       break;
                     case 3:
                       paint.translate(dw, dh);
                       paint.rotate(180);
+                      /* FALLTHRU */
                     case 1:
                       paint.translate(dw, 0);
                       paint.rotate(90);
