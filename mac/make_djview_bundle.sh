@@ -69,6 +69,10 @@ done
     run ln -s "$target"  "$bundle/$d" || exit
 done
 
+# misc copies
+run cp ../src/djview.1 $bundle/share/man/man1
+run cp $bundle/Resources/qt.conf $bundle/MacOS
+
 # merge MacOS, bin, and plugins directories
 run mv $bundle/bin/* $bundle/MacOS || exit
 run rmdir $bundle/bin || exit
@@ -87,33 +91,42 @@ done
 
 # copy needed qt plugins
 ( cd "$QTDIR" ; \
-  ls -1 plugins/{platforms,imageformats,printsupport}/*.dylib | \
+  ls -1 plugins/{platforms,imageformats,styles,printsupport}/*.dylib | \
+  grep -v libqwebgl.dylib | \
   grep -v _debug.dylib ) | \
 while read plugin ; do
   run mkdir -p $bundle/$(dirname "$plugin") || exit
   run cp "$QTDIR/$plugin" $bundle/"$plugin" || exit
 done
 
+
+
 # copy needed libraries  
-for lib in \
-    $(otool -L $bundle/MacOS/djview | awk '/^\t/{print $1}') \
-    $(otool -L $bundle/MacOS/platforms/libqcocoa.dylib | awk '/^\t/{print $1}') 
-do
-  case "$lib" in 
-    $BREWDIR/*) 
+for loader in \
+    $bundle/MacOS/djview \
+    $bundle/MacOS/*/*.dylib 
+do 
+  for lib in $(otool -L $loader | awk '/^\t/{print $1}') 
+  do
+    if [ $(basename "$lib") != $(basename "$loader") ]
+    then
+      case "$lib" in 
+      $BREWDIR/*) 
         libname=$(basename "$lib")
 	test -r "./$bundle/lib/$libname" || \
 	    run cp "$lib" "./$bundle/lib/$libname" || exit ;;
-    @rpath/*)
+      @rpath/*)
         libname=$(basename "$lib")
         lib="$QTDIR/lib${lib/#@rpath//}"
 	test -r "./$bundle/lib/$libname" || \
 	    run cp "$lib" "./$bundle/lib/$libname" || exit ;;
-    $QTDIR/*)
+      $QTDIR/*)
         libname=$(basename "$lib")
 	test -r "./$bundle/lib/$libname" || \
 	    run cp "$lib" "./$bundle/lib/$libname" || exit ;;
-  esac
+      esac
+    fi
+  done
 done
 
 # copy translations
