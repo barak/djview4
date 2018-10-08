@@ -1,8 +1,16 @@
-djview4 (4.11.0-1) unstable; urgency=medium
+djview4 (4.11-1) unstable; urgency=medium
 
+  [ Leon Bottou ]
   * release 4.11
 
-  -- Leon Bottou <leonb@sf.net> Mon, 06 Aug 2018 18:02:00 +0500
+  [Ondřej Nový]
+  * d/watch: Use https protocol
+
+  [ Barak A. Pearlmutter ]
+  * bump standards version
+  * tweak gbp upstream tag regex to match both release_xxx and release.xxx
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Mon, 08 Oct 2018 11:55:28 +0100
 
 djview4 (4.10.6-6) unstable; urgency=medium
 
@@ -18,12 +26,6 @@ djview4 (4.10.6-5) unstable; urgency=medium
   * bump policy
 
  -- Barak A. Pearlmutter <bap@debian.org>  Wed, 13 Jun 2018 13:46:03 +0100
-
-djview4 (4.10.6-5) UNRELEASED; urgency=medium
-
-  * d/watch: Use https protocol
-
- -- Ondřej Nový <onovy@debian.org>  Mon, 01 Oct 2018 10:11:16 +0200
 
 djview4 (4.10.6-4) unstable; urgency=medium
 
