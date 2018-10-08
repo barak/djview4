@@ -13,6 +13,12 @@ djview4 (4.10.6-5) unstable; urgency=medium
 
  -- Barak A. Pearlmutter <bap@debian.org>  Wed, 13 Jun 2018 13:46:03 +0100
 
+djview4 (4.10.6-5) UNRELEASED; urgency=medium
+
+  * d/watch: Use https protocol
+
+ -- Ondřej Nový <onovy@debian.org>  Mon, 01 Oct 2018 10:11:16 +0200
+
 djview4 (4.10.6-4) unstable; urgency=medium
 
   * bump to debhelper 11
