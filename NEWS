@@ -1,5 +1,10 @@
 
-NEW SINCE VERSION 4.10
+NEW SINCE VERSION 4.11
+-------------------
+
+
+
+NEW IN VERSION 4.11
 -------------------
 - Support for pinch gestures
 - New shortcuts on mac
@@ -8,6 +13,8 @@ NEW SINCE VERSION 4.10
 - Bug fixes
 - Workaround for qt5.5 embed bug
 - Fixed annotation display bugs revealed by qt5
+- Urls in outline are now opened by djview if mime type is djvu.
+
 
 NEW IN VERSION 4.10
 -------------------
