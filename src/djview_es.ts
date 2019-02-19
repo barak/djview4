@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="es">
+<TS version="2.1" language="es">
 <context>
     <name>Generic</name>
     <message>
@@ -535,7 +535,7 @@
         <source>Rotate page image clockwise.</source>
         <translation>Girar página en sentido horario.</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="qdjview.cpp" line="643"/>
         <source>Rotate &amp;0°</source>
         <comment>Rotate|</comment>
@@ -546,7 +546,7 @@
         <source>Set natural page orientation.</source>
         <translation>Ajustar orientación natural.</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="qdjview.cpp" line="649"/>
         <source>Rotate &amp;90°</source>
         <comment>Rotate|</comment>
@@ -557,7 +557,7 @@
         <source>Turn page on its left side.</source>
         <translation>Girar páagina sobre su lado izquuierdo.</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="qdjview.cpp" line="655"/>
         <source>Rotate &amp;180°</source>
         <comment>Rotate|</comment>
@@ -568,7 +568,7 @@
         <source>Turn page upside-down.</source>
         <translation>Girar página al revés.</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="qdjview.cpp" line="661"/>
         <source>Rotate &amp;270°</source>
         <comment>Rotate|</comment>
@@ -1335,7 +1335,7 @@ Nombre de archgivo &apos;%1&apos; no tiene sufijo.</translation>
     <message>
         <location filename="qdjview.cpp" line="4042"/>
         <source> (in other window.)</source>
-        <translation>(en otra ventana)</translation>
+        <translation> (en otra ventana.)</translation>
     </message>
     <message>
         <location filename="qdjview.cpp" line="4131"/>
@@ -1425,7 +1425,7 @@ Nombre de archgivo &apos;%1&apos; no tiene sufijo.</translation>
         <source>Save into the clipboard a maparea annotation expression for program djvused.</source>
         <translation>Guarddar en el portapapeles una expresión de la anotación de Mapa de Imágenes para el programa djvused.</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="qdjview.cpp" line="4359"/>
         <source>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;%2&lt;p&gt;Viewer for DjVu documents&lt;br&gt;&lt;a href=%3&gt;%3&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;This program is free software. You can redistribute or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. This program is distributed &lt;i&gt;without any warranty&lt;/i&gt;. See the GNU General Public License for more details.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;h2&gt;DjVuLibre DjView %1&lt;/h2&gt;%2&lt;p&gt;Visor para documentos DjVu&lt;br&gt;&lt;a href=%3&gt;%3&lt;/a&gt;&lt;br&gt;Copyright © 2006-- Léon Bottou.&lt;/p&gt;&lt;p align=justify&gt;&lt;small&gt;Este programa es software libre. Usted puede redistribuirlo o modificarlo bajo los términos de la GNU General Public License publicada por la Free Software Foundation. Este programa es distribuido &lt;i&gt;sin garantía alguna&lt;/i&gt;. Ver la GNU General Public License para mayor información.&lt;/small&gt;&lt;/p&gt;&lt;/html&gt;</translation>
@@ -1515,7 +1515,8 @@ Opciones comunes incluyen:
 -page=&lt;page&gt;~~~Ir a página &lt;page&gt;.
 -zoom=&lt;zoom&gt;~~~Ajustar ampliación en un factor &lt;zoom&gt;.
 -continuous=&lt;yn&gt;~~~Ajustar desplazamiento continuo.
--sidebyside=&lt;yn&gt;~~~Ajustar vista de dos páginas.</translation>
+-sidebyside=&lt;yn&gt;~~~Ajustar vista de dos páginas.
+</translation>
     </message>
 </context>
 <context>
@@ -1804,7 +1805,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewexportps2.ui" line="76"/>
         <source> %</source>
-        <translation>%</translation>
+        <translation> %</translation>
     </message>
     <message>
         <location filename="qdjviewexportps2.ui" line="100"/>
@@ -1847,7 +1848,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewexportps3.ui" line="55"/>
         <source>Sheets per booklet: </source>
-        <translation>Hojas por folleto:</translation>
+        <translation>Hojas por folleto: </translation>
     </message>
     <message>
         <location filename="qdjviewexportps3.ui" line="62"/>
@@ -1857,12 +1858,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewexportps3.ui" line="65"/>
         <source>at most </source>
-        <translation>a lo sumo</translation>
+        <translation>a lo sumo </translation>
     </message>
     <message>
         <location filename="qdjviewexportps3.ui" line="98"/>
         <source>Print </source>
-        <translation>Imprimir</translation>
+        <translation>Imprimir </translation>
     </message>
     <message>
         <location filename="qdjviewexportps3.ui" line="112"/>
@@ -1882,12 +1883,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewexportps3.ui" line="153"/>
         <source>Shift rectos and versos by </source>
-        <translation>Cambiar delantera y trasera por</translation>
+        <translation>Cambiar delantera y trasera por </translation>
     </message>
     <message>
         <location filename="qdjviewexportps3.ui" line="160"/>
         <source> points.</source>
-        <translation>puntos.</translation>
+        <translation> puntos.</translation>
     </message>
     <message>
         <location filename="qdjviewexportps3.ui" line="196"/>
@@ -1897,7 +1898,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewexportps3.ui" line="203"/>
         <source> points</source>
-        <translation>puntos</translation>
+        <translation> puntos</translation>
     </message>
     <message>
         <location filename="qdjviewexportps3.ui" line="216"/>
@@ -1970,7 +1971,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewexportprn.ui" line="117"/>
         <source> %</source>
-        <translation>%</translation>
+        <translation> %</translation>
     </message>
     <message>
         <location filename="qdjviewexportprn.ui" line="141"/>
@@ -2008,12 +2009,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewexporttiff.ui" line="37"/>
         <source>Maximum image resolution </source>
-        <translation>Resolución máxima de imagen</translation>
+        <translation>Resolución máxima de imagen </translation>
     </message>
     <message>
         <location filename="qdjviewexporttiff.ui" line="44"/>
         <source> dpi</source>
-        <translation>dpi</translation>
+        <translation> dpi</translation>
     </message>
     <message>
         <location filename="qdjviewexporttiff.ui" line="76"/>
@@ -2061,12 +2062,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1625"/>
         <source>Find Previous (Shift+F3) </source>
-        <translation>Buscar anterior (Shift+F3)</translation>
+        <translation>Buscar anterior (Shift+F3) </translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1630"/>
         <source>Find Next (F3) </source>
-        <translation>Buscar siguiente (F3)</translation>
+        <translation>Buscar siguiente (F3) </translation>
     </message>
     <message>
         <location filename="qdjviewsidebar.cpp" line="1636"/>
@@ -2203,7 +2204,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewinfodialog.ui" line="108"/>
         <source>File: </source>
-        <translation>Archivo:</translation>
+        <translation>Archivo: </translation>
     </message>
     <message>
         <location filename="qdjviewinfodialog.ui" line="154"/>
@@ -2260,7 +2261,7 @@ Do you want to replace it?</source>
         <source>Waiting for data...</source>
         <translation>Esperando datos...</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="qdjviewdialogs.cpp" line="502"/>
         <source>Page #%1 - « %2 »</source>
         <translation>Página #%1 - « %2 »</translation>
@@ -2350,17 +2351,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewdialogs.cpp" line="588"/>
         <source> Page </source>
-        <translation>Página </translation>
+        <translation> Página </translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="590"/>
         <source> Thumbnails </source>
-        <translation>Miniatura </translation>
+        <translation> Miniatura </translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="592"/>
         <source> Shared </source>
-        <translation>Compartido </translation>
+        <translation> Compartido </translation>
     </message>
 </context>
 <context>
@@ -2404,12 +2405,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewdialogs.cpp" line="662"/>
         <source> Key </source>
-        <translation>Clave</translation>
+        <translation> Clave </translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="662"/>
         <source> Value </source>
-        <translation>Valor</translation>
+        <translation> Valor </translation>
     </message>
     <message>
         <location filename="qdjviewdialogs.cpp" line="706"/>
@@ -2623,7 +2624,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="234"/>
         <source> dpi</source>
-        <translation>dpi</translation>
+        <translation> dpi</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="268"/>
@@ -2698,7 +2699,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="415"/>
         <source>Timer:  </source>
-        <translation>Avanzar cada: </translation>
+        <translation>Avanzar cada:  </translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="428"/>
@@ -2814,7 +2815,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="780"/>
         <source> pixels</source>
-        <translation>pixeles</translation>
+        <translation> pixeles</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="816"/>
@@ -2865,17 +2866,17 @@ Do you want to replace it?</source>
         <location filename="qdjviewprefsdialog.ui" line="949"/>
         <location filename="qdjviewprefsdialog.ui" line="962"/>
         <source> MB</source>
-        <translation>MB</translation>
+        <translation> MB</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="978"/>
         <source>&amp;Decoded page cache: </source>
-        <translation>Cache de páginas &amp;decodificadas:</translation>
+        <translation>Cache de páginas &amp;decodificadas: </translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="988"/>
         <source>&amp;Pixel cache: </source>
-        <translation>Cache de &amp;pixeles:</translation>
+        <translation>Cache de &amp;pixeles: </translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1015"/>
@@ -3044,7 +3045,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprintdialog.ui" line="182"/>
         <source>Printer name: </source>
-        <translation>Nombre impresora:</translation>
+        <translation>Nombre impresora: </translation>
     </message>
     <message>
         <location filename="qdjviewprintdialog.ui" line="207"/>
