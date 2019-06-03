@@ -772,6 +772,7 @@ metadataFill(QTableWidget *table, QMap<QString,QString> m)
   int nkeys = keys.size();
   table->setRowCount(nkeys);
   table->setSortingEnabled(false);
+  table->setWordWrap(false);
   for(int j = 0; j < nkeys; j++)
     {
       QTableWidgetItem *kitem = new QTableWidgetItem(keys[j]);
