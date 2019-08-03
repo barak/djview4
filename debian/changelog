@@ -1,3 +1,12 @@
+djview4 (4.11-2) unstable; urgency=medium
+
+  * track upstream fixes and translations
+  * debhelper 12
+  * bump policy
+  * chromium-browser is now chromium (closes: #933494)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Sat, 03 Aug 2019 21:13:10 +0200
+
 djview4 (4.11-1) unstable; urgency=medium
 
   [ Leon Bottou ]
