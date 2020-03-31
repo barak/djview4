@@ -52,8 +52,14 @@
 #include <stdio.h>
 #include <errno.h>
 #include <signal.h>
-#include <unistd.h>
-#include <fcntl.h>
+#ifdef Q_OS_UNIX
+# include <unistd.h>
+# include <fcntl.h>
+#endif
+#ifdef Q_OS_WIN32
+# include <io.h>
+# include <fcntl.h>
+#endif
 
 #if QT_VERSION < 0x50000
 # if defined(Q_WS_X11)
@@ -1446,7 +1452,8 @@ QDjViewPlugin::instance()
 int 
 QDjViewPlugin::exec()
 {
-#ifndef QT_NO_DEBUG
+#ifdef Q_OS_UNIX
+ #ifndef QT_NO_DEBUG
   const char *s = ::getenv("DJVIEW_DEBUG");
   if (s && strcmp(s,"0"))
     {
@@ -1455,6 +1462,7 @@ QDjViewPlugin::exec()
       while (loop)
         sleep(1);
     }
+# endif
 #endif
   returnCode = 0;
   quitFlag = false;
