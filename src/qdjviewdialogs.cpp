@@ -156,6 +156,9 @@ QDjViewErrorDialog::error(QString msg, QString, int)
   while (d->messages.size() >= 16)
     d->messages.removeLast();
   compose();
+  // For verbose mode
+  QByteArray msga = msg.toLocal8Bit();
+  qWarning(msga.constData());
 }
 
 void 
