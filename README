@@ -32,6 +32,14 @@ Prerequisites:
 1.2 - USING DJVIEW4 AS A PLUGIN
 -------------------------------
 
+
+WARNING: USING DJVIEW AS A PLUGIN IN 2020 IS VERY DIFFICULT BECAUSE
+POPULAR BROWSERS EITHER DO NOT SUPPORT NETSCAPE PLUGINS (CHROME), OR
+REMOVED SUPPORT FOR NETSCAPE PLUGINS OTHER THAN FLASH (FIREFOX).
+We regret this decision because djview/nsdejavu is a perfect
+example of very well behaved plugin that would have been
+easy to support.
+
 Under Unix/X11, djview4 can be used as a browser plugin
 by means of the small shared library named nsdejavu.so.
 The djview3 distributed with djvulibre uses the same approach.

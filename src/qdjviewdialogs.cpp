@@ -158,7 +158,7 @@ QDjViewErrorDialog::error(QString msg, QString, int)
   compose();
   // For verbose mode
   QByteArray msga = msg.toLocal8Bit();
-  qWarning(msga.constData());
+  qWarning("%s", msga.constData());
 }
 
 void 
