@@ -38,7 +38,7 @@ Using
 as a plugin in 2020 is very difficult because
 popular browsers either do not support netscape plugins (chrome), or
 removed support for netscape plugins other than flash (firefox).
-we regret this decision because djview/nsdejavu is a perfect
+We regret this decision because djview/nsdejavu is a perfect
 example of very well behaved plugin that would have been
 easy to support.
 
