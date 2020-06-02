@@ -49,14 +49,9 @@ uses the Netscape browser plugin
 .SM API
 to display DjVu images in
 in a number of popular web browsers.
-Different web browsers provide various level
-of support for Netscape plugins.
-Please check section "Browser Compatibility"
-for instructions on how to enable the
-DjVu browser plugin.
-
-The DjVuLibre browser plugin works by invoking
-a standalone viewer with the special command line option
+It works by invoking
+a standalone viewer out-of-process
+with the special command line option
 .BR -netscape .
 The plugin first searches a program named
 .BR djview .
