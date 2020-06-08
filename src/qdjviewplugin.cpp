@@ -222,6 +222,16 @@ struct my_event_filter_t : public QAbstractNativeEventFilter
     return filter ? filter : filter = new my_event_filter_t; }
 };
 
+bool my_event_filter_t::nativeEventFilter(const QByteArray &type, void *msg, long*)
+{
+  if (type != "xcb_generic_event_t") return false;
+  my_xcb_configure_notify_event_t *ev = (my_xcb_configure_notify_event_t*)msg;
+  if (! (ev->response_type == 22 && instances.contains(ev->window))) return false;
+  if (! timers.contains(ev->window)) timers.insert(ev->window, new my_timer_object_t(ev->window));
+  timers.value(ev->window)->start(ev->width, ev->height);
+  return false;
+}
+
 void my_timer_object_t::timerEvent(QTimerEvent*)
 {
   my_event_filter_t *f = my_event_filter_t::instance();
@@ -232,16 +242,6 @@ void my_timer_object_t::timerEvent(QTimerEvent*)
   f->timers.remove(wid);
   killTimer(tid);
   deleteLater();
-}
-
-bool my_event_filter_t::nativeEventFilter(const QByteArray &type, void *msg, long*)
-{
-  if (type != "xcb_generic_event_t") return false;
-  my_xcb_configure_notify_event_t *ev = (my_xcb_configure_notify_event_t*)msg;
-  if (! (ev->response_type == 22 && instances.contains(ev->window))) return false;
-  if (! timers.contains(ev->window)) timers.insert(ev->window, new my_timer_object_t(ev->window));
-  timers.value(ev->window)->start(ev->width, ev->height);
-  return false;
 }
 
 #endif
