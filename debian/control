@@ -3,7 +3,7 @@ Section: graphics
 Priority: optional
 Maintainer: Barak A. Pearlmutter <bap@debian.org>
 Uploaders: Leon Bottou <leonb@bottou.org>
-Build-Depends: debhelper-compat (= 12),
+Build-Depends: debhelper-compat (= 13),
     pkg-config, gawk | awk,
     libdjvulibre-dev (>= 3.5.20),
     x11proto-core-dev, libx11-dev, libxext-dev,
@@ -14,7 +14,7 @@ Build-Depends: debhelper-compat (= 12),
 Vcs-Git: https://salsa.debian.org/debian/djview4.git
 Vcs-Browser: https://salsa.debian.org/debian/djview4
 Homepage: http://djvu.sourceforge.net/
-Standards-Version: 4.4.0
+Standards-Version: 4.5.0
 
 Package: djview4
 Architecture: any
