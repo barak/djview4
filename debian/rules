@@ -10,6 +10,8 @@ override_dh_auto_install:
 	dh_auto_install -- \
 		pluginsdir=$(plugindir) \
 		DESTDIR=$(CURDIR)/debian/tmp
+
+execute_after_dh_auto_install:
 	@echo "rename djview as djview4 to allow debian alternatives"
 	mv debian/tmp/usr/bin/djview debian/tmp/usr/bin/djview4
 	mv debian/tmp/usr/share/man/man1/djview.1 debian/tmp/usr/share/man/man1/djview4.1
