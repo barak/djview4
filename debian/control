@@ -22,29 +22,6 @@ Provides: djvu-viewer
 Conflicts: djview (<= 3.5.20-5)
 Depends: ${shlibs:Depends}, ${misc:Depends}, sensible-utils
 Recommends: djvulibre-desktop
-Suggests: djvulibre-bin, djview-plugin
+Suggests: djvulibre-bin
 Description: Viewer for the DjVu image format
  DjVu viewer djview.
-
-Package: djview-plugin
-Section: web
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, djview4 | djview3
-Provides: djvulibre-plugin
-Enhances: chromium-browser,
-	  mozilla-browser, mozilla, firefox, iceweasel, iceape-browser,
-	  konqueror, rekonq, galeon
-Recommends: chromium | chromium-browser
-	    | mozilla-browser | mozilla | firefox | iceweasel | iceape-browser
-	    | konqueror | galeon
-Suggests: mime-support
-Conflicts: djvulibre-bin (<< 3.5.19), djvulibre-plugin (<= 3.5.23-4)
-Description: Browser plugin for the DjVu image format
- DjVu browser plugin.
-
-Package: djvulibre-plugin
-Section: web
-Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, djview-plugin
-Description: Transition package, djvulibre-plugin to djview-plugin
- Dummy dependency package to transition from djvulibre-plugin to djview-plugin.
