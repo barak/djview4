@@ -374,7 +374,7 @@ djview4 (4.1-1) unstable; urgency=low
   * Bug fixes for Qt-4.2 and Qt-4.3.
   * PDF and TIFF Export.
 
- -- Barak A. Pearlmutter <bap@debian.org>  Sun, 7 Jul 2007 12:00:46 +0500
+ -- Barak A. Pearlmutter <bap@debian.org>  Sat, 07 Jul 2007 12:00:46 +0500
 
 djview4 (4.0-1) unstable; urgency=low
 
