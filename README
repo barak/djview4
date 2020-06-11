@@ -32,6 +32,14 @@ Prerequisites:
 1.2 - USING DJVIEW4 AS A PLUGIN
 -------------------------------
 
+
+WARNING: USING DJVIEW AS A PLUGIN IN 2020 IS VERY DIFFICULT BECAUSE
+POPULAR BROWSERS EITHER DO NOT SUPPORT NETSCAPE PLUGINS (CHROME), OR
+REMOVED SUPPORT FOR NETSCAPE PLUGINS OTHER THAN FLASH (FIREFOX).
+We regret this decision because djview/nsdejavu is a perfect
+example of very well behaved plugin that would have been
+easy to support.
+
 Under Unix/X11, djview4 can be used as a browser plugin
 by means of the small shared library named nsdejavu.so.
 The djview3 distributed with djvulibre uses the same approach.
@@ -183,13 +191,9 @@ There are also two ways to compile djview under Windows.
 
 * Using Visual C++ 
 
-  - First you need to compile Qt4 using Visual C++.
-    This used to be require patching the Qt source
-    <http://qtnode.net/wiki?title=Qt4_with_Visual_Studio>
-    Starting with Qt-4.3.2, the opensource Qt version
-    supports Visual C++ right out of the box.
-  - Compile djvulibre using the visual C++ method.
-  - Go to directory src
+  - First you need to install Qt5 binaries compatible
+    with your compiler. Sometimes this means
+    compiling Qt yourself.
   - Type command 
        $ qmake -win32 -tp vc
     to generate a MS Visual C++ project file.

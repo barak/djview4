@@ -2640,7 +2640,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1091"/>
         <source>Render with openGL when available</source>
-        <translation>Нарисуйте с OpenGL при наличии</translation>
+        <translation>Использовать ускорение OpenGL, если это возможно</translation>
     </message>
     <message>
         <location filename="qdjviewprefsdialog.ui" line="1101"/>

@@ -32,6 +32,16 @@ nsdejavu \- DjVu browser plugin
 .SH SYNOPSIS
 .B PLUGINSDIR/NSDEJAVUSO
 
+.SH WARNING
+Using
+.B nsdejavu
+as a plugin in 2020 is very difficult because
+popular browsers either do not support netscape plugins (chrome), or
+removed support for netscape plugins other than flash (firefox).
+We regret this decision because djview/nsdejavu is a perfect
+example of very well behaved plugin that would have been
+easy to support.
+
 .SH DESCRIPTION
 The shared library
 .B NSDEJAVUSO
@@ -39,14 +49,9 @@ uses the Netscape browser plugin
 .SM API
 to display DjVu images in
 in a number of popular web browsers.
-Different web browsers provide various level
-of support for Netscape plugins.
-Please check section "Browser Compatibility"
-for instructions on how to enable the
-DjVu browser plugin.
-
-The DjVuLibre browser plugin works by invoking
-a standalone viewer with the special command line option
+It works by invoking
+a standalone viewer out-of-process
+with the special command line option
 .BR -netscape .
 The plugin first searches a program named
 .BR djview .
