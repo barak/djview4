@@ -7,6 +7,10 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 override_dh_auto_configure:
 	dh_auto_configure -- --disable-nsdejavu
 
+override_dh_auto_build:
+	@echo "vCXX and vLINK supress echoing of compilation commands"
+	dh_auto_build -- vCXX= vLINK=
+
 execute_after_dh_auto_install:
 	@echo "rename djview as djview4 to allow debian alternatives"
 	mv debian/djview4/usr/bin/djview debian/djview4/usr/bin/djview4
