@@ -19,5 +19,12 @@ execute_after_dh_auto_install:
 override_dh_installchangelogs:
 	dh_installchangelogs NEWS
 
+# ignore dwz error:
+#    dh_dwz -a
+# dwz: debian/djview4/usr/bin/djview4: .debug_info section not present
+# dh_dwz: error: dwz -- debian/djview4/usr/bin/djview4 returned exit code 1
+override_dh_dwz:
+	-dh_dwz
+
 %:
 	dh $@
