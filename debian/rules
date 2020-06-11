@@ -7,9 +7,9 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 override_dh_auto_configure:
 	dh_auto_configure -- --disable-nsdejavu
 
+# Set V=1 for a verbose build, as ./configure --disable-silent-rules seems insufficient.
 override_dh_auto_build:
-	@echo "vCXX and vLINK supress echoing of compilation commands"
-	dh_auto_build -- vCXX= vLINK=
+	dh_auto_build -- V=1
 
 execute_after_dh_auto_install:
 	@echo "rename djview as djview4 to allow debian alternatives"
