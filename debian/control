@@ -24,4 +24,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, sensible-utils
 Recommends: djvulibre-desktop
 Suggests: djvulibre-bin
 Description: Viewer for the DjVu image format
- DjVu viewer djview.
+ The DjVu viewer djview4 (aka djview) is a simple multi-page viewer
+ for DjVu-format documents. It can display, print, and save, and when
+ supported by the document, search for text, copy text to the
+ clipboard, follow links, etc.
