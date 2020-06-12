@@ -1,3 +1,19 @@
+djview4 (4.11-3) unstable; urgency=medium
+
+  * track upstream fixes
+    - include keywords in .desktop file which placates lintian
+  * debhelper 13
+  * bump standards version
+  * lengthen long description to placate lintian
+  * stop generating browser plugin package that doesn't work with modern
+    browsers (closes: #377468, #948450, #962181)
+  * remove quotes in mime entry to placate lintian
+  * verbose build: don't suppress compiler commands
+  * enable executable debugging info
+  * pkg-config info quilt patch for FTCBFS issue (closes: #886304)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Fri, 12 Jun 2020 17:13:46 +0100
+
 djview4 (4.11-2) unstable; urgency=medium
 
   * track upstream fixes and translations
