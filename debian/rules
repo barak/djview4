@@ -5,7 +5,7 @@ export QT_SELECT = qt5
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
 override_dh_auto_configure:
-	dh_auto_configure -- --disable-nsdejavu
+	dh_auto_configure -- --disable-nsdejavu --enable-debug
 
 # Set V=1 for a verbose build, as ./configure --disable-silent-rules seems insufficient.
 override_dh_auto_build:
@@ -18,13 +18,6 @@ execute_after_dh_auto_install:
 
 override_dh_installchangelogs:
 	dh_installchangelogs NEWS
-
-# ignore dwz error:
-#    dh_dwz -a
-# dwz: debian/djview4/usr/bin/djview4: .debug_info section not present
-# dh_dwz: error: dwz -- debian/djview4/usr/bin/djview4 returned exit code 1
-override_dh_dwz:
-	-dh_dwz
 
 %:
 	dh $@
