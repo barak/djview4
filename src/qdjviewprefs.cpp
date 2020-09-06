@@ -1040,7 +1040,7 @@ QDjViewPrefsDialog::loadLanguageComboBox(QString lang)
     for (int i=0; languages[i]; i++)
       {
         QString nlang = languages[i];
-        QString xlang = QString::null;
+        QString xlang = QString();
         QTranslator *dTrans = new QTranslator();
         QTranslator *qTrans = new QTranslator();
         if (app->loadTranslators(QStringList(nlang), dTrans, qTrans))
@@ -1111,7 +1111,7 @@ QDjViewPrefsDialog::apply()
   prefs->pixelCacheSize = d->ui.pixelCacheSpinBox->value() * 256 * 1024;
   prefs->cacheSize = d->ui.pageCacheSpinBox->value() * 1024 * 1024;
   // 6- advanced tab
-  prefs->languageOverride = QString::null;
+  prefs->languageOverride = QString();
   if (d->ui.languageCheckBox->isChecked()) 
     {
       int n = d->ui.languageComboBox->currentIndex();

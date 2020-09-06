@@ -502,8 +502,13 @@ QDjViewInfoDialog::fillFileCombo()
       if (info.type == 'P')
         {
           if (info.title && info.name && strcmp(info.title, info.name))
+#if QT_VERSION >= 0x50E00
+            msg = tr("Page #%1 - \302\253 %2 \302\273") // << .. >>
+              .arg(info.pageno + 1).arg(QString::fromUtf8(info.title));
+#else
             msg = trUtf8("Page #%1 - \302\253 %2 \302\273") // << .. >>
               .arg(info.pageno + 1).arg(QString::fromUtf8(info.title));
+#endif
           else
             msg = tr("Page #%1").arg(info.pageno + 1);
         }
@@ -1475,7 +1480,7 @@ QDjViewExportDialog::browse()
 {
   QString fname = d->ui.fileNameEdit->text();
   QDjViewExporter *exporter = d->exporter;
-  QString format = (exporter) ? exporter->name() : QString::null;
+  QString format = (exporter) ? exporter->name() : QString();
   QStringList info = QDjViewExporter::info(format);
   QString filters = tr("All files", "save filter") + " (*)";
   QString suffix;
@@ -1605,7 +1610,7 @@ QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
                   "options.</html>"));
 
   // Load preferences
-  d->ui.printerLabel->setText(QString::null);
+  d->ui.printerLabel->setText(QString());
   d->ui.fileNameEdit->setText("print.ps");
   QDjViewPrefs *prefs = QDjViewPrefs::instance();
   QString printerName = prefs->printerName;
@@ -1614,7 +1619,7 @@ QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
     {
       d->ui.printToFileCheckBox->setChecked(true);
       d->ui.fileNameEdit->setText(printFile);
-      printerName = QString::null;
+      printerName = QString();
     }
   else if (! printerName.isEmpty())
     {
@@ -1717,7 +1722,7 @@ QDjViewPrintDialog::browse()
 {
   QString fname = d->ui.fileNameEdit->text();
   QDjViewExporter *exporter = d->exporter;
-  QString format = (exporter) ? exporter->name() : QString::null;
+  QString format = (exporter) ? exporter->name() : QString();
   QStringList info = QDjViewExporter::info(format);
   QString filters = tr("All files", "save filter") + " (*)";
   QString suffix;
@@ -1846,7 +1851,7 @@ QDjViewPrintDialog::start()
             return;
           // save preferences
           QDjViewPrefs *prefs = QDjViewPrefs::instance();
-          prefs->printerName = QString::null;
+          prefs->printerName = QString();
           prefs->printFile = fname;
           // print to file
           exporter->save(fname);
@@ -1856,7 +1861,7 @@ QDjViewPrintDialog::start()
           QPrinter *printer = d->printer;
           // save preferences
           QDjViewPrefs *prefs = QDjViewPrefs::instance();
-          prefs->printFile = QString::null;
+          prefs->printFile = QString();
           prefs->printerName = printer->printerName();
           // print
           exporter->print(d->printer);

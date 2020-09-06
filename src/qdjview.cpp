@@ -2066,7 +2066,7 @@ QDjView::parseArgument(QString key, QString value)
     {
       if (findWidget) 
         {
-          findWidget->setText(QString::null);
+          findWidget->setText(QString());
           findWidget->setRegExpMode(false);
           findWidget->setWordOnly(true);
           findWidget->setCaseSensitive(false);
@@ -2389,7 +2389,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
           name = QString("djview%1").arg(num++);
           foreach(QWidget *w, wl)
             if (w->objectName() == name)
-              name = QString::null;
+              name = QString();
         }
       setObjectName(name);
     }
@@ -3196,7 +3196,7 @@ QDjView::showSideBar(bool show)
     {
       // hack toolbar name to avoid restoring its state
       QString savedToolBarName = toolBar->objectName();
-      toolBar->setObjectName(QString::null);
+      toolBar->setObjectName(QString());
       restoreState(savedDockState);
       toolBar->setObjectName(savedToolBarName);
       savedDockState.clear();
@@ -3393,7 +3393,7 @@ QDjView::getDecoratedUrl()
   if (url.isValid() && pageNo>=0 && pageNo<pageNum())
     {
       QueryItems items = urlQueryItems(url);
-      addQueryItem(items, "djvuopts", QString::null);
+      addQueryItem(items, "djvuopts", QString());
       QList<ddjvu_fileinfo_t> &dp = documentPages;
       QString pagestr = QString("%1").arg(pageNo+1);
       if (hasNumericalPageTitle && pageNo<documentPages.size())
@@ -4161,7 +4161,7 @@ QDjView::goToLink(QString link, QString target, int fromPage)
       // Construct url
       url = removeDjVuCgiArguments(url);
       QueryItems items = urlQueryItems(url);
-      addQueryItem(items, "djvuopts", QString::null);
+      addQueryItem(items, "djvuopts", QString());
       int pageno = pageNumber(name, fromPage);
       if (pageno>=0 && pageno<=documentPages.size())
         addQueryItem(items, "page", QString::fromUtf8(documentPages[pageno].id));
@@ -4301,7 +4301,7 @@ QDjView::pointerSelect(const QPoint &pointerPos, const QRect &rect)
         {
           QueryItems items = urlQueryItems(url);
           if (! hasQueryItem(items, "djvuopts"))
-            addQueryItem(items, "djvuopts", QString::null);
+            addQueryItem(items, "djvuopts", QString());
           QList<ddjvu_fileinfo_t> &dp = documentPages;
           if (! hasQueryItem(items, "page", false))
             if (pos.pageNo>=0 && pos.pageNo<documentPages.size())
@@ -4659,7 +4659,7 @@ QDjView::performGoPage()
 void
 QDjView::restoreRecentDocument(QUrl url)
 {
-  url.setPassword(QString::null);
+  url.setPassword(QString());
   QUrl cleanUrl = removeDjVuCgiArguments(url);
   QString prefix = cleanUrl.toString(QUrl::RemoveQuery);
   foreach (QString recent, prefs->recentFiles)
@@ -4681,7 +4681,7 @@ QDjView::addRecent(QUrl url)
 {
   prefs->loadRecent();
   // never remember passwords
-  url.setPassword(QString::null);
+  url.setPassword(QString());
   // remove matching entries
   QUrl cleanUrl = removeDjVuCgiArguments(url);
   QString prefix = cleanUrl.toString(QUrl::RemoveQuery);

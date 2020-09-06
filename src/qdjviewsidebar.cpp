@@ -1809,7 +1809,7 @@ QDjViewFind::selectAll()
 void 
 QDjViewFind::eraseText()
 {
-  setText(QString::null);
+  setText(QString());
   setRegExpMode(false);
   setWordOnly(true);
   setCaseSensitive(false);

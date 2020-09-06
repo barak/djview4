@@ -53,8 +53,8 @@ public:
   virtual void setFromTo(int fromPage, int toPage);
   virtual void setErrorCaption(QString);
   virtual void resetProperties();
-  virtual void loadProperties(QString group=QString::null);
-  virtual void saveProperties(QString group=QString::null);
+  virtual void loadProperties(QString group=QString());
+  virtual void saveProperties(QString group=QString());
   virtual bool loadPrintSetup(QPrinter *printer, QPrintDialog *dialog);
   virtual bool savePrintSetup(QPrinter *printer);
   virtual int propertyPages();

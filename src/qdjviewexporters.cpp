@@ -1023,7 +1023,7 @@ QDjViewPSExporter::print(QPrinter *qprinter)
     return false;
   printer = qprinter;
   file.close();
-  file.setFileName(QString::null);
+  file.setFileName(QString());
   QDjViewPrefs *prefs = QDjViewPrefs::instance();
   prefs->printReverse = lastfirst;
   prefs->printCollate = collate;

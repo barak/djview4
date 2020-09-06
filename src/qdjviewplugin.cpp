@@ -917,7 +917,11 @@ QDjViewPlugin::cmdNew()
       QString val = readString(pipeRead);
       QString k = key.toLower();
       if (k == "flags")
+#if QT_VERSION >= 0x50E00
+        args += val.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
+#else
         args += val.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+#endif
       else
         args += key + QString("=") + val;
     }

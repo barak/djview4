@@ -247,8 +247,9 @@ QDjViewApplication::getTranslationLangs()
       QStringList langs; 
       addLang(langs, QSettings().value("language").toString());
       QString varLanguage = QString::fromLocal8Bit(::getenv("LANGUAGE"));
-      foreach(QString lang, varLanguage.split(":", QString::SkipEmptyParts))
-        addLang(langs, lang);
+      foreach(QString lang, varLanguage.split(":"))
+        if (! lang.isEmpty())
+          addLang(langs, lang);
 #ifdef LC_MESSAGES
       addLang(langs, QString::fromLocal8Bit(::setlocale(LC_MESSAGES, 0)));
 #endif
@@ -435,8 +436,10 @@ main(int argc, char *argv[])
   
   // Color specification 
   // (cause XRender errors under many versions of Qt4/X11)
-#ifndef Q_WS_X11 
+#ifndef Q_WS_X11
+# if QT_VERSION < 0x50000
   QApplication::setColorSpec(QApplication::ManyColor);
+# endif
 #endif
   
   // Plugin mode
