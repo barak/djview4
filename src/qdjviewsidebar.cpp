@@ -181,7 +181,7 @@ QDjViewOutline::refresh()
               item->setToolTip(0, tr("Go: page %1.").arg(name));
               item->setWhatsThis(0, whatsThis());
             }
-          tree->setItemExpanded(root, true);
+          root->setExpanded(true);
         }
       pageChanged(djview->getDjVuWidget()->page());
     }
@@ -272,11 +272,11 @@ QDjViewOutline::pageChanged(int pageno)
     searchItem(tree->topLevelItem(i), pageno, fi, fp);
   // select
   if (si && fi && si != fi)
-    tree->setItemSelected(si, false);
+    si->setSelected(false);
   if (fi && si != fi)
     {
       tree->setCurrentItem(fi);
-      tree->setItemSelected(fi, true);
+      fi->setSelected(true);
       tree->scrollToItem(fi);
     }
 }

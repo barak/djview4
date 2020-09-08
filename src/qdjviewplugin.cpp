@@ -1133,7 +1133,7 @@ QDjViewPlugin::cmdDestroy()
   if (instances.contains(instance))
     {
       instance->destroy();
-      QList<Stream*> streamList = streams.toList();
+      QList<Stream*> streamList = streams.values();
       foreach(Stream *stream, streamList)
         if (stream->instance == instance)
           delete(stream);
@@ -1266,7 +1266,7 @@ QDjViewPlugin::cmdUrlNotify()
   QUrl url = QUrl::fromEncoded(readRawString(pipeRead));
   readInteger(pipeRead); // notification code (unused)
   Stream *stream = 0;
-  QList<Stream*> streamList = streams.toList();
+  QList<Stream*> streamList = streams.values();
   foreach(stream, streamList)
     if (!stream->started && stream->url == url)
       delete stream;
@@ -1356,8 +1356,8 @@ QDjViewPlugin::cmdOnChange()
 void
 QDjViewPlugin::cmdShutdown()
 {
-  QList<Stream*> streamList = streams.toList();
-  QList<Instance*> instanceList = instances.toList();
+  QList<Stream*> streamList = streams.values();
+  QList<Instance*> instanceList = instances.values();
   foreach(Instance *s, instanceList)
     s->destroy();
   foreach(Stream *s, streamList) 
@@ -1385,8 +1385,8 @@ static QDjViewPlugin *thePlugin;
 QDjViewPlugin::~QDjViewPlugin()
 {
   thePlugin = 0;
-  QList<Stream*> streamList = streams.toList();
-  QList<Instance*> instanceList = instances.toList();
+  QList<Stream*> streamList = streams.values();
+  QList<Instance*> instanceList = instances.values();
   foreach(Stream *s, streamList) 
     delete(s);
   foreach(Instance *s, instanceList)
