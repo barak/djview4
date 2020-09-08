@@ -5623,7 +5623,11 @@ QDjVuLens::recenter(const QPoint &p)
   vrect.moveTo(widget->viewport()->mapToGlobal(vrect.topLeft()));
   setVisible(vrect.intersects(rect));
   setGeometry(rect);
+#if QT_VERSION >= 0x50E00
+  QCoreApplication::sendPostedEvents();
+#else
   QCoreApplication::flush();
+#endif
 }
 
 void 
