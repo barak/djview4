@@ -5250,15 +5250,22 @@ QDjVuWidget::contextMenuEvent (QContextMenuEvent *event)
 void 
 QDjVuWidget::wheelEvent (QWheelEvent *event)
 {
-  if (priv->mouseEnabled && event->orientation() == Qt::Vertical)
+  if (priv->mouseEnabled)
     {
+#if QT_VERSION < 0x50200
+      int delta = 0;
+      if (event->orientation() == Qt::Vertical)
+        delta = event->delta();
+#else
+      int delta = event->angleDelta().y();
+#endif
       bool zoom = priv->mouseWheelZoom;
       if (event->modifiers() == Qt::ControlModifier)
         zoom = ! zoom;
-      if (zoom)
+      if (zoom && delta)
         {
 	  static int zWheel = 0;
-	  zWheel += event->delta();
+	  zWheel += delta;
 	  if (qAbs(zWheel) >= 120)
 	    {
 	      priv->updateCurrentPoint(priv->cursorPos);
