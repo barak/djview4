@@ -289,6 +289,7 @@ QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
   
   QFont font = d->ui.fileText->font();
   font.setFixedPitch(true);
+  font.setStyleHint(QFont::Monospace);
   font.setFamily("monospace");
   font.setPointSize((font.pointSize() * 5 + 5) / 6);
   d->ui.fileText->setFont(font);
