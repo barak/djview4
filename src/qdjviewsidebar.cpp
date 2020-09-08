@@ -61,6 +61,11 @@
 #if QT_VERSION >= 0x50000
 # include <QUrlQuery>
 #endif
+#if QT_VERSION >= 0x50E00
+# define zero(T) T()
+#else
+# define zero(T) 0
+#endif
 
 #include <libdjvu/ddjvuapi.h>
 #include <libdjvu/miniexp.h>
@@ -229,7 +234,7 @@ QDjViewOutline::fillItems(QTreeWidgetItem *root, miniexp_t expr)
             item->setText(0, text.replace(spaces," "));
           else if (! pagename.isEmpty())
             item->setText(0, tr("Page %1").arg(pagename));
-          item->setFlags(0);
+          item->setFlags(zero(Qt::ItemFlags));
           item->setWhatsThis(0, whatsThis());
           if (link && link[0])
             {

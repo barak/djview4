@@ -99,6 +99,15 @@
 # include <QUrlQuery>
 #endif
 
+#if QT_VERSION >= 0x50E00
+# define tr8 tr
+# define swidth(m,s) (m).horizontalAdvance(s)
+# define zero(T) T()
+#else
+# define tr8 trUtf8 
+# define swidth(m,s) (m).width(s)
+# define zero(T) 0
+#endif
 
 #include "qdjvu.h"
 #include "qdjvunet.h"
@@ -322,7 +331,7 @@ QDjView::fillToolBar(QToolBar *toolBar)
       toolBar->addAction(actionWhatsThis);
     }
   // Allowed areas
-  Qt::ToolBarAreas areas = 0;
+  Qt::ToolBarAreas areas = zero(Qt::ToolBarAreas);
   if (tools & QDjViewPrefs::TOOLBAR_TOP)
     areas |= Qt::TopToolBarArea;
   if (tools & QDjViewPrefs::TOOLBAR_BOTTOM)
@@ -634,25 +643,25 @@ QDjView::createActions()
     << Trigger(widget, SLOT(rotateRight()))
     << Trigger(this, SLOT(updateActionsLater()));
 
-  actionRotate0 = makeAction(trUtf8("Rotate &0\302\260", "Rotate|"), false)
+  actionRotate0 = makeAction(tr8("Rotate &0\302\260", "Rotate|"), false)
     << tr("Set natural page orientation.")
     << QVariant(0)
     << Trigger(this, SLOT(performRotation()))
     << *rotationActionGroup;
 
-  actionRotate90 = makeAction(trUtf8("Rotate &90\302\260", "Rotate|"), false)
+  actionRotate90 = makeAction(tr8("Rotate &90\302\260", "Rotate|"), false)
     << tr("Turn page on its left side.")
     << QVariant(1)
     << Trigger(this, SLOT(performRotation()))
     << *rotationActionGroup;
 
-  actionRotate180 = makeAction(trUtf8("Rotate &180\302\260", "Rotate|"), false)
+  actionRotate180 = makeAction(tr8("Rotate &180\302\260", "Rotate|"), false)
     << tr("Turn page upside-down.")
     << QVariant(2)
     << Trigger(this, SLOT(performRotation()))
     << *rotationActionGroup;
 
-  actionRotate270 = makeAction(trUtf8("Rotate &270\302\260", "Rotate|"), false)
+  actionRotate270 = makeAction(tr8("Rotate &270\302\260", "Rotate|"), false)
     << tr("Turn page on its right side.")
     << QVariant(3)
     << Trigger(this, SLOT(performRotation()))
@@ -1353,7 +1362,7 @@ QDjView::applyOptions(bool remember)
 void 
 QDjView::updateOptions(void)
 {
-  options = 0;
+  options = zero(QDjViewPrefs::Options);
   if (! menuBar->isHidden())
     options |= QDjViewPrefs::SHOW_MENUBAR;
   if (! toolBar->isHidden())
@@ -2398,7 +2407,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   prefs = QDjViewPrefs::instance();
   options = QDjViewPrefs::defaultOptions;
   tools = prefs->tools;
-  toolsCached = 0;
+  toolsCached = zero(Tools);
   
   // Create dialogs
   errorDialog = new QDjViewErrorDialog(this);
@@ -2483,7 +2492,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   textLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
   textLabel->setFrameStyle(QFrame::Panel);
   textLabel->setFrameShadow(QFrame::Sunken);
-  textLabel->setMinimumWidth(metric.width("M")*48);
+  textLabel->setMinimumWidth(swidth(metric,"M")*48);
   statusBar->addWidget(textLabel, 1);
   pageLabel = new QLabel(statusBar);
   pageLabel->setFont(font);
@@ -2491,7 +2500,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   pageLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
   pageLabel->setFrameStyle(QFrame::Panel);
   pageLabel->setFrameShadow(QFrame::Sunken);
-  pageLabel->setMinimumWidth(metric.width(" P88/888 8888x8888 888dpi ")); 
+  pageLabel->setMinimumWidth(swidth(metric," P88/888 8888x8888 888dpi ")); 
   statusBar->addPermanentWidget(pageLabel);
   mouseLabel = new QLabel(statusBar);
   mouseLabel->setFont(font);
@@ -2499,7 +2508,7 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   mouseLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
   mouseLabel->setFrameStyle(QFrame::Panel);
   mouseLabel->setFrameShadow(QFrame::Sunken);
-  mouseLabel->setMinimumWidth(metric.width(" x=888 y=888 "));
+  mouseLabel->setMinimumWidth(swidth(metric," x=888 y=888 "));
   statusBar->addPermanentWidget(mouseLabel);
   setStatusBar(statusBar);
 
@@ -3144,32 +3153,33 @@ QDjView::showSideBar(QString args, QStringList &errors)
   bool yes = true;
   bool ret = true;
   int tabs = 0;
-  Qt::DockWidgetAreas areas = 0;
+  Qt::DockWidgetAreas areas = zero(Qt::DockWidgetAreas);
   QString arg;
-  foreach(arg, args.split(",", QString::SkipEmptyParts))
-    {
-      arg = arg.toLower();
-      if (arg == "no" || arg == "false")
-        yes = false;
-      else if (arg == "left")
-        areas |= Qt::LeftDockWidgetArea;
-      else if (arg == "right")
-        areas |= Qt::RightDockWidgetArea;
-      else if (arg == "top")
-        areas |= Qt::TopDockWidgetArea;
-      else if (arg == "bottom")
-        areas |= Qt::BottomDockWidgetArea;
-      else if (arg == "thumbnails" || arg == "thumbnail")
-        tabs |= 1;
-      else if (arg == "outline" || arg == "bookmarks")
-        tabs |= 2;
-      else if (arg == "search" || arg == "find")
-        tabs |= 4;
-      else if (arg != "yes" && arg != "true") {
-        errors << tr("Unrecognized sidebar options '%1'.").arg(arg);
-        ret = false;
+  foreach(arg, args.split(","))
+    if (!args.isEmpty())
+      {
+        arg = arg.toLower();
+        if (arg == "no" || arg == "false")
+          yes = false;
+        else if (arg == "left")
+          areas |= Qt::LeftDockWidgetArea;
+        else if (arg == "right")
+          areas |= Qt::RightDockWidgetArea;
+        else if (arg == "top")
+          areas |= Qt::TopDockWidgetArea;
+        else if (arg == "bottom")
+          areas |= Qt::BottomDockWidgetArea;
+        else if (arg == "thumbnails" || arg == "thumbnail")
+          tabs |= 1;
+        else if (arg == "outline" || arg == "bookmarks")
+          tabs |= 2;
+        else if (arg == "search" || arg == "find")
+          tabs |= 4;
+        else if (arg != "yes" && arg != "true") {
+          errors << tr("Unrecognized sidebar options '%1'.").arg(arg);
+          ret = false;
+        }
       }
-    }
   if (!tabs)
     tabs = ~0;
   if (yes && !areas)
@@ -4057,7 +4067,7 @@ QDjView::updateTextLabel()
       QFontMetrics m(textLabel->font());
       QString lb = QString::fromUtf8(" \302\253 ");
       QString rb = QString::fromUtf8(" \302\273 ");
-      int w = textLabel->width() - 2 * textLabel->frameWidth() - m.width(lb + rb + "MM");
+      int w = textLabel->width()-2*textLabel->frameWidth()-swidth(m,lb+rb+"MM");
       if (! textLabelRect.isEmpty())
         {
           text = widget->getTextForRect(textLabelRect);
@@ -4074,8 +4084,8 @@ QDjView::updateTextLabel()
               results[2] = results[2].simplified();
               if (results[0].size() || results[2].size())
                 results[1] = " [" + results[1] + "] ";
-              int r1 = m.width(results[1]);
-              int r2 = m.width(results[2]);
+              int r1 = swidth(m,results[1]);
+              int r2 = swidth(m,results[2]);
               int r0 = qMax(0, qMax( (w-r1)/2, (w-r1-r2) ));
               text = m.elidedText(results[0], Qt::ElideLeft, r0) + results[1];
               text = m.elidedText(text+results[2], Qt::ElideRight, w);
@@ -4415,7 +4425,7 @@ QDjView::performAbout(void)
   QString versioninfo = "";
   if (version.size() > 0)
     versioninfo = "(" + version.join(", ") + ")";
-  QString html = trUtf8("<html>"
+  QString html = tr8("<html>"
        "<h2>DjVuLibre DjView %1</h2>%2"
        "<p>"
        "Viewer for DjVu documents<br>"

@@ -1473,7 +1473,11 @@ static void
 tiffHandler(const char *, const char *fmt, va_list ap)
 {
   QString message;
+#if QT_VERSION >= 0x50500
+  message.vasprintf(fmt, ap);
+#else
   message.vsprintf(fmt, ap);
+#endif
   tiffExporter->error(message, __FILE__, __LINE__);
 }
 

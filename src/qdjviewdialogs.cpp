@@ -45,6 +45,7 @@
 #if HAVE_TIFF
 # include <tiffio.h>
 #endif
+#include <algorithm>
 
 #include <QApplication>
 #include <QClipboard>
@@ -83,7 +84,11 @@
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QVector>
-#include <QtAlgorithms>
+#if QT_VERSION >= 0x50E00
+# define tr8 tr
+#else
+# define tr8 trUtf8 
+#endif
 
 #include <libdjvu/miniexp.h>
 #include <libdjvu/ddjvuapi.h>
@@ -94,6 +99,7 @@
 #include "qdjviewexporters.h"
 #include "qdjvuwidget.h"
 #include "qdjvu.h"
+
 
 
 
@@ -502,13 +508,8 @@ QDjViewInfoDialog::fillFileCombo()
       if (info.type == 'P')
         {
           if (info.title && info.name && strcmp(info.title, info.name))
-#if QT_VERSION >= 0x50E00
-            msg = tr("Page #%1 - \302\253 %2 \302\273") // << .. >>
+            msg = tr8("Page #%1 - \302\253 %2 \302\273") // << .. >>
               .arg(info.pageno + 1).arg(QString::fromUtf8(info.title));
-#else
-            msg = trUtf8("Page #%1 - \302\253 %2 \302\273") // << .. >>
-              .arg(info.pageno + 1).arg(QString::fromUtf8(info.title));
-#endif
           else
             msg = tr("Page #%1").arg(info.pageno + 1);
         }
@@ -776,7 +777,7 @@ metadataFill(QTableWidget *table, QMap<QString,QString> m)
   QMap<QString,QString>::const_iterator i = m.constBegin();
   for( ; i != m.constEnd(); i++)
     keys << i.key();
-  qSort(keys.begin(), keys.end());
+  std::sort(keys.begin(), keys.end());
   int nkeys = keys.size();
   table->setRowCount(nkeys);
   table->setSortingEnabled(false);
@@ -1733,7 +1734,7 @@ QDjViewPrintDialog::browse()
   fname = QFileDialog::getSaveFileName(this, 
                                        tr("Print To File - DjView", 
                                           "dialog caption"),
-                                       fname, filters, 0, 0);
+                                       fname, filters);
   if (! fname.isEmpty())
     {
       QFileInfo finfo(fname);
