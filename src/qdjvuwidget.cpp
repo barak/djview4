@@ -221,21 +221,25 @@ qcursor_by_name(const char *s, int hotx=8, int hoty=8)
   return QCursor(pixmap, hotx, hoty);
 }
 
+
+#if QT_VERSION > 0x50800
+# define foreachrect(r,rgn) foreach(r,rgn)
+#else
+# define foreachrect(r,rgn) foreach(r,(rgn).rects())
+#endif
+
 static QRegion
 cover_region(QRegion region, const QRect &brect)
 {
-  QVector<QRect> rects = region.rects();
   // dilate region
   QRegion dilated;
-  for (int i=0; i<rects.size(); i++)
-    dilated |= rects[i].adjusted(-8, -8, 8, 8).intersected(brect);
-  rects = dilated.rects();
+  foreachrect(const QRect &r, region)
+    dilated |= r.adjusted(-8, -8, 8, 8).intersected(brect);
   // find nice cover
   QList<int>   myarea;
   QList<QRect> myrect;
-  for (int i=0; i<rects.size(); i++)
+  foreachrect(const QRect &r, dilated)
     {
-      QRect &r = rects[i];
       int a = r.width() * r.height();
       int j = myrect.size();
       while (--j >= 0)
@@ -4529,12 +4533,11 @@ QDjVuPrivate::paintPage(QPainter &paint, Page *p, const QRegion &region)
   else if (display == DISPLAY_FG)
     mode = DDJVU_RENDER_FOREGROUND;
   // render new segments
-  QVector<QRect> rects = cover.rects();
-  for (int i=0; i<rects.size(); i++)
+  foreachrect(const QRect &ri, cover)
     {
       int rot;
       ddjvu_rect_t pr, rr;
-      QRect r = rects[i].translated(visibleRect.topLeft());
+      QRect r = ri.translated(visibleRect.topLeft());
       QImage img(r.width()*dpr, r.height()*dpr, QImage::Format_RGB32);
 #if QT_VERSION >= 0x50200
       img.setDevicePixelRatio(dpr);
@@ -4826,10 +4829,9 @@ QDjVuPrivate::changeSelectedRectangle(const QRect& rect)
   else
     {
       QRegion region = QRegion(newRect) ^ QRegion(oldRect);
-      QVector<QRect> rects = region.rects();
       QRegion dilated;
-      for(int i=0; i<rects.size(); i++)
-        dilated += rects[i].adjusted(-2,-2,2,2);
+      foreachrect(const QRect &r, region)
+        dilated += r.adjusted(-2,-2,2,2);
       widget->viewport()->update(dilated);
     }   
 }
@@ -5701,13 +5703,11 @@ QDjVuLens::paintEvent(QPaintEvent *event)
       if (p->dpi>0 && p->page)
         {
           QRegion prgn = cover_region(region, prect);
-          QVector<QRect> rects = prgn.rects();
-          for (int i=0; i<rects.size(); i++)
+          foreachrect(const QRect &r, prgn)
             {
               int rot;
               ddjvu_rect_t pr, rr;
               QDjVuPage *dp = p->page;
-              QRect &r = rects[i];
               QImage img(r.width()*dpr, r.height()*dpr, QImage::Format_RGB32);
 #if QT_VERSION >= 0x50200
               img.setDevicePixelRatio(dpr);
