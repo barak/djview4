@@ -1,3 +1,9 @@
+djview4 (4.12-0) experimental; urgency=medium
+
+  * Release 4.12
+
+ -- Leon Bottou <leonb@users.sourceforge.net>  Fri, 20 Nov 2020 13:19:19 +0500
+
 djview4 (4.11-2) unstable; urgency=medium
 
   * track upstream fixes and translations
