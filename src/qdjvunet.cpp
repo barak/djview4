@@ -236,7 +236,7 @@ bool
 QDjVuNetDocument::Private::doAuth(QString why, QAuthenticator *auth)
 {
   QString user = auth->user();
-  QString pass = QString::null;
+  QString pass = QString();
   q->emit authRequired(why, user, pass);
   if (pass.isNull())
     return false;

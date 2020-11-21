@@ -136,9 +136,11 @@ run mkdir -p $bundle/Resources/en.lproj || exit
 for lang in $languages ; do
     run mkdir -p $bundle/Resources/$lang.lproj || exit
     run cp ../src/djview_$lang.qm $bundle/Resources/$lang.lproj/djview_$lang.qm || exit
-    run cp "$QTDIR/translations/qt_$lang.qm" $bundle/Resources/$lang.lproj/ || exit
+    if test -r "$QTDIR/translations/qt_$lang.qm" ; then
+      run cp "$QTDIR/translations/qt_$lang.qm" $bundle/Resources/$lang.lproj/ || exit
+    fi
     if test -r "$QTDIR/translations/qtbase_$lang.qm" ; then
-      run cp "$QTDIR"/translations/qt[a-z]*_$lang.qm $bundle/Resources/$lang.lproj/ || exit
+        run cp "$QTDIR"/translations/qtbase_$lang.qm $bundle/Resources/$lang.lproj/ || exit 
     fi
 done
 

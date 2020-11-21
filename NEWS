@@ -1,7 +1,11 @@
 
-NEW SINCE VERSION 4.11
+NEW IN VERSION 4.12
 -------------------
-
+- Fixes for recent compilers
+- Fixes for Qt-5.15
+- Fixes in tiff2pdf.c
+- Updated documentation (most browsers no longer support plugins)
+- Spanish localization (from Mike Molina)
 
 
 NEW IN VERSION 4.11

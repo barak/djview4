@@ -247,8 +247,9 @@ QDjViewApplication::getTranslationLangs()
       QStringList langs; 
       addLang(langs, QSettings().value("language").toString());
       QString varLanguage = QString::fromLocal8Bit(::getenv("LANGUAGE"));
-      foreach(QString lang, varLanguage.split(":", QString::SkipEmptyParts))
-        addLang(langs, lang);
+      foreach(QString lang, varLanguage.split(":"))
+        if (! lang.isEmpty())
+          addLang(langs, lang);
 #ifdef LC_MESSAGES
       addLang(langs, QString::fromLocal8Bit(::setlocale(LC_MESSAGES, 0)));
 #endif
@@ -435,8 +436,10 @@ main(int argc, char *argv[])
   
   // Color specification 
   // (cause XRender errors under many versions of Qt4/X11)
-#ifndef Q_WS_X11 
+#ifndef Q_WS_X11
+# if QT_VERSION < 0x50000
   QApplication::setColorSpec(QApplication::ManyColor);
+# endif
 #endif
   
   // Plugin mode
@@ -482,12 +485,15 @@ main(int argc, char *argv[])
         }
     }
   
-  // Process command line
+  // Process command line (from QCoreApplication for win unicode)
   QStringList args;
   QDjView *main = app.newWindow();
-  while (argc > 1 && argv[1][0] == '-')
+  QStringList qargv = QCoreApplication::arguments();
+  int qi = 1;
+  while (qi < qargv.size() && qargv.at(qi)[0] == '-')
     {
-      QString arg = QString::fromLocal8Bit(argv[1]).replace(QRegExp("^-+"),"");
+      QString arg = qargv.at(qi);
+      arg.replace(QRegExp("^-+"),"");
       QString key = arg.section(QChar('='),0,1);
       if (arg == "help")
         usage();
@@ -499,16 +505,15 @@ main(int argc, char *argv[])
         message(QApplication::tr("Option '-fix' is deprecated."));
       else 
         args += arg;
-      argc --;
-      argv ++;
+      qi += 1;
     }
-  if (argc > 2)
+  if (qi < qargv.size() - 1)
     usage();
 
   // Open file
-  if (argc > 1)
+  if (qi == qargv.size() - 1)
     {
-      QString name = QString::fromLocal8Bit(argv[1]);
+      QString name = qargv.at(qi);
       bool okay = true;
       if (name.contains(QRegExp("^[a-zA-Z]{3,8}:/")))
         okay = main->open(QUrl(name));
@@ -516,7 +521,7 @@ main(int argc, char *argv[])
         okay = main->open(name);
       if (! okay)
         {
-          message(QDjView::tr("cannot open '%1'.").arg(argv[1]));
+          message(QDjView::tr("cannot open '%1'.").arg(name));
           exit(10);
         }
     }

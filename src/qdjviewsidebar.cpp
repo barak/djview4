@@ -61,6 +61,11 @@
 #if QT_VERSION >= 0x50000
 # include <QUrlQuery>
 #endif
+#if QT_VERSION >= 0x50E00
+# define zero(T) T()
+#else
+# define zero(T) 0
+#endif
 
 #include <libdjvu/ddjvuapi.h>
 #include <libdjvu/miniexp.h>
@@ -176,7 +181,7 @@ QDjViewOutline::refresh()
               item->setToolTip(0, tr("Go: page %1.").arg(name));
               item->setWhatsThis(0, whatsThis());
             }
-          tree->setItemExpanded(root, true);
+          root->setExpanded(true);
         }
       pageChanged(djview->getDjVuWidget()->page());
     }
@@ -229,7 +234,7 @@ QDjViewOutline::fillItems(QTreeWidgetItem *root, miniexp_t expr)
             item->setText(0, text.replace(spaces," "));
           else if (! pagename.isEmpty())
             item->setText(0, tr("Page %1").arg(pagename));
-          item->setFlags(0);
+          item->setFlags(zero(Qt::ItemFlags));
           item->setWhatsThis(0, whatsThis());
           if (link && link[0])
             {
@@ -267,11 +272,11 @@ QDjViewOutline::pageChanged(int pageno)
     searchItem(tree->topLevelItem(i), pageno, fi, fp);
   // select
   if (si && fi && si != fi)
-    tree->setItemSelected(si, false);
+    si->setSelected(false);
   if (fi && si != fi)
     {
       tree->setCurrentItem(fi);
-      tree->setItemSelected(fi, true);
+      fi->setSelected(true);
       tree->scrollToItem(fi);
     }
 }
@@ -1809,7 +1814,7 @@ QDjViewFind::selectAll()
 void 
 QDjViewFind::eraseText()
 {
-  setText(QString::null);
+  setText(QString());
   setRegExpMode(false);
   setWordOnly(true);
   setCaseSensitive(false);
