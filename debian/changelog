@@ -1,8 +1,13 @@
-djview4 (4.12-0) experimental; urgency=medium
+djview4 (4.12-1) unstable; urgency=medium
 
+  [ Leon Bottou ]
   * Release 4.12
 
- -- Leon Bottou <leonb@users.sourceforge.net>  Fri, 20 Nov 2020 13:19:19 +0500
+  [ Barak A. Pearlmutter ]
+  * New upstream release
+  * Tell uscan to look at git tags
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Sat, 21 Nov 2020 11:43:59 +0000
 
 djview4 (4.11-3) unstable; urgency=medium
 
