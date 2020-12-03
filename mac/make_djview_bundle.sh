@@ -79,55 +79,51 @@ run rmdir $bundle/bin || exit
 run ln -s ./MacOS $bundle/bin || exit
 run ln -s ./MacOS $bundle/plugins || exit
 
-# copy needed homebrew libraries
-for lib in $(otool -L $bundle/MacOS/ddjvu | awk '/^\t/{print $1}') ; do
-  case "$lib" in 
-    $BREWDIR/*) 
-        libname=$(basename "$lib")
-        test -r "./$bundle/lib/$libname" || \
-	    run cp "$lib" "./$bundle/lib/$libname" || exit ;;
-  esac
-done
 
 # copy needed qt plugins
 ( cd "$QTDIR" ; \
   ls -1 plugins/{platforms,imageformats,styles,printsupport}/*.dylib | \
-  grep -v libqwebgl.dylib | \
-  grep -v _debug.dylib ) | \
+      grep -v libqwebgl.dylib | \
+      grep -v libqpdf.dylib | \
+      grep -v libqsvg.dylib | \
+      grep -v _debug.dylib ) | \
 while read plugin ; do
   run mkdir -p $bundle/$(dirname "$plugin") || exit
   run cp "$QTDIR/$plugin" $bundle/"$plugin" || exit
 done
 
-
-
-# copy needed libraries  
-for loader in \
-    $bundle/MacOS/djview \
-    $bundle/*/*.dylib 
-do 
-  for lib in $(otool -L $loader | awk '/^\t/{print $1}') 
+# copy needed libraries
+function getlibs() {
+  for loader in $*
   do
-    if [ $(basename "$lib") != $(basename "$loader") ]
-    then
-      case "$lib" in 
-      $BREWDIR/*) 
-        libname=$(basename "$lib")
-	test -r "./$bundle/lib/$libname" || \
-	    run cp "$lib" "./$bundle/lib/$libname" || exit ;;
-      @rpath/*)
-        libname=$(basename "$lib")
-        lib="$QTDIR/lib${lib/#@rpath//}"
-	test -r "./$bundle/lib/$libname" || \
-	    run cp "$lib" "./$bundle/lib/$libname" || exit ;;
-      $QTDIR/*)
-        libname=$(basename "$lib")
-	test -r "./$bundle/lib/$libname" || \
-	    run cp "$lib" "./$bundle/lib/$libname" || exit ;;
-      esac
-    fi
+    for lib in $(otool -L $loader | awk '/^\t/{print $1}') 
+    do
+      if [ $(basename "$lib") != $(basename "$loader") ]
+      then
+        case "$lib" in 
+          $BREWDIR/*) 
+              libname=$(basename "$lib")
+	      test -r "./$bundle/lib/$libname" || \
+	          run cp "$lib" "./$bundle/lib/$libname" || exit ;;
+          @rpath/*)
+              libname=$(basename "$lib")
+              lib="$QTDIR/lib${lib/#@rpath//}"
+	      test -r "./$bundle/lib/$libname" || \
+	          run cp "$lib" "./$bundle/lib/$libname" || exit ;;
+          $QTDIR/*)
+              libname=$(basename "$lib")
+	      test -r "./$bundle/lib/$libname" || \
+	          run cp "$lib" "./$bundle/lib/$libname" || exit ;;
+        esac
+      fi
+    done
   done
-done
+}
+getlibs $bundle/MacOS/ddjvu
+getlibs $bundle/MacOS/djview
+getlibs $bundle/MacOS/*/*.dylib 
+getlibs $bundle/lib/Qt*
+getlibs $bundle/lib/*.dylib
 
 # copy translations
 languages=$(ls -1 ../src/*.qm | sed -e 's/^[^_]*_//' -e 's/\.qm$//')
