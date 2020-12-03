@@ -104,7 +104,7 @@ done
 # copy needed libraries  
 for loader in \
     $bundle/MacOS/djview \
-    $bundle/MacOS/*/*.dylib 
+    $bundle/*/*.dylib 
 do 
   for lib in $(otool -L $loader | awk '/^\t/{print $1}') 
   do
