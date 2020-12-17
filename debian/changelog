@@ -1,3 +1,10 @@
+djview4 (4.12-2) unstable; urgency=medium
+
+  * Track upstream mods (closes: #977635)
+    - FTCBFS patch from Helmut Grohne
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Thu, 17 Dec 2020 22:21:15 +0000
+
 djview4 (4.12-1) unstable; urgency=medium
 
   [ Leon Bottou ]
