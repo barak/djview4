@@ -294,7 +294,7 @@ Unsetting them is better than setting them wrong.])
     path=$QTDIR/bin:$PATH
   fi
   if test -z "$QMAKE" ; then
-    AC_PATH_PROGS([QMAKE], [qmake], [], [$path])
+    AC_PATH_TOOL([QMAKE], [qmake], [], [$path])
   fi
   if test -z "$QMAKE" ; then
     AC_MSG_ERROR([Cannot find the Qt program qmake. 
@@ -349,7 +349,7 @@ If you define QMAKESPEC, make sure it is correct.])
     altrcc="rcc-${qtversion}"
     altlupdate="lupdate-${qtversion}"
     altlrelease="lrelease-${qtversion}"
-  else
+  elif test `basename "$QMAKE"` = qmake ; then
     AC_MSG_CHECKING([for real qmake path])
     test -x "$QT_INSTALL_BINS/qmake" && QMAKE="$QT_INSTALL_BINS/qmake"
     AC_MSG_RESULT([$QMAKE])
