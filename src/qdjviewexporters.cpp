@@ -405,9 +405,9 @@ QDjViewDjVuExporter::save(QString fname)
   fromPage = qBound(0, fromPage, pagenum-1);
   QByteArray pagespec;
   if (fromPage == toPage && pagenum > 1)
-    pagespec.append(QString("--pages=%1").arg(fromPage+1));
+    pagespec.append(QString("--pages=%1").arg(fromPage+1).toLocal8Bit());
   else if (fromPage != 0 || toPage != pagenum - 1)
-    pagespec.append(QString("--pages=%1-%2").arg(fromPage+1).arg(toPage+1));
+    pagespec.append(QString("--pages=%1-%2").arg(fromPage+1).arg(toPage+1).toLocal8Bit());
   QByteArray namespec;
   if (indirect)
     namespec = "--indirect=" + fname.toUtf8();
