@@ -3669,7 +3669,7 @@ MapArea::paintPermanent(QPaintDevice *w, QRectMapper &m,
           QRect r = rect.adjusted(bw, bw, -bw, -bw);
           QString s = miniexp_to_qstring(comment);
           paint.setPen(foregroundColor);
-          int flags = Qt::AlignCenter|Qt::AlignVCenter|Qt::TextWordWrap;
+          int flags = Qt::AlignLeft|Qt::AlignVCenter|Qt::TextWordWrap;
           QFont font = paint.font();
           // estimate font size
           int size = (int)(z * 0.12);
