@@ -57,3 +57,5 @@ qmake_ts += djview_zh_cn.ts
 qmake_qm += djview_zh_cn.qm
 qmake_ts += djview_zh_tw.ts
 qmake_qm += djview_zh_tw.qm
+qmake_ts += djview_pl.ts
+qmake_qm += djview_pl.qm

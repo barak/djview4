@@ -3669,7 +3669,7 @@ MapArea::paintPermanent(QPaintDevice *w, QRectMapper &m,
           QRect r = rect.adjusted(bw, bw, -bw, -bw);
           QString s = miniexp_to_qstring(comment);
           paint.setPen(foregroundColor);
-          int flags = Qt::AlignCenter|Qt::AlignVCenter|Qt::TextWordWrap;
+          int flags = Qt::AlignVCenter|Qt::TextWordWrap;
           QFont font = paint.font();
           // estimate font size
           int size = (int)(z * 0.12);
@@ -3678,11 +3678,11 @@ MapArea::paintPermanent(QPaintDevice *w, QRectMapper &m,
               QRect br;
               font.setPixelSize(size);
               paint.setFont(font);
-              paint.drawText(r,flags|Qt::TextDontPrint,s,&br);
+              paint.drawText(r,flags|Qt::AlignHCenter|Qt::TextDontPrint,s,&br);
               if (r.contains(br))
                 {
                   // found good font size
-                  paint.drawText(r,flags,s,0);
+                  paint.drawText(r,flags|Qt::AlignLeft,s,0);
                   break;
                 }
               size -= 1;
