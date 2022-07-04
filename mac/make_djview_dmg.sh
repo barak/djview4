@@ -1,6 +1,6 @@
 #!/bin/bash
 
-dmgname="DjVuLibre-3.5.28+DjView-4.12-universal-1"
+dmgname="DjVuLibre-3.5.28+DjView-4.12-universal-2"
 
 cd $(dirname $0)
 if ! test -d DjView.app ; then
@@ -24,7 +24,7 @@ test -d $dmg && run rm -rf $dmg
 trap "rm -rf $dmg 2>/dev/null" 0
 
 run mkdir $dmg || exit
-run cp -r DjView.app $dmg || exit
+run cp -R DjView.app $dmg || exit
 run cp ReadMe.rtf $dmg || exit
 book=DjView.app/Contents/share/doc/djvu/djvulibre-book-en.djvu
 run ln -s $book $dmg/Manual.djvu || exit
