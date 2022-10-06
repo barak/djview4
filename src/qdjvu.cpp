@@ -45,7 +45,7 @@
 #if QT_VERSION >= 0x50000
 # include <QUrlQuery>
 #endif
-#if QT_VERSION >= 0x60000
+#if QT_VERSION >= 0x50D00
 # include <QRecursiveMutex>
 #else
 class QRecursiveMutex: public QMutex {
