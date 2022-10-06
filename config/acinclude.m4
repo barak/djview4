@@ -314,7 +314,7 @@ message(QT_INSTALL_BINS="$$[QT_INSTALL_BINS]")
 changequote([, ])dnl
 EOF
   if ( cd conftest.d && $QMAKE > conftest.out 2>&1 ) ; then
-    sed -e 's/^.*: *//' < conftest.d/conftest.out > conftest.d/conftest.sh
+    grep "Project MESSAGE:" < conftest.d/conftest.out | sed -e 's/^.*: *//' > conftest.d/conftest.sh
     . conftest.d/conftest.sh
     rm -rf conftest.d
   else
