@@ -1,0 +1,6 @@
+Name: djview
+Link: /usr/bin/djview
+Alternative: /usr/bin/djview4
+Dependents:
+  /usr/share/man/man1/djview.1.gz djview.1.gz /usr/share/man/man1/djview4.1.gz
+Priority: 40
