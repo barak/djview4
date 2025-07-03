@@ -1,6 +1,6 @@
 #!/bin/bash
 
-dmgname="DjVuLibre-3.5.28+DjView-4.12-universal-2"
+dmgname="DjVuLibre-3.5.29+DjView-4.12-universal"
 
 cd $(dirname $0)
 if ! test -d DjView.app ; then

@@ -33,7 +33,7 @@ run cp -r ../src/djview.app DjView.app || exit
 bundle=DjView.app/Contents
 
 # run macdeployqt
-run "$PREFIX"/bin/macdeployqt DjView.app -verbose=0  2>/dev/null
+run "$PREFIX"/bin/macdeployqt DjView.app -verbose=1
 
 # fix qt.conf
 echo "Translations = Resources/translations" >> "$bundle/Resources/qt.conf"
@@ -103,7 +103,7 @@ fi
 
 # copy translations
 languages=$(ls -1 ../src/*.qm | sed -e 's/^[^_]*_//' -e 's/\.qm$//')
-run rm $bundle/Resources/empty.lproj
+test -d $bundle/Resources/empty.lproj && run rm $bundle/Resources/empty.lproj
 run mkdir -p $bundle/Resources/en.lproj || exit
 for lang in $languages ; do
     run mkdir -p $bundle/Resources/$lang.lproj || exit
