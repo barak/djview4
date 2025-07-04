@@ -25,7 +25,7 @@ trap "rm -rf $dmg 2>/dev/null" 0
 
 run mkdir $dmg || exit
 run cp -R DjView.app $dmg || exit
-run cp ReadMe.rtf $dmg || exit
+run cp InstallationInstructions.rtfd $dmg || exit
 book=DjView.app/Contents/share/doc/djvu/djvulibre-book-en.djvu
 run ln -s $book $dmg/Manual.djvu || exit
 run hdiutil create -ov -srcfolder $dmg -volname "$dmgname" -format UDZO "$dmgname".dmg || exit
