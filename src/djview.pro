@@ -63,7 +63,7 @@ macx {
   RESOURCES.files = images/DjVu.icns
   QMAKE_BUNDLE_DATA += RESOURCES
   QMAKE_INFO_PLIST = djview.plist
-  QMAKE_APPLE_DEVICE_ARCHS="x86_64 arm64"
+  # QMAKE_APPLE_DEVICE_ARCHS="x86_64 arm64"
 } 
 
 # --- windows stuff

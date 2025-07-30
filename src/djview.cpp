@@ -226,7 +226,10 @@ QDjViewApplication::getTranslationDirs()
       addDirectory(dirs, dirPath + "/../../share/djview4");
       addDirectory(dirs, "/usr/share/djvu/djview4");
       addDirectory(dirs, "/usr/share/djview4");
-#if QT_VERSION >= 0x60000
+#if QT_VERSION >= 0x68000
+      foreach(QString dir, QLibraryInfo::paths(QLibraryInfo::TranslationsPath))
+        addDirectory(dirs, dir);
+#elif QT_VERSION >= 0x60000
       addDirectory(dirs, QLibraryInfo::path(QLibraryInfo::TranslationsPath));
 #else
       addDirectory(dirs, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
