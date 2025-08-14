@@ -1,9 +1,10 @@
-djview4 (4.12-4) UNRELEASED; urgency=medium
+djview4 (4.12.3-1) unstable; urgency=medium
 
-  * Bump policy
+  * New upstream release
+  * Bump policy & misc updates
   * dh_installalternatives
 
- -- Barak A. Pearlmutter <bap@debian.org>  Fri, 18 Nov 2022 14:44:50 +0000
+ -- Barak A. Pearlmutter <bap@debian.org>  Thu, 14 Aug 2025 12:01:41 +0100
 
 djview4 (4.12-3) unstable; urgency=medium
 
