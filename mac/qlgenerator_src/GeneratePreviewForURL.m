@@ -56,7 +56,7 @@ GeneratePreviewForURL(void *thisInterface,
   ddjvu_document_t *doc = 0;
   ddjvu_format_t *fmt = 0;
   ddjvu_page_t *pag = 0;
-  CGContextRef *cg = 0;
+  CGContextRef cg = 0;
   
   @autoreleasepool {
     
@@ -139,7 +139,7 @@ GeneratePreviewForURL(void *thisInterface,
 					bytesPerRow:rrect.w * 3
 				       bitsPerPixel:24 ];
 	if (! ddjvu_page_render(pag, DDJVU_RENDER_COLOR, &rrect, &rrect,
-                                  fmt, rrect.w * 3, [bitmap bitmapData]) ) {
+				fmt, rrect.w * 3, (char*)[bitmap bitmapData]) ) {
             NSLog(@"Djvu page rendering error '%@' (page %d).", path, page);
             goto pop;
           }
@@ -152,7 +152,7 @@ GeneratePreviewForURL(void *thisInterface,
           if (! cg)
             cg = QLPreviewRequestCreatePDFContext(preview, &cgrect, NULL, NULL);
           data = [NSData dataWithBytes:&cgrect length:sizeof(cgrect)];
-          dict = [NSDictionary dictionaryWithObject:data forKey:kCGPDFContextMediaBox];
+          dict = [NSDictionary dictionaryWithObject:data forKey:(NSString*)kCGPDFContextMediaBox];
           CGPDFContextBeginPage(cg, (CFDictionaryRef)dict);
           cgimg = [bitmap CGImage];
           CGContextDrawImage(cg, cgrect, cgimg);

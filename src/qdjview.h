@@ -63,12 +63,12 @@ class QShortcut;
 class QSettings;
 class QStackedLayout;
 class QStatusBar;
-class QStringList;
 class QTimer;
 class QTabWidget;
 class QToolBar;
-
-
+#if QT_VERSION < 0x60000
+class QStringList;
+#endif
 
 #if DDJVUAPI_VERSION < 18
 # error "DDJVUAPI_VERSION>=18 is required !"

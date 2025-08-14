@@ -75,7 +75,6 @@
 #include <QPalette>
 #include <QProcess>
 #include <QRegExp>
-#include <QRegExpValidator>
 #include <QScrollBar>
 #include <QSettings>
 #include <QShortcut>
@@ -98,7 +97,6 @@
 #if QT_VERSION >= 0x50000
 # include <QUrlQuery>
 #endif
-
 #if QT_VERSION >= 0x50E00
 # define tr8 tr
 # define swidth(m,s) (m).horizontalAdvance(s)
@@ -107,6 +105,13 @@
 # define tr8 trUtf8 
 # define swidth(m,s) (m).width(s)
 # define zero(T) 0
+#endif
+#if QT_VERSION >= 0x60000
+# define reReplace(s,r,a) (r).replaceIn((s),(a))
+# define reIndex(s,r,p) (r).indexIn((s),(p))
+#else
+# define reReplace(s,r,a) (s).replace((r),(a))
+# define reIndex(s,r,p) (s).indexOf((r),(p))
 #endif
 
 #include "qdjvu.h"
@@ -1306,8 +1311,10 @@ QDjView::enableContextMenu(bool enable)
       widget->setContextMenu(0);
       // disable shortcuts
       if (oldContextMenu)
-        foreach(QAction *action, widget->actions())
-          widget->removeAction(action);
+	{
+	  foreach(QAction *action, widget->actions())
+	    widget->removeAction(action);
+	}
     }
   if (enable && oldContextMenu != contextMenu)
     {
@@ -1670,7 +1677,7 @@ QDjView::parseToolBarOption(QString option, QStringList &errors)
   while (npos < len)
     {
       int pos = npos;
-      npos = str.indexOf(QRegExp("[-+,]"), pos);
+      npos = reIndex(str, QRegExp("[-+,]"), pos);
       if (npos < 0) 
         npos = len;
       QString key = str.mid(pos, npos-pos).trimmed();
@@ -1689,7 +1696,7 @@ QDjView::parseToolBarOption(QString option, QStringList &errors)
       else if (key=="always" && !plus && !minus) {
         options |= QDjViewPrefs::SHOW_TOOLBAR;
         tools &= ~QDjViewPrefs::TOOLBAR_AUTOHIDE;
-      } else if (key.contains(QRegExp("^(fore|back|color|bw)(_button)?$")))
+      } else if (reIndex(key, QRegExp("^(fore|back|color|bw)(_button)?$"), 0) >= 0)
         wantmode |= plus;
       else if (key=="pan" || key=="zoomsel" || key=="textsel")
         wantselect |= plus;
@@ -2145,8 +2152,10 @@ QDjView::parseDjVuCgiArguments(QUrl url)
     }
   // warning for errors
   if (djvuopts && errors.size() > 0)
-    foreach(QString error, errors)
-      qWarning("%s",(const char*)error.toLocal8Bit());
+    {
+      foreach(QString error, errors)
+	qWarning("%s",(const char*)error.toLocal8Bit());
+    }
 }
 
 
@@ -2459,7 +2468,11 @@ QDjView::QDjView(QDjVuContext &context, ViewerMode mode, QWidget *parent)
   splash->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
   splash->setPixmap(QPixmap(":/images/splash.png"));
   QPalette palette = splash->palette();
+#if QT_VERSION >= 0x60000
+  palette.setColor(QPalette::Window, Qt::white);
+#else
   palette.setColor(QPalette::Background, Qt::white);
+#endif
   splash->setPalette(palette);
   splash->setAutoFillBackground(true);
 
@@ -2856,7 +2869,7 @@ QDjView::reloadDocument()
       closeDocument();
       ddjvu_cache_clear(djvuContext);
       // Opening files more efficiently
-      QFileInfo file = url.toLocalFile();
+      QFileInfo file = QFileInfo(url.toLocalFile());
       if (file.exists())
         {
           open(file.absoluteFilePath());
@@ -3337,7 +3350,7 @@ QDjView::find(QString find)
   if (! find.isEmpty())
     {
       QRegExp options("/[wWcCrR]*$");
-      if (find.contains(options))
+      if (reIndex(find, options, 0) >= 0)
         {
           for (int i=find.lastIndexOf("/"); i<find.size(); i++)
             {
@@ -3355,7 +3368,7 @@ QDjView::find(QString find)
               else if (c == 'R')
                 findWidget->setRegExpMode(false); 
             }
-          find = find.remove(options);
+          find = reReplace(find, options, "");
         }
       findWidget->setText(find);
     }
@@ -3495,7 +3508,7 @@ QDjView::pageNumber(QString name, int from)
   // Also recognizes $n as an ordinal page number (obsolete)
   if (from < 0)
     from = widget->page();
-  if (from < pagenum && name.contains(QRegExp("^[-+$]\\d+$")) )
+  if (from < pagenum && reIndex(name, QRegExp("^[-+$]\\d+$"), 0) >= 0 )
     {
       int num = name.mid(1).toInt();
       if (name[0]=='+')
@@ -3515,7 +3528,7 @@ QDjView::pageNumber(QString name, int from)
         ! strcmp(utf8Name, documentPages[i].title))
       return i;
   // Then process a number in range [1..pagenum]
-  if (name.contains(QRegExp("^\\d+$")))
+  if (reIndex(name, QRegExp("^\\d+$"), 0) >= 0)
     return qBound(1, name.toInt(), pagenum) - 1;
   // Otherwise search page names in the unlikely
   // case they are different from the page ids
@@ -3867,7 +3880,7 @@ QDjView::eventFilter(QObject *watched, QEvent *event)
 void 
 QDjView::info(QString message)
 {
-  if (! message.contains(QRegExp("^\\[\\d+")))
+  if (reIndex(message, QRegExp("^\\[\\d+"), 0) < 0)
     statusBar->showMessage(message, 2000);
   qWarning("INFO: %s", (const char*)message.toLocal8Bit());
 }
@@ -4071,7 +4084,7 @@ QDjView::updateTextLabel()
       if (! textLabelRect.isEmpty())
         {
           text = widget->getTextForRect(textLabelRect);
-          text = text.replace(QRegExp("\\s+"), " ");
+          text = reReplace(text, QRegExp("\\s+"), " ");
           text = m.elidedText(text, Qt::ElideMiddle, w);
         }
       else
@@ -4110,7 +4123,7 @@ QDjView::pointerEnter(const Position&, miniexp_t)
     target.clear();
   QString message;
   if (link.startsWith("#") &&
-      link.contains(QRegExp("^#[-+]\\d+$")) )
+      reIndex(link, QRegExp("^#[-+]\\d+$"), 0) >= 0 )
     {
       int n = link.mid(2).toInt();
       if (link[1]=='+')
@@ -4372,7 +4385,7 @@ QDjView::zoomComboEdited(void)
 {
   bool okay;
   QString text = zoomCombo->lineEdit()->text();
-  int zoom = text.replace(QRegExp("\\s*%?$"),"").trimmed().toInt(&okay);
+  int zoom = reReplace(text, QRegExp("\\s*%?$"), "").trimmed().toInt(&okay);
   if (okay && zoom>0)
     widget->setZoom(zoom);
   updateActionsLater();
@@ -4751,7 +4764,7 @@ QDjView::openRecent()
   if (action && viewerMode >= STANDALONE)
     {
       QUrl url = action->data().toUrl();
-      QFileInfo file = url.toLocalFile();
+      QFileInfo file = QFileInfo(url.toLocalFile());
       if (file.exists())
         open(file.absoluteFilePath());
       else

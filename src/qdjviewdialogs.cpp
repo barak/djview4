@@ -77,6 +77,7 @@
 #include <QSettings>
 #include <QShortcut>
 #include <QString>
+#include <QStyle>
 #include <QTableWidget>
 #include <QTableWidgetItem>
 #include <QTabWidget>
@@ -88,6 +89,13 @@
 # define tr8 tr
 #else
 # define tr8 trUtf8 
+#endif
+#if QT_VERSION >= 0x60000
+# define reReplace(s,r,a) (r).replaceIn((s),(a))
+# define reIndex(s,r,p) (r).indexIn((s),(p))
+#else
+# define reReplace(s,r,a) (s).replace((r),(a))
+# define reIndex(s,r,p) (s).indexOf((r),(p))
 #endif
 
 #include <libdjvu/miniexp.h>
@@ -127,7 +135,11 @@ QDjViewErrorDialog::QDjViewErrorDialog(QWidget *parent)
     d(new Private)
 {
   d->ui.setupUi(this);
+#if QT_VERSION >= 0x60000
+  d->ui.textEdit->viewport()->setBackgroundRole(QPalette::Window);
+#else
   d->ui.textEdit->viewport()->setBackgroundRole(QPalette::Background);
+#endif
   setWindowTitle(tr("DjView Error"));
 }
 
@@ -148,7 +160,7 @@ QDjViewErrorDialog::error(QString msg, QString, int)
 {
   // Remove [1-nnnnn] prefix from djvulibre-3.5
   if (msg.startsWith("["))
-    msg = msg.replace(QRegExp("^\\[\\d*-?\\d*\\]\\s*") , "");
+    msg = reReplace(msg, QRegExp("^\\[\\d*-?\\d*\\]\\s*") , "");
 #if QT_VERSION >= 0x50000
   msg = msg.toHtmlEscaped();
 #else
@@ -170,8 +182,16 @@ QDjViewErrorDialog::error(QString msg, QString, int)
 void 
 QDjViewErrorDialog::prepare(QMessageBox::Icon icon, QString caption)
 {
+#if QT_VERSION >= 0x60000
+  if (icon != QMessageBox::NoIcon)
+    {
+      QIcon icon = style()->standardIcon(QStyle::SP_MessageBoxInformation);
+      d->ui.iconLabel->setPixmap(icon.pixmap(d->ui.iconLabel->size()));
+    }
+#else
   if (icon != QMessageBox::NoIcon)
     d->ui.iconLabel->setPixmap(QMessageBox::standardIcon(icon));
+#endif
   if (caption.isEmpty())
     caption = tr("Error - DjView", "dialog caption");
   setWindowTitle(caption);
@@ -293,7 +313,11 @@ QDjViewInfoDialog::QDjViewInfoDialog(QDjView *parent)
   font.setFamily("monospace");
   font.setPointSize((font.pointSize() * 5 + 5) / 6);
   d->ui.fileText->setFont(font);
+#if QT_VERSION >= 0x60000
+  d->ui.fileText->viewport()->setBackgroundRole(QPalette::Window);
+#else
   d->ui.fileText->viewport()->setBackgroundRole(QPalette::Background);
+#endif
   
   QStringList labels;
   d->ui.docTable->setColumnCount(6);
@@ -951,8 +975,11 @@ QDjViewSaveDialog::QDjViewSaveDialog(QDjView *djview)
   d->exporter = 0;
 
   d->ui.setupUi(this);
+#if QT_VERSION >= 0x60000
+  setWindowModality(Qt::WindowModal);
+#else
   setAttribute(Qt::WA_GroupLeader, true);
-
+#endif
   connect(d->ui.okButton, SIGNAL(clicked()), 
           this, SLOT(start()));
   connect(d->ui.stopButton, SIGNAL(clicked()), 
@@ -1232,7 +1259,11 @@ QDjViewExportDialog::QDjViewExportDialog(QDjView *djview)
   d->exporter = 0;
 
   d->ui.setupUi(this);
+#if QT_VERSION >= 0x60000
+  setWindowModality(Qt::WindowModal);
+#else
   setAttribute(Qt::WA_GroupLeader, true);
+#endif
 
   connect(d->ui.okButton, SIGNAL(clicked()), 
           this, SLOT(start()));
@@ -1584,7 +1615,11 @@ QDjViewPrintDialog::QDjViewPrintDialog(QDjView *djview)
   d->exporter = 0;
   d->printer = new QPrinter(QPrinter::HighResolution);
   d->ui.setupUi(this);
+#if QT_VERSION >= 0x60000
+  setWindowModality(Qt::WindowModal);
+#else
   setAttribute(Qt::WA_GroupLeader, true);
+#endif
   connect(d->ui.okButton, SIGNAL(clicked()), 
           this, SLOT(start()));
   connect(d->ui.stopButton, SIGNAL(clicked()), 
@@ -1755,11 +1790,19 @@ QDjViewPrintDialog::choose()
       d->exporter->savePrintSetup(d->printer);
       QPrintDialog *dialog = new QPrintDialog(d->printer, this);
       // options
+#if QT_VERSION >= 0x60000
+      QPrintDialog::PrintDialogOptions options = dialog->options();
+#else
       QPrintDialog::PrintDialogOptions options = dialog->enabledOptions();
+#endif
       options |= QPrintDialog::PrintCollateCopies;
       options &= ~QPrintDialog::PrintToFile;
       options &= ~QPrintDialog::PrintSelection;
+#if QT_VERSION >= 0x60000
+      dialog->setOptions(options);
+#else
       dialog->setEnabledOptions(options);
+#endif
       // copy page spec
       int pagenum = d->djview->pageNum();
       int curpage = d->djview->getDjVuWidget()->page();

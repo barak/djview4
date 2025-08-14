@@ -57,8 +57,12 @@
 #include <QGesture>
 #endif
 #ifdef QT_OPENGL_LIB
-# include <QGLWidget>
-# include <QGLFormat>
+# if QT_VERSION >= 0x60000
+#  undef QT_OPENGL_LIB
+# else
+#  include <QGLWidget>
+#  include <QGLFormat>
+# endif
 #endif
 
 #if DDJVUAPI_VERSION < 17
@@ -221,11 +225,16 @@ qcursor_by_name(const char *s, int hotx=8, int hoty=8)
   return QCursor(pixmap, hotx, hoty);
 }
 
-
-#if QT_VERSION > 0x50800
-# define foreachrect(r,rgn) foreach(r,rgn)
+#if QT_VERSION > 0x60000
+# define foreachrect(r,rgn)  \
+  for (const auto &it : rgn) \
+    if (r = it; false) {} else
+#elif QT_VERSION > 0x50800
+# define foreachrect(r,rgn) \
+  foreach(r,rgn)
 #else
-# define foreachrect(r,rgn) foreach(r,(rgn).rects())
+# define foreachrect(r,rgn) \
+  foreach(r,(rgn).rects())
 #endif
 
 static QRegion
@@ -4615,11 +4624,13 @@ QDjVuPrivate::paintAll(QPainter &paint, const QRegion &paintRegion)
   widget->paintDesk(paint, deskRegion);
   // Paint frames again
   if (frame)
-    foreach(p, pageLayout)
     {
-      QRect rect = p->rect.adjusted(0,0,shadowSize,shadowSize);
-      if (visibleRect.intersects(rect))
-        widget->paintFrame(paint, p->viewRect, shadowSize);
+      foreach(p, pageLayout)
+	{
+	  QRect rect = p->rect.adjusted(0,0,shadowSize,shadowSize);
+	  if (visibleRect.intersects(rect))
+	    widget->paintFrame(paint, p->viewRect, shadowSize);
+	}
     }
   // Paint selected rectangle
   if (! selectedRect.isEmpty())
@@ -4991,13 +5002,13 @@ QDjVuWidget::modifierEvent(Qt::KeyboardModifiers modifiers,
           return; // Wait for the contextMenuEvent
         }
       else if (modifiers == Qt::NoModifier &&
-               buttons == Qt::MidButton )
+               buttons == Qt::MiddleButton )
         {
           viewport()->setCursor(Qt::CrossCursor);
           startSelecting(point);
         }
       else if (modifiers == Qt::ControlModifier &&
-               buttons == Qt::MidButton )
+               buttons == Qt::MiddleButton )
         {
           viewport()->setCursor(priv->cursHandClosed);
           startPanning(point);
@@ -5598,7 +5609,11 @@ QDjVuLens::event(QEvent *event)
     case QEvent::MouseMove:
       {
         QMouseEvent *oldEvent = (QMouseEvent*)event;
+#if QT_VERSION >= 0x60000
+        QPoint pos = oldEvent->globalPosition().toPoint();
+#else	
         QPoint pos = oldEvent->globalPos();
+#endif
         QMouseEvent newEvent(oldEvent->type(),
                              widget->viewport()->mapFromGlobal(pos),
                              pos, oldEvent->button(), oldEvent->buttons(),
@@ -5736,10 +5751,12 @@ QDjVuLens::paintEvent(QPaintEvent *event)
     }
   widget->paintDesk(paint, deskRegion);
   if (priv->frame)
-    foreach(p, priv->pageVisible)
     {
-      QRect prect = mapper.mapped(p->viewRect);
-      widget->paintFrame(paint, prect, priv->shadowSize);
+      foreach(p, priv->pageVisible)
+	{
+	  QRect prect = mapper.mapped(p->viewRect);
+	  widget->paintFrame(paint, prect, priv->shadowSize);
+	}
     }
   paint.setPen(Qt::gray);
   paint.setBrush(Qt::NoBrush);

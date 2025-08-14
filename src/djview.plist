@@ -70,7 +70,9 @@
 	<key>UTTypeDescription</key>
 	<string>DjVu File</string>
 	<key>UTTypeIdentifier</key>
-	<string>com.lizardtech.djvu</string>
+	<string>org.djvuzone.djvulibre.djvu</string>
+	<key>UTTypeReferenceURL</key>
+	<string>http://djvulibre.djvuzone.org/</string>
         <key>UTTypeIconFile</key>
         <string>DjVu.icns</string>
 	<key>UTTypeTagSpecification</key>

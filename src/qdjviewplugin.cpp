@@ -22,7 +22,6 @@
 #include <QApplication>
 #include <QByteArray>
 #include <QDebug>
-#include <QDesktopWidget>
 #include <QEvent>
 #include <QEventLoop>
 #include <QHBoxLayout>
@@ -68,12 +67,19 @@
 #  define HAVE_QX11EMBED 1
 # endif
 #endif
-
 #if QT_VERSION >= 0x50000
 # include <QWindow>
 # include <QAbstractNativeEventFilter>
 # define HAVE_QT5EMBED 1
 #endif
+#if QT_VERSION >= 0x60000
+# define reReplace(s,r,a) (r).replaceIn((s),(a))
+# define reIndex(s,r,p) (r).indexIn((s),(p))
+#else
+# define reReplace(s,r,a) (s).replace((r),(a))
+# define reIndex(s,r,p) (s).indexOf((r),(p))
+#endif
+
 
 #if WITH_X11
 # ifndef X_DISPLAY_MISSING
@@ -214,7 +220,11 @@ public:
 
 struct my_event_filter_t : public QAbstractNativeEventFilter
 {
+#if QT_VERSION >= 0x60000
+  virtual bool nativeEventFilter(const QByteArray &type, void *msg, qintptr*);
+#else
   virtual bool nativeEventFilter(const QByteArray &type, void *msg, long*);
+#endif
   QMap<quint32,QDjViewPlugin::Instance*> instances;
   QMap<quint32,my_timer_object_t*> timers;
   static my_event_filter_t *instance() {
@@ -222,7 +232,13 @@ struct my_event_filter_t : public QAbstractNativeEventFilter
     return filter ? filter : filter = new my_event_filter_t; }
 };
 
-bool my_event_filter_t::nativeEventFilter(const QByteArray &type, void *msg, long*)
+bool my_event_filter_t::nativeEventFilter(const QByteArray &type, void *msg,
+#if QT_VERSION >= 0x60000
+					  qintptr*
+#else
+					  long*
+#endif
+					  )
 {
   if (type != "xcb_generic_event_t") return false;
   my_xcb_configure_notify_event_t *ev = (my_xcb_configure_notify_event_t*)msg;
@@ -917,7 +933,9 @@ QDjViewPlugin::cmdNew()
       QString val = readString(pipeRead);
       QString k = key.toLower();
       if (k == "flags")
-#if QT_VERSION >= 0x50E00
+#if QT_VERSION >= 0x60000
+        args += QRegExp("\\s+").splitString(val, Qt::SkipEmptyParts);
+#elif QT_VERSION >= 0x50E00
         args += val.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
 #else
         args += val.split(QRegExp("\\s+"), QString::SkipEmptyParts);
@@ -1077,7 +1095,11 @@ QDjViewPlugin::cmdAttachWindow()
       if (shell && djview && shell != djview)
         {
           QLayout *layout = new QHBoxLayout(shell);
+#if QT_VERSION >= 0x60000
+          layout->setContentsMargins(QMargins(0,0,0,0));
+#else
           layout->setMargin(0);
+#endif
           layout->setSpacing(0);
           layout->addWidget(djview);
         }
@@ -1317,8 +1339,10 @@ QDjViewPlugin::cmdSetDjVuOpt()
     instance->args += key + QString("=") + value;
   // print error messages
   if (errors.size() > 0)
-    foreach(QString error, errors)
-      qWarning("djvuopt: %s",(const char*)error.toLocal8Bit());
+    {
+      foreach(QString error, errors)
+	qWarning("djvuopt: %s",(const char*)error.toLocal8Bit());
+    }
 }
 
 
@@ -1583,9 +1607,11 @@ QDjViewPlugin::Instance*
 QDjViewPlugin::findInstance(QWidget *widget)
 {
   if (widget)
-    foreach(Instance *instance, instances)
-      if (widget == instance->djview || widget == instance->shell)
-        return instance;
+    {
+      foreach(Instance *instance, instances)
+	if (widget == instance->djview || widget == instance->shell)
+	  return instance;
+    }
   return 0;
 }
 
@@ -1631,7 +1657,7 @@ QDjViewPlugin::showStatus(Instance *instance, QString message)
 {
   try
     {
-      message.replace(QRegExp("\\s"), " ");
+      message = reReplace(message, QRegExp("\\s"), " ");
       writeInteger(pipeRequest, CMD_SHOW_STATUS);
       writePointer(pipeRequest, (void*) instance);
       writeString(pipeRequest, message);

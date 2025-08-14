@@ -48,7 +48,6 @@
 #include <QPainterPath>
 #include <QPushButton>
 #include <QPixmap>
-#include <QRegExp>
 #include <QResizeEvent>
 #include <QStackedLayout>
 #include <QStringList>
@@ -58,6 +57,7 @@
 #include <QTreeWidget>
 #include <QVariant>
 #include <QVBoxLayout>
+#include <QRegExp>
 #if QT_VERSION >= 0x50000
 # include <QUrlQuery>
 #endif
@@ -66,6 +66,15 @@
 #else
 # define zero(T) 0
 #endif
+#if QT_VERSION >= 0x60000
+# define variantIsA(v,vt,mt) ((v).typeId() == mt)
+# define reReplace(s,r,a) (r).replaceIn((s),(a)) 
+#else
+# define variantIsA(v,vt,mt) ((v).type() == vt)
+# define reReplace(s,r,a) (s).replace((r),(a))
+#endif
+
+
 
 #include <libdjvu/ddjvuapi.h>
 #include <libdjvu/miniexp.h>
@@ -100,7 +109,11 @@ QDjViewOutline::QDjViewOutline(QDjView *djview)
   tree->setSelectionMode(QAbstractItemView::SingleSelection);
   tree->setTextElideMode(Qt::ElideRight);
   QVBoxLayout *layout = new QVBoxLayout(this);
+#if QT_VERSION >= 0x60000
+  layout->setContentsMargins(QMargins(0,0,0,0));
+#else
   layout->setMargin(0);
+#endif
   layout->setSpacing(0);
   layout->addWidget(tree);
 
@@ -231,7 +244,7 @@ QDjViewOutline::fillItems(QTreeWidgetItem *root, miniexp_t expr)
           QTreeWidgetItem *item = new QTreeWidgetItem(root);
           QString text = QString::fromUtf8(name);
           if (name && name[0])
-            item->setText(0, text.replace(spaces," "));
+            item->setText(0, reReplace(text,spaces," "));
           else if (! pagename.isEmpty())
             item->setText(0, tr("Page %1").arg(pagename));
           item->setFlags(zero(Qt::ItemFlags));
@@ -287,7 +300,7 @@ QDjViewOutline::searchItem(QTreeWidgetItem *item, int pageno,
                            QTreeWidgetItem *&fi, int &fp)
 {
   QVariant data = item->data(0, Qt::UserRole);
-  if (data.type() == QVariant::Int)
+  if (variantIsA(data, QVariant::Int, QMetaType::Int))
     {
       int page = data.toInt();
       if (page>=0 && page<=pageno && page>fp)
@@ -305,13 +318,13 @@ void
 QDjViewOutline::itemActivated(QTreeWidgetItem *item)
 {
   QVariant data = item->data(0, Qt::UserRole+1);
-  if (data.type() == QVariant::String)
+  if (variantIsA(data, QVariant::String, QMetaType::QString))
     {
       QString link = data.toString();
       if (link.size() > 0)
         djview->goToLink(link);
     }
-  else if (data.type() == QVariant::Int)
+  else if (variantIsA(data, QVariant::Int, QMetaType::Int))
     {
       int pageno = data.toInt();
       if (pageno >= 0)
@@ -338,7 +351,11 @@ class QDjViewThumbnails::View : public QListView
 public:
   View(QDjViewThumbnails *widget);
 protected:
+#if QT_VERSION >= 0x60000
+  void initViewItemOption(QStyleOptionViewItem *option) const;
+#else
   QStyleOptionViewItem viewOptions() const;
+#endif
 private:
   QDjViewThumbnails *widget;
 };
@@ -402,6 +419,17 @@ QDjViewThumbnails::View::View(QDjViewThumbnails *widget)
 }
 
 
+#if QT_VERSION >= 0x60000
+void QDjViewThumbnails::View::initViewItemOption(QStyleOptionViewItem *opt) const
+{
+  QListView::initViewItemOption(opt);
+  int size = widget->model->getSize();
+  opt->decorationAlignment = Qt::AlignCenter;
+  opt->decorationPosition = QStyleOptionViewItem::Top;
+  opt->decorationSize = QSize(size, size);
+  opt->displayAlignment = Qt::AlignCenter;
+}
+#else
 QStyleOptionViewItem 
 QDjViewThumbnails::View::viewOptions() const
 {
@@ -413,7 +441,7 @@ QDjViewThumbnails::View::viewOptions() const
   opt.displayAlignment = Qt::AlignCenter;
   return opt;
 }
-
+#endif
 
 
 // ----------------------------------------
@@ -709,7 +737,11 @@ QDjViewThumbnails::QDjViewThumbnails(QDjView *djview)
   view->setSelectionModel(selection);
 
   QVBoxLayout *layout = new QVBoxLayout(this);
+#if QT_VERSION >= 0x60000
+  layout->setContentsMargins(QMargins(0,0,0,0));
+#else
   layout->setMargin(0);
+#endif
   layout->setSpacing(0);
   layout->addWidget(view);
   
@@ -772,7 +804,7 @@ QDjViewThumbnails::updateActions(void)
   foreach(action, menu->actions())
     {
       QVariant data = action->data();
-      if (data.type() == QVariant::Bool)
+      if (variantIsA(data, QVariant::Bool, QMetaType::Bool))
         action->setChecked(smart);
       else
         action->setChecked(data.toInt() == size);
@@ -1557,7 +1589,7 @@ QDjViewFind::Model::textChanged()
       if (!regExpMode)
         {
           s = QRegExp::escape(widget->text());
-          s.replace(QRegExp("\\s+"), " ");
+          reReplace(s, QRegExp("\\s+"), " ");
         }
       if (wordOnly)
         s = "\\b" + s;

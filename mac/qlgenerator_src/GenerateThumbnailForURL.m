@@ -111,7 +111,7 @@ GenerateThumbnailForURL(void *thisInterface,
 			       colorSpaceName:NSCalibratedRGBColorSpace
 				  bytesPerRow:width*3
 				 bitsPerPixel:24 ];
-    if (!ddjvu_thumbnail_render(doc, 0, &width, &height, fmt, width*3, [bitmap bitmapData])) {
+    if (!ddjvu_thumbnail_render(doc, 0, &width, &height, fmt, width*3, (char*)[bitmap bitmapData])) {
       NSLog(@"Djvu thumbnail rendering error '%@'.", path);
       goto pop;
     }

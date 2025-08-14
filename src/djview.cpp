@@ -46,6 +46,13 @@
 #include <QString>
 #include <QStringList>
 #include <QTranslator>
+#if QT_VERSION >= 0x60000
+# define reReplace(s,r,a) (r).replaceIn((s),(a))
+# define reIndex(s,r,p) (r).indexIn((s),(p))
+#else
+# define reReplace(s,r,a) (s).replace((r),(a))
+# define reIndex(s,r,p) (s).indexOf((r),(p))
+#endif
 
 #if defined(Q_OS_WIN32)
 # include <mbctype.h>
@@ -139,8 +146,13 @@ QDjViewApplication::QDjViewApplication(int &argc, char **argv)
 #endif
   
   // Enable highdpi pixmaps
-#if QT_VERSION >= 0x50200
+#if QT_VERSION >= 0x50200 && QT_VERSION < 0x60000
   setAttribute(Qt::AA_UseHighDpiPixmaps, true);
+#endif
+
+  // Tooltip opacity
+#if QT_VERSION >= 0x60000
+  setStyleSheet("QToolTip {opacity: 250;}");
 #endif
   
   // Wire session management signals
@@ -214,7 +226,14 @@ QDjViewApplication::getTranslationDirs()
       addDirectory(dirs, dirPath + "/../../share/djview4");
       addDirectory(dirs, "/usr/share/djvu/djview4");
       addDirectory(dirs, "/usr/share/djview4");
+#if QT_VERSION >= 0x68000
+      foreach(QString dir, QLibraryInfo::paths(QLibraryInfo::TranslationsPath))
+        addDirectory(dirs, dir);
+#elif QT_VERSION >= 0x60000
+      addDirectory(dirs, QLibraryInfo::path(QLibraryInfo::TranslationsPath));
+#else
       addDirectory(dirs, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+#endif
       translationDirs = dirs;
     }
   return translationDirs;
@@ -269,15 +288,32 @@ QDjViewApplication::getTranslationLangs()
 static bool loadOneTranslator(QTranslator *trans, 
                               QString name, QString lang, QStringList dirs)
 {
-  QString llang = lang.toLower();
   foreach (QString dir, dirs)
     {
-      dir = dir.replace(QRegExp("\\$LANG(?!\\w)"), lang);
-      QDir qdir(dir);
-      if (qdir.exists())
+      QRegExp relang = QRegExp("\\$LANG(?!\\w)");
+      QString llang = lang.toLower();
+      if (reIndex(dir, relang, 0) >= 0) {
+	QString delims = "-_.";
+	QString d = reReplace(dir, relang, llang);
+	while (! QDir(d).exists() ) {
+	  int k = -1;
+	  for (int i=0; i<(int)delims.length(); i++) {
+	    int j = llang.lastIndexOf(delims[i]);
+	    if (j > k)
+	      k = j;
+	  }
+	  if (k > 0)
+	    llang.truncate(k);
+	  else
+	    break;
+	}
+	dir = reReplace(dir, relang, llang);
+      }
+      if (QDir(dir).exists())
         {
           if (trans->load(name + "_" + lang, dir, "_.-"))
             return true;
+	  QString llang = lang.toLower();
           if (lang != llang && trans->load(name + "_" + llang, dir, "_.-"))
             return true;
         }
@@ -292,14 +328,17 @@ QDjViewApplication::loadTranslators(QStringList langs,
   QStringList dirs = getTranslationDirs();
   foreach (QString lang, langs)
     {
-      bool okay = true;
-      if (okay && dTrans && !loadOneTranslator(dTrans, "djview", lang, dirs))
-        okay = false;
-      if (okay && qTrans && !loadOneTranslator(qTrans, "qt", lang, dirs))
-        okay = false;
-      if (okay || lang.startsWith("en_") || lang == "en")
-        return okay;
+      if (dTrans && dTrans->isEmpty())
+	loadOneTranslator(dTrans, "djview", lang, dirs);
+      if (qTrans && qTrans->isEmpty())
+	loadOneTranslator(qTrans, "qt", lang, dirs);
+      if (!(dTrans && dTrans->isEmpty()) && !(qTrans && qTrans->isEmpty()))
+	return true;
+      if (lang.startsWith("en_") || lang == "en")
+        break;
     }
+  if (dTrans && !dTrans->isEmpty())
+    return true;
   return false;
 }
 
@@ -493,7 +532,7 @@ main(int argc, char *argv[])
   while (qi < qargv.size() && qargv.at(qi)[0] == '-')
     {
       QString arg = qargv.at(qi);
-      arg.replace(QRegExp("^-+"),"");
+      arg = reReplace(arg, QRegExp("^-+"),"");
       QString key = arg.section(QChar('='),0,1);
       if (arg == "help")
         usage();
@@ -515,7 +554,7 @@ main(int argc, char *argv[])
     {
       QString name = qargv.at(qi);
       bool okay = true;
-      if (name.contains(QRegExp("^[a-zA-Z]{3,8}:/")))
+      if (reIndex(name, QRegExp("^[a-zA-Z]{3,8}:/"), 0) >= 0)
         okay = main->open(QUrl(name));
       else
         okay = main->open(name);

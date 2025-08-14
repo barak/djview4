@@ -37,12 +37,25 @@
 #include <QPainter>
 #include <QPointer>
 #include <QRect>
-#include <QRegExpValidator>
+#include <QRegExp>
 #include <QSettings>
 #include <QStringList>
 #include <QTranslator>
 #include <QVariant>
 #include <QWhatsThis>
+#if QT_VERSION >= 0x60000
+# define reReplace(s,r,a) (r).replaceIn((s),(a))
+# define reIndex(s,r,p) (r).indexIn((s),(p))
+#else
+# define reReplace(s,r,a) (s).replace((r),(a))
+# define reIndex(s,r,p) (s).indexOf((r),(p))
+#endif
+#if QT_VERSION < 0x60000
+# include <QRegExpValidator>
+#else
+# include <QRegularExpression>
+# include <QRegularExpressionValidator>
+#endif
 
 #include "qdjviewprefs.h"
 #include "qdjview.h"
@@ -699,8 +712,13 @@ QDjViewModifiersComboBox::QDjViewModifiersComboBox(QWidget *parent)
   QString keys = "(" + keynames.join("|") + ")";
   keys = keys + "(\\+" + keys + ")*";
   keys = keys + "|" + none;
+#if QT_VERSION < 0x60000
   QRegExp re( keys, Qt::CaseInsensitive);
   setValidator(new QRegExpValidator(re, this));
+#else
+  QRegularExpression re( keys, QRegularExpression::CaseInsensitiveOption);
+  setValidator(new QRegularExpressionValidator(re, this));
+#endif
   // menu entries
   insertValue(Qt::ShiftModifier);
   insertValue(Qt::ControlModifier);
@@ -817,7 +835,11 @@ QDjViewPrefsDialog::QDjViewPrefsDialog()
   d->currentSaved = -1;
   
   // prepare ui
+#if QT_VERSION >= 0x60000
+  setWindowModality(Qt::WindowModal);
+#else
   setAttribute(Qt::WA_GroupLeader, true);
+#endif
   d->ui.setupUi(this);
   
   // connect buttons (some are connected in the ui file)
@@ -1007,7 +1029,12 @@ QDjViewPrefsDialog::load(QDjView *djview)
   d->ui.animationCheckBox->setChecked(prefs->enableAnimations);
   d->ui.textLabelCheckBox->setChecked(prefs->showTextLabel);
   d->ui.restrictOverrideCheckBox->setChecked(prefs->restrictOverride);
+#if QT_VERSION >= 0x60000
+  d->ui.openGLCheckBox->setChecked(true);
+  d->ui.openGLCheckBox->setEnabled(false);
+#else
   d->ui.openGLCheckBox->setChecked(prefs->openGLAccel);
+#endif
   d->ui.printerManualCheckBox->setChecked(pgamma > 0);
   d->ui.printerGammaSpinBox->setValue((pgamma > 0) ? pgamma : 2.2);
   // no longer modified
@@ -1268,7 +1295,7 @@ QDjViewPrefsDialog::modeComboChanged(int n)
       bool okay;
       int zoomIndex = d->ui.zoomCombo->currentIndex();
       QString zoomText = d->ui.zoomCombo->lineEdit()->text();
-      int zoom = zoomText.replace(QRegExp("\\s*%?$"),"").trimmed().toInt(&okay);
+      int zoom = reReplace(zoomText,QRegExp("\\s*%?$"),"").trimmed().toInt(&okay);
       if (okay && zoom>=QDjVuWidget::ZOOM_MIN && zoom<=QDjVuWidget::ZOOM_MAX)
         saved.zoom = zoom;
       else if (zoomIndex >= 0)
@@ -1322,7 +1349,7 @@ QDjViewPrefsDialog::zoomComboEdited()
 {
   bool okay;
   QString zoomText = d->ui.zoomCombo->lineEdit()->text();
-  int zoom = zoomText.replace(QRegExp("\\s*%?$"),"").trimmed().toInt(&okay);
+  int zoom = reReplace(zoomText,QRegExp("\\s*%?$"),"").trimmed().toInt(&okay);
   if (d->ui.zoomCombo->findText(zoomText) >= 0)
     d->ui.zoomCombo->setEditText(zoomText);
   else if (okay && zoom >= QDjVuWidget::ZOOM_MIN 

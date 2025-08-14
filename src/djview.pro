@@ -25,6 +25,10 @@ greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets printsupport
 } 
 
+# -- QT6 modules
+greaterThan(QT_MAJOR_VERSION, 5) {
+    QT += core5compat
+} 
 
 # -- find libraries
 CONFIG(autoconf) {
@@ -59,7 +63,7 @@ macx {
   RESOURCES.files = images/DjVu.icns
   QMAKE_BUNDLE_DATA += RESOURCES
   QMAKE_INFO_PLIST = djview.plist
-  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.13
+  # QMAKE_APPLE_DEVICE_ARCHS="x86_64 arm64"
 } 
 
 # --- windows stuff

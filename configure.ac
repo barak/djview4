@@ -24,12 +24,12 @@ m4_define([v_min], [12])
 m4_define([v_ver], [v_maj.v_min])
 
 
-AC_PREREQ([2.65])
+AC_PREREQ([2.72])
 AC_INIT([djview],[v_ver])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([config])
 AC_CONFIG_SRCDIR([src/djview.cpp])
-AC_CONFIG_HEADER(config.h:config/config.h.in)
+AC_CONFIG_HEADERS([config.h:config/config.h.in])
 AC_PREFIX_DEFAULT(/usr/local)
 AC_CANONICAL_HOST
 
@@ -152,9 +152,10 @@ AM_CONDITIONAL([HAVE_CONVERSION_TOOL], [test x${conversion_tool} != xno])
 # Header Files
 # ----------------------------------------
 
-AC_HEADER_STDC
+AC_CHECK_INCLUDES_DEFAULT
+AC_PROG_EGREP
 AC_HEADER_DIRENT
-AC_HEADER_TIME
+AC_CHECK_HEADERS_ONCE([sys/time.h])
 AC_HEADER_SYS_WAIT     
 AC_CHECK_HEADERS(unistd.h string.h strings.h getopt.h)
 
